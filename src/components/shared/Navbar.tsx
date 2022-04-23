@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material"
 import { styled } from "@mui/system"
-import { FC } from 'react'
+import AuthGuard from "auth/AuthGuard"
 
 const CustomNavbar = styled(Stack)({
     '& a.active': {
@@ -10,10 +10,11 @@ const CustomNavbar = styled(Stack)({
     height: 50
 })
 
-const Navbar: FC = ({ children }) => {
+const Navbar = ({ children }) => {
     return (
         <CustomNavbar direction="row" alignItems="center" justifyContent="space-evenly">
             {children}
+            <AuthGuard />
         </CustomNavbar>
     )
 }

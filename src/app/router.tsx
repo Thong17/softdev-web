@@ -17,16 +17,16 @@ const routes: RouteObject[] = [
         element: <Admin />,
         children: [
             {
-                path: '/admin/user',
+                path: 'user',
                 element: <User />
             },
             {
-                path: '/admin/role',
+                path: 'role',
                 element: <Role />
             }
         ]
     },
-    
+
 ]
 
 export default routes

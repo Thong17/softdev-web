@@ -26,6 +26,7 @@
       "components/*": ["components/*"],
       "modules/*": ["modules/*"],
       "utils/*": ["utils/*"],
+      "context/*": ["context/*"],
     }
   },
   "include": [

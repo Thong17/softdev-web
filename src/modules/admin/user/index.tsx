@@ -1,11 +1,6 @@
-import { Layout } from "components/layouts/Layout";
-import AdminNavbar from "../components/AdminNavbar";
-
 export const User = () => {
   return (
-    <Layout  navbar={<AdminNavbar />}>
-      <h1>User</h1>
-
+    <>
       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus error et quis ipsam. Excepturi voluptatum voluptatem vel pariatur molestias ea sunt voluptas omnis tenetur, ut numquam consectetur quos nulla enim.
       Inventore, nemo porro! Voluptatibus, neque dolor, corporis voluptas repudiandae cum quas dignissimos rem autem recusandae facilis tempora unde iure eligendi sed a, possimus illo fugiat pariatur magni quo. In, repellendus.
       A voluptate, maiores sint laboriosam praesentium provident ratione officiis, quam amet corrupti enim ducimus, eaque aliquid! Facilis inventore, autem nostrum tenetur ducimus sequi. Culpa repudiandae natus quo eum, nam corporis!
@@ -76,6 +71,6 @@ export const User = () => {
       Sequi corrupti molestiae accusantium modi in iste voluptatum perferendis vero rerum eius. Provident repudiandae corporis eligendi sed error consequuntur aut molestias, distinctio non aliquid. Perferendis eum iste facere modi ipsa?
       Alias totam eos sunt eligendi eveniet quis quisquam velit reprehenderit similique recusandae, rem corrupti magni qui maiores! Fugiat facilis nisi quas quia voluptate, necessitatibus nesciunt cumque quaerat repellendus sapiente? Eveniet.
       Eligendi voluptas possimus itaque placeat? Quibusdam quos aliquid quam aperiam inventore omnis. Tempore praesentium laborum quod deserunt inventore. Delectus voluptatum illum aut neque. Ea laborum error est dolorem ex cupiditate!</p>
-    </Layout>
+    </>
   );
 }

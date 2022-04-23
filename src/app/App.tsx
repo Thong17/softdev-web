@@ -1,15 +1,18 @@
 import { useRoutes } from 'react-router-dom'
 import routes from './router';
 import Sidebar from '../components/shared/Sidebar';
+import { UserContext } from 'contexts/UserContext';
+import { useContext } from 'react';
 
 const App = () => {
   let routers = useRoutes(routes)
-  
+  const user = useContext(UserContext)
+
   return (
-    <div>
+    <UserContext.Provider value={user}>
       <Sidebar></Sidebar>
       {routers}
-    </div>
+    </UserContext.Provider>
   );
 }
 

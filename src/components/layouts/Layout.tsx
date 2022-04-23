@@ -6,7 +6,7 @@ const WrapContainer = styled('div')({
   backgroundColor: '#f2f2f2',
   marginLeft: 86,
   width: 'calc(100% - 86px)',
-  height: '100%'
+  height: '100vh'
 })
 
 const ContentContainer = styled('div')({
@@ -15,11 +15,11 @@ const ContentContainer = styled('div')({
   minHeight: 'calc(100% - 100px)'
 })
 
-interface props {
+interface ILayout {
   navbar?: ReactElement
 }
 
-export const Layout: FC<props> = ({ children, navbar }) => {
+export const Layout: FC<ILayout> = ({ children, navbar }) => {
   return (
       <WrapContainer>
         {navbar}
