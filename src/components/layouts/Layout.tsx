@@ -1,6 +1,7 @@
 import { styled } from "@mui/system";
 import { FC, ReactElement } from "react";
 import Footer from "components/shared/Footer";
+import Sidebar from "components/shared/Sidebar";
 
 const WrapContainer = styled('div')({
   backgroundColor: '#f2f2f2',
@@ -21,6 +22,8 @@ interface ILayout {
 
 export const Layout: FC<ILayout> = ({ children, navbar }) => {
   return (
+    <>
+      <Sidebar></Sidebar>
       <WrapContainer>
         {navbar}
         <ContentContainer>
@@ -28,5 +31,6 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
         </ContentContainer>
         <Footer></Footer>
       </WrapContainer>
+    </>
   );
 }

@@ -27,6 +27,8 @@
       "modules/*": ["modules/*"],
       "utils/*": ["utils/*"],
       "context/*": ["context/*"],
+      "app/*": ["app/*"],
+      "hooks/*": ["hooks/*"],
     }
   },
   "include": [

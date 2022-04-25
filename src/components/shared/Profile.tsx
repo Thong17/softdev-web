@@ -1,8 +1,11 @@
+import useAuth from 'hooks/useAuth'
 import React from 'react'
 
 const Profile = ({ username }) => {
+  const { logout } = useAuth()
+  
   return (
-    <div>Hello {username}</div>
+    <div>Hello {username} <button onClick={() => logout()}>Logout</button></div>
   )
 }
 

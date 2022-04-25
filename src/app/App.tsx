@@ -1,19 +1,16 @@
 import { useRoutes } from 'react-router-dom'
-import routes from './router';
-import Sidebar from '../components/shared/Sidebar';
-import { UserContext } from 'contexts/UserContext';
-import { useContext } from 'react';
+import routes from './router'
+import AuthProvider from 'contexts/auth/AuthContext'
+import NotificationProvider from 'contexts/notify/NotificationContext'
 
 const App = () => {
   let routers = useRoutes(routes)
-  const user = useContext(UserContext)
 
   return (
-    <UserContext.Provider value={user}>
-      <Sidebar></Sidebar>
-      {routers}
-    </UserContext.Provider>
-  );
+    <NotificationProvider>
+      <AuthProvider>{routers}</AuthProvider>
+    </NotificationProvider>
+  )
 }
 
-export default App;
+export default App

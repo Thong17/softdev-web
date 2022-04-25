@@ -1,7 +1,8 @@
 import { RouteObject } from "react-router";
-import { Login } from "../modules/auth/Login";
-import { Admin, User, Role } from "../modules/admin";
-import { Counter } from "../modules/counter/Counter";
+import AuthGuard from '../auth/AuthGuard'
+import { Login } from "modules/auth/Login";
+import { Admin, User, Role } from "modules/admin";
+import { Counter } from "modules/counter/Counter";
 
 const routes: RouteObject[] = [
     {
@@ -18,7 +19,7 @@ const routes: RouteObject[] = [
         children: [
             {
                 path: 'user',
-                element: <User />
+                element: <AuthGuard role={{route: 'user', action: 'list'}}><User /></AuthGuard>
             },
             {
                 path: 'role',
