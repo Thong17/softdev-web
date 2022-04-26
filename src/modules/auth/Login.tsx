@@ -2,18 +2,18 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { loginSchema } from './schema'
 import useAuth from 'hooks/useAuth'
-
+import useNotify from 'hooks/useNotify'
 
 export const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(loginSchema) })
   const { login } = useAuth()
+  const { notify } = useNotify()
 
   const form = async (data) => {
-    try {
-      await login(data)
-    } catch (err) {
-      
-    }
+    const response: any = await login(data)
+    console.log(response);
+    
+    if (response?.code !== 'SUCCESS') notify(response?.data?.msg, 'error')
   }
 
   return (

@@ -11,15 +11,18 @@ interface IAuthRoute {
 }
 
 const AuthGuard: FC<IAuthRoute> = ({ children, role }) => {
-  const { user, isInit } = useAuth()
+  const { user } = useAuth()
   const { notify } = useNotify()
   const location = useLocation()
   const { route, action } = role
 
-  let isAuthenticated = user?.privilege?.[route]?.[action]
+  const isAuthenticated = user?.privilege?.[route]?.[action]
+
+  if (isAuthenticated) return <>{children}</>
+
   notify(`You don't have access to this page!`, 'error')
-  if (isInit && !isAuthenticated) return <Navigate to="/login" state={{ redirectUrl: location.pathname }} />
-  return <>{children}</>
+  return <Navigate to="/login" state={{ redirectUrl: location.pathname }} />
+  
 }
 
 export default AuthGuard

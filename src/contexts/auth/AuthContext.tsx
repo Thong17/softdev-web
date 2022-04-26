@@ -23,7 +23,7 @@ export const AuthContext = createContext({
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
   const [state, dispatch] = useReducer(AuthReducer, initState)
-  
+
   useEffect(() => {
     getProfile(dispatch)
   }, [])
@@ -33,20 +33,27 @@ const AuthProvider = ({ children }) => {
     const ts = Date.now().toString()
     const hash = await generateHash(data, ts, token || '')
 
-    const response = await axios.post(
-      'http://localhost:3030/auth/login',
-      data,
-      {
-        headers: {
-          'x-access-hash': hash,
-          'x-access-ts': ts,
-        },
-      }
-    )
+    try {
+      const response = await axios.post(
+        'http://localhost:3030/auth/login',
+        data,
+        {
+          headers: {
+            'x-access-hash': hash,
+            'x-access-ts': ts,
+          },
+        }
+      )
 
-    dispatch({ type: EnumAuth.LOGIN, payload: response.data.data })
-    setSession(response.data.data.accessToken)
-    navigate('/admin')
+      dispatch({ type: EnumAuth.LOGIN, payload: response.data.data })
+      setSession(response.data.data.accessToken)
+      navigate('/admin')
+      return response.data
+
+    } catch (err: any) {
+      return err?.response?.data
+    }
+    
   }
 
   const logout = () => {
@@ -54,6 +61,7 @@ const AuthProvider = ({ children }) => {
     setSession(null)
     navigate('/login')
   }
+  
   if (!state.isInit) return <Loading></Loading>
   return (
     <AuthContext.Provider value={{ ...state, login, logout }}>
