@@ -7,7 +7,7 @@ import { Counter } from "modules/counter/Counter";
 const routes: RouteObject[] = [
     {
         path: '/',
-        element: <Counter />
+        element: <AuthGuard role={{route: 'admin', action: 'list'}}><Counter /></AuthGuard>
     },
     {
         path: '/login',
@@ -23,7 +23,7 @@ const routes: RouteObject[] = [
             },
             {
                 path: 'role',
-                element: <Role />
+                element: <AuthGuard role={{route: 'admin', action: 'list'}}><Role /></AuthGuard>
             }
         ]
     },

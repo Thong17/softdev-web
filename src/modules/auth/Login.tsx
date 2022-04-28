@@ -11,9 +11,7 @@ export const Login = () => {
 
   const form = async (data) => {
     const response: any = await login(data)
-    console.log(response);
-    
-    if (response?.code !== 'SUCCESS') notify(response?.data?.msg, 'error')
+    if (response?.code !== 'SUCCESS') return notify(response?.data?.msg, 'error')
   }
 
   return (

@@ -19,10 +19,9 @@ const AuthGuard: FC<IAuthRoute> = ({ children, role }) => {
   const isAuthenticated = user?.privilege?.[route]?.[action]
 
   if (isAuthenticated) return <>{children}</>
-
-  notify(`You don't have access to this page!`, 'error')
-  return <Navigate to="/login" state={{ redirectUrl: location.pathname }} />
   
+  notify(`You don't have permission to access this page`, 'error')
+  return <Navigate to="/login" state={{ from: location.pathname }} />
 }
 
 export default AuthGuard

@@ -6,8 +6,10 @@ export const Role = () => {
   return (
       <>
         <h1>Role</h1>
-        <button onClick={() => notify('Hello', 'info')}>Notify</button>
-        <button onClick={() => notify('Fucked', 'warning')}>Fuck</button>
+        <button onClick={() => notify('Success', 'success')}>Notify</button>
+        <button onClick={() => notify('Fucked', 'error')}>Fuck</button>
+        <button onClick={() => notify('Wawrn', 'warning')}>Wawrn</button>
+        <button onClick={() => notify('Info you want ', 'info')}>Info</button>
       </>
   );
 }

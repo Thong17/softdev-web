@@ -1,15 +1,14 @@
 import { useRoutes } from 'react-router-dom'
 import routes from './router'
 import AuthProvider from 'contexts/auth/AuthContext'
-import NotificationProvider from 'contexts/notify/NotificationContext'
-
+import NotifyProvider from 'contexts/notify/NotifyContext'
 const App = () => {
   let routers = useRoutes(routes)
 
   return (
-    <NotificationProvider>
+    <NotifyProvider>
       <AuthProvider>{routers}</AuthProvider>
-    </NotificationProvider>
+    </NotifyProvider>
   )
 }
 
