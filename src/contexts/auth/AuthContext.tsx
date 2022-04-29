@@ -1,7 +1,6 @@
 import { createContext, useEffect, useReducer } from 'react'
-import { generateHash } from 'utils'
 import { AuthReducer } from './authReducer'
-import axios from 'axios'
+import Axios from 'constants/functions/Axios'
 import { EnumAuth } from './authReducer'
 import { ILogin, IAuthInit } from './interface'
 import { useNavigate } from 'react-router'
@@ -29,31 +28,16 @@ const AuthProvider = ({ children }) => {
   }, [])
 
   const login = async (data: ILogin) => {
-    const token = window.localStorage.getItem('x-access-token')
-    const ts = Date.now().toString()
-    const hash = await generateHash(data, ts, token || '')
-
     try {
-      const response = await axios.post(
-        'http://localhost:3030/auth/login',
-        data,
-        {
-          headers: {
-            'x-access-hash': hash,
-            'x-access-ts': ts,
-          },
-        }
-      )
+      const response = await Axios({ method: 'POST', url: '/auth/login', body: data })
 
       dispatch({ type: EnumAuth.LOGIN, payload: response.data.data })
       setSession(response.data.data.accessToken)
-      navigate('/admin')
       return response.data
 
     } catch (err: any) {
       return err?.response?.data
     }
-    
   }
 
   const logout = () => {

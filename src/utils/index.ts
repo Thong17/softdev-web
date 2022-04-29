@@ -3,9 +3,9 @@ import { IToken } from 'contexts/auth/interface'
 import jwtDecode from 'jwt-decode'
 
 export const generateHash = async (
-  data: object,
   ts: string,
-  token: string = ''
+  token: string = '',
+  data?: object
 ) => {
   const str =
     JSON.stringify(data) +

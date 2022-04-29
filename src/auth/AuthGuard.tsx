@@ -1,7 +1,8 @@
+import Restrict from 'components/shared/Restrict'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
 import React, { FC } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 interface IAuthRoute {
   role: {
@@ -21,7 +22,7 @@ const AuthGuard: FC<IAuthRoute> = ({ children, role }) => {
   if (isAuthenticated) return <>{children}</>
   
   notify(`You don't have permission to access this page`, 'error')
-  return <Navigate to="/login" state={{ from: location.pathname }} />
+  return <Restrict redirect={location.pathname} />
 }
 
 export default AuthGuard

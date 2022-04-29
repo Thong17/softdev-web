@@ -26,8 +26,7 @@ const routes: RouteObject[] = [
                 element: <AuthGuard role={{route: 'admin', action: 'list'}}><Role /></AuthGuard>
             }
         ]
-    },
-
+    }
 ]
 
 export default routes

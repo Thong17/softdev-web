@@ -3,8 +3,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { loginSchema } from './schema'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
+import { useLocation, useNavigate } from 'react-router'
+
 
 export const Login = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
   const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(loginSchema) })
   const { login } = useAuth()
   const { notify } = useNotify()
@@ -12,6 +16,7 @@ export const Login = () => {
   const form = async (data) => {
     const response: any = await login(data)
     if (response?.code !== 'SUCCESS') return notify(response?.data?.msg, 'error')
+    navigate(location.state ? location.state as string : '/admin')
   }
 
   return (

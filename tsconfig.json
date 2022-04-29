@@ -29,6 +29,8 @@
       "context/*": ["context/*"],
       "app/*": ["app/*"],
       "hooks/*": ["hooks/*"],
+      "constants/*": ["constants/*"],
+
     }
   },
   "include": [
