@@ -16,8 +16,8 @@ const Navbar = ({ children }) => {
     const { user } = useAuth()
 
     return (
-        <CustomNavbar direction="row" alignItems="center" justifyContent="space-evenly">
-            {children}
+        <CustomNavbar direction="row" alignItems="center" justifyContent="space-between">
+            <div>{children}</div>
             { user ? <Profile username={ user.username } /> : <Link to="/login">Login</Link>}
         </CustomNavbar>
     )
