@@ -1,26 +1,28 @@
-import { Stack } from "@mui/material"
-import { styled } from "@mui/system"
-import useAuth from "hooks/useAuth"
-import { Link } from "react-router-dom"
-import Profile from "./Profile"
-
-const CustomNavbar = styled(Stack)({
-    '& a.active': {
-        backgroundColor: '#aaa'
-    },
-    backgroundColor: '#ccc',
-    height: 50
-})
+import useAuth from 'hooks/useAuth'
+import useTheme from 'hooks/useTheme'
+import { Link } from 'react-router-dom'
+import Profile from './Profile'
+import { CustomNavbar } from 'styles'
 
 const Navbar = ({ children }) => {
-    const { user } = useAuth()
+  const { user } = useAuth()
+  const { theme } = useTheme()
 
-    return (
-        <CustomNavbar direction="row" alignItems="center" justifyContent="space-between">
-            <div>{children}</div>
-            { user ? <Profile username={ user.username } /> : <Link to="/login">Login</Link>}
-        </CustomNavbar>
-    )
+  return (
+    <CustomNavbar
+      direction='row'
+      alignItems='center'
+      justifyContent='space-between'
+      styled={theme}
+    >
+      <div>{children}</div>
+      {user ? (
+        <Profile username={user.username} />
+      ) : (
+        <Link to='/login'>Login</Link>
+      )}
+    </CustomNavbar>
+  )
 }
 
 export default Navbar

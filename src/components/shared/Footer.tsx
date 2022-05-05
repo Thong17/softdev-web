@@ -1,15 +1,18 @@
-import { styled } from "@mui/system"
-import { Stack } from "@mui/material"
-
-const CustomFooter = styled(Stack)({
-    width: '100%',
-    backgroundColor: '#aaa',
-    height: 50
-})
+import useTheme from 'hooks/useTheme'
+import { CustomFooter } from 'styles'
 
 const Footer = () => {
+  const { theme } = useTheme()
+
   return (
-    <CustomFooter direction="row" justifyContent="center" alignItems="center">Footer</CustomFooter>
+    <CustomFooter
+      direction='row'
+      justifyContent='center'
+      alignItems='center'
+      styled={theme}
+    >
+      Footer
+    </CustomFooter>
   )
 }
 

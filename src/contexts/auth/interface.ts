@@ -1,10 +1,13 @@
+import { LanguageOptions } from "contexts/language/interface";
+import { ThemeOptions } from "contexts/theme/interface";
+
 export interface IUser {
   id: string
   username: string
   privilege: object
   photo: string
-  theme: string
-  language: string
+  theme: ThemeOptions
+  language: LanguageOptions
 }
 
 export interface IAuthInit {

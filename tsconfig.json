@@ -30,7 +30,7 @@
       "app/*": ["app/*"],
       "hooks/*": ["hooks/*"],
       "constants/*": ["constants/*"],
-
+      "styles/*": ["styles/*"],
     }
   },
   "include": [

@@ -1,27 +1,32 @@
-import { NavLink } from "react-router-dom";
-import { sideNav } from "../layouts/constant";
-import { Stack } from "@mui/material";
-import { styled } from "@mui/system";
-
-const CustomSideNav = styled(Stack)({
-    width: 70,
-    height: 'calc(100vh - 16px)',
-    backgroundColor: '#ccc',
-    borderRadius: 10,
-    margin: 8,
-    position: 'fixed',
-    '& a.active': {
-        backgroundColor: '#092736'
-    }
-})
+import { NavLink } from 'react-router-dom'
+import { sideNav } from '../layouts/constant'
+import useTheme from 'hooks/useTheme'
+import { CustomSideNav } from 'styles'
+import useConfig from 'hooks/useConfig'
 
 const Sidebar = () => {
-    return <CustomSideNav direction='column' justifyContent='space-around' alignItems='center'>
-        { sideNav.map((nav, index) =>
-            <NavLink key={index} to={nav.route}>{nav.title}</NavLink>
-        ) }
+  const { theme } = useTheme()
+  const { sidebar, toggleSidebar } = useConfig()
+
+  return (
+    <CustomSideNav
+      direction='column'
+      justifyContent='space-around'
+      alignItems='start'
+      className='side-nav'
+      style={{ width: sidebar ? 250 : 70 }}
+      styled={theme}
+      isOpen={sidebar}
+    >
+      <button onClick={() => toggleSidebar()}>Toggle</button>
+      {sideNav.map((nav, index) => (
+        <NavLink key={index} to={nav.route}>
+          {nav.icon}
+          <span>{nav.title}</span>
+        </NavLink>
+      ))}
     </CustomSideNav>
+  )
+}
 
-};
-
-export default Sidebar;
+export default Sidebar

@@ -1,35 +1,22 @@
 import { createContext, useMemo, useState } from 'react'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { DefaultTheme } from '@mui/system'
-
-declare type ThemeOptions = 'light' | 'dark'
-
-interface IThemeContext {
-  mode: ThemeOptions,
-  theme: Partial<DefaultTheme>,
-  changeTheme: Function
-}
+import { ThemeOptions, IThemeContext, IThemeMode } from './interface'
+import { themeMode } from './constant'
+import useAuth from 'hooks/useAuth'
 
 const initMode: ThemeOptions = 'light'
 
 export const ThemeContext = createContext<IThemeContext>({
   mode: initMode,
-  theme: {},
+  theme: themeMode[initMode],
   changeTheme: (mode: ThemeOptions) => {},
 })
 
 const ThemesProvider = ({ children }) => {
-  const [mode, setMode] = useState<ThemeOptions>(initMode)
+  const { user } = useAuth()
+  const [mode, setMode] = useState<ThemeOptions>(user?.theme || initMode)
   
-  const theme = useMemo((): Partial<DefaultTheme> => {
-    return createTheme({
-      palette: {
-        mode: mode,
-        background: {
-          default: mode === 'light' ? '#891726' : '#098727'
-        }
-      }
-    })
+  const theme = useMemo<IThemeMode>(() => {    
+    return themeMode[mode]
   }, [mode])
 
   const changeTheme = (mode: ThemeOptions) => {
@@ -38,7 +25,7 @@ const ThemesProvider = ({ children }) => {
 
   return (
     <ThemeContext.Provider value={{ mode, theme, changeTheme }}>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      {children}
     </ThemeContext.Provider>
   )
 }
