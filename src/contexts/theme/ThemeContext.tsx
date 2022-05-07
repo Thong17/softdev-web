@@ -1,26 +1,42 @@
-import { createContext, useMemo, useState } from 'react'
-import { ThemeOptions, IThemeContext, IThemeMode } from './interface'
-import { themeMode } from './constant'
+import { createContext, useEffect, useMemo, useState } from 'react'
+import { ThemeOptions, IThemeContext, IThemeStyle } from './interface'
+import { themeMode, themeStyle } from './constant'
 import useAuth from 'hooks/useAuth'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 const initMode: ThemeOptions = 'light'
 
 export const ThemeContext = createContext<IThemeContext>({
   mode: initMode,
-  theme: themeMode[initMode],
+  theme: { ...themeMode[initMode], ...themeStyle },
   changeTheme: (mode: ThemeOptions) => {},
 })
 
 const ThemesProvider = ({ children }) => {
   const { user } = useAuth()
-  const [mode, setMode] = useState<ThemeOptions>(user?.theme || initMode)
-  
-  const theme = useMemo<IThemeMode>(() => {    
-    return themeMode[mode]
+  const [mode, setMode] = useState<ThemeOptions>(initMode)
+  const { notify } = useNotify()
+
+  useEffect(() => {
+    setMode(user?.theme || initMode)
+  }, [user])
+
+  const theme = useMemo<IThemeStyle>(() => {
+    return { ...themeMode[mode], ...themeStyle }
   }, [mode])
 
-  const changeTheme = (mode: ThemeOptions) => {
-    setMode(mode)
+  const changeTheme = async (mode: ThemeOptions) => {
+    const response = await Axios({
+      method: 'POST',
+      url: `/user/theme/change`,
+      body: { theme: mode },
+    })
+
+    if (response?.data?.code !== 'SUCCESS') {
+      return notify(response.data.msg, 'error')
+    }
+    setMode(response.data.theme)
   }
 
   return (

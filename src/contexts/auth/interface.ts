@@ -5,9 +5,9 @@ export interface IUser {
   id: string
   username: string
   privilege: object
-  photo: string
-  theme: ThemeOptions
-  language: LanguageOptions
+  photo?: string
+  theme?: ThemeOptions
+  language?: LanguageOptions
 }
 
 export interface IAuthInit {

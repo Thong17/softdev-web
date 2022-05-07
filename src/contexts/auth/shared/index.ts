@@ -11,7 +11,7 @@ export const setSession = (token) => {
 }
 
 export const getProfile = async (dispatch) => {
-  const token = window.localStorage.getItem('x-access-token')
+  const token = localStorage.getItem('x-access-token')
   if (!isValidToken(token))
     return dispatch({
       type: EnumAuth.INIT,
@@ -24,7 +24,7 @@ export const getProfile = async (dispatch) => {
 
     dispatch({
       type: EnumAuth.INIT,
-      payload: { isAuthenticated: true, user: response.data.data.user },
+      payload: { isAuthenticated: true, user: response.data.user },
     })
   } catch (err) {
     dispatch({

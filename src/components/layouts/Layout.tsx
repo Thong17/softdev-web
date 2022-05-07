@@ -23,14 +23,15 @@ interface ILayout {
 export const Layout: FC<ILayout> = ({ children, navbar }) => {
   const { theme } = useTheme()
   const { sidebar } = useConfig()
+  const SIDEBAR_WIDTH = sidebar ? 266 : 86
 
   return (
-    <div style={{ background: theme.background.primary }}>
+    <div style={{ background: theme.background.primary, fontFamily: theme.font.family, fontWeight: theme.font.weight }}>
       <Sidebar></Sidebar>
       <WrapContainer
         style={{
-          marginLeft: sidebar ? 266 : 86,
-          width: sidebar ? 'calc(100% - 266px)' : 'calc(100% - 86px)',
+          marginLeft: SIDEBAR_WIDTH,
+          width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
         }}
       >
         <Navbar>{navbar}</Navbar>
@@ -38,7 +39,6 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
           style={{
             backgroundColor: theme.background.secondary,
             color: theme.text.primary,
-            transition: '0.3s ease',
           }}
         >
           {children}

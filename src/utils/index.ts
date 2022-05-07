@@ -23,3 +23,39 @@ export const isValidToken = (token) => {
   const currentTime = Date.now() / 1000
   return decodedToken.exp > currentTime
 }
+
+export const throttle = (cb, delay = 1000) => {
+  let isWaiting = false
+  let oldArgs
+
+  const timeout = () => {
+    if (oldArgs === null) {
+      isWaiting = false
+    } else {
+      cb(...oldArgs)
+      oldArgs = null
+      setTimeout(timeout, delay)
+    }
+  }
+
+  return (...args) => {
+    if (isWaiting) {
+      oldArgs = args
+      return
+    }
+    cb(...args)
+    isWaiting = true
+    setTimeout(timeout, delay)
+  }
+}
+
+export const debounce = (cb, delay = 1000) => {
+  let timeout
+
+  return (...args) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      cb(...args)
+    }, delay)
+  }
+}

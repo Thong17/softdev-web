@@ -1,21 +1,21 @@
 .Toastify__toast--error {
     border: none !important;
-    background: #d32f2f !important;
+    background: #d32f2fee !important;
 }
 
 .Toastify__toast--success {
     border: none !important;
-    background: #43a047 !important;
+    background: #43a047ee !important;
 }
 
 .Toastify__toast--warning {
     border: none !important;
-    background: #ff9800 !important;
+    background: #ff9800ee !important;
 }
 
 .Toastify__toast--info {
     border: none !important;
-    background: #2196f3 !important;
+    background: #2196f3ee !important;
 }
 
 .Toastify__toast {

@@ -1,17 +1,11 @@
 import React from 'react'
-import { styled } from '@mui/system'
-
-const CustomLoading = styled('div')({
-    width: '100vw',
-    height: '100vh',
-    backgroundColor: 'rgba(255, 255, 255)',
-    position: 'fixed'
-})
+import useTheme from 'hooks/useTheme'
+import { CustomLoading } from 'styles'
 
 const Loading = () => {
-  return (
-    <CustomLoading>loading</CustomLoading>
-  )
+  const { theme } = useTheme()
+  
+  return <CustomLoading styled={theme}>loading</CustomLoading>
 }
 
 export default Loading

@@ -15,7 +15,7 @@ export const Login = () => {
 
   const form = async (data) => {
     const response: any = await login(data)
-    if (response?.code !== 'SUCCESS') return notify(response?.data?.msg, 'error')
+    if (response?.code !== 'SUCCESS') return notify(response?.msg, 'error')
     navigate(location.state ? location.state as string : '/admin')
   }
 

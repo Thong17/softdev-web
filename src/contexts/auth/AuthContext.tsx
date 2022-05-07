@@ -22,7 +22,7 @@ export const AuthContext = createContext({
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
   const [state, dispatch] = useReducer(AuthReducer, initState)
-
+  
   useEffect(() => {
     getProfile(dispatch)
   }, [])
@@ -31,11 +31,11 @@ const AuthProvider = ({ children }) => {
     try {
       const response = await Axios({ method: 'POST', url: '/auth/login', body: data })
 
-      dispatch({ type: EnumAuth.LOGIN, payload: response.data.data })
-      setSession(response.data.data.accessToken)
+      dispatch({ type: EnumAuth.LOGIN, payload: response.data })
+      setSession(response.data.accessToken)
       return response.data
 
-    } catch (err: any) {
+    } catch (err: any) {      
       return err?.response?.data
     }
   }
