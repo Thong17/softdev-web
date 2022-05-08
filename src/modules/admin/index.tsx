@@ -8,7 +8,7 @@ export const Admin = () => {
 
   return (
     <Layout navbar={<AdminNavbar />}>
-      {outlet || <Container>Admin</Container>}
+      {outlet || <Container>Admin Updated</Container>}
     </Layout>
   )
 }
