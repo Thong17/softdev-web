@@ -4,14 +4,16 @@ import useTheme from 'hooks/useTheme'
 import { CustomSideNav, SideNavContainer } from 'styles'
 import useConfig from 'hooks/useConfig'
 import useLanguage from 'hooks/useLanguage'
+import useWeb from 'hooks/useWeb'
 
 const Sidebar = () => {
   const { theme } = useTheme()
   const { language } = useLanguage()
   const { sidebar } = useConfig()
+  const { device } = useWeb()
 
   return (
-    <SideNavContainer open={sidebar}>
+    <SideNavContainer open={sidebar} device={device}>
       <CustomSideNav
         direction='column'
         justifyContent='space-around'

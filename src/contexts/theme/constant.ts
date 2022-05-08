@@ -96,4 +96,18 @@ export const themeStyle = {
     family: `-apple-system, BlinkMacSystemFont, 'Open Sans', 'Helvetica Neue', sans-serif`,
     weight: 300,
   },
+  responsive: {
+    mobile: {
+      textSize: 11
+    },
+    tablet: {
+      textSize: 13
+    },
+    laptop: {
+      textSize: 13
+    },
+    desktop: {
+      textSize: 13
+    }
+  }
 }

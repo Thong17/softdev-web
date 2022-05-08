@@ -35,6 +35,20 @@ export interface IThemeStyle extends IThemeMode {
   font: {
     family: string,
     weight: number
+  },
+  responsive: {
+    mobile: {
+      textSize: string | number
+    },
+    tablet: {
+      textSize: string | number
+    },
+    laptop: {
+      textSize: string | number
+    },
+    desktop: {
+      textSize: string | number
+    }
   }
 }
 

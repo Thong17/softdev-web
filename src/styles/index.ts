@@ -1,6 +1,7 @@
 import { styled } from '@mui/system'
 import { Button, Select, Stack } from '@mui/material'
 import { IThemeMode, IThemeStyle } from 'contexts/theme/interface'
+import { DeviceOptions } from 'contexts/web/interface'
 
 export const CustomSideNav = styled(Stack)(
   ({ styled }: { styled: IThemeStyle }) => ({
@@ -33,7 +34,7 @@ export const CustomSideNav = styled(Stack)(
 )
 
 export const SideNavContainer = styled('div')(
-  ({ open }: { open: boolean }) => ({
+  ({ open, device }: { open: boolean, device: DeviceOptions }) => ({
     position: 'fixed',
     height: 'calc(100vh - 16px)',
     width: open ? 250 : 70,
@@ -48,7 +49,7 @@ export const SideNavContainer = styled('div')(
       overflow: !open && 'hidden',
       alignSelf: 'center',
       marginLeft: 10,
-      lineHeight: 0
+      lineHeight: 0,
     },
     '& div a:hover': {
       transition: '0.3s ease',
@@ -58,7 +59,7 @@ export const SideNavContainer = styled('div')(
     '& div a:hover span': {
       transition: '0.3s ease',
       opacity: '1',
-      overflow: 'visible'
+      overflow: 'visible',
     },
   })
 )
@@ -91,64 +92,71 @@ export const CustomSelect = styled(Select)(
     textTransform: 'capitalize',
     backgroundColor: styled.background.secondary,
     color: styled.text.primary,
-    border: styled.border.secondary
+    border: styled.border.secondary,
   })
 )
 
-export const CustomProfile = styled(Button)(({ styled }: { styled: IThemeStyle }) => ({
-  backgroundColor: styled.background.primary,
-  color: styled.text.primary,
-  display: 'flex',
-  padding: '5px 13px 5px 5px',
-  borderRadius: styled.radius.rounded,
-  border: styled.border.secondary,
-  alignItems: 'center',
-  textTransform: 'none',
-  '& img,div': {
-    zIndex: 100,
-    backgroundColor: styled.background.secondary,
+export const CustomProfile = styled(Button)(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    backgroundColor: styled.background.primary,
+    color: styled.text.primary,
+    display: 'flex',
+    padding: '5px 13px 5px 5px',
+    borderRadius: styled.radius.rounded,
+    border: styled.border.secondary,
+    alignItems: 'center',
+    textTransform: 'none',
+    '& img,div': {
+      zIndex: 100,
+      backgroundColor: styled.background.secondary,
+      width: 30,
+      height: 30,
+      marginRight: 8,
+      borderRadius: styled.radius.circle,
+      boxShadow: styled.shadow.secondary,
+    },
+    '& div': {
+      display: 'flex',
+      justifyContent: 'center',
+      textTransform: 'capitalize',
+    },
+  })
+)
+
+export const CustomLoading = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    width: '100vw',
+    height: '100vh',
+    backgroundColor: styled.background.primary,
+    position: 'fixed',
+  })
+)
+
+export const CustomMenubar = styled('div')(
+  ({ styled, open }: { styled: IThemeStyle; open: boolean }) => ({
     width: 30,
     height: 30,
-    marginRight: 8,
-    borderRadius: styled.radius.circle,
-    boxShadow: styled.shadow.secondary
-  },
-  '& div': {
     display: 'flex',
-    justifyContent: 'center',
-    textTransform: 'capitalize',
-  }
-}))
-
-export const CustomLoading = styled('div')(({ styled }: { styled: IThemeStyle }) => ({
-  width: '100vw',
-  height: '100vh',
-  backgroundColor: styled.background.primary,
-  position: 'fixed',
-}))
-
-export const CustomMenubar = styled('div')(({ styled, open }: { styled: IThemeStyle, open: Boolean }) => ({
-  width: 30,
-  height: 30,
-  display: 'flex',
-  justifyContent: 'space-evenly',
-  flexDirection: 'column',
-  alignItems: 'center',
-  border: styled.border.secondary,
-  borderRadius: styled.radius.primary,
-  cursor: 'pointer',
-  '& div': {
-    backgroundColor: styled.text.primary,
-    height: '1px !important',
-    width: '50%'
-  },
-  '&:hover': {
-    border: styled.border.primary,
-  },
-  '& div:nth-of-type(2)': {
-    width: open && '30% !important'
-  }
-}))
+    justifyContent: 'space-evenly',
+    flexDirection: 'column',
+    alignItems: 'center',
+    border: styled.border.secondary,
+    borderRadius: styled.radius.primary,
+    cursor: 'pointer',
+    '& div': {
+      backgroundColor: styled.text.primary,
+      height: '1px !important',
+      width: '50%',
+      borderRadius: '1px'
+    },
+    '&:hover': {
+      border: styled.border.primary,
+    },
+    '& div:nth-of-type(2)': {
+      width: open && '30% !important',
+    },
+  })
+)
 
 export const ListNavbar = styled('div')({
   width: '50%',
@@ -156,6 +164,6 @@ export const ListNavbar = styled('div')({
   justifyContent: 'space-evenly',
   alignItems: 'center',
   '& a': {
-    textDecoration: 'none'
-  }
+    textDecoration: 'none',
+  },
 })

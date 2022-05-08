@@ -5,17 +5,17 @@ import Sidebar from 'components/shared/Sidebar'
 import Navbar from 'components/shared/Navbar'
 import useTheme from 'hooks/useTheme'
 import useConfig from 'hooks/useConfig'
+import useWeb from 'hooks/useWeb'
 
 const WrapContainer = styled('div')({
   height: '100vh',
-  transition: '0.3s ease'
+  transition: '0.3s ease',
 })
 
 const ContentContainer = styled('div')({
   width: '100%',
   minHeight: 'calc(100% - 120px)',
 })
-
 interface ILayout {
   navbar?: ReactElement
 }
@@ -23,15 +23,25 @@ interface ILayout {
 export const Layout: FC<ILayout> = ({ children, navbar }) => {
   const { theme } = useTheme()
   const { sidebar } = useConfig()
-  const SIDEBAR_WIDTH = sidebar ? 266 : 86
+  const { device } = useWeb()
 
+  const SIDEBAR_WIDTH = sidebar ? 266 : 86
+  
   return (
-    <div style={{ background: theme.background.primary, fontFamily: theme.font.family, fontWeight: theme.font.weight }}>
-      <Sidebar></Sidebar>
+    <div
+      style={{
+        background: theme.background.primary,
+        fontFamily: theme.font.family,
+        fontWeight: theme.font.weight,
+        fontSize: `${theme.responsive?.[device]?.textSize}px !important`
+      }}
+    >
+      {device !== 'mobile' && <Sidebar></Sidebar>}
       <WrapContainer
         style={{
-          marginLeft: SIDEBAR_WIDTH,
-          width: `calc(100% - ${SIDEBAR_WIDTH}px)`,
+          marginLeft: device !== 'mobile' ? SIDEBAR_WIDTH : '0',
+          width:
+            device !== 'mobile' ? `calc(100% - ${SIDEBAR_WIDTH}px)` : '100%',
         }}
       >
         <Navbar>{navbar}</Navbar>
