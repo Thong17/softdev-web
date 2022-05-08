@@ -3,6 +3,49 @@ import { Button, Select, Stack } from '@mui/material'
 import { IThemeMode, IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
 
+export const CustomBottomNav = styled('div')(({ styled }: { styled: IThemeStyle }) => ({
+  width: '100%',
+  height: 70,
+  backgroundColor: styled.background.primary,
+  display: 'flex',
+  justifyContent: 'space-evenly',
+  alignItems: 'center',
+  position: 'fixed',
+  bottom: 0,
+  boxShadow: styled.shadow.primary,
+  '& a': {
+    position: 'relative',
+    padding: 9,
+    borderRadius: styled.radius.primary,
+    color: styled.text.primary,
+    transition: '0.3s ease',
+    display: 'flex',
+    alignItem: 'center',
+  },
+  '& a:hover span': {
+    display: 'block',
+    position: 'absolute',
+    width: 'max-content',
+    backgroundColor: styled.active.primary,
+    top: -45,
+    left: '50%',
+    transform: 'translate(-50%, 0)',
+    padding: '10px 20px',
+    boxShadow: styled.shadow.container,
+    borderRadius: styled.radius.secondary
+  },
+  '& a.active, a:hover': {
+    boxShadow: styled.shadow.container,
+    backgroundColor: styled.active.primary,
+  },
+  '& a span': {
+    display: 'none',
+    lineHeight: 0,
+    height: 17,
+    alignSelf: 'center'
+  }
+}))
+
 export const CustomSideNav = styled(Stack)(
   ({ styled }: { styled: IThemeStyle }) => ({
     height: '100%',
@@ -34,7 +77,7 @@ export const CustomSideNav = styled(Stack)(
 )
 
 export const SideNavContainer = styled('div')(
-  ({ open, device }: { open: boolean, device: DeviceOptions }) => ({
+  ({ open }: { open: boolean }) => ({
     position: 'fixed',
     height: 'calc(100vh - 16px)',
     width: open ? 250 : 70,
@@ -65,16 +108,17 @@ export const SideNavContainer = styled('div')(
 )
 
 export const CustomNavbar = styled(Stack)(
-  ({ styled }: { styled: IThemeStyle }) => ({
+  ({ styled, device }: { styled: IThemeStyle, device: DeviceOptions }) => ({
     '& a.active': {
       backgroundColor: styled.active.primary,
     },
     '& a': {
       color: styled.text.primary,
     },
+    transition: '0.3s ease',
     backgroundColor: styled.background.primary,
     height: 70,
-    padding: '0 50px',
+    padding: device === 'mobile' ? '0 20px' : '0 50px',
   })
 )
 

@@ -1,22 +1,15 @@
 import { NavLink } from 'react-router-dom'
 import { sideNav } from '../layouts/constant'
 import useTheme from 'hooks/useTheme'
-import { CustomSideNav, SideNavContainer } from 'styles'
-import useConfig from 'hooks/useConfig'
+import { CustomBottomNav } from 'styles'
 import useLanguage from 'hooks/useLanguage'
 
-const Sidebar = () => {
+const Bottombar = () => {
   const { theme } = useTheme()
   const { language } = useLanguage()
-  const { sidebar } = useConfig()
 
   return (
-    <SideNavContainer open={sidebar}>
-      <CustomSideNav
-        direction='column'
-        justifyContent='space-around'
-        alignItems='start'
-        className='side-nav'
+      <CustomBottomNav
         styled={theme}
       >
         {sideNav.map((nav, index) => (
@@ -25,9 +18,8 @@ const Sidebar = () => {
             <span>{language[nav.title] || nav.title}</span>
           </NavLink>
         ))}
-      </CustomSideNav>
-    </SideNavContainer>
+      </CustomBottomNav>
   )
 }
 
-export default Sidebar
+export default Bottombar

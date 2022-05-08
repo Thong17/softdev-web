@@ -5,11 +5,32 @@ import Profile from './Profile'
 import { CustomNavbar } from 'styles'
 import useConfig from 'hooks/useConfig'
 import { CustomMenubar, ListNavbar } from 'styles'
+import useWeb from 'hooks/useWeb'
+
+export const MenuBar = ({ theme, open, toggleSidebar }) => {
+  return (
+    <CustomMenubar
+      styled={theme}
+      open={open}
+      onClick={() => toggleSidebar()}
+    >
+      <div></div>
+      <div></div>
+      <div></div>
+    </CustomMenubar>
+  )
+}
 
 const Navbar = ({ children }) => {
   const { user } = useAuth()
   const { theme } = useTheme()
   const { toggleSidebar, sidebar } = useConfig()
+  const { device } = useWeb()
+
+  const toggleNavbar = () => {
+    console.log('toggle');
+    
+  }
 
   return (
     <CustomNavbar
@@ -17,13 +38,22 @@ const Navbar = ({ children }) => {
       alignItems='center'
       justifyContent='space-between'
       styled={theme}
+      device={device}
     >
-      <CustomMenubar styled={theme} open={sidebar} onClick={() => toggleSidebar()}>
-        <div></div>
-        <div></div>
-        <div></div>
-      </CustomMenubar>
-      <ListNavbar>{children}</ListNavbar>
+      {device === 'mobile' ? (
+        <MenuBar
+          theme={theme}
+          open={false}
+          toggleSidebar={toggleNavbar}
+        ></MenuBar>
+      ) : (
+        <MenuBar
+          theme={theme}
+          open={sidebar}
+          toggleSidebar={toggleSidebar}
+        ></MenuBar>
+      )}
+      {device !== 'mobile' && <ListNavbar>{children}</ListNavbar>}
       {user ? (
         <Profile username={user.username} picture={user.photo} />
       ) : (

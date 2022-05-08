@@ -6,6 +6,7 @@ import Navbar from 'components/shared/Navbar'
 import useTheme from 'hooks/useTheme'
 import useConfig from 'hooks/useConfig'
 import useWeb from 'hooks/useWeb'
+import Bottombar from 'components/shared/Bottombar'
 
 const WrapContainer = styled('div')({
   height: '100vh',
@@ -26,22 +27,28 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
   const { device } = useWeb()
 
   const SIDEBAR_WIDTH = sidebar ? 266 : 86
-  
+
   return (
     <div
       style={{
         background: theme.background.primary,
         fontFamily: theme.font.family,
         fontWeight: theme.font.weight,
-        fontSize: `${theme.responsive?.[device]?.textSize}px !important`
       }}
     >
-      {device !== 'mobile' && <Sidebar></Sidebar>}
+      {device === 'mobile' || device === 'tablet' ? (
+        <Bottombar></Bottombar>
+      ) : (
+        <Sidebar></Sidebar>
+      )}
       <WrapContainer
         style={{
-          marginLeft: device !== 'mobile' ? SIDEBAR_WIDTH : '0',
+          marginLeft:
+            device === 'laptop' || device === 'desktop' ? SIDEBAR_WIDTH : '0',
           width:
-            device !== 'mobile' ? `calc(100% - ${SIDEBAR_WIDTH}px)` : '100%',
+            device === 'laptop' || device === 'desktop'
+              ? `calc(100% - ${SIDEBAR_WIDTH}px)`
+              : '100%',
         }}
       >
         <Navbar>{navbar}</Navbar>
