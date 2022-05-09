@@ -9,14 +9,17 @@ import useWeb from 'hooks/useWeb'
 import Bottombar from 'components/shared/Bottombar'
 
 const WrapContainer = styled('div')({
-  height: '100vh',
+  position: 'relative',
+  height: '100%',
   transition: '0.3s ease',
 })
 
 const ContentContainer = styled('div')({
   width: '100%',
-  minHeight: 'calc(100% - 120px)',
+  minHeight: 'calc(100vh - 140px)',
 })
+
+const NAVBAR_HEIGHT = 70
 interface ILayout {
   navbar?: ReactElement
 }
@@ -34,6 +37,7 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
         background: theme.background.primary,
         fontFamily: theme.font.family,
         fontWeight: theme.font.weight,
+        fontSize: theme.responsive[device].textSize,
       }}
     >
       {device === 'mobile' || device === 'tablet' ? (
@@ -56,6 +60,7 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
           style={{
             backgroundColor: theme.background.secondary,
             color: theme.text.primary,
+            paddingTop: NAVBAR_HEIGHT,
           }}
         >
           {children}

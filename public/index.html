@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
@@ -46,4 +46,12 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script>
+    let prevScroll = 0
+    window.addEventListener('scroll', () => {
+      let scrollY = window.scrollY
+      document.querySelector('.navbar').classList.toggle('active', scrollY > prevScroll)
+      prevScroll = scrollY
+    })
+  </script>
 </html>

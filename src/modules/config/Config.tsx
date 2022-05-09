@@ -2,7 +2,6 @@ import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import { Layout } from 'components/layouts/Layout'
 import Container from 'components/shared/Container'
-import { Typography } from '@mui/material'
 import { themeMode } from 'contexts/theme/constant'
 import { languages } from 'contexts/language/constant'
 import { CustomSelect } from 'styles'
@@ -15,10 +14,10 @@ const Config = () => {
   return (
     <Layout>
       <Container>
-        <Typography>
+        <p>
           This is a {mode} mode theme with {language.TEST} language custom
           palette
-        </Typography>
+        </p>
       </Container>
       <CustomSelect
         size="small"

@@ -23,6 +23,7 @@ const ThemesProvider = ({ children }) => {
   }, [user])
 
   const theme = useMemo<IThemeStyle>(() => {
+    document.body.style.backgroundColor = themeMode[mode]?.background?.primary
     return { ...themeMode[mode], ...themeStyle }
   }, [mode])
 

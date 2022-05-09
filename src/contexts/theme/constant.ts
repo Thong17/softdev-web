@@ -25,6 +25,7 @@ export const themeMode = {
         '0 1px 3px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important',
       inset:
         '0 0 0 3px hsla(0, 0%, 100%, 0), 0 0 0 4px hsla(0, 0%, 83.9%, 0), inset 0 2px 2px 0 rgba(0, 0, 0, .2)',
+      bottom: '0 5px 5px rgba(0, 0, 0, 0.18) !important',
     },
   },
   light: {
@@ -42,7 +43,7 @@ export const themeMode = {
     },
     border: {
       primary: '1px solid rgba(0, 0, 0, 0.5)',
-      secondary: '1px solid rgba(0, 0, 0, 0.1)'
+      secondary: '1px solid rgba(0, 0, 0, 0.1)',
     },
     shadow: {
       container:
@@ -53,6 +54,7 @@ export const themeMode = {
         '0 1px 3px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important',
       inset:
         '0 0 0 3px hsla(0, 0%, 100%, 0), 0 0 0 4px hsla(0, 0%, 83.9%, 0), inset 0 2px 2px 0 rgba(0, 0, 0, .2)',
+      bottom: '0 5px 5px rgba(0, 0, 0, 0.18) !important',
     },
   },
   dark: {
@@ -81,6 +83,7 @@ export const themeMode = {
         '0 1px 3px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important',
       inset:
         '0 0 0 3px hsla(0, 0%, 100%, 0), 0 0 0 4px hsla(0, 0%, 83.9%, 0), inset 0 2px 2px 0 rgba(0, 0, 0, .2)',
+      bottom: '0 5px 5px rgba(0, 0, 0, 0.18) !important',
     },
   },
 }
@@ -98,16 +101,16 @@ export const themeStyle = {
   },
   responsive: {
     mobile: {
-      textSize: 11
+      textSize: 14,
     },
     tablet: {
-      textSize: 13
+      textSize: 16,
     },
     laptop: {
-      textSize: 13
+      textSize: 16,
     },
     desktop: {
-      textSize: 13
-    }
-  }
+      textSize: 16,
+    },
+  },
 }

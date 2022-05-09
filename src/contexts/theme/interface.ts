@@ -21,7 +21,8 @@ export interface IThemeMode {
     container: string,
     primary: string,
     secondary: string,
-    inset: string
+    inset: string,
+    bottom: string
   }
 }
 
