@@ -232,7 +232,7 @@ export const CustomNavbar = styled(Stack)(
   })
 )
 
-export const ColumnNavbar = styled('div')({
+export const RowNavbar = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'start',
@@ -241,7 +241,7 @@ export const ColumnNavbar = styled('div')({
   height: '90%',
 })
 
-export const RowNavbar = styled('div')(
+export const NavbarContainer = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
     display: 'flex',
     flexDirection: 'column',

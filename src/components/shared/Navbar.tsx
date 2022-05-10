@@ -6,12 +6,13 @@ import useConfig from 'hooks/useConfig'
 import {
   CustomMenubar,
   ListNavbar,
-  ColumnNavbar,
-  CustomNavbar,
   RowNavbar,
+  CustomNavbar,
+  NavbarContainer,
 } from 'styles'
+import Dialog from './Dialog'
 import useWeb from 'hooks/useWeb'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Footer from './Footer'
 
 export const MenuBar = ({ theme, open, toggleSidebar }) => {
@@ -30,10 +31,26 @@ const Navbar = ({ children }) => {
   const { theme } = useTheme()
   const { toggleSidebar, sidebar } = useConfig()
   const { device } = useWeb()
+  const navRef = useRef(null)
 
-  const toggleNavbar = () => {
-    setNavbar(!navbar)
+  const openNavbar = () => {
+    setNavbar(true)
   }
+
+  const closeNavbar = (event, ref) => {
+    !ref?.current?.contains(event.target) && setNavbar(false)
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', (event) =>
+      closeNavbar(event, navRef)
+    )
+    return () => {
+      document.removeEventListener('mousedown', (event) =>
+        closeNavbar(event, navRef)
+      )
+    }
+  }, [])
 
   return (
     <CustomNavbar
@@ -51,7 +68,7 @@ const Navbar = ({ children }) => {
         <MenuBar
           theme={theme}
           open={navbar}
-          toggleSidebar={toggleNavbar}
+          toggleSidebar={openNavbar}
         ></MenuBar>
       ) : (
         <MenuBar
@@ -61,12 +78,16 @@ const Navbar = ({ children }) => {
         ></MenuBar>
       )}
       {device === 'mobile' ? (
-        <RowNavbar styled={theme} style={{ height: navbar ? '50%' : 0 }}>
-          <ColumnNavbar>
-            {children}
-          </ColumnNavbar>
-          <Footer></Footer>
-        </RowNavbar>
+        <Dialog display={navbar}>
+          <NavbarContainer
+            ref={navRef}
+            styled={theme}
+            style={{ height: navbar ? '50%' : 0 }}
+          >
+            <RowNavbar>{children}</RowNavbar>
+            <Footer></Footer>
+          </NavbarContainer>
+        </Dialog>
       ) : (
         <ListNavbar>{children}</ListNavbar>
       )}
