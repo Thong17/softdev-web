@@ -30,6 +30,7 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
   const { device } = useWeb()
 
   const SIDEBAR_WIDTH = sidebar ? 266 : 86
+  const SPACE_TOP = device !== 'mobile' ? 20 : 10
 
   return (
     <div
@@ -60,7 +61,7 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
           style={{
             position: 'relative',
             color: theme.text.primary,
-            paddingTop: NAVBAR_HEIGHT + 30,
+            paddingTop: NAVBAR_HEIGHT + SPACE_TOP,
           }}
         >
           {children}
