@@ -213,10 +213,13 @@ export const CustomNavbar = styled(Stack)(
     sidebar: number
   }) => ({
     '&.active': {
-      transform: 'translateY(-100%)'
+      transform: 'translateY(-100%)',
+    },
+    '&.scrolling': {
+      boxShadow: styled.shadow.bottom,
     },
     '& a.active': {
-      color: styled.active.secondary,
+      backgroundColor: styled.active.secondary,
     },
     '& a': {
       color: styled.text.primary,
@@ -265,3 +268,39 @@ export const NavbarContainer = styled('div')(
     }
   })
 )
+
+export const Breadcrumbs = styled('div')(({ styled }: { styled: IThemeStyle }) => ({
+  width: 'fit-content',
+  display: 'flex',
+  alignItems: 'center',
+  '& *': {
+    margin: 0
+  },
+  '& div': {
+    display: 'flex'
+  },
+  '& div a:nth-of-type(n+2)': {
+    position: 'relative',
+  },
+  '& div a:nth-of-type(n+2)::before': {
+    content: '""',
+    position: 'absolute',
+    left: -6,
+    bottom: 5,
+    color: styled.text.secondary,
+    width: 7,
+    height: 7,
+    borderTop: styled.border.primary,
+    borderRight: styled.border.primary,
+    transform: 'rotate(45deg)'
+  },
+  '& div a': {
+    textDecoration: 'none',
+    color: styled.text.primary,
+    padding: '0px 20px',
+  },
+  '& span': {
+    paddingRight: 20,
+    borderRight: styled.border.primary
+  }
+}))

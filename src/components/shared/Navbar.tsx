@@ -31,26 +31,23 @@ const Navbar = ({ children }) => {
   const { theme } = useTheme()
   const { toggleSidebar, sidebar } = useConfig()
   const { device } = useWeb()
-  const navRef = useRef(null)
+  const navRef = useRef<HTMLDivElement>(document.createElement("div"))
 
   const openNavbar = () => {
     setNavbar(true)
   }
 
-  const closeNavbar = (event, ref) => {
-    !ref?.current?.contains(event.target) && setNavbar(false)
+  const closeNavbar = (event) => {
+    !navRef.current.contains(event.target) && setNavbar(false)
   }
 
   useEffect(() => {
-    document.addEventListener('mousedown', (event) =>
-      closeNavbar(event, navRef)
-    )
+    navbar && 
+      document.addEventListener('mousedown', closeNavbar)
     return () => {
-      document.removeEventListener('mousedown', (event) =>
-        closeNavbar(event, navRef)
-      )
+      document.removeEventListener('mousedown', closeNavbar)
     }
-  }, [])
+  }, [navbar])
 
   return (
     <CustomNavbar

@@ -16,7 +16,7 @@ const WrapContainer = styled('div')({
 
 const ContentContainer = styled('div')({
   width: '100%',
-  minHeight: 'calc(100vh - 140px)',
+  minHeight: 'calc(100vh - 170px)',
 })
 
 const NAVBAR_HEIGHT = 70
@@ -58,9 +58,9 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
         <Navbar>{navbar}</Navbar>
         <ContentContainer
           style={{
-            backgroundColor: theme.background.secondary,
+            position: 'relative',
             color: theme.text.primary,
-            paddingTop: NAVBAR_HEIGHT,
+            paddingTop: NAVBAR_HEIGHT + 30,
           }}
         >
           {children}

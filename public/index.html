@@ -50,6 +50,7 @@
     let prevScroll = 0
     window.addEventListener('scroll', () => {
       let scrollY = window.scrollY
+      document.querySelector('.navbar').classList.toggle('scrolling', scrollY > 0)
       document.querySelector('.navbar').classList.toggle('active', scrollY > prevScroll)
       prevScroll = scrollY
     })

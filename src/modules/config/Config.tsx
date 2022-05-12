@@ -18,39 +18,39 @@ const Config = () => {
           This is a {mode} mode theme with {language.TEST} language custom
           palette
         </p>
+        <CustomSelect
+          size='small'
+          styled={theme}
+          onChange={(event) => {
+            changeTheme(event.target.value)
+          }}
+          value={mode}
+        >
+          {Object.keys(themeMode).map((key, index) => {
+            return (
+              <MenuItem key={index} value={key}>
+                {key}
+              </MenuItem>
+            )
+          })}
+        </CustomSelect>
+        <CustomSelect
+          size='small'
+          styled={theme}
+          onChange={(event) => {
+            changeLanguage(event.target.value)
+          }}
+          value={lang}
+        >
+          {Object.keys(languages).map((key, index) => {
+            return (
+              <MenuItem key={index} value={key}>
+                {key}
+              </MenuItem>
+            )
+          })}
+        </CustomSelect>
       </Container>
-      <CustomSelect
-        size="small"
-        styled={theme}
-        onChange={(event) => {
-          changeTheme(event.target.value)
-        }}
-        value={mode}
-      >
-        {Object.keys(themeMode).map((key, index) => {
-          return (
-            <MenuItem key={index} value={key}>
-              {key}
-            </MenuItem>
-          )
-        })}
-      </CustomSelect>
-      <CustomSelect
-        size="small"
-        styled={theme}
-        onChange={(event) => {
-          changeLanguage(event.target.value)
-        }}
-        value={lang}
-      >
-        {Object.keys(languages).map((key, index) => {
-          return (
-            <MenuItem key={index} value={key}>
-              {key}
-            </MenuItem>
-          )
-        })}
-      </CustomSelect>
     </Layout>
   )
 }
