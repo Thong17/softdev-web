@@ -6,7 +6,7 @@ export const Axios = async ({method, url, body}: IAxiosProps): Promise<AxiosResp
   const token = window.localStorage.getItem('x-access-token') || ''
   const ts = Date.now().toString()
   const hash = await generateHash(ts, token, body)
-  const API_HOST = 'http://192.168.1.2:3030'
+  const API_HOST = 'http://localhost:3030'
 
   const response = await axios({
     method,

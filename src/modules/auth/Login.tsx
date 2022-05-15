@@ -4,31 +4,43 @@ import { loginSchema } from './schema'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
 import { useLocation, useNavigate } from 'react-router'
-
+import { TextInput } from 'components/shared/form'
 
 export const Login = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(loginSchema) })
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(loginSchema) })
   const { login } = useAuth()
   const { notify } = useNotify()
 
   const form = async (data) => {
     const response: any = await login(data)
     if (response?.code !== 'SUCCESS') return notify(response?.msg, 'error')
-    navigate(location.state ? location.state as string : '/admin')
+    navigate(location.state ? (location.state as string) : '/admin')
   }
 
   return (
     <div>
       <h1>Login</h1>
-      <form onSubmit={handleSubmit(form)} >
-        <input type="text" { ...register("username") } />
-        <p>{ errors.username?.message }</p>
-        <input type="password" { ...register("password") } />
-        <p>{ errors.password?.message }</p>
-        <input type="submit" value="Login"  />
+      <form onSubmit={handleSubmit(form)}>
+        <TextInput
+          label='Username'
+          type='text'
+          err={errors.username?.message}
+          {...register('username')}
+        />
+        <TextInput
+          label='Password'
+          type='password'
+          err={errors.password?.message}
+          {...register('password')}
+        />
+        <input type='submit' value='Login' />
       </form>
     </div>
-  );
+  )
 }

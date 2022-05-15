@@ -1,28 +1,36 @@
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
-import { ForwardRefRenderFunction, InputHTMLAttributes } from 'react'
+import { forwardRef, ForwardRefRenderFunction, InputHTMLAttributes } from 'react'
 import { CustomUpload } from 'styles'
 
 interface IUploadField extends InputHTMLAttributes<HTMLInputElement> {
   name?: string
   label?: string
   height?: string | number
+  err?: string,
+  value?: string
 }
 
-const FileInput: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
-  { name, label, height, ...props }
+const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
+  { name, label, err, height, value, ...props }, ref
 ) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+
   return (
     <CustomUpload styled={theme} device={device}>
-      <span className='label'>{label}</span>
-      <label htmlFor={name} style={{ height: height ? height : 35 }}>
-        <span>Drag & Drop</span>
+      <label htmlFor={name} className={ err && 'input-error' } style={{ height: height ? height : 35 }}>
+        {value ? <img src={value} alt={value} /> : <span>Drag & Drop</span>}
       </label>
-      <input type='file' name={name} id={name} {...props} />
+      <input ref={ref} type='file' name={name} id={name} {...props} />
+      <span className='label'>{label}</span>
+      <div className='err'>{err}</div>
     </CustomUpload>
   )
 }
 
-export default FileInput
+const FileInput = forwardRef(Input)
+
+export { FileInput }
+
+

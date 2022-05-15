@@ -4,7 +4,7 @@ import { Layout } from 'components/layouts/Layout'
 import Container from 'components/shared/Container'
 import { themeMode } from 'contexts/theme/constant'
 import { languages } from 'contexts/language/constant'
-import SelectInput from 'components/shared/form/SelectField'
+import { SelectInput } from 'components/shared/form'
 
 const Config = () => {
   const { changeTheme, mode } = useTheme()

@@ -57,6 +57,12 @@ export interface IThemeStyle extends IThemeMode {
     family: string
     weight: number
   }
+  color: {
+    error: string,
+    success: string,
+    info: string,
+    warning: string
+  },
   responsive: {
     mobile: {
       text: TextOptions

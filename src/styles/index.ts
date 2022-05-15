@@ -301,7 +301,7 @@ export const Breadcrumbs = styled('div')(
 export const CustomInput = styled('div')(
   ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
     position: 'relative',
-    padding: '30px 0 10px 0',
+    padding: '30px 0 20px 0',
     overflow: 'hidden',
     '& input': {
       position: 'relative',
@@ -335,6 +335,12 @@ export const CustomInput = styled('div')(
           appearance: 'none',
         },
     },
+    '& input.input-error': {
+      borderColor: styled.color.error,
+      '& ~ .err, & ~ label': {
+        color: styled.color.error
+      }
+    },
     '& label': {
       transition: '0.2s ease',
       position: 'absolute',
@@ -343,25 +349,32 @@ export const CustomInput = styled('div')(
       left: '14px',
       fontSize: styled.responsive[device]?.text.primary,
       color: styled.text.quaternary,
+      userSelect: 'none'
     },
+    '& .err': {
+      position: 'absolute',
+      left: 7,
+      fontSize: styled.responsive[device]?.text.quaternary,
+    }
   })
 )
 
 export const CustomUpload = styled('div')(
   ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
-    padding: '30px 0 10px 0',
+    padding: '30px 0 20px 0',
     position: 'relative',
     minWidth: 130,
-    '& span.label': {
+    '& .label': {
       fontSize: styled.responsive[device].text.quaternary,
       color: styled.text.tertiary,
       position: 'absolute',
       cursor: 'text',
       top: '15px',
       left: '6px',
+      userSelect: 'none'
     },
     '& label': {
-      color: 'blue',
+      color: styled.text.tertiary,
       backgroundColor: 'transparent',
       width: 'calc(100% - 28px)',
       display: 'flex',
@@ -373,19 +386,30 @@ export const CustomUpload = styled('div')(
       padding: '0 13px',
       cursor: 'pointer',
     },
+    '& label.input-error': {
+      borderColor: styled.color.error,
+      '& ~ .err, & ~ .label': {
+        color: styled.color.error
+      }
+    },
     '& label span': {
       alignSelf: 'center',
     },
     '& input': {
       display: 'none',
     },
+    '& .err': {
+      position: 'absolute',
+      left: 7,
+      fontSize: styled.responsive[device]?.text.quaternary,
+    }
   })
 )
 
 export const CustomSelect = styled('div')(
   ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
     minWidth: 130,
-    padding: '30px 0 10px 0',
+    padding: '30px 0 20px 0',
     position: 'relative',
     '& label': {
       transition: '0.2s ease',
@@ -394,7 +418,13 @@ export const CustomSelect = styled('div')(
       top: '15px',
       left: '6px',
       fontSize: styled.responsive[device]?.text.quaternary,
-      color: styled.text.quaternary,
+      color: styled.text.tertiary,
+      userSelect: 'none'
+    },
+    '& .MuiSelect-select, & .MuiList-root li': {
+      fontFamily: `${styled.font.family} !important`,
+      fontWeight: `${styled.font.weight} !important`,
+      fontSize: `${styled.responsive[device].text.primary} !important`,
     },
     '& div': {
       textTransform: 'capitalize',
@@ -406,7 +436,7 @@ export const CustomSelect = styled('div')(
         padding: '0 13px',
         display: 'flex',
         alignItems: 'center',
-        border: styled.border.tertiary,
+        border: styled.border.tertiary
       },
       '& div:hover, & div:focus': {
         border: styled.border.secondary,
@@ -417,6 +447,19 @@ export const CustomSelect = styled('div')(
       '& svg': {
         color: styled.text.quaternary,
       },
+    },
+    '& div.input-error': {
+      '& div': {
+        borderColor: styled.color.error
+      },
+      '& ~ label, & ~ .err': {
+        color: styled.color.error
+      }
+    },
+    '& .err': {
+      position: 'absolute',
+      left: 7,
+      fontSize: styled.responsive[device]?.text.quaternary,
     }
   })
 )

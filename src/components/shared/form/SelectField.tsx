@@ -1,30 +1,41 @@
 import { MenuItem, Select, SelectProps } from '@mui/material'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
-import { FC } from 'react'
+import { forwardRef, InputHTMLAttributes, ForwardRefRenderFunction } from 'react'
 import { CustomSelect } from 'styles'
 
 interface IOptions {
   value: any
   label: string
+  selected?: boolean
 }
 
 interface ISelectField extends SelectProps {
   options: Array<IOptions>
   name?: string
   label?: string
+  err?: string
 }
 
-const SelectInput: FC<ISelectField> = ({ options, name, label, ...props }) => {
+
+const Input: ForwardRefRenderFunction<InputHTMLAttributes<HTMLInputElement>, ISelectField> = ({ options, name, label, err, ...props }, ref) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   return (
     <CustomSelect styled={theme} device={device}>
-      <label htmlFor={name}>{label}</label>
       <Select
+        ref={ref}
         id={name}
         name={name}
-        MenuProps={{ sx: { '& .MuiPaper-root': { backgroundColor: theme.background.primary, color: theme.text.primary } } }}
+        className={ err && 'input-error' }
+        MenuProps={{
+          sx: {
+            '& .MuiPaper-root': {
+              backgroundColor: theme.background.primary,
+              color: theme.text.primary,
+            },
+          },
+        }}
         {...props}
       >
         {options.map((item, index) => {
@@ -35,8 +46,11 @@ const SelectInput: FC<ISelectField> = ({ options, name, label, ...props }) => {
           )
         })}
       </Select>
+      <label htmlFor={name}>{label}</label>
+      <div className="err">{err}</div>
     </CustomSelect>
   )
 }
 
-export default SelectInput
+const SelectInput = forwardRef(Input)
+export { SelectInput }

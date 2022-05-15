@@ -1,10 +1,9 @@
 import useNotify from 'hooks/useNotify'
 import AdminBreadcrumbs from '../components/Breadcrumbs'
 import Container from 'components/shared/Container'
-import TextInput from 'components/shared/form/InputField'
-import FileInput from 'components/shared/form/UploadField'
-import SelectInput from 'components/shared/form/SelectField'
+import { SelectInput, TextInput, FileInput } from 'components/shared/form'
 import useWeb from 'hooks/useWeb'
+import { Button } from '@mui/material'
 
 export const Role = () => {
   const { notify } = useNotify()
@@ -43,14 +42,14 @@ export const Role = () => {
           gridTemplateAreas:
             device !== 'mobile'
               ? ` 
-                                'text text number' 
-                                'email password password'
+                                'select text number' 
+                                'email password date'
                                 'file file file'
 
                               `
               : ` 
-                                'text text text' 
-                                'number number number'
+                                'select text text' 
+                                'number number date'
                                 'email email email'
                                 'password password password'
                                 'file file file'
@@ -58,28 +57,40 @@ export const Role = () => {
         }}
       >
         <div style={{ gridArea: 'select' }}>
-          <SelectInput onChange={() => console.log('hello')} options={[{ label: 'Test', value: 4 }]} />
+          <SelectInput
+            onChange={(event) => console.log(event.target.value)}
+            options={[{ label: 'Nine', value: 9, selected: true }, { label: 'Test', value: 4 }]}
+            label='Gender'
+            defaultValue=''
+          />
         </div>
         <div style={{ gridArea: 'text' }}>
           <TextInput
-            onChange={(event) => console.log(event)}
+            onChange={(event) => console.log(event.target.value)}
             type='text'
             label='Test'
+            err='You are not allowed'
           />
         </div>
+        <div style={{ gridArea: 'date' }}>
+          <TextInput type='date' label='Date' onChange={(event) => console.log(event.target.value)} />
+        </div>
         <div style={{ gridArea: 'number' }}>
-          <TextInput type='number' label='Number' />
+          <TextInput type='number' label='Number' onChange={(event) => console.log(event.target.value)} />
         </div>
         <div style={{ gridArea: 'email' }}>
-          <TextInput type='email' label='Email' />
+          <TextInput type='email' label='Email' onChange={(event) => console.log(event.target.value)} />
         </div>
         <div style={{ gridArea: 'password' }}>
-          <TextInput type='password' label='Password' />
+          <TextInput type='password' label='Password' onChange={(event) => console.log(event.target.value)} />
         </div>
         <div style={{ gridArea: 'file' }}>
-          <FileInput label='File' name='file1' height={100} />
+          <FileInput label='Upload' name='file1' height={100} onChange={(event) => console.log(event.target.files)} />
         </div>
+        
       </div>
+      <div><Button variant='contained'>Button</Button></div>
+
     </Container>
   )
 }

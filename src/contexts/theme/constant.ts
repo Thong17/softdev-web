@@ -123,6 +123,12 @@ export const themeStyle = {
     family: `-apple-system, BlinkMacSystemFont, 'Open Sans', 'Helvetica Neue', sans-serif`,
     weight: 300,
   },
+  color: {
+    error: '#d32f2fee',
+    success: '#43a047ee',
+    info: '#2196f3ee',
+    warning: '#ff9800ee',
+  },
   responsive: {
     mobile: {
       text: {
