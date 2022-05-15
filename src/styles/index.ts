@@ -1,13 +1,13 @@
 import { styled } from '@mui/system'
-import { Button, Select, Stack } from '@mui/material'
+import { Button, Stack } from '@mui/material'
 import { IThemeMode, IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
-import { NAVBAR_HEIGHT } from './constant'
+import { NAVBAR_HEIGHT, INPUT_HEIGHT } from './constant'
 
 export const CustomBottomNav = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
     width: '100%',
-    height: NAVBAR_HEIGHT,
+    height: NAVBAR_HEIGHT - 20,
     backgroundColor: styled.background.primary,
     display: 'flex',
     justifyContent: 'space-evenly',
@@ -18,7 +18,7 @@ export const CustomBottomNav = styled('div')(
     zIndex: 1000,
     '& a': {
       position: 'relative',
-      padding: 9,
+      padding: 5,
       borderRadius: styled.radius.primary,
       color: styled.text.primary,
       transition: '0.3s ease',
@@ -121,15 +121,6 @@ export const CustomFooter = styled(Stack)(
   })
 )
 
-export const CustomSelect = styled(Select)(
-  ({ styled }: { styled: IThemeMode }) => ({
-    textTransform: 'capitalize',
-    backgroundColor: styled.background.secondary,
-    color: styled.text.primary,
-    border: styled.border.secondary,
-  })
-)
-
 export const CustomProfile = styled(Button)(
   ({ styled }: { styled: IThemeStyle }) => ({
     backgroundColor: styled.background.primary,
@@ -137,7 +128,7 @@ export const CustomProfile = styled(Button)(
     display: 'flex',
     padding: '5px 13px 5px 5px',
     borderRadius: styled.radius.rounded,
-    border: styled.border.secondary,
+    border: styled.border.tertiary,
     alignItems: 'center',
     textTransform: 'none',
     '& img,div': {
@@ -174,7 +165,7 @@ export const CustomMenubar = styled('div')(
     justifyContent: 'space-evenly',
     flexDirection: 'column',
     alignItems: 'center',
-    border: styled.border.secondary,
+    border: styled.border.tertiary,
     borderRadius: styled.radius.primary,
     cursor: 'pointer',
     '& div': {
@@ -265,42 +256,167 @@ export const NavbarContainer = styled('div')(
     },
     '& div a:hover': {
       backgroundColor: styled.active.secondary,
-    }
+    },
   })
 )
 
-export const Breadcrumbs = styled('div')(({ styled }: { styled: IThemeStyle }) => ({
-  width: 'fit-content',
-  display: 'flex',
-  alignItems: 'center',
-  '& *': {
-    margin: 0
-  },
-  '& div': {
-    display: 'flex'
-  },
-  '& div a:nth-of-type(n+2)': {
+export const Breadcrumbs = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    width: 'fit-content',
+    display: 'flex',
+    alignItems: 'center',
+    '& *': {
+      margin: 0,
+    },
+    '& div': {
+      display: 'flex',
+    },
+    '& div a:nth-of-type(n+2)': {
+      position: 'relative',
+    },
+    '& div a:nth-of-type(n+2)::before': {
+      content: '""',
+      position: 'absolute',
+      left: -6,
+      bottom: 5,
+      color: styled.text.secondary,
+      width: 7,
+      height: 7,
+      borderTop: styled.border.primary,
+      borderRight: styled.border.primary,
+      transform: 'rotate(45deg)',
+    },
+    '& div a': {
+      textDecoration: 'none',
+      color: styled.text.primary,
+      padding: '0px 20px',
+    },
+    '& span': {
+      paddingRight: 20,
+      borderRight: styled.border.primary,
+    },
+  })
+)
+
+export const CustomInput = styled('div')(
+  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
     position: 'relative',
-  },
-  '& div a:nth-of-type(n+2)::before': {
-    content: '""',
-    position: 'absolute',
-    left: -6,
-    bottom: 5,
-    color: styled.text.secondary,
-    width: 7,
-    height: 7,
-    borderTop: styled.border.primary,
-    borderRight: styled.border.primary,
-    transform: 'rotate(45deg)'
-  },
-  '& div a': {
-    textDecoration: 'none',
-    color: styled.text.primary,
-    padding: '0px 20px',
-  },
-  '& span': {
-    paddingRight: 20,
-    borderRight: styled.border.primary
-  }
-}))
+    padding: '30px 0 10px 0',
+    overflow: 'hidden',
+    '& input': {
+      position: 'relative',
+      zIndex: 10,
+      backgroundColor: 'transparent',
+      boxSizing: 'border-box',
+      color: styled.text.primary,
+      width: '100%',
+      border: styled.border.tertiary,
+      height: INPUT_HEIGHT,
+      borderRadius: styled.radius.primary,
+      padding: '0 13px',
+      outline: 'none !important',
+      boxShadow: 'none',
+      transition: '0.3s ease',
+      fontFamily: `${styled.font.family} !important`,
+      fontWeight: `${styled.font.weight} !important`,
+      fontSize: `${styled.responsive[device].text.primary} !important`,
+      '&:hover, &:focus': {
+        border: styled.border.secondary,
+      },
+      '&:focus ~ label, &:not(:placeholder-shown) ~ label': {
+        transform: 'translate(-8px, -24px)',
+        width: 'max-content',
+        backgroundColor: 'inherit',
+        fontSize: styled.responsive[device].text.quaternary,
+        color: styled.text.tertiary,
+      },
+      '&[type=number]::-webkit-inner-spin-button, &[type=number]::-webkit-outer-spin-button':
+        {
+          appearance: 'none',
+        },
+    },
+    '& label': {
+      transition: '0.2s ease',
+      position: 'absolute',
+      cursor: 'text',
+      top: '39px',
+      left: '14px',
+      fontSize: styled.responsive[device]?.text.primary,
+      color: styled.text.quaternary,
+    },
+  })
+)
+
+export const CustomUpload = styled('div')(
+  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
+    padding: '30px 0 10px 0',
+    position: 'relative',
+    minWidth: 130,
+    '& span.label': {
+      fontSize: styled.responsive[device].text.quaternary,
+      color: styled.text.tertiary,
+      position: 'absolute',
+      cursor: 'text',
+      top: '15px',
+      left: '6px',
+    },
+    '& label': {
+      color: 'blue',
+      backgroundColor: 'transparent',
+      width: 'calc(100% - 28px)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItem: 'center',
+      borderRadius: styled.radius.primary,
+      border: styled.border.tertiary,
+      borderStyle: 'dashed !important',
+      padding: '0 13px',
+      cursor: 'pointer',
+    },
+    '& label span': {
+      alignSelf: 'center',
+    },
+    '& input': {
+      display: 'none',
+    },
+  })
+)
+
+export const CustomSelect = styled('div')(
+  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
+    minWidth: 130,
+    padding: '30px 0 10px 0',
+    position: 'relative',
+    '& label': {
+      transition: '0.2s ease',
+      position: 'absolute',
+      cursor: 'text',
+      top: '15px',
+      left: '6px',
+      fontSize: styled.responsive[device]?.text.quaternary,
+      color: styled.text.quaternary,
+    },
+    '& div': {
+      textTransform: 'capitalize',
+      color: styled.text.primary,
+      width: '100%',
+      padding: 0,
+      '& div': {
+        minHeight: '35px !important',
+        padding: '0 13px',
+        display: 'flex',
+        alignItems: 'center',
+        border: styled.border.tertiary,
+      },
+      '& div:hover, & div:focus': {
+        border: styled.border.secondary,
+      },
+      '& fieldset': {
+        border: 'none',
+      },
+      '& svg': {
+        color: styled.text.quaternary,
+      },
+    }
+  })
+)

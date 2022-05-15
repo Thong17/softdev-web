@@ -4,11 +4,10 @@ import { Layout } from 'components/layouts/Layout'
 import Container from 'components/shared/Container'
 import { themeMode } from 'contexts/theme/constant'
 import { languages } from 'contexts/language/constant'
-import { CustomSelect } from 'styles'
-import MenuItem from '@mui/material/MenuItem'
+import SelectInput from 'components/shared/form/SelectField'
 
 const Config = () => {
-  const { changeTheme, mode, theme } = useTheme()
+  const { changeTheme, mode } = useTheme()
   const { changeLanguage, language, lang } = useLanguage()
 
   return (
@@ -18,38 +17,26 @@ const Config = () => {
           This is a {mode} mode theme with {language.TEST} language custom
           palette
         </p>
-        <CustomSelect
-          size='small'
-          styled={theme}
-          onChange={(event) => {
-            changeTheme(event.target.value)
-          }}
+        <SelectInput
+          name='select-theme'
+          label='Theme'
           value={mode}
-        >
-          {Object.keys(themeMode).map((key, index) => {
-            return (
-              <MenuItem key={index} value={key}>
-                {key}
-              </MenuItem>
-            )
+          defaultValue=''
+          onChange={(event) => changeTheme(event.target.value)}
+          options={Object.keys(themeMode).map((key) => {
+            return { label: key, value: key }
           })}
-        </CustomSelect>
-        <CustomSelect
-          size='small'
-          styled={theme}
-          onChange={(event) => {
-            changeLanguage(event.target.value)
-          }}
+        />
+        <SelectInput
+          name='select-language'
+          label='Language'
           value={lang}
-        >
-          {Object.keys(languages).map((key, index) => {
-            return (
-              <MenuItem key={index} value={key}>
-                {key}
-              </MenuItem>
-            )
+          defaultValue=''
+          onChange={(event) => changeLanguage(event.target.value)}
+          options={Object.keys(languages).map((key) => {
+            return { label: key, value: key }
           })}
-        </CustomSelect>
+        />
       </Container>
     </Layout>
   )

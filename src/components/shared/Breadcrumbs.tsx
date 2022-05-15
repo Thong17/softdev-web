@@ -1,6 +1,7 @@
 import useTheme from 'hooks/useTheme'
 import { Breadcrumbs } from 'styles'
 import { Link } from 'react-router-dom'
+import { FC } from 'react'
 
 export interface Stage {
   title?: string
@@ -8,13 +9,12 @@ export interface Stage {
   path?: string
 }
 
-const Breadcrumb = ({
-  stages,
-  title,
-}: {
+interface IBreadcrumb {
   stages: Array<Stage>
   title?: string
-}) => {
+}
+
+const Breadcrumb: FC<IBreadcrumb> = ({ stages, title }) => {
   const { theme } = useTheme()
 
   return (
@@ -29,7 +29,17 @@ const Breadcrumb = ({
                 {stage.icon}
               </Link>
             ) : (
-              <Link key={index} to={''} style={{ userSelect: 'none', cursor: 'default', color: theme.active.secondary }}>{stage.title}</Link>
+              <Link
+                key={index}
+                to={''}
+                style={{
+                  userSelect: 'none',
+                  cursor: 'default',
+                  color: theme.active.secondary,
+                }}
+              >
+                {stage.title}
+              </Link>
             )
           )}
       </div>

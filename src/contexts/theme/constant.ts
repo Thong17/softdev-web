@@ -3,18 +3,26 @@ export const themeMode = {
     background: {
       primary: 'rgb(14, 25, 40)',
       secondary: 'rgb(19, 47, 76)',
+      tertiary: '#555555',
+      quaternary: '#666666'
     },
     text: {
       primary: '#ffffff',
-      secondary: '#f3f3f3',
+      secondary: '#dddddd',
+      tertiary: '#bbbbbb',
+      quaternary: '#999999'
     },
     active: {
       primary: 'rgb(24, 67, 96)',
       secondary: 'rgb(29, 77, 106)',
+      tertiary: '#555555',
+      quaternary: '#666666'
     },
     border: {
       primary: '1px solid rgba(255, 255, 255, 0.5)',
-      secondary: '1px solid rgba(255, 255, 255, 0.1)',
+      secondary: '1px solid rgba(255, 255, 255, 0.3)',
+      tertiary: '1px solid rgba(255, 255, 255, 0.1)',
+      quaternary: '1px solid rgba(255, 255, 255, 0.1)'
     },
     shadow: {
       container:
@@ -32,18 +40,26 @@ export const themeMode = {
     background: {
       primary: '#ffffff',
       secondary: '#f3f3f3',
+      tertiary: '#eeeeee',
+      quaternary: '#dddddd'
     },
     text: {
       primary: '#000000',
       secondary: '#333333',
+      tertiary: '#555555',
+      quaternary: '#666666'
     },
     active: {
       primary: '#cccccc',
-      secondary: '#f9f9f9',
+      secondary: '#999999',
+      tertiary: '#555555',
+      quaternary: '#666666'
     },
     border: {
       primary: '1px solid rgba(0, 0, 0, 0.5)',
-      secondary: '1px solid rgba(0, 0, 0, 0.1)',
+      secondary: '1px solid rgba(0, 0, 0, 0.3)',
+      tertiary: '1px solid rgba(0, 0, 0, 0.1)',
+      quaternary: '1px solid rgba(0, 0, 0, 0.1)'
     },
     shadow: {
       container:
@@ -61,18 +77,26 @@ export const themeMode = {
     background: {
       primary: '#333333',
       secondary: '#444444',
+      tertiary: '#555555',
+      quaternary: '#666666'
     },
     text: {
       primary: '#ffffff',
-      secondary: '#f3f3f3',
+      secondary: '#cccccc',
+      tertiary: 'aaaaaa',
+      quaternary: '#777777'
     },
     active: {
       primary: '#cccccc',
       secondary: '#999999',
+      tertiary: '#777777',
+      quaternary: '#555555'
     },
     border: {
       primary: '1px solid rgba(255, 255, 255, 0.5)',
-      secondary: '1px solid rgba(255, 255, 255, 0.1)',
+      secondary: '1px solid rgba(255, 255, 255, 0.3)',
+      tertiary: '1px solid rgba(255, 255, 255, 0.1)',
+      quaternary: '1px solid rgba(255, 255, 255, 0.1)'
     },
     shadow: {
       container:
@@ -101,16 +125,56 @@ export const themeStyle = {
   },
   responsive: {
     mobile: {
-      textSize: 14,
+      text: {
+        primary: 14,
+        secondary: 13,
+        tertiary: 12,
+        quaternary: 11,
+        h5: 17,
+        h4: 19,
+        h3: 21,
+        h2: 23,
+        h1: 25
+      }
     },
     tablet: {
-      textSize: 16,
+      text: {
+        primary: 16,
+        secondary: 15,
+        tertiary: 14,
+        quaternary: 13,
+        h5: 19,
+        h4: 21,
+        h3: 23,
+        h2: 25,
+        h1: 27
+      }
     },
     laptop: {
-      textSize: 16,
+      text: {
+        primary: 16,
+        secondary: 15,
+        tertiary: 14,
+        quaternary: 13,
+        h5: 19,
+        h4: 21,
+        h3: 23,
+        h2: 25,
+        h1: 27
+      }
     },
     desktop: {
-      textSize: 16,
+      text: {
+        primary: 16,
+        secondary: 15,
+        tertiary: 14,
+        quaternary: 13,
+        h5: 19,
+        h4: 21,
+        h3: 23,
+        h2: 25,
+        h1: 27
+      }
     },
   },
 }

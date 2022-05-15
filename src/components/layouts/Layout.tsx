@@ -38,7 +38,7 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
         background: theme.background.primary,
         fontFamily: theme.font.family,
         fontWeight: theme.font.weight,
-        fontSize: theme.responsive[device].textSize,
+        fontSize: theme.responsive[device].text.primary,
       }}
     >
       {device === 'mobile' || device === 'tablet' ? (

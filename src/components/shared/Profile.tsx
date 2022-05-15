@@ -1,10 +1,15 @@
 import { Menu, MenuList } from '@mui/material'
 import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import { CustomProfile } from 'styles'
 
-const Profile = ({ username, picture }) => {
+interface IProfile {
+  username: string,
+  picture?: string
+}
+
+const Profile: FC<IProfile> = ({ username, picture }) => {
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const { logout } = useAuth()
   const { theme } = useTheme()

@@ -1,6 +1,11 @@
-import React from 'react'
+import { FC } from 'react'
 
-const Dialog = ({ display, children }: { display: boolean; children: any }) => {
+interface IDialog {
+  display: boolean
+  children: any
+}
+
+const Dialog: FC<IDialog> = ({ display, children }) => {
   return (
     <div
       style={
