@@ -10,10 +10,11 @@ import useWeb from 'hooks/useWeb'
 interface ITextInput extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
   err?: string
+  hint?: string
 }
 
 export const Input: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
-  { label, err, ...props },
+  { label, err, hint, ...props },
   ref
 ) => {
   const { theme } = useTheme()
@@ -30,6 +31,7 @@ export const Input: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
       />
       <label>{label}</label>
       <div className='err'>{err}</div>
+      <div className='hint'>{hint}</div>
     </CustomInput>
   )
 }

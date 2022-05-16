@@ -3,7 +3,7 @@ import React from 'react'
 import StoreBreadcrumbs from '../components/Breadcrumbs'
 
 const Header = () => {
-    return <><StoreBreadcrumbs page='category' title='Category' /></>
+    return <><StoreBreadcrumbs page='category' /></>
 }
 
 export const Category = () => {

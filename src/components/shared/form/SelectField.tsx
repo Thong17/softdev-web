@@ -15,10 +15,11 @@ interface ISelectField extends SelectProps {
   name?: string
   label?: string
   err?: string
+  hint?: string
 }
 
 
-const Input: ForwardRefRenderFunction<InputHTMLAttributes<HTMLInputElement>, ISelectField> = ({ options, name, label, err, ...props }, ref) => {
+const Input: ForwardRefRenderFunction<InputHTMLAttributes<HTMLInputElement>, ISelectField> = ({ options, name, label, err, hint, ...props }, ref) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   return (
@@ -48,6 +49,8 @@ const Input: ForwardRefRenderFunction<InputHTMLAttributes<HTMLInputElement>, ISe
       </Select>
       <label htmlFor={name}>{label}</label>
       <div className="err">{err}</div>
+      <div className="hint">{hint}</div>
+
     </CustomSelect>
   )
 }

@@ -351,6 +351,15 @@ export const CustomInput = styled('div')(
       color: styled.text.quaternary,
       userSelect: 'none'
     },
+    '& .hint': {
+      fontSize: styled.responsive[device].text.quaternary,
+      color: styled.color.info,
+      position: 'absolute',
+      cursor: 'text',
+      top: '15px',
+      right: '6px',
+      userSelect: 'none'
+    },
     '& .err': {
       position: 'absolute',
       left: 7,
@@ -371,6 +380,15 @@ export const CustomUpload = styled('div')(
       cursor: 'text',
       top: '15px',
       left: '6px',
+      userSelect: 'none'
+    },
+    '& .hint': {
+      fontSize: styled.responsive[device].text.quaternary,
+      color: styled.color.info,
+      position: 'absolute',
+      cursor: 'text',
+      top: '15px',
+      right: '6px',
       userSelect: 'none'
     },
     '& label': {
@@ -460,6 +478,16 @@ export const CustomSelect = styled('div')(
       position: 'absolute',
       left: 7,
       fontSize: styled.responsive[device]?.text.quaternary,
-    }
+    },
+    '& .hint': {
+      fontSize: styled.responsive[device].text.quaternary,
+      color: styled.color.info,
+      width: 'fit-content',
+      position: 'absolute',
+      cursor: 'text',
+      top: '15px',
+      right: '6px',
+      userSelect: 'none'
+    },
   })
 )

@@ -62,6 +62,7 @@ export const Role = () => {
             options={[{ label: 'Nine', value: 9, selected: true }, { label: 'Test', value: 4 }]}
             label='Gender'
             defaultValue=''
+            hint='This is hint'
           />
         </div>
         <div style={{ gridArea: 'text' }}>
@@ -76,7 +77,7 @@ export const Role = () => {
           <TextInput type='date' label='Date' onChange={(event) => console.log(event.target.value)} />
         </div>
         <div style={{ gridArea: 'number' }}>
-          <TextInput type='number' label='Number' onChange={(event) => console.log(event.target.value)} />
+          <TextInput type='number' label='Number' hint='This is info' onChange={(event) => console.log(event.target.value)} />
         </div>
         <div style={{ gridArea: 'email' }}>
           <TextInput type='email' label='Email' onChange={(event) => console.log(event.target.value)} />
@@ -85,7 +86,7 @@ export const Role = () => {
           <TextInput type='password' label='Password' onChange={(event) => console.log(event.target.value)} />
         </div>
         <div style={{ gridArea: 'file' }}>
-          <FileInput label='Upload' name='file1' height={100} onChange={(event) => console.log(event.target.files)} />
+          <FileInput label='Upload' hint='this is hint' name='file1' height={100} onChange={(event) => console.log(event.target.files)} />
         </div>
         
       </div>

@@ -10,7 +10,7 @@ export const Store = () => {
   const Header = () => {
     return (
       <>
-        <StoreBreadcrumbs page='store' title='Dashboard' />
+        <StoreBreadcrumbs page='store' />
       </>
     )
   }

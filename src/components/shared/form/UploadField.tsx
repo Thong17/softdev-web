@@ -7,12 +7,13 @@ interface IUploadField extends InputHTMLAttributes<HTMLInputElement> {
   name?: string
   label?: string
   height?: string | number
-  err?: string,
+  err?: string
   value?: string
+  hint?: string
 }
 
 const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
-  { name, label, err, height, value, ...props }, ref
+  { name, label, err, hint, height, value, ...props }, ref
 ) => {
   const { theme } = useTheme()
   const { device } = useWeb()
@@ -25,6 +26,7 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
       <input ref={ref} type='file' name={name} id={name} {...props} />
       <span className='label'>{label}</span>
       <div className='err'>{err}</div>
+      <div className='hint'>{hint}</div>
     </CustomUpload>
   )
 }

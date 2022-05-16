@@ -1,7 +1,7 @@
 import useTheme from 'hooks/useTheme'
 import { Breadcrumbs } from 'styles'
 import { Link } from 'react-router-dom'
-import { FC } from 'react'
+import { FC, ReactElement } from 'react'
 
 export interface Stage {
   title?: string
@@ -11,7 +11,7 @@ export interface Stage {
 
 interface IBreadcrumb {
   stages: Array<Stage>
-  title?: string
+  title?: string | ReactElement
 }
 
 const Breadcrumb: FC<IBreadcrumb> = ({ stages, title }) => {
