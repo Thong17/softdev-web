@@ -1,6 +1,7 @@
 import Container from 'components/shared/Container'
 import React from 'react'
 import StoreBreadcrumbs from '../components/Breadcrumbs'
+import StickyTable from 'components/shared/table/StickyTable'
 
 const Header = () => {
     return <><StoreBreadcrumbs page='category' /></>
@@ -8,6 +9,6 @@ const Header = () => {
 
 export const Category = () => {
   return (
-    <Container header={<Header />}>category</Container>
+    <Container header={<Header />}><StickyTable /></Container>
   )
 }

@@ -29,7 +29,7 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
   const { sidebar } = useConfig()
   const { device } = useWeb()
 
-  const SIDEBAR_WIDTH = sidebar ? 266 : 86
+  const SIDEBAR_WIDTH = sidebar ? 258 : 78
   const SPACE_TOP = device !== 'mobile' ? 20 : 10
 
   return (

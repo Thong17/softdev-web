@@ -58,7 +58,7 @@ const Navbar = ({ children }) => {
       styled={theme}
       device={device}
       sidebar={
-        device !== 'mobile' && device !== 'tablet' ? (sidebar ? 266 : 86) : 0
+        device !== 'mobile' && device !== 'tablet' ? (sidebar ? 258 : 78) : 0
       }
     >
       {device === 'mobile' ? (

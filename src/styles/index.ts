@@ -87,7 +87,7 @@ export const SideNavContainer = styled('div')(
     width: open ? 250 : 70,
     transition: '0.3s ease',
     zIndex: 1001,
-    padding: 8,
+    padding: '8px 0 8px 8px',
     '& div a': {
       textDecoration: 'none !important',
     },
@@ -207,7 +207,7 @@ export const CustomNavbar = styled(Stack)(
       transform: 'translateY(-100%)',
     },
     '&.scrolling': {
-      boxShadow: styled.shadow.bottom,
+      boxShadow: 'none',
     },
     '& a.active': {
       backgroundColor: styled.active.secondary,
