@@ -36,6 +36,27 @@ export const Input: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
   )
 }
 
-const TextInput = forwardRef(Input)
+export const Detail = ({ label, err, hint, ...props }, ref) => {
+  const { theme } = useTheme()
+  const { device } = useWeb()
 
-export { TextInput }
+  return (
+    <CustomInput styled={theme} device={device}>
+      <textarea
+        ref={ref}
+        placeholder=' '
+        autoComplete='new-password'
+        className={err && 'input-error'}
+        {...props}
+      ></textarea>
+      <label>{label}</label>
+      <div className='err'>{err}</div>
+      <div className='hint'>{hint}</div>
+    </CustomInput>
+  )
+}
+
+const TextInput = forwardRef(Input)
+const DetailInput = forwardRef(Detail)
+
+export { TextInput, DetailInput }

@@ -1,5 +1,5 @@
 export const languages = {
-  english: {
+  English: {
     TEST: 'Test',
     HOME: 'Home',
     SALE: 'Sale',
@@ -8,7 +8,16 @@ export const languages = {
     REPORT: 'Report',
     CONFIG: 'Config'
   },
-  khmer: {
+  Khmer: {
+    TEST: 'សាកល្បង',
+    HOME: 'ទំព័រដើម',
+    SALE: 'លក់',
+    STORE: 'ហាង',
+    ADMIN: 'គ្រប់គ្រង',
+    REPORT: 'របាយការណ៍',
+    CONFIG: 'កំណត់'
+  },
+  Vietnam: {
     TEST: 'សាកល្បង',
     HOME: 'ទំព័រដើម',
     SALE: 'លក់',

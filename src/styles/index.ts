@@ -334,12 +334,52 @@ export const CustomInput = styled('div')(
         {
           appearance: 'none',
         },
+      '&.input-error': {
+        borderColor: styled.color.error,
+        '& ~ .err, & ~ label': {
+          color: styled.color.error,
+        },
+      },
     },
-    '& input.input-error': {
-      borderColor: styled.color.error,
-      '& ~ .err, & ~ label': {
-        color: styled.color.error
-      }
+    '& textarea': {
+      minHeight: 37,
+      maxHeight: 170,
+      resize: 'vertical',
+      position: 'relative',
+      zIndex: 10,
+      backgroundColor: 'transparent',
+      boxSizing: 'border-box',
+      color: styled.text.primary,
+      width: '100%',
+      border: styled.border.tertiary,
+      height: INPUT_HEIGHT,
+      borderRadius: styled.radius.primary,
+      padding: '10px 13px',
+      outline: 'none !important',
+      boxShadow: 'none',
+      fontFamily: `${styled.font.family} !important`,
+      fontWeight: `${styled.font.weight} !important`,
+      fontSize: `${styled.responsive[device].text.primary} !important`,
+      '&:hover, &:focus': {
+        border: styled.border.secondary,
+      },
+      '&:focus ~ label, &:not(:placeholder-shown) ~ label': {
+        transform: 'translate(-8px, -24px)',
+        width: 'max-content',
+        backgroundColor: 'inherit',
+        fontSize: styled.responsive[device].text.quaternary,
+        color: styled.text.tertiary,
+      },
+      '&[type=number]::-webkit-inner-spin-button, &[type=number]::-webkit-outer-spin-button':
+        {
+          appearance: 'none',
+        },
+      '&.input-error': {
+        borderColor: styled.color.error,
+        '& ~ .err, & ~ label': {
+          color: styled.color.error,
+        },
+      },
     },
     '& label': {
       transition: '0.2s ease',
@@ -349,7 +389,7 @@ export const CustomInput = styled('div')(
       left: '14px',
       fontSize: styled.responsive[device]?.text.primary,
       color: styled.text.quaternary,
-      userSelect: 'none'
+      userSelect: 'none',
     },
     '& .hint': {
       fontSize: styled.responsive[device].text.quaternary,
@@ -358,13 +398,13 @@ export const CustomInput = styled('div')(
       cursor: 'text',
       top: '15px',
       right: '6px',
-      userSelect: 'none'
+      userSelect: 'none',
     },
     '& .err': {
       position: 'absolute',
       left: 7,
       fontSize: styled.responsive[device]?.text.quaternary,
-    }
+    },
   })
 )
 
@@ -380,7 +420,7 @@ export const CustomUpload = styled('div')(
       cursor: 'text',
       top: '15px',
       left: '6px',
-      userSelect: 'none'
+      userSelect: 'none',
     },
     '& .hint': {
       fontSize: styled.responsive[device].text.quaternary,
@@ -389,7 +429,7 @@ export const CustomUpload = styled('div')(
       cursor: 'text',
       top: '15px',
       right: '6px',
-      userSelect: 'none'
+      userSelect: 'none',
     },
     '& label': {
       color: styled.text.tertiary,
@@ -403,12 +443,15 @@ export const CustomUpload = styled('div')(
       borderStyle: 'dashed !important',
       padding: '0 13px',
       cursor: 'pointer',
+      '&:hover, &:focus': {
+        border: styled.border.secondary,
+      },
     },
     '& label.input-error': {
       borderColor: styled.color.error,
       '& ~ .err, & ~ .label': {
-        color: styled.color.error
-      }
+        color: styled.color.error,
+      },
     },
     '& label span': {
       alignSelf: 'center',
@@ -420,7 +463,7 @@ export const CustomUpload = styled('div')(
       position: 'absolute',
       left: 7,
       fontSize: styled.responsive[device]?.text.quaternary,
-    }
+    },
   })
 )
 
@@ -437,7 +480,7 @@ export const CustomSelect = styled('div')(
       left: '6px',
       fontSize: styled.responsive[device]?.text.quaternary,
       color: styled.text.tertiary,
-      userSelect: 'none'
+      userSelect: 'none',
     },
     '& .MuiSelect-select, & .MuiList-root li': {
       fontFamily: `${styled.font.family} !important`,
@@ -454,7 +497,7 @@ export const CustomSelect = styled('div')(
         padding: '0 13px',
         display: 'flex',
         alignItems: 'center',
-        border: styled.border.tertiary
+        border: styled.border.tertiary,
       },
       '& div:hover, & div:focus': {
         border: styled.border.secondary,
@@ -468,11 +511,11 @@ export const CustomSelect = styled('div')(
     },
     '& div.input-error': {
       '& div': {
-        borderColor: styled.color.error
+        borderColor: styled.color.error,
       },
       '& ~ label, & ~ .err': {
-        color: styled.color.error
-      }
+        color: styled.color.error,
+      },
     },
     '& .err': {
       position: 'absolute',
@@ -487,7 +530,18 @@ export const CustomSelect = styled('div')(
       cursor: 'text',
       top: '15px',
       right: '6px',
-      userSelect: 'none'
+      userSelect: 'none',
     },
+  })
+)
+
+export const CustomButton = styled(Button)(
+  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
+    borderRadius: styled.radius.primary,
+    backgroundColor: styled.background.primary,
+    color: styled.text.primary,
+    border: styled.border.tertiary,
+    padding: '5px 13px',
+    textTransform: 'none'
   })
 )

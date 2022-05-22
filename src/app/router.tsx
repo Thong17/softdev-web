@@ -2,13 +2,12 @@ import { RouteObject } from 'react-router'
 import AuthGuard from '../auth/AuthGuard'
 import { Login } from 'modules/auth/Login'
 import { Admin, User, Role } from 'modules/admin'
-import { Store } from 'modules/store'
+import { Store, Category, Brand, CreateCategory } from 'modules/store'
 import { Sale } from 'modules/sale'
 import { Report } from 'modules/report'
 
 import { Counter } from 'modules/counter/Counter'
 import Config from 'modules/config/Config'
-import { Category } from 'modules/store/category'
 
 const routes: RouteObject[] = [
   {
@@ -56,6 +55,18 @@ const routes: RouteObject[] = [
             <Category />
           </AuthGuard>
         ),
+      },
+      {
+        path: 'category/create',
+        element: (
+          <AuthGuard role={{ route: 'admin', action: 'list' }}>
+            <CreateCategory />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: '/store/brand',
+        element: <Brand />,
       },
     ],
   },

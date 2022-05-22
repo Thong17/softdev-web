@@ -1,4 +1,4 @@
-export declare type ThemeOptions = 'light' | 'dark'
+export declare type ThemeOptions = 'Light' | 'Dark' | 'Blue'
 
 export declare type TextOptions = {
   primary: string | number

@@ -18,7 +18,6 @@ interface ISelectField extends SelectProps {
   hint?: string
 }
 
-
 const Input: ForwardRefRenderFunction<InputHTMLAttributes<HTMLInputElement>, ISelectField> = ({ options, name, label, err, hint, ...props }, ref) => {
   const { theme } = useTheme()
   const { device } = useWeb()

@@ -21,3 +21,7 @@ export const Store = () => {
     </Layout>
   )
 }
+
+export { Category } from './category'
+export { Brand } from './brand'
+export { CreateCategory } from './category/create'

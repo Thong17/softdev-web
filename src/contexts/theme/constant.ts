@@ -1,5 +1,5 @@
 export const themeMode = {
-  blue: {
+  Blue: {
     background: {
       primary: 'rgb(14, 25, 40)',
       secondary: 'rgb(19, 47, 76)',
@@ -36,7 +36,7 @@ export const themeMode = {
       bottom: '0 5px 5px rgba(0, 0, 0, 0.18) !important',
     },
   },
-  light: {
+  Light: {
     background: {
       primary: '#ffffff',
       secondary: '#f3f3f3',
@@ -73,7 +73,7 @@ export const themeMode = {
       bottom: '0 5px 5px rgba(0, 0, 0, 0.18) !important',
     },
   },
-  dark: {
+  Dark: {
     background: {
       primary: '#333333',
       secondary: '#444444',

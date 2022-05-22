@@ -9,79 +9,22 @@ import TableRow from '@mui/material/TableRow'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 
-interface Column {
-  id: 'name' | 'code' | 'population' | 'size' | 'density'
+export interface ITableColumn<Column> {
+  id: Column
   label: string
   minWidth?: number
-  align?: 'right'
+  align?: 'left' | 'right'
   format?: (value: number) => string
 }
 
-const columns: readonly Column[] = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toFixed(2),
-  },
-]
-
-interface Data {
-  name: string
-  code: string
-  population: number
-  size: number
-  density: number
+interface ITable {
+  columns: ITableColumn<string>[],
+  rows: any[]
 }
 
-function createData(
-  name: string,
-  code: string,
-  population: number,
-  size: number
-): Data {
-  const density = population / size
-  return { name, code, population, size, density }
-}
-
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-]
-
-export default function StickyTable() {
+export const StickyTable = ({ columns, rows }: ITable) => {
   const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+  const [rowsPerPage, setRowsPerPage] = React.useState(100)
   const { theme } = useTheme()
   const { device } = useWeb()
 
@@ -97,9 +40,9 @@ export default function StickyTable() {
   }
 
   return (
-    <>
-      <TableContainer style={{ maxHeight: 480, boxSizing: 'border-box' }}>
-        <Table stickyHeader aria-label='sticky table'>
+    <div>
+      <TableContainer style={{ paddingBottom: 50, overflowX: 'initial' }}>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
@@ -124,9 +67,9 @@ export default function StickyTable() {
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
+              .map((row, key) => {
                 return (
-                  <TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
+                  <TableRow hover role='checkbox' tabIndex={-1} key={key}>
                     {columns.map((column) => {
                       const value = row[column.id]
                       return (
@@ -160,12 +103,12 @@ export default function StickyTable() {
           position: 'absolute',
           bottom: 0,
           right: 37,
-          height: 30,
+          height: 40,
           display: 'flex',
           justifyContent: 'end',
           alignItems: 'center'
         }}
-        rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={[10, 25, 50, 100]}
         component='div'
         count={rows.length}
         rowsPerPage={rowsPerPage}
@@ -173,6 +116,6 @@ export default function StickyTable() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </>
+    </div>
   )
 }

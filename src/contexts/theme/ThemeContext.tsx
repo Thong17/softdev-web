@@ -5,7 +5,7 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-const initMode: ThemeOptions = 'light'
+const initMode: ThemeOptions = 'Light'
 
 export const ThemeContext = createContext<IThemeContext>({
   mode: initMode,
