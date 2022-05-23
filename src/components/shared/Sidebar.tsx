@@ -22,7 +22,7 @@ const Sidebar = () => {
         {sideNav.map((nav, index) => (
           <NavLink key={index} to={nav.route}>
             {nav.icon}
-            <span>{language[nav.title] || nav.title}</span>
+            <span>{language?.[nav.title] || nav.title}</span>
           </NavLink>
         ))}
       </CustomSideNav>

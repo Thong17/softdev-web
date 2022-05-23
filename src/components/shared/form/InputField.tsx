@@ -13,6 +13,12 @@ interface ITextInput extends InputHTMLAttributes<HTMLInputElement> {
   hint?: string
 }
 
+interface IDetailInput extends InputHTMLAttributes<HTMLTextAreaElement> {
+  label?: string
+  err?: string
+  hint?: string
+}
+
 export const Input: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
   { label, err, hint, ...props },
   ref
@@ -36,7 +42,7 @@ export const Input: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
   )
 }
 
-export const Detail = ({ label, err, hint, ...props }, ref) => {
+export const Detail: ForwardRefRenderFunction<HTMLTextAreaElement, IDetailInput> = ({ label, err, hint, ...props }, ref) => {
   const { theme } = useTheme()
   const { device } = useWeb()
 

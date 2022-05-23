@@ -538,10 +538,9 @@ export const CustomSelect = styled('div')(
 export const CustomButton = styled(Button)(
   ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
     borderRadius: styled.radius.primary,
-    backgroundColor: styled.background.primary,
-    color: styled.text.primary,
     border: styled.border.tertiary,
     padding: '5px 13px',
-    textTransform: 'none'
+    textTransform: 'none',
+    overflow: 'hidden'
   })
 )

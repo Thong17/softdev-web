@@ -23,6 +23,7 @@
     "noImplicitAny": false,
     "baseUrl": "./src",
     "paths": {
+      "asset/*": ["asset/*"],
       "components/*": ["components/*"],
       "modules/*": ["modules/*"],
       "utils/*": ["utils/*"],
