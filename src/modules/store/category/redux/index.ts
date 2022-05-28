@@ -16,16 +16,12 @@ const initialState: CategoryState = {
 export const createCategory = createAsyncThunk(
   'category/create',
   async (body: ICategoryBody) => {
-    try {
-      const response = await Axios({
-        method: 'POST',
-        url: '/store/category/create',
-        body: body,
-      })
-      return response?.data
-    } catch (err: any) {
-      return err?.response?.data
-    }
+    const response = await Axios({
+      method: 'POST',
+      url: '/store/category/create',
+      body: body,
+    })
+    return response?.data
   }
 )
 
@@ -36,12 +32,18 @@ export const categorySlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createCategory.pending, (state) => {
+        console.log('loading...');
+        
         state.status = 'loading'
       })
       .addCase(createCategory.rejected, (state) => {
+        console.log('failed');
+        
         state.status = 'failed'
       })
       .addCase(createCategory.fulfilled, (state, action) => {
+        console.log('successsssss!');
+        
         state.status = 'success'
         state.data = action.payload
       })
