@@ -488,7 +488,6 @@ export const CustomSelect = styled('div')(
       fontSize: `${styled.responsive[device].text.primary} !important`,
     },
     '& div': {
-      textTransform: 'capitalize',
       color: styled.text.primary,
       width: '100%',
       padding: 0,

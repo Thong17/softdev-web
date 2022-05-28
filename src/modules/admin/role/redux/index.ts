@@ -1,15 +1,25 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { RootState } from 'app/store'
 import Axios from 'constants/functions/Axios'
-import { IRoleBody, initialState } from './constant'
+import { initialState } from './constant'
 
-export const create = createAsyncThunk(
-  'role/create',
-  async (body: IRoleBody) => {
+export const getListRole = createAsyncThunk(
+  'role/list',
+  async () => {
     const response = await Axios({
-      method: 'POST',
-      url: '/admin/role/create',
-      body: body,
+      method: 'GET',
+      url: '/admin/role'
+    })
+    return response?.data
+  }
+)
+
+export const getRole = createAsyncThunk(
+  'role/detail',
+  async (id: string) => {
+    const response = await Axios({
+      method: 'GET',
+      url: `/admin/role/detail/${id}`
     })
     return response?.data
   }
@@ -44,15 +54,27 @@ export const roleSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Create Role
-      .addCase(create.pending, (state) => {
-        state.create.status = 'LOADING'
+      .addCase(getListRole.pending, (state) => {
+        state.list.status = 'LOADING'
       })
-      .addCase(create.rejected, (state) => {
-        state.create.status = 'FAILED'
+      .addCase(getListRole.rejected, (state) => {
+        state.list.status = 'FAILED'
       })
-      .addCase(create.fulfilled, (state, action) => {
-        state.create.status = 'SUCCESS'
-        state.create.data = action.payload.data
+      .addCase(getListRole.fulfilled, (state, action) => {
+        state.list.status = 'SUCCESS'
+        state.list.data = action.payload.data
+      })
+
+      // Detail Role
+      .addCase(getRole.pending, (state) => {
+        state.detail.status = 'LOADING'
+      })
+      .addCase(getRole.rejected, (state) => {
+        state.detail.status = 'FAILED'
+      })
+      .addCase(getRole.fulfilled, (state, action) => {
+        state.detail.status = 'SUCCESS'
+        state.detail.data = action.payload.data
       })
 
       // Get Privilege from API
@@ -81,7 +103,8 @@ export const roleSlice = createSlice({
   },
 })
 
-export const createRole = (state: RootState) => state.role.create
+export const selectRole = (state: RootState) => state.role.detail
+export const selectListRole = (state: RootState) => state.role.list
 export const selectPrivilege = (state: RootState) => state.role.privilege
 export const selectPreRole = (state: RootState) => state.role.preRole
 

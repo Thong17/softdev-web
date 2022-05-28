@@ -1,30 +1,20 @@
-export interface IRoleBody {
-  role: object,
-  description: string,
-  privilege: object
-}
-
-export interface IBody<T> {
-  data: T
-  status: 'SUCCESS' | 'LOADING' | 'FAILED'
-}
+import { IBody } from 'shared/interface'
 
 export interface RoleState {
-  create: IBody<IRoleBody>,
+  list: IBody<Object[]>
+  detail: IBody<Object>,
   privilege: IBody<Object>,
   preRole: IBody<Object>
 }
 
-export const initRoleBody: IRoleBody = {
-  role: {},
-  description: '',
-  privilege: {}
-}
-
 export const initialState: RoleState = {
-  create: {
-    data: initRoleBody,
-    status: 'LOADING',
+  list: {
+    data: [],
+    status: 'INIT',
+  },
+  detail: {
+    data: {},
+    status: 'INIT',
   },
   privilege: {
     data: {},

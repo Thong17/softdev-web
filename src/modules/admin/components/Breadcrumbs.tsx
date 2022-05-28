@@ -2,7 +2,7 @@ import Breadcrumb from 'components/shared/Breadcrumbs'
 import { FC } from 'react'
 import { stages } from './constant'
 
-declare type page = 'admin' | 'role' | 'roleCreate' | 'user'
+declare type page = 'admin' | 'role' | 'roleCreate' | 'roleUpdate' | 'user'
 
 interface IAdminBreadcrumbs {
   page: page

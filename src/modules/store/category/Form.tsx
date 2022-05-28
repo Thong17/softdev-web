@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { useAppDispatch } from 'app/hooks'
+import React from 'react'
 import {
   LocaleField,
   FileField,
@@ -11,11 +10,11 @@ import useWeb from 'hooks/useWeb'
 import { useForm } from 'react-hook-form'
 import { categorySchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { createCategory } from './redux'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 const CategoryForm = () => {
-  const dispatch = useAppDispatch()
-  const [loading, setLoading] = useState(false)
+  const { loadify } = useNotify()
   const {
     register,
     handleSubmit,
@@ -25,12 +24,16 @@ const CategoryForm = () => {
   const { device } = useWeb()
 
   const handleChangeCategory = (category) => {
-    setValue('category', category)
+    setValue('name', category)
   }
 
   const submit = async (data) => {
-    setLoading(true)
-    dispatch(createCategory(data))
+    const response = Axios({
+      method: 'POST',
+      url: '/store/category/create',
+      body: data,
+    })
+    loadify(response)
   }
 
   return (
@@ -59,9 +62,9 @@ const CategoryForm = () => {
         <div style={{ gridArea: 'category' }}>
           <LocaleField
             onChange={handleChangeCategory}
-            err={errors?.category}
+            err={errors?.name}
             describe='Category'
-            name='category'
+            name='name'
           />
         </div>
         <div style={{ gridArea: 'status' }}>
@@ -98,7 +101,6 @@ const CategoryForm = () => {
             Cancel
           </Button>
           <Button
-            loading={loading}
             type='submit'
             variant='contained'
             color='success'

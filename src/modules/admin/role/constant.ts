@@ -1,5 +1,5 @@
 export const initState = {
-  role: {},
+  name: {},
   description: '',
   privilege: {}
 }

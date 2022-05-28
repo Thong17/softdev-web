@@ -124,10 +124,10 @@ export const themeStyle = {
     weight: 300,
   },
   color: {
-    error: '#d32f2fee',
-    success: '#43a047ee',
-    info: '#2196f3ee',
-    warning: '#ff9800ee',
+    error: '#d32f2f',
+    success: '#43a047',
+    info: '#2196f3',
+    warning: '#ff9800',
   },
   responsive: {
     mobile: {

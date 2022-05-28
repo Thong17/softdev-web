@@ -5,7 +5,7 @@ import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
 import Axios from 'constants/functions/Axios'
 
-const initState: LanguageOptions = 'english'
+const initState: LanguageOptions = 'English'
 
 export const LanguageContext = createContext<ILanguageContext>({
   lang: initState,

@@ -5,7 +5,7 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-const initMode: ThemeOptions = 'Blue'
+const initMode: ThemeOptions = 'Light'
 
 export const ThemeContext = createContext<IThemeContext>({
   mode: initMode,
@@ -19,7 +19,8 @@ const ThemesProvider = ({ children }) => {
   const { notify } = useNotify()
 
   useEffect(() => {
-    setMode(user?.theme || initMode)
+    const userTheme: ThemeOptions = user?.theme || initMode
+    setMode(userTheme)
   }, [user])
 
   const theme = useMemo<IThemeStyle>(() => {

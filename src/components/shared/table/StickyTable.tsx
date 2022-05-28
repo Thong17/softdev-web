@@ -13,16 +13,17 @@ export interface ITableColumn<Column> {
   id: Column
   label: string
   minWidth?: number
-  align?: 'left' | 'right'
+  align?: 'left' | 'right' | 'center'
   format?: (value: number) => string
 }
 
 interface ITable {
   columns: ITableColumn<string>[],
-  rows: any[]
+  rows: any[],
+  loading?: boolean,
 }
 
-export const StickyTable = ({ columns, rows }: ITable) => {
+export const StickyTable = ({ columns, rows, loading }: ITable) => {
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(100)
   const { theme } = useTheme()

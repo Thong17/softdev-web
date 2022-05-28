@@ -1,4 +1,4 @@
-export declare type LanguageOptions = 'english' | 'khmer'
+export declare type LanguageOptions = 'English' | 'Khmer'
 
 export interface ILanguage {
   TEST: string

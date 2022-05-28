@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 export const roleSchema = yup.object().shape({
-  role: yup.object({
+  name: yup.object({
     English: yup.string().required('English is required'),
   }),
   status: yup.boolean().optional(),

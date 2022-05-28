@@ -39,8 +39,8 @@ export const Login = () => {
           err={errors.password?.message}
           {...register('password')}
         />
-        <button onClick={() => navigate('/register')}>Register</button>
         <input type='submit' value='Login' />
+        <button onClick={() => navigate('/register')}>Register</button>
       </form>
     </div>
   )

@@ -2,7 +2,7 @@ import { RouteObject } from 'react-router'
 import AuthGuard from '../auth/AuthGuard'
 import { Login } from 'modules/auth/Login'
 import { Register } from 'modules/auth/Register'
-import { Admin, User, Role, CreateRole } from 'modules/admin'
+import { Admin, User, Role, CreateRole, UpdateRole, DetailRole } from 'modules/admin'
 import { Store, Category, Brand, CreateCategory } from 'modules/store'
 import { Sale } from 'modules/sale'
 import { Report } from 'modules/report'
@@ -42,13 +42,27 @@ const routes: RouteObject[] = [
       {
         path: 'role',
         element: (
+          <AuthGuard role={{ route: 'admin', action: 'list' }}>
             <Role />
+          </AuthGuard>
         ),
       },
       {
         path: 'role/create',
         element: (
             <CreateRole />
+        ),
+      },
+      {
+        path: 'role/update/:id',
+        element: (
+            <UpdateRole />
+        ),
+      },
+      {
+        path: 'role/detail/:id',
+        element: (
+            <DetailRole />
         ),
       },
     ],

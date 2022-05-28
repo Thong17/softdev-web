@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import './Notify.css'
 
 const initState: ToastOptions = {
-  position: 'top-right',
+  position: 'bottom-right',
   autoClose: 5000,
   hideProgressBar: false,
   closeOnClick: true,
@@ -13,7 +13,7 @@ const initState: ToastOptions = {
   draggable: true,
   progress: undefined,
   theme: 'colored',
-  closeButton: false,
+  closeButton: false
 }
 
 export const NotifyContext = createContext({
@@ -31,22 +31,25 @@ const NotifyProvider = ({ children }) => {
     toast.promise(promise, {
       pending: 'Loading',
       success: {
-        render({data}) {
-          return data
+        render({data}: {data: any}) {
+          return data?.data?.msg || 'Success'
         }
       },
       error: {
-        render({data}) {
-          return data
+        render({data}: {data: any}) {
+          return data?.data?.msg || 'Failed'
         }
       }
-    })
+    }, {
+      ...initState
+    }
+    )
   }
 
   return (
     <NotifyContext.Provider value={{ ...initState, notify, loadify }}>
       {children}
-      <ToastContainer className="toast-container" limit={5} />
+      <ToastContainer className="toast-container" limit={5} newestOnTop />
     </NotifyContext.Provider>
   )
 }

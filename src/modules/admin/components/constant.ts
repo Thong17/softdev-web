@@ -26,6 +26,19 @@ export const stages = {
         title: 'Create',
       },
     ],
+    roleUpdate: [
+      {
+        title: 'Admin',
+        path: '/admin',
+      },
+      {
+        title: 'Role',
+        path: '/admin/role',
+      },
+      {
+        title: 'Update',
+      },
+    ],
     user: [
       {
         title: 'Admin',

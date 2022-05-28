@@ -11,6 +11,8 @@ import useTheme from 'hooks/useTheme'
 import Button from 'components/shared/Button'
 import Loading from 'components/shared/icons/Loading'
 import { initState } from './constant'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 export const RoleForm = ({ defaultValues = initState }) => {
   const dispatch = useAppDispatch()
@@ -24,6 +26,7 @@ export const RoleForm = ({ defaultValues = initState }) => {
   } = useForm({ resolver: yupResolver(roleSchema), defaultValues })
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { loadify } = useNotify()
   const [checkAll, setCheckAll] = useState({})
 
   const PrivilegeBox = () => {
@@ -45,7 +48,7 @@ export const RoleForm = ({ defaultValues = initState }) => {
   }
 
   const handleChangeRole = (role) => {
-    setValue('role', role)
+    setValue('name', role)
   }
 
   const handleChangePrivilege = (event) => {
@@ -75,7 +78,12 @@ export const RoleForm = ({ defaultValues = initState }) => {
   }
 
   const submit = async (data) => {
-    console.log(data);
+    const response = Axios({
+      method: 'POST',
+      url: '/admin/role/create',
+      body: data,
+    })
+    loadify(response)
   }
 
   useEffect(() => {
@@ -120,9 +128,9 @@ export const RoleForm = ({ defaultValues = initState }) => {
       <div style={{ gridArea: 'input' }}>
         <LocaleField
           onChange={handleChangeRole}
-          err={errors?.role}
+          err={errors?.name}
           describe='Role'
-          name='role'
+          name='name'
         />
         <DetailField
           type='text'
