@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Axios from 'constants/functions/Axios'
+import { useAppDispatch } from 'app/hooks'
 import {
   LocaleField,
   FileField,
@@ -11,11 +11,11 @@ import useWeb from 'hooks/useWeb'
 import { useForm } from 'react-hook-form'
 import { categorySchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
-import useNotify from 'hooks/useNotify'
+import { createCategory } from './redux'
 
 const CategoryForm = () => {
+  const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(false)
-  const { notify } = useNotify()
   const {
     register,
     handleSubmit,
@@ -30,14 +30,7 @@ const CategoryForm = () => {
 
   const submit = async (data) => {
     setLoading(true)
-    try {
-      const response = await Axios({ method: 'POST', url: '/store/category/create', body: data })
-      setLoading(false)
-      notify(response?.data?.msg, 'success')
-    } catch (err: any) {
-      setLoading(false)
-      notify(err?.response?.data?.msg, 'error')
-    }
+    dispatch(createCategory(data))
   }
 
   return (
