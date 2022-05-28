@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import Axios from 'constants/functions/Axios'
 import {
-  LocaleInput,
-  FileInput,
-  DetailInput,
-  SelectInput,
+  LocaleField,
+  FileField,
+  DetailField,
+  SelectField,
 } from 'components/shared/form'
 import Button from 'components/shared/Button'
 import useWeb from 'hooks/useWeb'
@@ -32,14 +32,12 @@ const CategoryForm = () => {
     setLoading(true)
     try {
       const response = await Axios({ method: 'POST', url: '/store/category/create', body: data })
-    
       setLoading(false)
       notify(response?.data?.msg, 'success')
     } catch (err: any) {
       setLoading(false)
       notify(err?.response?.data?.msg, 'error')
     }
-    
   }
 
   return (
@@ -66,7 +64,7 @@ const CategoryForm = () => {
         }}
       >
         <div style={{ gridArea: 'category' }}>
-          <LocaleInput
+          <LocaleField
             onChange={handleChangeCategory}
             err={errors?.category}
             describe='Category'
@@ -74,7 +72,7 @@ const CategoryForm = () => {
           />
         </div>
         <div style={{ gridArea: 'status' }}>
-          <SelectInput
+          <SelectField
             options={[
               { label: 'Enabled', value: true, selected: true },
               { label: 'Disable', value: false },
@@ -85,10 +83,10 @@ const CategoryForm = () => {
           />
         </div>
         <div style={{ gridArea: 'icon' }}>
-          <FileInput label='Icon' {...register('icon')} />
+          <FileField label='Icon' {...register('icon')} />
         </div>
         <div style={{ gridArea: 'description' }}>
-          <DetailInput
+          <DetailField
             type='text'
             label='Description'
             style={{ height: 70 }}

@@ -24,3 +24,4 @@ export const Admin = () => {
 
 export { User } from './user'
 export { Role } from './role'
+export { CreateRole } from './role/Create'

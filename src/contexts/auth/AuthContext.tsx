@@ -2,7 +2,7 @@ import { createContext, useEffect, useReducer } from 'react'
 import { AuthReducer } from './authReducer'
 import Axios from 'constants/functions/Axios'
 import { EnumAuth } from './authReducer'
-import { ILogin, IAuthInit } from './interface'
+import { ILogin, IAuthInit, IRegister } from './interface'
 import { useNavigate } from 'react-router'
 import { getProfile, setSession } from './shared'
 import Loading from 'components/shared/Loading'
@@ -16,6 +16,7 @@ const initState: IAuthInit = {
 export const AuthContext = createContext({
   ...initState,
   login: (data: ILogin) => Promise.resolve(),
+  register: (data: IRegister) => Promise.resolve(),
   logout: () => {},
 })
 
@@ -40,6 +41,18 @@ const AuthProvider = ({ children }) => {
     }
   }
 
+  const register = async (data: IRegister) => {
+    try {
+      const response = await Axios({ method: 'POST', url: '/auth/register', body: data })
+
+      dispatch({ type: EnumAuth.REGISTER, payload: null })
+      return response.data
+
+    } catch (err: any) {      
+      return err?.response?.data
+    }
+  }
+
   const logout = () => {
     dispatch({ type: EnumAuth.LOGOUT, payload: null })
     setSession(null)
@@ -48,7 +61,7 @@ const AuthProvider = ({ children }) => {
   
   if (!state.isInit) return <Loading></Loading>
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
+    <AuthContext.Provider value={{ ...state, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   )

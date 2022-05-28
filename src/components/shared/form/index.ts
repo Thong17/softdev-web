@@ -1,5 +1,6 @@
-export { TextInput, DetailInput } from './InputField'
-export { FileInput } from './UploadField'
-export { SelectInput } from './SelectField'
-export { LocaleInput } from './LocaleInput'
+export { TextField, DetailField } from './InputField'
+export { FileField } from './UploadField'
+export { SelectField } from './SelectField'
+export { CheckboxField } from './CheckField'
+export { LocaleField } from './LocaleField'
 

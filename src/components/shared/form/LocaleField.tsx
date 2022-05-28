@@ -1,9 +1,9 @@
 import { languages } from 'contexts/language/constant'
 import { Section } from '../Section'
-import { TextInput } from '.'
+import { TextField } from '.'
 import { useState } from 'react'
 
-export const LocaleInput = ({ name, onChange, describe, err, ...prop }) => {
+export const LocaleField = ({ name, onChange, describe, err, ...prop }) => {
   const [category, setCategory] = useState({})
   const langs = Object.keys(languages)
 
@@ -30,7 +30,7 @@ export const LocaleInput = ({ name, onChange, describe, err, ...prop }) => {
       >
         {langs.map((language, index) => {
           return (
-            <TextInput
+            <TextField
               err={err?.[language]?.message}
               onChange={handleChange}
               key={index}

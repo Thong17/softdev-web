@@ -4,7 +4,7 @@ import { loginSchema } from './schema'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
 import { useLocation, useNavigate } from 'react-router'
-import { TextInput } from 'components/shared/form'
+import { TextField } from 'components/shared/form'
 
 export const Login = () => {
   const navigate = useNavigate()
@@ -27,18 +27,19 @@ export const Login = () => {
     <div>
       <h1>Login</h1>
       <form onSubmit={handleSubmit(form)}>
-        <TextInput
+        <TextField
           label='Username'
           type='text'
           err={errors.username?.message}
           {...register('username')}
         />
-        <TextInput
+        <TextField
           label='Password'
           type='password'
           err={errors.password?.message}
           {...register('password')}
         />
+        <button onClick={() => navigate('/register')}>Register</button>
         <input type='submit' value='Login' />
       </form>
     </div>

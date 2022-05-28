@@ -62,7 +62,7 @@ export const Detail: ForwardRefRenderFunction<HTMLTextAreaElement, IDetailInput>
   )
 }
 
-const TextInput = forwardRef(Input)
-const DetailInput = forwardRef(Detail)
+const TextField = forwardRef(Input)
+const DetailField = forwardRef(Detail)
 
-export { TextInput, DetailInput }
+export { TextField, DetailField }

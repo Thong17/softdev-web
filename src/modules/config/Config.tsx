@@ -4,7 +4,7 @@ import { Layout } from 'components/layouts/Layout'
 import Container from 'components/shared/Container'
 import { themeMode } from 'contexts/theme/constant'
 import { languages } from 'contexts/language/constant'
-import { SelectInput } from 'components/shared/form'
+import { SelectField } from 'components/shared/form'
 
 const Config = () => {
   const { changeTheme, mode } = useTheme()
@@ -17,7 +17,7 @@ const Config = () => {
           This is a {mode} mode theme with {language.TEST} language custom
           palette
         </p>
-        <SelectInput
+        <SelectField
           name='select-theme'
           label='Theme'
           value={mode}
@@ -27,7 +27,7 @@ const Config = () => {
             return { label: key, value: key }
           })}
         />
-        <SelectInput
+        <SelectField
           name='select-language'
           label='Language'
           value={lang}

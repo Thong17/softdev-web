@@ -31,8 +31,8 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
   )
 }
 
-const FileInput = forwardRef(Input)
+const FileField = forwardRef(Input)
 
-export { FileInput }
+export { FileField }
 
 

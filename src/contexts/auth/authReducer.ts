@@ -4,6 +4,7 @@ export enum EnumAuth {
   INIT = 'INIT',
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',
+  REGISTER = 'REGISTER'
 }
 
 export const AuthReducer = (state: IAuthInit, action: { type; payload }) => {
@@ -29,6 +30,13 @@ export const AuthReducer = (state: IAuthInit, action: { type; payload }) => {
         isInit: true,
         isAuthenticated: true,
         user,
+      }
+    }
+
+    case EnumAuth.REGISTER: {
+      return {
+        ...state,
+        isInit: true
       }
     }
 

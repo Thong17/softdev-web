@@ -24,4 +24,4 @@ export const Store = () => {
 
 export { Category } from './category'
 export { Brand } from './brand'
-export { CreateCategory } from './category/create'
+export { CreateCategory } from './category/Create'

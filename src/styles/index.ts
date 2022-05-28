@@ -544,3 +544,29 @@ export const CustomButton = styled(Button)(
     overflow: 'hidden'
   })
 )
+
+export const CustomePrivilege = styled('div')(
+  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
+    border: styled.border.quaternary,
+    borderRadius: styled.radius.secondary,
+    margin: '20px 0',
+    '& .label': {
+      position: 'absolute',
+      top: 9,
+      left: device !== 'mobile' ? 40 : 20,
+      padding: '0 5px',
+      backgroundColor: styled.background.primary
+    },
+    '& .privilege-container': {
+      display: 'flex',
+      padding: 20,
+      flexDirection: 'column',
+      userSelect: 'none',
+      '& div': {
+        marginLeft: 20,
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))',
+      }
+    }
+  })
+)

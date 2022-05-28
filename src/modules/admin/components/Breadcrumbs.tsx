@@ -1,32 +1,8 @@
 import Breadcrumb from 'components/shared/Breadcrumbs'
 import { FC } from 'react'
+import { stages } from './constant'
 
-const stages = {
-  admin: [
-    {
-      title: 'Admin',
-    },
-  ],
-  role: [
-    {
-      title: 'Admin',
-      path: '/admin',
-    },
-    {
-      title: 'Role',
-    },
-  ],
-  user: [
-    {
-      title: 'Admin',
-      path: '/admin',
-    },
-    {
-      title: 'User',
-    },
-  ],
-}
-declare type page = 'admin' | 'role' | 'user'
+declare type page = 'admin' | 'role' | 'roleCreate' | 'user'
 
 interface IAdminBreadcrumbs {
   page: page

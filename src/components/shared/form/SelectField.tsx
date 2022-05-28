@@ -54,5 +54,5 @@ const Input: ForwardRefRenderFunction<InputHTMLAttributes<HTMLInputElement>, ISe
   )
 }
 
-const SelectInput = forwardRef(Input)
-export { SelectInput }
+const SelectField = forwardRef(Input)
+export { SelectField }
