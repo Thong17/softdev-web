@@ -5,16 +5,15 @@ import { roleSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { getPreRole, selectPreRole } from './redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { CustomePrivilege } from 'styles'
+import { CustomPrivilege } from 'styles'
 import useWeb from 'hooks/useWeb'
 import useTheme from 'hooks/useTheme'
 import Button from 'components/shared/Button'
 import Loading from 'components/shared/icons/Loading'
-import { initState } from './constant'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-export const RoleForm = ({ defaultValues = initState }) => {
+export const RoleForm = ({ defaultValues }) => {
   const dispatch = useAppDispatch()
   const { data: preRole, status: statusPreRole } = useAppSelector(selectPreRole)
   const {
@@ -30,7 +29,7 @@ export const RoleForm = ({ defaultValues = initState }) => {
   const [checkAll, setCheckAll] = useState({})
 
   const PrivilegeBox = () => {
-    return <CustomePrivilege styled={theme} device={device}>
+    return <CustomPrivilege styled={theme} device={device}>
       <span className='label'>Privilege</span>
       {Object.keys(preRole).map((role, i) => {
         return <div key={i} className='privilege-container'>
@@ -44,7 +43,7 @@ export const RoleForm = ({ defaultValues = initState }) => {
           </div>
         </div>
       })}
-    </CustomePrivilege>
+    </CustomPrivilege>
   }
 
   const handleChangeRole = (role) => {
@@ -91,8 +90,8 @@ export const RoleForm = ({ defaultValues = initState }) => {
   }, [dispatch])
 
   useEffect(() => {
-    setValue('privilege', { ...preRole, ...getValues('privilege') })
     const privilege = getValues('privilege')
+    
     let checkedAll = {}
     Object.keys(privilege).forEach((route) => {
       Object.keys(privilege[route]).find(action => !privilege[route][action]) 

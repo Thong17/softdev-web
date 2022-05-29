@@ -35,7 +35,7 @@ export const ViewButton: FC<ButtonProps> = ({ ...prop }) => {
     <IconButton
       { ...prop }
       size='small'
-      style={{ borderRadius: theme.radius.primary, marginLeft: 5, color: theme.text.primary }}>
+      style={{ borderRadius: theme.radius.primary, marginLeft: 5, color: theme.text.tertiary }}>
       <MoreVertRoundedIcon fontSize='small' />
     </IconButton>
   )

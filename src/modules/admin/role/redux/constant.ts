@@ -2,7 +2,7 @@ import { IBody } from 'shared/interface'
 
 export interface RoleState {
   list: IBody<Object[]>
-  detail: IBody<Object>,
+  detail: IBody<any>,
   privilege: IBody<Object>,
   preRole: IBody<Object>
 }

@@ -1,5 +1,6 @@
 import AdminBreadcrumbs from '../components/Breadcrumbs'
 import Container from 'components/shared/Container'
+import { initState } from './constant'
 import { RoleForm } from './Form'
 
 export const CreateRole = () => {
@@ -13,7 +14,7 @@ export const CreateRole = () => {
 
   return (
     <Container header={<Header />}>
-      <RoleForm />
+      <RoleForm defaultValues={initState} />
     </Container>
   )
 }

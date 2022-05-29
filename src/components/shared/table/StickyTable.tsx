@@ -25,7 +25,7 @@ interface ITable {
 
 export const StickyTable = ({ columns, rows, loading }: ITable) => {
   const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(100)
+  const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const { theme } = useTheme()
   const { device } = useWeb()
 

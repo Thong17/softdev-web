@@ -544,7 +544,7 @@ export const CustomButton = styled(Button)(
   })
 )
 
-export const CustomePrivilege = styled('div')(
+export const CustomPrivilege = styled('div')(
   ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
     border: styled.border.quaternary,
     borderRadius: styled.radius.secondary,

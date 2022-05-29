@@ -16,12 +16,17 @@ export const getListRole = createAsyncThunk(
 
 export const getRole = createAsyncThunk(
   'role/detail',
-  async (id: string) => {
+  async ({id, query, fields}: { id: string, query: Object, fields: Array<string> }) => {
     const response = await Axios({
       method: 'GET',
-      url: `/admin/role/detail/${id}`
+      url: `/admin/role/detail/${id}?${query}`
     })
-    return response?.data
+    let data = {}
+    fields.forEach((field) => {
+      data[field] = response?.data?.data?.[field]
+    })
+    
+    return { ...response?.data, data }
   }
 )
 

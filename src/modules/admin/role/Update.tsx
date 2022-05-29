@@ -8,19 +8,15 @@ import { useEffect } from 'react'
 
 export const UpdateRole = () => {
   const dispatch = useAppDispatch()
-  const { data: role, status } = useAppSelector(selectRole)
+  const { data: defaultValues, status } = useAppSelector(selectRole)
   const { id } = useParams()
-
-  console.log(role, status);
   
-
   useEffect(() => {
     if (id) {
-      dispatch(getRole(id))
+      dispatch(getRole({ id, query: {}, fields: ['name', 'privilege', 'description'] }))
     }
   }, [dispatch, id])
-  
-  
+
   const Header = () => {
     return (
       <>
@@ -31,7 +27,9 @@ export const UpdateRole = () => {
 
   return (
     <Container header={<Header />}>
-      <RoleForm />
+      {
+        status === 'SUCCESS' && <RoleForm defaultValues={defaultValues} />
+      }
     </Container>
   )
 }
