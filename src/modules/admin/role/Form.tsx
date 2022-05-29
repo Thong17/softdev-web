@@ -90,16 +90,18 @@ export const RoleForm = ({ defaultValues }) => {
   }, [dispatch])
 
   useEffect(() => {
-    const privilege = getValues('privilege')
-    
-    let checkedAll = {}
-    Object.keys(privilege).forEach((route) => {
-      Object.keys(privilege[route]).find(action => !privilege[route][action]) 
-        ? checkedAll = { ...checkedAll, [route]: false }
-        : checkedAll = { ...checkedAll, [route]: true }
-    })
-    setCheckAll(checkedAll)
-  }, [preRole, setValue, getValues])
+    if (statusPreRole === 'SUCCESS') {
+      const privilege = { ...preRole, ...getValues('privilege') }
+      setValue('privilege', privilege)
+      let checkedAll = {}
+      Object.keys(privilege).forEach((route) => {
+        Object.keys(privilege[route]).find(action => !privilege[route][action]) 
+          ? checkedAll = { ...checkedAll, [route]: false }
+          : checkedAll = { ...checkedAll, [route]: true }
+      })
+      setCheckAll(checkedAll)
+    }
+  }, [preRole, statusPreRole, setValue, getValues])
 
   return (
     <form
