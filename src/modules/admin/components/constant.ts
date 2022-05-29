@@ -48,4 +48,30 @@ export const stages = {
         title: 'User',
       },
     ],
+    userCreate: [
+      {
+        title: 'Admin',
+        path: '/admin',
+      },
+      {
+        title: 'User',
+        path: '/admin/user',
+      },
+      {
+        title: 'Create',
+      },
+    ],
+    userUpdate: [
+      {
+        title: 'Admin',
+        path: '/admin',
+      },
+      {
+        title: 'User',
+        path: '/admin/user',
+      },
+      {
+        title: 'Update',
+      },
+    ],
   }

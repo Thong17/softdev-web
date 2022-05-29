@@ -3,19 +3,20 @@ import { Section } from '../Section'
 import { TextField } from '.'
 import { useState } from 'react'
 
-export const LocaleField = ({ name, onChange, describe, err, ...prop }) => {
-  const [category, setCategory] = useState({})
+export const LocaleField = ({ name, onChange, describe, defaultValue, err, ...prop }: any) => {
+  const [localeField, setLocaleField] = useState(defaultValue || {})
   const langs = Object.keys(languages)
 
   const handleChange = (event) => {
     const props = event.target.name.split('.')
     const value = event.target.value
+    
     const newCategory = {
-      ...category,
+      ...localeField,
       [props[1]]: value,
     }
 
-    setCategory(newCategory)
+    setLocaleField(newCategory)
     return onChange(newCategory)
   }
 
@@ -37,6 +38,7 @@ export const LocaleField = ({ name, onChange, describe, err, ...prop }) => {
               type='text'
               label={language}
               name={`${name}.${language}`}
+              value={localeField[language] || ''}
               {...prop}
             />
           )

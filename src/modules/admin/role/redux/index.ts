@@ -19,7 +19,7 @@ export const getRole = createAsyncThunk(
   async ({id, query, fields}: { id: string, query: Object, fields: Array<string> }) => {
     const response = await Axios({
       method: 'GET',
-      url: `/admin/role/detail/${id}?${query}`
+      url: `/admin/role/detail/${id}`
     })
     let data = {}
     fields.forEach((field) => {
@@ -58,7 +58,7 @@ export const roleSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Create Role
+      // List Role
       .addCase(getListRole.pending, (state) => {
         state.list.status = 'LOADING'
       })

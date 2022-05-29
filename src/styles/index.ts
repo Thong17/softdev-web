@@ -401,6 +401,8 @@ export const CustomInput = styled('div')(
       userSelect: 'none',
     },
     '& .err': {
+      color: styled.color.error,
+      transition: '0.3s ease',
       position: 'absolute',
       left: 7,
       fontSize: styled.responsive[device]?.text.quaternary,
@@ -552,7 +554,7 @@ export const CustomPrivilege = styled('div')(
     '& .label': {
       position: 'absolute',
       top: 9,
-      left: device !== 'mobile' ? 40 : 20,
+      left: 20,
       padding: '0 5px',
       backgroundColor: styled.background.primary
     },

@@ -13,7 +13,7 @@ import Loading from 'components/shared/icons/Loading'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-export const RoleForm = ({ defaultValues }) => {
+export const RoleForm = ({ defaultValues, id }: any) => {
   const dispatch = useAppDispatch()
   const { data: preRole, status: statusPreRole } = useAppSelector(selectPreRole)
   const {
@@ -78,8 +78,8 @@ export const RoleForm = ({ defaultValues }) => {
 
   const submit = async (data) => {
     const response = Axios({
-      method: 'POST',
-      url: '/admin/role/create',
+      method: id ? 'PUT' : 'POST',
+      url: id ? `/admin/role/update/${id}` : `/admin/role/create`,
       body: data,
     })
     loadify(response)
@@ -132,6 +132,7 @@ export const RoleForm = ({ defaultValues }) => {
           err={errors?.name}
           describe='Role'
           name='name'
+          defaultValue={getValues('name')}
         />
         <DetailField
           type='text'
@@ -141,7 +142,7 @@ export const RoleForm = ({ defaultValues }) => {
         />
       </div>
       <div style={{ gridArea: 'privilege', position: 'relative', minHeight: 42 }}>
-        {statusPreRole !== 'LOADING'
+        {statusPreRole === 'SUCCESS'
           ? <PrivilegeBox />
           : <Loading />
         }
@@ -163,7 +164,7 @@ export const RoleForm = ({ defaultValues }) => {
           color='success'
           style={{ marginLeft: 20 }}
         >
-          Submit
+          { id ? 'Save' : 'Create' }
         </Button>
       </div>
     </form>

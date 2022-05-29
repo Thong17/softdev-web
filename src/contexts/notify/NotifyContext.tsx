@@ -37,7 +37,9 @@ const NotifyProvider = ({ children }) => {
       },
       error: {
         render({data}: {data: any}) {
-          return data?.data?.msg || 'Failed'
+          console.log({data});
+          
+          return data?.response?.data?.msg || 'Internal Server Error'
         }
       }
     }, {

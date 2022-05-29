@@ -22,8 +22,6 @@ export const Admin = () => {
   )
 }
 
-export { User } from './user'
-export { Role } from './role'
-export { CreateRole } from './role/Create'
-export { UpdateRole } from './role/Update'
-export { DetailRole } from './role/Detail'
+export { Users, CreateUser, UpdateUser, DetailUser } from './user'
+export { Roles, CreateRole, UpdateRole, DetailRole } from './role'
+

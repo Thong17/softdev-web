@@ -68,9 +68,9 @@ export const StickyTable = ({ columns, rows, loading }: ITable) => {
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, key) => {
+              .map((row) => {
                 return (
-                  <TableRow hover role='checkbox' tabIndex={-1} key={key}>
+                  <TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id]
                       return (
@@ -107,7 +107,8 @@ export const StickyTable = ({ columns, rows, loading }: ITable) => {
           height: 40,
           display: 'flex',
           justifyContent: 'end',
-          alignItems: 'center'
+          alignItems: 'center',
+          overflow: 'hidden'
         }}
         rowsPerPageOptions={[10, 25, 50, 100]}
         component='div'

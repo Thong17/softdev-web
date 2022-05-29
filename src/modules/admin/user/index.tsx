@@ -1,95 +1,102 @@
 import AdminBreadcrumbs from '../components/Breadcrumbs'
 import Container from 'components/shared/Container'
-import { SelectField, TextField, FileField } from 'components/shared/form'
-import useNotify from 'hooks/useNotify'
-import useWeb from 'hooks/useWeb'
+import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { Button } from '@mui/material'
+import { ITableColumn, StickyTable } from 'components/shared/table/StickyTable'
+import { useNavigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { selectListUser, getListUser } from './redux'
+import { ReactElement, useEffect, useState } from 'react'
+import { UpdateButton, DeleteButton, ViewButton } from 'components/shared/table/ActionButton'
+import useLanguage from 'hooks/useLanguage'
+import useAuth from 'hooks/useAuth'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
-export const User = () => {
-  const { notify } = useNotify()
-  const { device } = useWeb()
+declare type ColumnHeader = 'name' | 'description' | 'createdBy' | 'action'
+
+const columnData: ITableColumn<ColumnHeader>[] = [
+  { id: 'name', label: 'Name' },
+  { id: 'description', label: 'Description' },
+  { id: 'createdBy', label: 'Created\u00a0By', align: 'right' },
+  { id: 'action', label: 'Action', align: 'right' },
+]
+interface Data {
+  id: string,
+  username: string
+  role: string
+  email: string
+  createdBy: string
+  action: ReactElement
+}
+
+const createData = (
+  id: string,
+  username: string,
+  role: string,
+  createdBy: string,
+  email: any,
+  privilege: any,
+  navigate: Function,
+  setDialog: Function
+): Data => {
+let action = <div style={{ float: 'right' }}>
+  { privilege?.user?.update && <UpdateButton onClick={() => navigate(`/admin/user/update/${id}`)} /> }
+  { privilege?.user?.delete && <DeleteButton onClick={() => setDialog({ open: true, id })} /> }
+  { privilege?.user?.detail && <ViewButton onClick={() => navigate(`/admin/user/detail/${id}`)} /> }
+</div>
+ 
+return { id, username, role, email, createdBy, action }
+}
+
+export const Users = () => {
+  const dispatch = useAppDispatch()
+  const { data: users, status } = useAppSelector(selectListUser)
+  const { lang } = useLanguage()
+  const { user } = useAuth()
+  const { loadify } = useNotify()
+  const [rowData, setRowData] = useState<Data[]>([])
+  const [dialog, setDialog] = useState({ open: false, id: null })
+  const navigate = useNavigate()
   const Header = () => {
     return (
       <>
         <AdminBreadcrumbs page='user' title='Table' />
+        <Button onClick={() => navigate('/admin/user/create')}>Create</Button>
       </>
     )
   }
 
+  const handleConfirm = (id) => {
+    const response = Axios({
+      method: 'DELETE',
+      url: `/admin/user/disable/${id}`,
+    })
+    loadify(response)
+    response.then(() => setRowData(rowData.filter((role) => role.id !== id)))
+    
+    setDialog({ open: false, id: null })
+  }
+
+  useEffect(() => {
+    dispatch(getListUser())
+  }, [dispatch])
+
+  useEffect(() => {
+    const list = users.map((data: any) => {
+      return createData(data._id, data.username, data.role || '...', data.email || '...', data.createdBy || '...', user?.privilege, navigate, setDialog)
+    })
+    setRowData(list)
+  }, [users, lang, user, navigate])
+
   return (
     <Container header={<Header />}>
-      <h1>Role</h1>
-      <button onClick={() => notify('Success', 'success')}>Notify</button>
-      <button onClick={() => notify('Fucked', 'error')}>Fuck</button>
-      <button onClick={() => notify('Wawrn', 'warning')}>Warn</button>
-      <button
-        onClick={() =>
-          notify(
-            'useForm, you will receive the following methods register, unregister, errors, watch, handleSubmit, reset, setError, clearError, setValue, getValues, triggerValidation, control and formState.',
-            'info'
-          )
-        }
-      >
-        By invoking
-      </button>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
-          gridColumnGap: 20,
-          gridTemplateAreas:
-            device !== 'mobile'
-              ? ` 
-                                'select text number' 
-                                'email password date'
-                                'file file file'
-
-                              `
-              : ` 
-                                'select text text' 
-                                'number number date'
-                                'email email email'
-                                'password password password'
-                                'file file file'
-                              `,
-        }}
-      >
-        <div style={{ gridArea: 'select' }}>
-          <SelectField
-            onChange={(event) => console.log(event.target.value)}
-            options={[{ label: 'Nine', value: 9, selected: true }, { label: 'Test', value: 4 }]}
-            label='Gender'
-            defaultValue=''
-            hint='This is hint'
-          />
-        </div>
-        <div style={{ gridArea: 'text' }}>
-          <TextField
-            onChange={(event) => console.log(event.target.value)}
-            type='text'
-            label='Test'
-            err='You are not allowed'
-          />
-        </div>
-        <div style={{ gridArea: 'date' }}>
-          <TextField type='date' label='Date' onChange={(event) => console.log(event.target.value)} />
-        </div>
-        <div style={{ gridArea: 'number' }}>
-          <TextField type='number' label='Number' hint='This is info' onChange={(event) => console.log(event.target.value)} />
-        </div>
-        <div style={{ gridArea: 'email' }}>
-          <TextField type='email' label='Email' onChange={(event) => console.log(event.target.value)} />
-        </div>
-        <div style={{ gridArea: 'password' }}>
-          <TextField type='password' label='Password' onChange={(event) => console.log(event.target.value)} />
-        </div>
-        <div style={{ gridArea: 'file' }}>
-          <FileField label='Upload' hint='this is hint' name='file1' height={100} onChange={(event) => console.log(event.target.files)} />
-        </div>
-        
-      </div>
-      <div><Button variant='contained'>Button</Button></div>
-
+      <AlertDialog id={dialog.id} isOpen={dialog.open} handleConfirm={handleConfirm} handleClose={() => setDialog({ open: false, id: null })}></AlertDialog>
+      {status === 'SUCCESS' && <StickyTable columns={columnData} rows={rowData} />}
     </Container>
   )
 }
+
+export { CreateUser } from './Create'
+export { UpdateUser } from './Update'
+export { DetailUser } from './Detail'
