@@ -550,13 +550,17 @@ export const CustomPrivilege = styled('div')(
   ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
     border: styled.border.quaternary,
     borderRadius: styled.radius.secondary,
+    position: 'relative',
     margin: '20px 0',
     '& .label': {
       position: 'absolute',
-      top: 9,
+      top: -11,
       left: 20,
       padding: '0 5px',
       backgroundColor: styled.background.primary
+    },
+    '& label span.Mui-disabled.MuiFormControlLabel-label, label span.Mui-disabled': {
+      color: styled.text.quaternary,
     },
     '& .privilege-container': {
       display: 'flex',
@@ -571,3 +575,21 @@ export const CustomPrivilege = styled('div')(
     }
   })
 )
+
+export const CustomPagination = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    position: 'absolute',
+    bottom: 0,
+    right: 37,
+    height: 40,
+    display: 'flex',
+    justifyContent: 'end',
+    alignItems: 'center',
+    overflow: 'hidden',
+    '& div, & div div svg': {
+      color: styled.text.secondary,
+    }
+  })
+)
+
+

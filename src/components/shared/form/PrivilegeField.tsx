@@ -5,13 +5,14 @@ import { FC, useEffect, useState } from "react"
 import { CheckboxField } from "./CheckField"
 
 interface IPrivilegeField {
+  label?: string,
   preValue: Object,
   value: Object,
-  returnValue: (value) => void,
+  returnValue?: (value) => void,
   isReadOnly?: boolean
 }
 
-export const PrivilegeField: FC<IPrivilegeField> = ({ preValue, value, returnValue, isReadOnly }) => {
+export const PrivilegeField: FC<IPrivilegeField> = ({ label, preValue, value, returnValue, isReadOnly }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   const [checkAll, setCheckAll] = useState({})
@@ -28,7 +29,9 @@ export const PrivilegeField: FC<IPrivilegeField> = ({ preValue, value, returnVal
       ? setCheckAll({ ...checkAll, [route]: false }) 
       : setCheckAll({ ...checkAll, [route]: true })
     setPrivilege(newPrivilege)
-    return returnValue(newPrivilege)
+    if (returnValue) {
+      return returnValue(newPrivilege)
+    }
   }
 
   const handleChangeAllPrivilege = (event) => {
@@ -48,8 +51,15 @@ export const PrivilegeField: FC<IPrivilegeField> = ({ preValue, value, returnVal
     })
     setCheckAll({ ...checkAll, [route]: checked })
     setPrivilege(newPrivilege)
-    return returnValue(newPrivilege)
+    if (returnValue) {
+      return returnValue(newPrivilege)
+    }
   }
+
+  useEffect(() => {
+    setPrivilege({ ...preValue, ...value })
+  }, [value, preValue])
+  
 
   useEffect(() => {
       // Check Parent if all value is checked
@@ -64,14 +74,14 @@ export const PrivilegeField: FC<IPrivilegeField> = ({ preValue, value, returnVal
   }, [privilege])
 
   return <CustomPrivilege styled={theme} device={device}>
-    <span className='label'>Privilege</span>
+    <span className='label'>{label || 'Privilege'}</span>
     {Object.keys(preValue).map((role, i) => {
       return <div key={i} className='privilege-container'>
-        <CheckboxField readOnly={isReadOnly} label={role} name={role} defaultChecked={checkAll[role] || false} onChange={handleChangeAllPrivilege} />
+        <CheckboxField disabled={isReadOnly} label={role} name={role} defaultChecked={checkAll[role] || false} onChange={handleChangeAllPrivilege} />
         <div>
           {
             Object.keys(preValue[role]).map((action, j) => {
-              return <CheckboxField readOnly={isReadOnly} key={j} label={action} name={`${role}.${action}`} defaultChecked={privilege?.[role]?.[action]} onChange={handleChangePrivilege} />
+              return <CheckboxField disabled={isReadOnly} key={j} label={action} name={`${role}.${action}`} defaultChecked={privilege?.[role]?.[action]} onChange={handleChangePrivilege} />
             })
           }
         </div>

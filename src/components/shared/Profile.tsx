@@ -21,11 +21,11 @@ const Profile: FC<IProfile> = ({ username, picture }) => {
         aria-controls='profile-menu'
         onClick={(event) => setAnchorEl(event.currentTarget)}
       >
-        {picture ? (
-          <img src={picture} alt={username} />
-        ) : (
-          <div style={{ alignItems: 'center' }}>{username[0]}</div>
-        )}{' '}
+        {
+          picture 
+            ? (<img src={picture} alt={username} />) 
+            : (<div style={{ alignItems: 'center' }}>{username[0]}</div>)
+        }
         {username}
       </CustomProfile>
       <Menu

@@ -9,7 +9,7 @@ import useWeb from 'hooks/useWeb'
 import Button from 'components/shared/Button'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export const RoleForm = ({ defaultValues, id }: any) => {
   const {
@@ -20,8 +20,8 @@ export const RoleForm = ({ defaultValues, id }: any) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(roleSchema), defaultValues })
   const { device } = useWeb()
-  const { loadify } = useNotify()
-
+  const { notify } = useNotify()
+  const [loading, setLoading] = useState(false)
   const dispatch = useAppDispatch()
   const { data: preRole, status: statusPreRole } = useAppSelector(selectPreRole)
 
@@ -34,18 +34,19 @@ export const RoleForm = ({ defaultValues, id }: any) => {
   }
 
   useEffect(() => {
-    if (statusPreRole === 'INIT') {
-      dispatch(getPreRole())
-    }
+    if (statusPreRole !== 'INIT') return 
+    dispatch(getPreRole())
   }, [dispatch, statusPreRole])
 
   const submit = async (data) => {
-    const response = Axios({
+    Axios({
       method: id ? 'PUT' : 'POST',
       url: id ? `/admin/role/update/${id}` : `/admin/role/create`,
       body: data,
     })
-    loadify(response)
+      .then((data) => notify(data?.data?.msg, 'success'))
+      .catch((err) => notify(err?.response?.data?.msg, 'error'))
+      .finally(() => setLoading(false))
   }
 
   return (
@@ -85,7 +86,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
           {...register('description')}
         />
       </div>
-      <div style={{ gridArea: 'privilege', position: 'relative', minHeight: 42 }}>
+      <div style={{ gridArea: 'privilege', minHeight: 42 }}>
         {statusPreRole === 'SUCCESS' ? <PrivilegeField preValue={preRole} value={getValues('privilege')} returnValue={handleSetPrivilege} /> : <Loading />}
       </div>
       <div
@@ -100,6 +101,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
           Cancel
         </Button>
         <Button
+          loading={loading}
           type='submit'
           variant='contained'
           color='success'

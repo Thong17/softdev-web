@@ -8,6 +8,7 @@ import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
+import { CustomPagination } from 'styles'
 
 export interface ITableColumn<Column> {
   id: Column
@@ -21,9 +22,10 @@ interface ITable {
   columns: ITableColumn<string>[],
   rows: any[],
   loading?: boolean,
+  handleClick?: (id) => void
 }
 
-export const StickyTable = ({ columns, rows, loading }: ITable) => {
+export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => {
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const { theme } = useTheme()
@@ -42,7 +44,7 @@ export const StickyTable = ({ columns, rows, loading }: ITable) => {
 
   return (
     <div>
-      <TableContainer style={{ paddingBottom: 50, overflowX: 'initial' }}>
+      <TableContainer style={{ paddingBottom: 50, overflowX: 'auto' }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
@@ -70,7 +72,7 @@ export const StickyTable = ({ columns, rows, loading }: ITable) => {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
+                  <TableRow onClick={() => { handleClick && handleClick(row.id) }} hover role='checkbox' tabIndex={-1} key={row.id} style={{ cursor: handleClick ? 'pointer' : 'default' }}>
                     {columns.map((column) => {
                       const value = row[column.id]
                       return (
@@ -98,26 +100,18 @@ export const StickyTable = ({ columns, rows, loading }: ITable) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        style={{
-          color: theme.text.secondary,
-          position: 'absolute',
-          bottom: 0,
-          right: 37,
-          height: 40,
-          display: 'flex',
-          justifyContent: 'end',
-          alignItems: 'center',
-          overflow: 'hidden'
-        }}
-        rowsPerPageOptions={[10, 25, 50, 100]}
-        component='div'
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      <CustomPagination styled={theme}>
+        <TablePagination
+          
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          component='div'
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </CustomPagination>
     </div>
   )
 }

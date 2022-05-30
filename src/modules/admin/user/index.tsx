@@ -13,10 +13,12 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-declare type ColumnHeader = 'name' | 'description' | 'createdBy' | 'action'
+declare type ColumnHeader = 'username' | 'description' | 'createdBy' | 'role' | 'email' | 'action'
 
 const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'name', label: 'Name' },
+  { id: 'username', label: 'Username' },
+  { id: 'role', label: 'Role' },
+  { id: 'email', label: 'Email' },
   { id: 'description', label: 'Description' },
   { id: 'createdBy', label: 'Created\u00a0By', align: 'right' },
   { id: 'action', label: 'Action', align: 'right' },
@@ -26,6 +28,7 @@ interface Data {
   username: string
   role: string
   email: string
+  description: string
   createdBy: string
   action: ReactElement
 }
@@ -34,19 +37,19 @@ const createData = (
   id: string,
   username: string,
   role: string,
-  createdBy: string,
   email: any,
+  description: string,
+  createdBy: string,
   privilege: any,
   navigate: Function,
   setDialog: Function
 ): Data => {
-let action = <div style={{ float: 'right' }}>
-  { privilege?.user?.update && <UpdateButton onClick={() => navigate(`/admin/user/update/${id}`)} /> }
-  { privilege?.user?.delete && <DeleteButton onClick={() => setDialog({ open: true, id })} /> }
-  { privilege?.user?.detail && <ViewButton onClick={() => navigate(`/admin/user/detail/${id}`)} /> }
-</div>
- 
-return { id, username, role, email, createdBy, action }
+  let action = <div style={{ float: 'right' }}>
+    { privilege?.user?.update && <UpdateButton onClick={() => navigate(`/admin/user/update/${id}`)} /> }
+    { privilege?.user?.delete && <DeleteButton onClick={() => setDialog({ open: true, id })} /> }
+    { privilege?.user?.detail && <ViewButton onClick={() => navigate(`/admin/user/detail/${id}`)} /> }
+  </div>
+  return { id, username, role, email, description, createdBy, action }
 }
 
 export const Users = () => {
@@ -79,12 +82,13 @@ export const Users = () => {
   }
 
   useEffect(() => {
+    if (status !== 'INIT') return 
     dispatch(getListUser())
-  }, [dispatch])
+  }, [dispatch, status])
 
   useEffect(() => {
     const list = users.map((data: any) => {
-      return createData(data._id, data.username, data.role || '...', data.email || '...', data.createdBy || '...', user?.privilege, navigate, setDialog)
+      return createData(data._id, data.username, data.role?.name?.[lang] || data.role?.name?.['English'], data.email || '...', data.description || '...', data.createdBy || '...', user?.privilege, navigate, setDialog)
     })
     setRowData(list)
   }, [users, lang, user, navigate])

@@ -32,11 +32,11 @@ export const DeleteButton: FC<ButtonProps> = ({ ...prop }) => {
 export const ViewButton: FC<ButtonProps> = ({ ...prop }) => {
   const { theme } = useTheme()
   return (
-    <IconButton
+    <span
+      style={{ color: theme.text.secondary }}
       { ...prop }
-      size='small'
-      style={{ borderRadius: theme.radius.primary, marginLeft: 5, color: theme.text.secondary }}>
+    >
       <MoreVertRoundedIcon fontSize='small' />
-    </IconButton>
+    </span>
   )
 }
