@@ -18,10 +18,10 @@ export const initialState: RoleState = {
   },
   privilege: {
     data: {},
-    status: 'LOADING',
+    status: 'INIT',
   },
   preRole: {
     data: {},
-    status: 'LOADING',
+    status: 'INIT',
   },
 }

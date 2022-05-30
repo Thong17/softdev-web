@@ -1,21 +1,17 @@
-import { DetailField, LocaleField, CheckboxField } from 'components/shared/form'
-import { useEffect, useState } from 'react'
+import { DetailField, LocaleField, PrivilegeField } from 'components/shared/form'
 import { useForm } from 'react-hook-form'
 import { roleSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { getPreRole, selectPreRole } from './redux'
+import { getPreRole, selectPreRole } from 'modules/admin/role/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { CustomPrivilege } from 'styles'
+import Loading from 'components/shared/Loading'
 import useWeb from 'hooks/useWeb'
-import useTheme from 'hooks/useTheme'
 import Button from 'components/shared/Button'
-import Loading from 'components/shared/icons/Loading'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
+import { useEffect } from 'react'
 
 export const RoleForm = ({ defaultValues, id }: any) => {
-  const dispatch = useAppDispatch()
-  const { data: preRole, status: statusPreRole } = useAppSelector(selectPreRole)
   const {
     register,
     setValue,
@@ -23,58 +19,25 @@ export const RoleForm = ({ defaultValues, id }: any) => {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(roleSchema), defaultValues })
-  const { theme } = useTheme()
   const { device } = useWeb()
   const { loadify } = useNotify()
-  const [checkAll, setCheckAll] = useState({})
 
-  const PrivilegeBox = () => {
-    return <CustomPrivilege styled={theme} device={device}>
-      <span className='label'>Privilege</span>
-      {Object.keys(preRole).map((role, i) => {
-        return <div key={i} className='privilege-container'>
-          <CheckboxField label={role} name={role} defaultChecked={checkAll[role] || false} onChange={handleChangeAllPrivilege} />
-          <div>
-            {
-              Object.keys(preRole[role]).map((action, j) => {
-                return <CheckboxField key={j} label={action} name={`${role}.${action}`} defaultChecked={getValues('privilege')?.[role]?.[action]} onChange={handleChangePrivilege} />
-              })
-            }
-          </div>
-        </div>
-      })}
-    </CustomPrivilege>
+  const dispatch = useAppDispatch()
+  const { data: preRole, status: statusPreRole } = useAppSelector(selectPreRole)
+
+  const handleSetPrivilege = (privilege) => {
+    setValue('privilege', privilege)
   }
 
   const handleChangeRole = (role) => {
     setValue('name', role)
   }
 
-  const handleChangePrivilege = (event) => {
-    const names = event.target.name.split('.')
-    const checked = event.target.checked
-    let privilege = getValues('privilege')
-    const [route, action] = names
-    privilege[route][action] = checked
-
-    Object.keys(privilege[route]).find(action => !privilege[route][action]) 
-      ? setCheckAll({ ...checkAll, [route]: false }) 
-      : setCheckAll({ ...checkAll, [route]: true })
-    
-    setValue('privilege', privilege)
-  }
-
-  const handleChangeAllPrivilege = (event) => {
-    const names = event.target.name.split('.')
-    const checked = event.target.checked
-    let privilege = getValues('privilege')
-    const [route] = names
-    Object.keys(preRole[route]).forEach((action) => {
-      privilege[route][action] = checked
-    })
-    setValue('privilege', privilege)
-    setCheckAll({ ...checkAll, [route]: checked })
-  }
+  useEffect(() => {
+    if (statusPreRole === 'INIT') {
+      dispatch(getPreRole())
+    }
+  }, [dispatch, statusPreRole])
 
   const submit = async (data) => {
     const response = Axios({
@@ -84,24 +47,6 @@ export const RoleForm = ({ defaultValues, id }: any) => {
     })
     loadify(response)
   }
-
-  useEffect(() => {
-    dispatch(getPreRole())
-  }, [dispatch])
-
-  useEffect(() => {
-    if (statusPreRole === 'SUCCESS') {
-      const privilege = { ...preRole, ...getValues('privilege') }
-      setValue('privilege', privilege)
-      let checkedAll = {}
-      Object.keys(privilege).forEach((route) => {
-        Object.keys(privilege[route]).find(action => !privilege[route][action]) 
-          ? checkedAll = { ...checkedAll, [route]: false }
-          : checkedAll = { ...checkedAll, [route]: true }
-      })
-      setCheckAll(checkedAll)
-    }
-  }, [preRole, statusPreRole, setValue, getValues])
 
   return (
     <form
@@ -125,7 +70,6 @@ export const RoleForm = ({ defaultValues, id }: any) => {
                               `,
       }}
     >
-
       <div style={{ gridArea: 'input' }}>
         <LocaleField
           onChange={handleChangeRole}
@@ -142,10 +86,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
         />
       </div>
       <div style={{ gridArea: 'privilege', position: 'relative', minHeight: 42 }}>
-        {statusPreRole === 'SUCCESS'
-          ? <PrivilegeBox />
-          : <Loading />
-        }
+        {statusPreRole === 'SUCCESS' ? <PrivilegeField preValue={preRole} value={getValues('privilege')} returnValue={handleSetPrivilege} /> : <Loading />}
       </div>
       <div
         style={{
