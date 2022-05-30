@@ -2,7 +2,7 @@ import { DetailField, LocaleField, PrivilegeField } from 'components/shared/form
 import { useForm } from 'react-hook-form'
 import { roleSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { getPreRole, selectPreRole } from 'modules/admin/role/redux'
+import { getPreRole, selectPreRole } from 'shared/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Loading from 'components/shared/Loading'
 import useWeb from 'hooks/useWeb'
@@ -58,16 +58,16 @@ export const RoleForm = ({ defaultValues, id }: any) => {
         gridTemplateAreas:
           device === 'mobile'
             ? ` 
-                                'input input input' 
-                                'input input input'
-                                'privilege privilege privilege'
-                                'action action action'
-                              `
+                'input input input' 
+                'input input input'
+                'privilege privilege privilege'
+                'action action action'
+              `
             : ` 
-                                'input privilege privilege' 
-                                'input privilege privilege'
-                                'action action action'
-                              `,
+                'input privilege privilege' 
+                'input privilege privilege'
+                'action action action'
+              `,
       }}
     >
       <div style={{ gridArea: 'input' }}>

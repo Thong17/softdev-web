@@ -2,9 +2,7 @@ import { IBody } from 'shared/interface'
 
 export interface RoleState {
   list: IBody<Object[]>
-  detail: IBody<any>,
-  privilege: IBody<Object>,
-  preRole: IBody<Object>
+  detail: IBody<any>
 }
 
 export const initialState: RoleState = {
@@ -15,13 +13,5 @@ export const initialState: RoleState = {
   detail: {
     data: {},
     status: 'INIT',
-  },
-  privilege: {
-    data: {},
-    status: 'INIT',
-  },
-  preRole: {
-    data: {},
-    status: 'INIT',
-  },
+  }
 }

@@ -30,28 +30,6 @@ export const getRole = createAsyncThunk(
   }
 )
 
-export const getPrivilege = createAsyncThunk(
-  'privilege/get',
-  async () => {
-    const response = await Axios({
-      method: 'GET',
-      url: '/admin/role/privilege'
-    })
-    return response?.data
-  }
-)
-
-export const getPreRole = createAsyncThunk(
-  'preRole/get',
-  async () => {
-    const response = await Axios({
-      method: 'GET',
-      url: '/admin/role/preRole'
-    })
-    return response?.data
-  }
-)
-
 export const roleSlice = createSlice({
   name: 'role',
   initialState,
@@ -81,37 +59,11 @@ export const roleSlice = createSlice({
         state.detail.status = 'SUCCESS'
         state.detail.data = action.payload.data
       })
-
-      // Get Privilege from API
-      .addCase(getPrivilege.pending, (state) => {
-        state.privilege.status = 'LOADING'
-      })
-      .addCase(getPrivilege.rejected, (state) => {
-        state.privilege.status = 'FAILED'
-      })
-      .addCase(getPrivilege.fulfilled, (state, action) => {
-        state.privilege.status = 'SUCCESS'
-        state.privilege.data = action.payload.data
-      })
-      
-      // Get Pre Role from API
-      .addCase(getPreRole.pending, (state) => {
-        state.preRole.status = 'LOADING'
-      })
-      .addCase(getPreRole.rejected, (state) => {
-        state.preRole.status = 'FAILED'
-      })
-      .addCase(getPreRole.fulfilled, (state, action) => {
-        state.preRole.status = 'SUCCESS'
-        state.preRole.data = action.payload.data
-      })
   },
 })
 
 export const selectRole = (state: RootState) => state.role.detail
 export const selectListRole = (state: RootState) => state.role.list
-export const selectPrivilege = (state: RootState) => state.role.privilege
-export const selectPreRole = (state: RootState) => state.role.preRole
 
 
 export default roleSlice.reducer
