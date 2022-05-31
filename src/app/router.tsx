@@ -3,7 +3,7 @@ import AuthGuard from '../auth/AuthGuard'
 import { Login } from 'modules/auth/Login'
 import { Register } from 'modules/auth/Register'
 import { Admin, Roles, CreateRole, UpdateRole, DetailRole, Users, CreateUser, UpdateUser, DetailUser } from 'modules/admin'
-import { Store, Category, Brand, CreateCategory } from 'modules/store'
+import { Store, Brand, Categories, CreateCategory, DetailCategory, UpdateCategory } from 'modules/store'
 import { Sale } from 'modules/sale'
 import { Report } from 'modules/report'
 import { Counter } from 'modules/counter/Counter'
@@ -111,16 +111,32 @@ const routes: RouteObject[] = [
       {
         path: 'category',
         element: (
-          <AuthGuard role={{ route: 'admin', action: 'list' }}>
-            <Category />
+          <AuthGuard role={{ route: 'category', action: 'list' }}>
+            <Categories />
           </AuthGuard>
         ),
       },
       {
         path: 'category/create',
         element: (
-          <AuthGuard role={{ route: 'admin', action: 'list' }}>
+          <AuthGuard role={{ route: 'category', action: 'create' }}>
             <CreateCategory />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'category/update/:id',
+        element: (
+          <AuthGuard role={{ route: 'category', action: 'update' }}>
+            <UpdateCategory />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'category/detail/:id',
+        element: (
+          <AuthGuard role={{ route: 'category', action: 'detail' }}>
+            <DetailCategory />
           </AuthGuard>
         ),
       },

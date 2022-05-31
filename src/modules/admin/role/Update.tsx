@@ -6,6 +6,14 @@ import { getRole, selectRole } from './redux'
 import { useAppSelector, useAppDispatch } from 'app/hooks'
 import { useEffect } from 'react'
 
+const Header = () => {
+  return (
+    <>
+      <AdminBreadcrumbs page='roleUpdate' title='Table' />
+    </>
+  )
+}
+
 export const UpdateRole = () => {
   const dispatch = useAppDispatch()
   const { data: defaultValues, status } = useAppSelector(selectRole)
@@ -16,14 +24,6 @@ export const UpdateRole = () => {
       dispatch(getRole({ id, query: {}, fields: ['name', 'privilege', 'description'] }))
     }
   }, [dispatch, id])
-
-  const Header = () => {
-    return (
-      <>
-        <AdminBreadcrumbs page='roleUpdate' title='Table' />
-      </>
-    )
-  }
 
   return (
     <Container header={<Header />}>

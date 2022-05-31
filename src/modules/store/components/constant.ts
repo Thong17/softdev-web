@@ -26,4 +26,17 @@ export const stages = {
       title: 'Create',
     },
   ],
+  categoryUpdate: [
+    {
+      title: 'Store',
+      path: '/store'
+    },
+    {
+      title: 'Category',
+      path: '/store/category'
+    },
+    {
+      title: 'Update',
+    },
+  ],
 }

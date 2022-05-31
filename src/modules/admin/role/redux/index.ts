@@ -65,5 +65,4 @@ export const roleSlice = createSlice({
 export const selectRole = (state: RootState) => state.role.detail
 export const selectListRole = (state: RootState) => state.role.list
 
-
 export default roleSlice.reducer

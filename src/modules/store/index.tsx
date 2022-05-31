@@ -22,6 +22,5 @@ export const Store = () => {
   )
 }
 
-export { Category } from './category'
 export { Brand } from './brand'
-export { CreateCategory } from './category/Create'
+export { Categories, CreateCategory, DetailCategory, UpdateCategory  } from './category'

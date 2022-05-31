@@ -15,7 +15,7 @@ export interface ITableColumn<Column> {
   label: string
   minWidth?: number
   align?: 'left' | 'right' | 'center'
-  format?: (value: number) => string
+  format?: (value: any) => any
 }
 
 interface ITable {

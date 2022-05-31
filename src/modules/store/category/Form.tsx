@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   LocaleField,
   FileField,
@@ -13,27 +13,38 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-const CategoryForm = () => {
-  const { loadify } = useNotify()
+const CategoryForm = ({ defaultValues, id }: any) => {
   const {
     register,
     handleSubmit,
     setValue,
+    getValues,
+    setError,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(categorySchema) })
+  } = useForm({ resolver: yupResolver(categorySchema), defaultValues })
   const { device } = useWeb()
+  const { notify } = useNotify()
+  const [loading, setLoading] = useState(false)
 
   const handleChangeCategory = (category) => {
     setValue('name', category)
   }
 
   const submit = async (data) => {
-    const response = Axios({
-      method: 'POST',
-      url: '/store/category/create',
+    Axios({
+      method: id ? 'PUT' : 'POST',
+      url: id ? `/store/category/update/${id}` : `/store/category/create`,
       body: data,
     })
-    loadify(response)
+      .then((data) => notify(data?.data?.msg, 'success'))
+      .catch((err) => {
+        if (!err?.response?.data?.msg) {
+          setError(err?.response?.data[0]?.key, { message: err?.response?.data[0]?.path })
+        }
+        
+        notify(err?.response?.data?.msg, 'error')
+      })
+      .finally(() => setLoading(false))
   }
 
   return (
@@ -65,6 +76,7 @@ const CategoryForm = () => {
             err={errors?.name}
             describe='Category'
             name='name'
+            defaultValue={getValues('name')}
           />
         </div>
         <div style={{ gridArea: 'status' }}>
@@ -101,12 +113,13 @@ const CategoryForm = () => {
             Cancel
           </Button>
           <Button
+            loading={loading}
             type='submit'
             variant='contained'
             color='success'
             style={{ marginLeft: 20 }}
           >
-            Submit
+            { id ? 'Save' : 'Create' }
           </Button>
         </div>
       </div>

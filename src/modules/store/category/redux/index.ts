@@ -1,27 +1,32 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { RootState } from 'app/store'
 import Axios from 'constants/functions/Axios'
-import { ICategoryBody, initState } from '../constant'
+import { initialState } from './constant'
 
-export interface CategoryState {
-  data: ICategoryBody
-  status: 'success' | 'loading' | 'failed'
-}
-
-const initialState: CategoryState = {
-  data: initState,
-  status: 'loading',
-}
-
-export const createCategory = createAsyncThunk(
-  'category/create',
-  async (body: ICategoryBody) => {
+export const getListCategory = createAsyncThunk(
+  'category/list',
+  async () => {
     const response = await Axios({
-      method: 'POST',
-      url: '/store/category/create',
-      body: body,
+      method: 'GET',
+      url: '/store/category'
     })
     return response?.data
+  }
+)
+
+export const getCategory = createAsyncThunk(
+  'category/detail',
+  async ({id, query, fields}: { id: string, query: Object, fields: Array<string> }) => {
+    const response = await Axios({
+      method: 'GET',
+      url: `/store/category/detail/${id}`
+    })
+    let data = {}
+    fields.forEach((field) => {
+      data[field] = response?.data?.data?.[field]
+    })
+    
+    return { ...response?.data, data }
   }
 )
 
@@ -31,25 +36,33 @@ export const categorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(createCategory.pending, (state) => {
-        console.log('loading...');
-        
-        state.status = 'loading'
+      // List Category
+      .addCase(getListCategory.pending, (state) => {
+        state.list.status = 'LOADING'
       })
-      .addCase(createCategory.rejected, (state) => {
-        console.log('failed');
-        
-        state.status = 'failed'
+      .addCase(getListCategory.rejected, (state) => {
+        state.list.status = 'FAILED'
       })
-      .addCase(createCategory.fulfilled, (state, action) => {
-        console.log('successsssss!');
-        
-        state.status = 'success'
-        state.data = action.payload
+      .addCase(getListCategory.fulfilled, (state, action) => {
+        state.list.status = 'SUCCESS'
+        state.list.data = action.payload.data
+      })
+
+      // Detail Category
+      .addCase(getCategory.pending, (state) => {
+        state.detail.status = 'LOADING'
+      })
+      .addCase(getCategory.rejected, (state) => {
+        state.detail.status = 'FAILED'
+      })
+      .addCase(getCategory.fulfilled, (state, action) => {
+        state.detail.status = 'SUCCESS'
+        state.detail.data = action.payload.data
       })
   },
 })
 
-export const selectCount = (state: RootState) => state.category.data
+export const selectCategory = (state: RootState) => state.category.detail
+export const selectListCategory = (state: RootState) => state.category.list
 
 export default categorySlice.reducer
