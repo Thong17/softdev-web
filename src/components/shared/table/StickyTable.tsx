@@ -27,7 +27,7 @@ interface ITable {
 
 export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => {
   const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+  const [rowsPerPage, setRowsPerPage] = React.useState(50)
   const { theme } = useTheme()
   const { device } = useWeb()
 
@@ -43,8 +43,8 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
   }
 
   return (
-    <div>
-      <TableContainer style={{ paddingBottom: 50, overflowX: 'auto' }}>
+    <>
+      <TableContainer style={{ paddingBottom: 50, overflowX: 'initial' }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
@@ -111,6 +111,6 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </CustomPagination>
-    </div>
+    </>
   )
 }
