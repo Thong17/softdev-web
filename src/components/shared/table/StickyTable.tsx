@@ -102,7 +102,6 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
       </TableContainer>
       <CustomPagination styled={theme}>
         <TablePagination
-          
           rowsPerPageOptions={[10, 25, 50, 100]}
           component='div'
           count={rows.length}
