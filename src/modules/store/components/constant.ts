@@ -39,4 +39,39 @@ export const stages = {
       title: 'Update',
     },
   ],
+  brand: [
+    {
+      title: 'Store',
+      path: '/store'
+    },
+    {
+      title: 'Brand',
+    },
+  ],
+  brandCreate: [
+    {
+      title: 'Store',
+      path: '/store'
+    },
+    {
+      title: 'Brand',
+      path: '/store/brand'
+    },
+    {
+      title: 'Create',
+    },
+  ],
+  brandUpdate: [
+    {
+      title: 'Store',
+      path: '/store'
+    },
+    {
+      title: 'Brand',
+      path: '/store/brand'
+    },
+    {
+      title: 'Update',
+    },
+  ],
 }

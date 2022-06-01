@@ -91,7 +91,7 @@ export const Users = () => {
       url: `/admin/user/disable/${id}`,
     })
     loadify(response)
-    response.then(() => setRowData(rowData.filter((role) => role.id !== id)))
+    response.then(() => dispatch(getListUser()))
     
     setDialog({ open: false, id: null })
   }
@@ -111,7 +111,7 @@ export const Users = () => {
   return (
     <Container header={<Header />}>
       <AlertDialog id={dialog.id} isOpen={dialog.open} handleConfirm={handleConfirm} handleClose={() => setDialog({ open: false, id: null })}></AlertDialog>
-      {status === 'SUCCESS' && <StickyTable columns={columnData} rows={rowData} />}
+      <StickyTable columns={columnData} rows={rowData} />
     </Container>
   )
 }

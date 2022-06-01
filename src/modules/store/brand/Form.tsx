@@ -8,19 +8,19 @@ import {
 import Button from 'components/shared/Button'
 import useWeb from 'hooks/useWeb'
 import { useForm } from 'react-hook-form'
-import { categorySchema } from './schema'
+import { brandSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { getListCategory } from './redux'
 import { useAppDispatch } from 'app/hooks'
+import { getListBrand } from './redux'
 
 const statusOption = [
   { label: 'Enabled', value: true },
   { label: 'Disable', value: false },
 ]
 
-const CategoryForm = ({ defaultValues, id }: any) => {
+const BrandForm = ({ defaultValues, id }: any) => {
   const dispatch = useAppDispatch()
   const {
     watch,
@@ -30,11 +30,11 @@ const CategoryForm = ({ defaultValues, id }: any) => {
     getValues,
     setError,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(categorySchema), defaultValues })
+  } = useForm({ resolver: yupResolver(brandSchema), defaultValues })
   const { device } = useWeb()
   const { notify } = useNotify()
-  const [status, setStatus] = useState(defaultValues.status)
   const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState(defaultValues.status)
   const statusValue = watch('status')
 
   useEffect(() => {
@@ -42,18 +42,18 @@ const CategoryForm = ({ defaultValues, id }: any) => {
     setStatus(selectedStatus?.value)
   }, [statusValue])
 
-  const handleChangeCategory = (category) => {
-    setValue('name', category)
+  const handleChangeBrand = (brand) => {
+    setValue('name', brand)
   }
 
   const submit = async (data) => {
     Axios({
       method: id ? 'PUT' : 'POST',
-      url: id ? `/store/category/update/${id}` : `/store/category/create`,
+      url: id ? `/store/brand/update/${id}` : `/store/brand/create`,
       body: data,
     })
       .then((data) => {
-        dispatch(getListCategory())
+        dispatch(getListBrand())
         notify(data?.data?.msg, 'success')
       })
       .catch((err) => {
@@ -82,27 +82,28 @@ const CategoryForm = ({ defaultValues, id }: any) => {
           gridTemplateColumns: '1fr 1fr 1fr',
           gridColumnGap: 20,
           gridTemplateAreas: `
-                              'category category category'
+                              'brand brand brand'
                               'status icon icon'
                               'description description description'
                               'action action action'
                               `,
         }}
       >
-        <div style={{ gridArea: 'category' }}>
+        <div style={{ gridArea: 'brand' }}>
           <LocaleField
-            onChange={handleChangeCategory}
+            onChange={handleChangeBrand}
             err={errors?.name}
-            describe='Category'
+            describe='Brand'
             name='name'
             defaultValue={getValues('name')}
           />
         </div>
         <div style={{ gridArea: 'status' }}>
           <SelectField
+            defaultValue={status}
             options={statusOption}
             label='Status'
-            defaultValue={status}
+            err={errors?.status}
             {...register('status')}
           />
         </div>
@@ -144,4 +145,4 @@ const CategoryForm = ({ defaultValues, id }: any) => {
   )
 }
 
-export default CategoryForm
+export default BrandForm

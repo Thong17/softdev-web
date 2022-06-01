@@ -1,25 +1,25 @@
 import { IBody } from 'shared/interface'
 
-export interface ICategoryBody {
+export interface IBrandBody {
   name: Object,
   status: boolean,
   icon: any,
   description: string,
 }
 
-export const initState: ICategoryBody = {
+export const initState: IBrandBody = {
   name: {},
   status: true,
   icon: null,
   description: ''
 }
 
-export interface CategoryState {
-  list: IBody<any[]>
-  detail: IBody<ICategoryBody>
+export interface BrandState {
+  list: IBody<Object[]>
+  detail: IBody<IBrandBody>
 }
 
-export const initialState: CategoryState = {
+export const initialState: BrandState = {
   list: {
     data: [],
     status: 'INIT',

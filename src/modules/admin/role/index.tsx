@@ -129,7 +129,7 @@ export const Roles = () => {
       url: `/admin/role/disable/${id}`,
     })
     loadify(response)
-    response.then(() => setRowData(rowData.filter((role) => role.id !== id)))
+    response.then(() => dispatch(getListRole({ query: queryParams })))
 
     setDialog({ open: false, id: null })
   }

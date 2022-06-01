@@ -31,7 +31,7 @@ const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'icon', label: 'Icon' },
   { id: 'name', label: 'Name' },
   { id: 'description', label: 'Description' },
-  { id: 'createdBy', label: 'created\u00a0By' },
+  { id: 'createdBy', label: 'Created\u00a0By' },
   { id: 'status', label: 'Status' },
   { id: 'action', label: 'Action', align: 'center' },
 ]
@@ -121,7 +121,7 @@ export const Categories = () => {
       url: `/store/category/disable/${id}`,
     })
     loadify(response)
-    response.then(() => setRowData(rowData.filter((category) => category.id !== id)))
+    response.then(() => dispatch(getListCategory()))
 
     setDialog({ open: false, id: null })
   }
@@ -158,9 +158,7 @@ export const Categories = () => {
         handleConfirm={handleConfirm}
         handleClose={() => setDialog({ open: false, id: null })}
       ></AlertDialog>
-      {status === "SUCCESS" && (
-        <StickyTable columns={columnData} rows={rowData} />
-      )}
+      <StickyTable columns={columnData} rows={rowData} />
     </Container>
   )
 }

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { IOptions } from 'components/shared/form/SelectField'
 import { getListRole, getPreRole, selectListRole, selectPreRole } from 'shared/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { getListUser } from './redux'
 import useWeb from 'hooks/useWeb'
 import Button from 'components/shared/Button'
 import Axios from 'constants/functions/Axios'
@@ -39,7 +40,10 @@ export const RoleForm = ({ defaultValues, id }: any) => {
       url: id ? `/admin/user/update/${id}` : `/admin/user/create`,
       body: data,
     })
-      .then((data) => notify(data?.data?.msg, 'success'))
+      .then((data) => {
+        dispatch(getListUser())
+        notify(data?.data?.msg, 'success')
+      })
       .catch((err) => notify(err?.response?.data?.msg, 'error'))
       .finally(() => setLoading(false))
   }
