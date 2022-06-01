@@ -1,22 +1,13 @@
-import React, { useEffect, useState } from "react"
-import { useSearchParams } from "react-router-dom"
+import useTheme from "hooks/useTheme"
+import { CustomSearchField } from 'styles'
 
 export const SearchField = ({ ...props }) => {
-  const [queryParams, setQueryParams] = useSearchParams()
-  const [search, setSearch] = useState(queryParams.get('search') || '')
-  const onChange = (e) => {
-    setQueryParams({ search: e.target.value})
-    setSearch(e.target.value)
-  }
-
-  useEffect(() => {
-  }, [search])
-  
+  const { theme } = useTheme()
   
   return (
-    <div>
-      <input type='text' value={search} placeholder='search' onChange={onChange} { ...props } />
-    </div>
+    <CustomSearchField styled={theme}>
+      <input type='text' placeholder='Search' { ...props } />
+    </CustomSearchField>
   )
 }
 

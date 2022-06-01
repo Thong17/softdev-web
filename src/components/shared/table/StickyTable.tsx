@@ -8,6 +8,7 @@ import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
+import Loading from '../Loading'
 import { CustomPagination } from 'styles'
 
 export interface ITableColumn<Column> {
@@ -33,6 +34,7 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
+    
   }
 
   const handleChangeRowsPerPage = (
@@ -44,6 +46,8 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
 
   return (
     <>
+    <div style={{ position: 'relative' }}>
+      { loading && <Loading /> }
       <TableContainer style={{ paddingBottom: 50, overflowX: 'initial' }}>
         <Table stickyHeader>
           <TableHead>
@@ -67,50 +71,55 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow onClick={() => { handleClick && handleClick(row.id) }} hover role='checkbox' tabIndex={-1} key={row.id} style={{ cursor: handleClick ? 'pointer' : 'default' }}>
-                    {columns.map((column) => {
-                      const value = row[column.id]
-                      return (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{
-                            color: theme.text.secondary,
-                            minWidth: column.minWidth,
-                            borderBottom: theme.border.quaternary,
-                            fontSize: theme.responsive[device]?.text.quaternary,
-                            fontWeight: theme.font.weight,
-                            padding: '11px 20px'
-                          }}
-                        >
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                )
-              })}
-          </TableBody>
+          { !loading &&
+            <TableBody>
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                  return (
+                    <TableRow onClick={() => { handleClick && handleClick(row.id) }} hover role='checkbox' tabIndex={-1} key={row.id} style={{ cursor: handleClick ? 'pointer' : 'default' }}>
+                      {columns.map((column) => {
+                        const value = row[column.id]
+                        return (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{
+                              color: theme.text.secondary,
+                              minWidth: column.minWidth,
+                              borderBottom: theme.border.quaternary,
+                              fontSize: theme.responsive[device]?.text.quaternary,
+                              fontWeight: theme.font.weight,
+                              padding: '11px 20px'
+                            }}
+                          >
+                            {column.format && typeof value === 'number'
+                              ? column.format(value)
+                              : value}
+                          </TableCell>
+                        )
+                      })}
+                    </TableRow>
+                  )
+                })}
+            </TableBody>
+          }
         </Table>
       </TableContainer>
-      <CustomPagination styled={theme}>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50, 100]}
-          component='div'
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </CustomPagination>
+    </div>
+    { !loading && 
+        <CustomPagination styled={theme}>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50, 100]}
+            component='div'
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </CustomPagination>
+      }
     </>
   )
 }

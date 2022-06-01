@@ -5,10 +5,11 @@ import { initialState } from './constant'
 
 export const getListRole = createAsyncThunk(
   'role/list',
-  async () => {
+  async ({ query }: { query?: URLSearchParams }) => {
     const response = await Axios({
       method: 'GET',
-      url: '/admin/role'
+      url: '/admin/role',
+      params: query
     })
     return response?.data
   }

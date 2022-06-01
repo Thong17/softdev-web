@@ -1,4 +1,5 @@
 import Breadcrumb from 'components/shared/Breadcrumbs'
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import { FC } from 'react'
 import { stages } from './constant'
 
@@ -10,7 +11,7 @@ interface IAdminBreadcrumbs {
 }
 
 const AdminBreadcrumbs: FC<IAdminBreadcrumbs> = ({ page, title }) => {
-  return <Breadcrumb stages={stages[page]} title={title} />
+  return <Breadcrumb stages={stages[page]} title={<AdminPanelSettingsIcon />} />
 }
 
 export default AdminBreadcrumbs

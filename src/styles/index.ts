@@ -150,10 +150,13 @@ export const CustomProfile = styled(Button)(
 
 export const CustomLoading = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
-    width: '100vw',
-    height: '100vh',
+    width: '100%',
+    height: '500%',
     backgroundColor: styled.background.primary,
-    position: 'fixed',
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   })
 )
 
@@ -588,6 +591,22 @@ export const CustomPagination = styled('div')(
     overflow: 'hidden',
     '& div, & div div svg': {
       color: styled.text.secondary,
+    }
+  })
+)
+
+export const CustomSearchField = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    '& input': {
+      color: styled.text.secondary,
+      border: styled.border.quaternary,
+      padding: '9px 13px',
+      background: 'none',
+      borderRadius: styled.radius.primary,
+      outline: 'none !important',
+      boxShadow: 'none',
+      fontWeight: styled.font.weight,
+      fontFamily: styled.font.family
     }
   })
 )
