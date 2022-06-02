@@ -15,8 +15,30 @@ interface IPrivilegeField {
 export const PrivilegeField: FC<IPrivilegeField> = ({ label, preValue, value, returnValue, isReadOnly }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
-  const [checkAll, setCheckAll] = useState({})
+  const [checkSection, setCheckSection] = useState({})
   const [privilege, setPrivilege] = useState({ ...preValue, ...value })
+  const [checkAll, setCheckAll] = useState(false)
+
+  const handleCheckAll = (event) => {
+    const checked = event.target.checked
+    let newPrivilege = Object.assign({}, privilege)
+
+    Object.keys(preValue).forEach((route) => {
+      Object.keys(preValue[route]).forEach((action) => {
+        newPrivilege = {
+          ...newPrivilege,
+          [route]: {
+            ...newPrivilege[route],
+            [action]: checked
+          }
+        }
+      })
+    })
+    setPrivilege(newPrivilege)
+    if (returnValue) {
+      return returnValue(newPrivilege)
+    }
+  }
 
   const handleChangePrivilege = (event) => {
     const names = event.target.name.split('.')
@@ -26,8 +48,8 @@ export const PrivilegeField: FC<IPrivilegeField> = ({ label, preValue, value, re
     const newPrivilege = Object.assign({}, { ...privilege, [route]: { ...privilege[route], [action]: checked } })
     
     Object.keys(newPrivilege[route]).find(action => !newPrivilege[route][action]) 
-      ? setCheckAll({ ...checkAll, [route]: false }) 
-      : setCheckAll({ ...checkAll, [route]: true })
+      ? setCheckSection({ ...checkSection, [route]: false }) 
+      : setCheckSection({ ...checkSection, [route]: true })
     setPrivilege(newPrivilege)
     if (returnValue) {
       return returnValue(newPrivilege)
@@ -49,7 +71,6 @@ export const PrivilegeField: FC<IPrivilegeField> = ({ label, preValue, value, re
         }
       }
     })
-    setCheckAll({ ...checkAll, [route]: checked })
     setPrivilege(newPrivilege)
     if (returnValue) {
       return returnValue(newPrivilege)
@@ -70,14 +91,21 @@ export const PrivilegeField: FC<IPrivilegeField> = ({ label, preValue, value, re
         : checkedAll = { ...checkedAll, [route]: true }
     })
 
-    setCheckAll(checkedAll)
+    Object.keys(checkedAll).find(action => !checkedAll[action]) 
+        ? setCheckAll(false)
+        : setCheckAll(true)
+
+    setCheckSection(checkedAll)
   }, [privilege])
 
   return <CustomPrivilege styled={theme} device={device}>
     <span className='label'>{label || 'Privilege'}</span>
+    <div className='checkAll-container'>
+      <CheckboxField disabled={isReadOnly} label='Super Admin' defaultChecked={checkAll} onChange={handleCheckAll} />
+    </div>
     {Object.keys(preValue).map((role, i) => {
       return <div key={i} className='privilege-container'>
-        <CheckboxField disabled={isReadOnly} label={role} name={role} defaultChecked={checkAll[role] || false} onChange={handleChangeAllPrivilege} />
+        <CheckboxField disabled={isReadOnly} label={role} name={role} defaultChecked={checkSection[role] || false} onChange={handleChangeAllPrivilege} />
         <div>
           {
             Object.keys(preValue[role]).map((action, j) => {
