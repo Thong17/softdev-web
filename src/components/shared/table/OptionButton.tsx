@@ -1,14 +1,16 @@
 import KeyboardOptionKeyIcon from '@mui/icons-material/KeyboardOptionKey';
 import { CustomOptionButton } from 'styles'
-import { IconButton } from '@mui/material'
+import { MenuDialog } from '../MenuDialog'
 import useTheme from 'hooks/useTheme'
 
-export const OptionButton = ({ ...props }) => {
+export const OptionButton = ({ children, ...props }) => {
   const { theme } = useTheme()
 
   return <CustomOptionButton styled={theme} {...props}>
-    <IconButton>
-      <KeyboardOptionKeyIcon />
-    </IconButton>
+    <MenuDialog 
+      label={<KeyboardOptionKeyIcon />}
+    >
+      {children}
+    </MenuDialog>
   </CustomOptionButton>
 }

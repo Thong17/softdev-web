@@ -1,14 +1,16 @@
 import FilterListIcon from '@mui/icons-material/FilterList'
+import { MenuDialog } from '../MenuDialog'
 import { CustomFilterButton } from 'styles'
-import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
 
-export const FilterButton = ({ ...props }) => {
+export const FilterButton = ({ children, ...props }) => {
   const { theme } = useTheme()
 
   return <CustomFilterButton styled={theme} {...props}>
-    <IconButton>
-      <FilterListIcon />
-    </IconButton>
+    <MenuDialog 
+      label={<FilterListIcon />}
+    >
+      {children}
+    </MenuDialog> 
   </CustomFilterButton>
 }

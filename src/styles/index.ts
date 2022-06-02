@@ -1,5 +1,5 @@
 import { styled } from '@mui/system'
-import { Button, Stack } from '@mui/material'
+import { Button, Menu, Stack } from '@mui/material'
 import { IThemeMode, IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
 import { NAVBAR_HEIGHT, INPUT_HEIGHT } from './constant'
@@ -667,6 +667,26 @@ export const CustomOptionButton = styled('div')(
     width: 40,
     '& button': {
       color: styled.color.info
+    }
+  })
+)
+
+export const CustomMenu = styled(Menu)(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    '& div.MuiPaper-root': {
+      backgroundColor: styled.background.secondary,
+      color: styled.text.secondary,
+      padding: 0,
+      marginTop: 2,
+      '& ul ul': {
+        padding: '10px 20px',
+        fontFamily: styled.font.family,
+        fontWeight: styled.font.weight,
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: styled.active.secondary,
+        }
+      }
     }
   })
 )

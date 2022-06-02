@@ -1,35 +1,39 @@
-import AdminBreadcrumbs from "../components/Breadcrumbs"
-import Container from "components/shared/Container"
-import MenuList from "@mui/material/MenuList"
-import useLanguage from "hooks/useLanguage"
-import useAuth from "hooks/useAuth"
-import Axios from "constants/functions/Axios"
-import useNotify from "hooks/useNotify"
-import useWeb from "hooks/useWeb"
-import { AlertDialog } from "components/shared/table/AlertDialog"
-import { CustomButton } from "styles"
-import { ITableColumn, StickyTable } from "components/shared/table/StickyTable"
-import { useNavigate } from "react-router-dom"
-import { useAppDispatch, useAppSelector } from "app/hooks"
-import { selectListRole, getListRole } from "./redux"
-import { ReactElement, useEffect, useState } from "react"
-import { UpdateButton, DeleteButton, ViewButton } from "components/shared/table/ActionButton"
-import { DeviceOptions } from "contexts/web/interface"
-import { MenuDialog } from "components/shared/MenuDialog"
-import { SearchField } from "components/shared/table/SearchField"
-import { FilterButton } from "components/shared/table/FilterButton"
-import { OptionButton } from "components/shared/table/OptionButton"
-import { debounce } from "utils"
-import { useSearchParams } from "react-router-dom"
-import useTheme from "hooks/useTheme"
+import AdminBreadcrumbs from '../components/Breadcrumbs'
+import Container from 'components/shared/Container'
+import MenuList from '@mui/material/MenuList'
+import useLanguage from 'hooks/useLanguage'
+import useAuth from 'hooks/useAuth'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
+import useWeb from 'hooks/useWeb'
+import { AlertDialog } from 'components/shared/table/AlertDialog'
+import { CustomButton } from 'styles'
+import { ITableColumn, StickyTable } from 'components/shared/table/StickyTable'
+import { useNavigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { selectListRole, getListRole } from './redux'
+import { ReactElement, useEffect, useState } from 'react'
+import {
+  UpdateButton,
+  DeleteButton,
+  ViewButton,
+} from 'components/shared/table/ActionButton'
+import { DeviceOptions } from 'contexts/web/interface'
+import { MenuDialog } from 'components/shared/MenuDialog'
+import { SearchField } from 'components/shared/table/SearchField'
+import { FilterButton } from 'components/shared/table/FilterButton'
+import { OptionButton } from 'components/shared/table/OptionButton'
+import { debounce } from 'utils'
+import { useSearchParams } from 'react-router-dom'
+import useTheme from 'hooks/useTheme'
 
-declare type ColumnHeader = "name" | "description" | "createdBy" | "action"
+declare type ColumnHeader = 'name' | 'description' | 'createdBy' | 'action'
 
 const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: "name", label: "Name" },
-  { id: "description", label: "Description" },
-  { id: "createdBy", label: "Created\u00a0By", align: "right" },
-  { id: "action", label: "Action", align: "right" },
+  { id: 'name', label: 'Name' },
+  { id: 'description', label: 'Description' },
+  { id: 'createdBy', label: 'Created\u00a0By', align: 'right' },
+  { id: 'action', label: 'Action', align: 'right' },
 ]
 interface Data {
   id: string
@@ -50,8 +54,8 @@ const createData = (
   setDialog: Function
 ): Data => {
   let action = (
-    <div style={{ float: "right" }}>
-      {device === "mobile" ? (
+    <div style={{ float: 'right' }}>
+      {device === 'mobile' ? (
         privilege?.role?.detail && (
           <MenuDialog label={<ViewButton />}>
             <MenuList
@@ -92,15 +96,43 @@ const createData = (
   return { id, name, description, createdBy, action: action }
 }
 
-const Header = ({ styled, navigate, handleSearch }) => {
+const Header = ({ styled, navigate, handleSearch, handleImport }) => {
   return (
     <>
       <AdminBreadcrumbs page='role' title='Table' />
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <SearchField onChange={handleSearch} />
-        <FilterButton style={{ marginLeft: 10 }} />
-        <OptionButton style={{ marginLeft: 10 }} />
-        <CustomButton style={{ marginLeft: 10, backgroundColor: `${styled.color.info}22`, color: styled.color.info }} styled={styled} onClick={() => navigate("/admin/role/create")}>Create</CustomButton>
+        <FilterButton style={{ marginLeft: 10 }}>
+          <MenuList>Sort By Name</MenuList>
+          <MenuList>Sort By Date</MenuList>
+        </FilterButton>
+        <OptionButton style={{ marginLeft: 10 }}>
+          <MenuList>
+            <label htmlFor='file-upload' style={{ cursor: 'pointer' }}>
+              Import Data
+            </label>
+            <input
+              id='file-upload'
+              type='file'
+              onChange={handleImport}
+              style={{ display: 'none' }}
+              accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+            />
+          </MenuList>
+          <MenuList>Export Data</MenuList>
+          <MenuList>Download Template</MenuList>
+        </OptionButton>
+        <CustomButton
+          style={{
+            marginLeft: 10,
+            backgroundColor: `${styled.color.info}22`,
+            color: styled.color.info,
+          }}
+          styled={styled}
+          onClick={() => navigate('/admin/role/create')}
+        >
+          Create
+        </CustomButton>
       </div>
     </>
   )
@@ -129,9 +161,13 @@ export const Roles = () => {
     updateQuery(e.target.value)
   }
 
+  const handleImport = (e) => {
+    console.log(e.target.files)
+  }
+
   const handleConfirm = (id) => {
     const response = Axios({
-      method: "DELETE",
+      method: 'DELETE',
       url: `/admin/role/disable/${id}`,
     })
     loadify(response)
@@ -145,7 +181,7 @@ export const Roles = () => {
   }, [dispatch, queryParams])
 
   useEffect(() => {
-    if (status !== "INIT") return
+    if (status !== 'INIT') return
     dispatch(getListRole({ query: queryParams }))
   }, [dispatch, status, queryParams])
 
@@ -153,9 +189,9 @@ export const Roles = () => {
     const listRoles = roles.map((role: any) => {
       return createData(
         role._id,
-        role.name?.[lang] || role.name?.["English"],
-        role.description || "...",
-        role.createdBy || "...",
+        role.name?.[lang] || role.name?.['English'],
+        role.description || '...',
+        role.createdBy || '...',
         user?.privilege,
         device,
         navigate,
@@ -166,7 +202,16 @@ export const Roles = () => {
   }, [roles, lang, user, device, navigate])
 
   return (
-    <Container header={<Header styled={theme} navigate={navigate} handleSearch={handleSearch} />}>
+    <Container
+      header={
+        <Header
+          styled={theme}
+          navigate={navigate}
+          handleSearch={handleSearch}
+          handleImport={handleImport}
+        />
+      }
+    >
       <AlertDialog
         id={dialog.id}
         isOpen={dialog.open}
@@ -178,6 +223,6 @@ export const Roles = () => {
   )
 }
 
-export { CreateRole } from "./Create"
-export { UpdateRole } from "./Update"
-export { DetailRole } from "./Detail"
+export { CreateRole } from './Create'
+export { UpdateRole } from './Update'
+export { DetailRole } from './Detail'

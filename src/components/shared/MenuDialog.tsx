@@ -1,4 +1,6 @@
-import { ButtonProps, IconButton, Menu } from '@mui/material'
+import { ButtonProps, IconButton } from '@mui/material'
+import { CustomMenu } from 'styles'
+import useTheme from 'hooks/useTheme'
 import { FC, ReactElement, useState } from 'react'
 
 interface IMenuDialog extends ButtonProps {
@@ -6,6 +8,7 @@ interface IMenuDialog extends ButtonProps {
 }
 
 export const MenuDialog: FC<IMenuDialog> = ({ label, children, ...props }) => {
+  const { theme } = useTheme()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
 
   return (
@@ -17,17 +20,15 @@ export const MenuDialog: FC<IMenuDialog> = ({ label, children, ...props }) => {
       >
         {label}
       </IconButton>
-      <Menu
+      <CustomMenu
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
         anchorEl={anchorEl}
         id='menu'
-        style={{
-          marginTop: 10
-        }}
+        styled={theme}
       >
         {children}
-      </Menu>
+      </CustomMenu>
     </>
   )
 }
