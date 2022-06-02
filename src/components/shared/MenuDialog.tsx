@@ -1,11 +1,11 @@
-import { IconButton, Menu } from '@mui/material'
+import { ButtonProps, IconButton, Menu } from '@mui/material'
 import { FC, ReactElement, useState } from 'react'
 
-interface IMenuDialog {
+interface IMenuDialog extends ButtonProps {
   label: ReactElement,
 }
 
-export const MenuDialog: FC<IMenuDialog> = ({ label, children }) => {
+export const MenuDialog: FC<IMenuDialog> = ({ label, children, ...props }) => {
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
 
   return (
@@ -13,6 +13,7 @@ export const MenuDialog: FC<IMenuDialog> = ({ label, children }) => {
       <IconButton
         aria-controls='menu'
         onClick={(event) => setAnchorEl(event.currentTarget)}
+        {...props}
       >
         {label}
       </IconButton>

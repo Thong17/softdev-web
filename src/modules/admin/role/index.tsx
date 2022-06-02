@@ -19,6 +19,7 @@ import { MenuDialog } from "components/shared/MenuDialog"
 import { SearchField } from "components/shared/table/SearchField"
 import { debounce } from "utils"
 import { useSearchParams } from "react-router-dom"
+import useTheme from "hooks/useTheme"
 
 declare type ColumnHeader = "name" | "description" | "createdBy" | "action"
 
@@ -89,11 +90,11 @@ const createData = (
   return { id, name, description, createdBy, action: action }
 }
 
-const Header = ({navigate, handleSearch }) => {
+const Header = ({ styled, navigate, handleSearch }) => {
   return (
     <>
       <AdminBreadcrumbs page='role' title='Table' />
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <SearchField onChange={handleSearch} />
         <Button onClick={() => navigate("/admin/role/create")}>Create</Button>
       </div>
@@ -106,6 +107,7 @@ export const Roles = () => {
   const navigate = useNavigate()
   const { loadify } = useNotify()
   const { lang } = useLanguage()
+  const { theme } = useTheme()
   const { device } = useWeb()
   const { user } = useAuth()
   const [rowData, setRowData] = useState<Data[]>([])
@@ -160,7 +162,7 @@ export const Roles = () => {
   }, [roles, lang, user, device, navigate])
 
   return (
-    <Container header={<Header navigate={navigate} handleSearch={handleSearch} />}>
+    <Container header={<Header styled={theme} navigate={navigate} handleSearch={handleSearch} />}>
       <AlertDialog
         id={dialog.id}
         isOpen={dialog.open}

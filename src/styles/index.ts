@@ -565,11 +565,20 @@ export const CustomPrivilege = styled('div')(
     '& label span.Mui-disabled.MuiFormControlLabel-label, label span.Mui-disabled': {
       color: styled.text.quaternary,
     },
-    '& .privilege-container': {
+    '& .privilege-container, & .checkAll-container': {
       display: 'flex',
-      padding: 20,
       flexDirection: 'column',
       userSelect: 'none',
+      padding: '20px 20px 0 20px',
+      '& label': {
+        '& span': {
+          fontWeight: styled.font.weight,
+        }
+      }
+    },
+    '& .privilege-container': {
+      marginLeft: 20,
+      padding: '0 20px 20px 20px',
       '& div': {
         marginLeft: 20,
         display: 'grid',
@@ -596,17 +605,31 @@ export const CustomPagination = styled('div')(
 )
 
 export const CustomSearchField = styled('div')(
-  ({ styled }: { styled: IThemeStyle }) => ({
+  ({ styled, active }: { styled: IThemeStyle, active: string }) => ({
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    transition: '0.2s ease',
+    border: styled.border.quaternary,
+    padding: '1px 3px',
+    borderRadius: styled.radius.primary,
+    width: active === 'active' ? 170 : 26,
     '& input': {
       color: styled.text.secondary,
-      border: styled.border.quaternary,
-      padding: '9px 13px',
+      border: 'none',
       background: 'none',
       borderRadius: styled.radius.primary,
       outline: 'none !important',
       boxShadow: 'none',
       fontWeight: styled.font.weight,
-      fontFamily: styled.font.family
+      fontFamily: styled.font.family,
+      padding: '0 10px',
+      width: '100%',
+    },
+    '& button': {
+      height: 28,
+      width: 28,
+      color: styled.text.secondary
     }
   })
 )

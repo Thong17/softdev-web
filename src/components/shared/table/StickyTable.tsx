@@ -34,7 +34,6 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
-    
   }
 
   const handleChangeRowsPerPage = (
