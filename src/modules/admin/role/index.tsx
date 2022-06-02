@@ -7,7 +7,7 @@ import Axios from "constants/functions/Axios"
 import useNotify from "hooks/useNotify"
 import useWeb from "hooks/useWeb"
 import { AlertDialog } from "components/shared/table/AlertDialog"
-import { Button } from "@mui/material"
+import { CustomButton } from "styles"
 import { ITableColumn, StickyTable } from "components/shared/table/StickyTable"
 import { useNavigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "app/hooks"
@@ -17,6 +17,8 @@ import { UpdateButton, DeleteButton, ViewButton } from "components/shared/table/
 import { DeviceOptions } from "contexts/web/interface"
 import { MenuDialog } from "components/shared/MenuDialog"
 import { SearchField } from "components/shared/table/SearchField"
+import { FilterButton } from "components/shared/table/FilterButton"
+import { OptionButton } from "components/shared/table/OptionButton"
 import { debounce } from "utils"
 import { useSearchParams } from "react-router-dom"
 import useTheme from "hooks/useTheme"
@@ -96,7 +98,9 @@ const Header = ({ styled, navigate, handleSearch }) => {
       <AdminBreadcrumbs page='role' title='Table' />
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <SearchField onChange={handleSearch} />
-        <Button onClick={() => navigate("/admin/role/create")}>Create</Button>
+        <FilterButton style={{ marginLeft: 10 }} />
+        <OptionButton style={{ marginLeft: 10 }} />
+        <CustomButton style={{ marginLeft: 10, backgroundColor: `${styled.color.info}22`, color: styled.color.info }} styled={styled} onClick={() => navigate("/admin/role/create")}>Create</CustomButton>
       </div>
     </>
   )
@@ -119,7 +123,7 @@ export const Roles = () => {
   const updateQuery = debounce((value) => {
     setLoading(false)
     setQueryParams({ search: value })
-  }, 1000)
+  }, 300)
 
   const handleSearch = (e) => {
     updateQuery(e.target.value)

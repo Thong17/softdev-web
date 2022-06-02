@@ -50,6 +50,8 @@ export interface IThemeStyle extends IThemeMode {
   radius: {
     primary: string
     secondary: string
+    ternary: string
+    quaternary: string
     rounded: string
     circle: string
   }

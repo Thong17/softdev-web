@@ -114,8 +114,10 @@ export const themeMode = {
 
 export const themeStyle = {
   radius: {
-    primary: '7px',
-    secondary: '13px',
+    primary: '5px',
+    secondary: '7px',
+    ternary: '10px',
+    quaternary: '13px',
     circle: '50%',
     rounded: '20px',
   },

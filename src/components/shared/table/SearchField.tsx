@@ -5,10 +5,12 @@ import { MenuDialog } from '../MenuDialog'
 import { CustomSearchField } from 'styles'
 import { IconButton, MenuList } from '@mui/material'
 import { useRef, useState } from 'react'
+import useWeb from 'hooks/useWeb'
 
 export const SearchField = ({ ...props }) => {
   const searchField = useRef(document.createElement('input'))
   const { theme } = useTheme()
+  const { device } = useWeb()
   const [active, setActive] = useState(false)
 
   const handleClick = () => {
@@ -17,7 +19,7 @@ export const SearchField = ({ ...props }) => {
   }
 
   return (
-    <CustomSearchField styled={theme} active={active ? 'active' : 'inactive'}>
+    <CustomSearchField styled={theme} device={device} active={active ? 'active' : 'inactive'}>
       <div style={{ display: active ? 'flex' : 'none' }}>
         <MenuDialog 
           style={{
@@ -26,8 +28,8 @@ export const SearchField = ({ ...props }) => {
             justifyContent: 'center', 
             border: theme.border.quaternary, 
             borderRadius: theme.radius.primary,
-            width: 25,
-            height:25
+            width: 26,
+            height: 26
           }}
           label={
             <KeyboardCommandKeyIcon style={{ fontSize: 15 }} />
@@ -37,7 +39,7 @@ export const SearchField = ({ ...props }) => {
         </MenuDialog> 
         <input ref={searchField} type='text' placeholder='Search' {...props} />
       </div>
-      <IconButton size='small' onClick={handleClick}><SearchIcon style={{ fontSize: 19 }} /></IconButton>
+      <IconButton className='search-btn' size='small' onClick={handleClick}><SearchIcon style={{ fontSize: 23 }} /></IconButton>
     </CustomSearchField>
   )
 }

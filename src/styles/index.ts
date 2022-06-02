@@ -296,7 +296,7 @@ export const Breadcrumbs = styled('div')(
     },
     '& span': {
       paddingRight: 20,
-      borderRight: styled.border.primary,
+      borderRight: styled.border.secondary,
     },
   })
 )
@@ -540,11 +540,9 @@ export const CustomSelect = styled('div')(
 )
 
 export const CustomButton = styled(Button)(
-  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
+  ({ styled }: { styled: IThemeStyle }) => ({
     borderRadius: styled.radius.primary,
-    border: styled.border.tertiary,
-    padding: '5px 13px',
-    textTransform: 'none',
+    padding: '6px 13px',
     overflow: 'hidden'
   })
 )
@@ -605,31 +603,70 @@ export const CustomPagination = styled('div')(
 )
 
 export const CustomSearchField = styled('div')(
-  ({ styled, active }: { styled: IThemeStyle, active: string }) => ({
+  ({ styled, active, device }: { styled: IThemeStyle, active: string, device: DeviceOptions }) => ({
     position: 'relative',
+    overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
     transition: '0.2s ease',
-    border: styled.border.quaternary,
-    padding: '1px 3px',
+    padding: '1px 4px 1px 5px',
+    backgroundColor: `${styled.color.info}22`,
     borderRadius: styled.radius.primary,
-    width: active === 'active' ? 170 : 26,
+    height: 34,
+    width: active === 'active' ? 270 : 32,
     '& input': {
       color: styled.text.secondary,
       border: 'none',
       background: 'none',
-      borderRadius: styled.radius.primary,
       outline: 'none !important',
       boxShadow: 'none',
       fontWeight: styled.font.weight,
       fontFamily: styled.font.family,
+      fontSize: styled.responsive[device].text.primary,
       padding: '0 10px',
       width: '100%',
     },
+    '& button.search-btn': {
+      position: 'absolute',
+      height: 36,
+      width: 36,
+      right: 2,
+      color: styled.color.info
+    },
     '& button': {
-      height: 28,
-      width: 28,
       color: styled.text.secondary
+    }
+  })
+)
+
+export const CustomFilterButton = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: `${styled.color.info}22`,
+    borderRadius: styled.radius.primary,
+    height: 36,
+    width: 40,
+    '& button': {
+      color: styled.color.info
+    }
+  })
+)
+
+export const CustomOptionButton = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: `${styled.color.info}22`,
+    borderRadius: styled.radius.primary,
+    height: 36,
+    width: 40,
+    '& button': {
+      color: styled.color.info
     }
   })
 )
