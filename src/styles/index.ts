@@ -610,7 +610,7 @@ export const CustomSearchField = styled('div')(
     alignItems: 'center',
     transition: '0.2s ease',
     padding: '1px 4px 1px 5px',
-    backgroundColor: `${styled.color.info}22`,
+    backgroundColor: styled.background.secondary,
     borderRadius: styled.radius.primary,
     height: 34,
     width: active === 'active' ? 270 : 32,
@@ -631,7 +631,7 @@ export const CustomSearchField = styled('div')(
       height: 36,
       width: 36,
       right: 2,
-      color: styled.color.info
+      color: styled.text.secondary
     },
     '& button': {
       color: styled.text.secondary
@@ -645,12 +645,12 @@ export const CustomFilterButton = styled('div')(
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: `${styled.color.info}22`,
+    backgroundColor: styled.background.secondary,
     borderRadius: styled.radius.primary,
     height: 36,
     width: 40,
     '& button': {
-      color: styled.color.info
+      color: styled.text.secondary
     }
   })
 )
@@ -661,12 +661,12 @@ export const CustomOptionButton = styled('div')(
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: `${styled.color.info}22`,
+    backgroundColor: styled.background.secondary,
     borderRadius: styled.radius.primary,
     height: 36,
     width: 40,
     '& button': {
-      color: styled.color.info
+      color: styled.text.secondary
     }
   })
 )

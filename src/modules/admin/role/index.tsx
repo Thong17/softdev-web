@@ -125,8 +125,8 @@ const Header = ({ styled, navigate, handleSearch, handleImport }) => {
         <CustomButton
           style={{
             marginLeft: 10,
-            backgroundColor: `${styled.color.info}22`,
-            color: styled.color.info,
+            backgroundColor: styled.background.secondary,
+            color: styled.text.secondary,
           }}
           styled={styled}
           onClick={() => navigate('/admin/role/create')}
