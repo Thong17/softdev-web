@@ -2,31 +2,45 @@ import { DeviceOptions } from 'contexts/web/interface'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
 import { MenuList } from '@mui/material'
+
 import {
   UpdateButton,
   DeleteButton,
   ViewButton,
 } from 'components/shared/table/ActionButton'
 import { MenuDialog } from 'components/shared/MenuDialog'
-import AdminBreadcrumbs from '../components/Breadcrumbs'
-import { SearchField } from 'components/shared/table/SearchField'
-import { FilterButton } from 'components/shared/table/FilterButton'
-import { OptionButton } from 'components/shared/table/OptionButton'
-import { CustomButton } from 'styles'
+
 
 export interface IUserBody {
-  username: string,
-  password: string,
-  email: string,
-  role: string,
+  username: string
+  password: string
+  email: string
+  role: string
 }
 
 export const initState: IUserBody = {
   username: '',
   password: '',
   email: '',
-  role: ''
+  role: '',
 }
+
+export const importColumns = ['username', 'role', 'email']
+
+export const headerColumns = [
+  { label: 'username', key: 'username' },
+  { label: 'role', key: 'role' },
+  { label: 'email', key: 'email' },
+]
+
+export const importColumnData: ITableColumn<ColumnHeader>[] = [
+  { id: 'no', label: 'No' },
+  { id: 'username', label: 'Username', minWidth: 100 },
+  { id: 'role', label: 'Role', minWidth: 100 },
+  { id: 'email', label: 'Email', minWidth: 150 },
+  { id: 'status', label: 'Status' },
+  { id: 'action', label: 'Action' },
+]
 
 export declare type ColumnHeader =
   | 'no'
@@ -102,56 +116,3 @@ export const createData = (
   )
   return { id, username, role, email, action }
 }
-
-export const Header = ({ styled, navigate, handleSearch, handleImport }) => {
-  return (
-    <>
-      <AdminBreadcrumbs page='user' title='Table' />
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <SearchField onChange={handleSearch} />
-        <FilterButton style={{ marginLeft: 10 }}>
-          <MenuList>Sort By Name</MenuList>
-          <MenuList>Sort By Date</MenuList>
-        </FilterButton>
-        <OptionButton style={{ marginLeft: 10 }}>
-          <MenuList>
-            <label htmlFor='file-upload' style={{ cursor: 'pointer' }}>
-              Import Data
-            </label>
-            <input
-              id='file-upload'
-              type='file'
-              onChange={handleImport}
-              style={{ display: 'none' }}
-              accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-            />
-          </MenuList>
-          <MenuList>Export Data</MenuList>
-          <MenuList>Download Template</MenuList>
-        </OptionButton>
-        <CustomButton
-          style={{
-            marginLeft: 10,
-            backgroundColor: styled.background.secondary,
-            color: styled.text.secondary,
-          }}
-          styled={styled}
-          onClick={() => navigate('/admin/user/create')}
-        >
-          Create
-        </CustomButton>
-      </div>
-    </>
-  )
-}
-
-export const importColumns = ['username', 'role', 'email']
-
-export const importColumnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'no', label: 'No' },
-  { id: 'username', label: 'Username', minWidth: 100 },
-  { id: 'role', label: 'Role', minWidth: 100 },
-  { id: 'email', label: 'Email', minWidth: 150 },
-  { id: 'status', label: 'Status' },
-  { id: 'action', label: 'Action' },
-]

@@ -15,7 +15,8 @@ import { debounce } from 'utils'
 import { ImportExcel } from 'constants/functions/Excels'
 import useTheme from 'hooks/useTheme'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
-import { Data, createData, columnData, Header, importColumns, importColumnData } from './constant'
+import { Data, createData, columnData, importColumns, importColumnData } from './constant'
+import { Header } from './Header'
 import { Button, DialogActions } from '@mui/material'
 import { CustomButton } from 'styles'
 import useAlert from 'hooks/useAlert'
@@ -77,7 +78,7 @@ export const Users = () => {
     })
   }
 
-  const handleConfirm = (id) => {
+  const handleConfirmDelete = (id) => {
     const response = Axios({
       method: 'DELETE',
       url: `/admin/user/disable/${id}`,
@@ -113,6 +114,7 @@ export const Users = () => {
     <Container
       header={
         <Header
+          data={users}
           styled={theme}
           navigate={navigate}
           handleImport={handleImport}
@@ -143,7 +145,7 @@ export const Users = () => {
       <DeleteDialog
         id={dialog.id}
         isOpen={dialog.open}
-        handleConfirm={handleConfirm}
+        handleConfirm={handleConfirmDelete}
         handleClose={() => setDialog({ open: false, id: null })}
       ></DeleteDialog>
       <StickyTable columns={columnData} rows={rowData} loading={loading} />
