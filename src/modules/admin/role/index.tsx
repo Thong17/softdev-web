@@ -1,146 +1,32 @@
-import AdminBreadcrumbs from '../components/Breadcrumbs'
+
 import Container from 'components/shared/Container'
-import MenuList from '@mui/material/MenuList'
 import useLanguage from 'hooks/useLanguage'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useWeb from 'hooks/useWeb'
 import { DeleteDialog } from 'components/shared/table/DeleteDialog'
-import { CustomButton } from 'styles'
-import { ITableColumn, StickyTable } from 'components/shared/table/StickyTable'
+import { StickyTable } from 'components/shared/table/StickyTable'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { selectListRole, getListRole } from './redux'
-import { ReactElement, useEffect, useState } from 'react'
-import {
-  UpdateButton,
-  DeleteButton,
-  ViewButton,
-} from 'components/shared/table/ActionButton'
-import { DeviceOptions } from 'contexts/web/interface'
-import { MenuDialog } from 'components/shared/MenuDialog'
-import { SearchField } from 'components/shared/table/SearchField'
-import { FilterButton } from 'components/shared/table/FilterButton'
-import { OptionButton } from 'components/shared/table/OptionButton'
+import { useEffect, useState } from 'react'
 import { debounce } from 'utils'
 import { useSearchParams } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
-
-declare type ColumnHeader = 'name' | 'description' | 'createdBy' | 'action'
-
-const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'name', label: 'Name' },
-  { id: 'description', label: 'Description' },
-  { id: 'createdBy', label: 'Created\u00a0By', align: 'right' },
-  { id: 'action', label: 'Action', align: 'right' },
-]
-interface Data {
-  id: string
-  name: string
-  description: string
-  createdBy: string
-  action: ReactElement
-}
-
-const createData = (
-  id: string,
-  name: string,
-  description: string,
-  createdBy: string,
-  privilege: any,
-  device: DeviceOptions,
-  navigate: Function,
-  setDialog: Function
-): Data => {
-  let action = (
-    <div style={{ float: 'right' }}>
-      {device === 'mobile' ? (
-        privilege?.role?.detail && (
-          <MenuDialog label={<ViewButton />}>
-            <MenuList
-              component='div'
-              onClick={() => navigate(`/admin/role/update/${id}`)}
-            >
-              Edit
-            </MenuList>
-            <MenuList
-              component='div'
-              onClick={() => setDialog({ open: true, id })}
-            >
-              Delete
-            </MenuList>
-            <MenuList
-              component='div'
-              onClick={() => navigate(`/admin/role/detail/${id}`)}
-            >
-              View
-            </MenuList>
-          </MenuDialog>
-        )
-      ) : (
-        <>
-          {privilege?.role?.update && (
-            <UpdateButton
-              onClick={() => navigate(`/admin/role/update/${id}`)}
-            />
-          )}
-          {privilege?.role?.delete && (
-            <DeleteButton onClick={() => setDialog({ open: true, id })} />
-          )}
-        </>
-      )}
-    </div>
-  )
-
-  return { id, name, description, createdBy, action: action }
-}
-
-const Header = ({ styled, navigate, handleSearch, handleImport }) => {
-  return (
-    <>
-      <AdminBreadcrumbs page='role' title='Table' />
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <SearchField onChange={handleSearch} />
-        <FilterButton style={{ marginLeft: 10 }}>
-          <MenuList>Sort By Name</MenuList>
-          <MenuList>Sort By Date</MenuList>
-        </FilterButton>
-        <OptionButton style={{ marginLeft: 10 }}>
-          <MenuList>
-            <label htmlFor='file-upload' style={{ cursor: 'pointer' }}>
-              Import Data
-            </label>
-            <input
-              id='file-upload'
-              type='file'
-              onChange={handleImport}
-              style={{ display: 'none' }}
-              accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-            />
-          </MenuList>
-          <MenuList>Export Data</MenuList>
-          <MenuList>Download Template</MenuList>
-        </OptionButton>
-        <CustomButton
-          style={{
-            marginLeft: 10,
-            backgroundColor: styled.background.secondary,
-            color: styled.text.secondary,
-          }}
-          styled={styled}
-          onClick={() => navigate('/admin/role/create')}
-        >
-          Create
-        </CustomButton>
-      </div>
-    </>
-  )
-}
+import { Header } from './Header'
+import { Data, createData, columnData, importColumnData } from './constant'
+import { ImportExcel } from 'constants/functions/Excels'
+import useAlert from 'hooks/useAlert'
+import { importColumns } from './constant'
+import { AlertDialog } from 'components/shared/table/AlertDialog'
+import { Button, DialogActions } from '@mui/material'
+import { CustomButton } from 'styles'
 
 export const Roles = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const confirm = useAlert()
   const { loadify } = useNotify()
   const { lang } = useLanguage()
   const { theme } = useTheme()
@@ -151,6 +37,7 @@ export const Roles = () => {
   const [dialog, setDialog] = useState({ open: false, id: null })
   const [queryParams, setQueryParams] = useSearchParams()
   const [loading, setLoading] = useState(status === 'LOADING' ? true : false)
+  const [importDialog, setImportDialog] = useState({ open: false, data: [] })
 
   const updateQuery = debounce((value) => {
     setLoading(false)
@@ -162,10 +49,38 @@ export const Roles = () => {
   }
 
   const handleImport = (e) => {
-    console.log(e.target.files)
+    const response = ImportExcel(
+      '/admin/role/excel/import',
+      e.target.files[0],
+      importColumns
+    )
+    loadify(response)
+    response.then((data) => setImportDialog({ open: true, data: data.data.data }))
   }
 
-  const handleConfirm = (id) => {
+  const handleCloseImport = () => {
+    confirm({
+      title: 'Discard Import',
+      description: 'Do you want to discard all the change?',
+      variant: 'error'
+    }).then(() => setImportDialog({ ...importDialog, open: false }))
+      .catch(() => setImportDialog({ ...importDialog }))
+  }
+
+  const handleConfirmImport = () => {
+    const response = Axios({
+      method: 'POST',
+      url: '/admin/role/batch',
+      body: importDialog.data
+    })
+    loadify(response)
+    response.then(() => {
+      setImportDialog({ ...importDialog, open: false })
+      dispatch(getListRole({}))
+    })
+  }
+
+  const handleConfirmDelete = (id) => {
     const response = Axios({
       method: 'DELETE',
       url: `/admin/role/disable/${id}`,
@@ -175,10 +90,6 @@ export const Roles = () => {
 
     setDialog({ open: false, id: null })
   }
-
-  useEffect(() => {
-    dispatch(getListRole({ query: queryParams }))
-  }, [dispatch, queryParams])
 
   useEffect(() => {
     if (status !== 'INIT') return
@@ -205,6 +116,7 @@ export const Roles = () => {
     <Container
       header={
         <Header
+          data={roles}
           styled={theme}
           navigate={navigate}
           handleSearch={handleSearch}
@@ -212,10 +124,30 @@ export const Roles = () => {
         />
       }
     >
+      <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
+        <div style={{ position: 'relative' }}>
+          <StickyTable columns={importColumnData} rows={importDialog.data} loading={loading} />
+        </div>
+        <DialogActions>
+          <Button onClick={handleCloseImport}>Cancel</Button>
+          <CustomButton
+            style={{
+              marginLeft: 10,
+              backgroundColor: theme.background.secondary,
+              color: theme.text.secondary,
+            }}
+            styled={theme}
+            onClick={handleConfirmImport}
+            autoFocus
+          >
+            Import 
+          </CustomButton>
+        </DialogActions> 
+      </AlertDialog>
       <DeleteDialog
         id={dialog.id}
         isOpen={dialog.open}
-        handleConfirm={handleConfirm}
+        handleConfirm={handleConfirmDelete}
         handleClose={() => setDialog({ open: false, id: null })}
       ></DeleteDialog>
       <StickyTable columns={columnData} rows={rowData} loading={loading} />

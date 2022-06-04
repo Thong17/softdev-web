@@ -1,74 +1,70 @@
-import { DeviceOptions } from 'contexts/web/interface'
-import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
-import { MenuList } from '@mui/material'
-
 import {
   UpdateButton,
   DeleteButton,
   ViewButton,
 } from 'components/shared/table/ActionButton'
+import { DeviceOptions } from 'contexts/web/interface'
 import { MenuDialog } from 'components/shared/MenuDialog'
+import { ITableColumn } from 'components/shared/table/StickyTable'
+import MenuList from '@mui/material/MenuList'
 
-export interface IUserBody {
-  username: string
-  password: string
-  email: string
-  role: string
+export interface IRoleBody {
+  name: Object,
+  description: string,
+  privilege: Object
 }
 
-export const initState: IUserBody = {
-  username: '',
-  password: '',
-  email: '',
-  role: '',
+export const initState = {
+  name: {},
+  description: '',
+  privilege: {}
 }
 
-export const importColumns = ['username', 'role', 'email']
+export declare type ColumnHeader = 'name' | 'description' | 'createdBy' | 'action' | 'privilege'
+
+export const importColumns = ['name', 'description', 'privilege']
 
 export const headerColumns = [
-  { label: 'username', key: 'username' },
-  { label: 'role', key: 'role' },
-  { label: 'email', key: 'email' },
+  {
+    label: 'name',
+    key: 'name'
+  },
+  {
+    label: 'description',
+    key: 'description'
+  },
+  {
+    label: 'privilege',
+    key: 'privilege'
+  },
 ]
 
 export const importColumnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'no', label: 'No' },
-  { id: 'username', label: 'Username', minWidth: 100 },
-  { id: 'role', label: 'Role', minWidth: 100 },
-  { id: 'email', label: 'Email', minWidth: 150 },
-  { id: 'status', label: 'Status' },
-  { id: 'action', label: 'Action' },
+  { id: 'name', label: 'Name' },
+  { id: 'description', label: 'Description' },
+  { id: 'privilege', label: 'Privilege' },
 ]
-
-export declare type ColumnHeader =
-  | 'no'
-  | 'username'
-  | 'role'
-  | 'email'
-  | 'action'
-  | 'status'
 
 export const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'username', label: 'Username' },
-  { id: 'role', label: 'Role' },
-  { id: 'email', label: 'Email' },
+  { id: 'name', label: 'Name' },
+  { id: 'description', label: 'Description' },
+  { id: 'createdBy', label: 'Created\u00a0By', align: 'right' },
   { id: 'action', label: 'Action', align: 'right' },
 ]
-
 export interface Data {
   id: string
-  username: string
-  role: string
-  email: string
+  name: string
+  description: string
+  createdBy: string
   action: ReactElement
 }
 
 export const createData = (
   id: string,
-  username: string,
-  role: string,
-  email: any,
+  name: string,
+  description: string,
+  createdBy: string,
   privilege: any,
   device: DeviceOptions,
   navigate: Function,
@@ -81,7 +77,7 @@ export const createData = (
           <MenuDialog label={<ViewButton />}>
             <MenuList
               component='div'
-              onClick={() => navigate(`/admin/user/update/${id}`)}
+              onClick={() => navigate(`/admin/role/update/${id}`)}
             >
               Edit
             </MenuList>
@@ -93,7 +89,7 @@ export const createData = (
             </MenuList>
             <MenuList
               component='div'
-              onClick={() => navigate(`/admin/user/detail/${id}`)}
+              onClick={() => navigate(`/admin/role/detail/${id}`)}
             >
               View
             </MenuList>
@@ -103,7 +99,7 @@ export const createData = (
         <>
           {privilege?.role?.update && (
             <UpdateButton
-              onClick={() => navigate(`/admin/user/update/${id}`)}
+              onClick={() => navigate(`/admin/role/update/${id}`)}
             />
           )}
           {privilege?.role?.delete && (
@@ -113,5 +109,6 @@ export const createData = (
       )}
     </div>
   )
-  return { id, username, role, email, action }
+
+  return { id, name, description, createdBy, action: action }
 }
