@@ -11,7 +11,7 @@ import useLanguage from 'hooks/useLanguage'
 import useWeb from 'hooks/useWeb'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
-import { AlertDialog } from 'components/shared/table/AlertDialog'
+import { DeleteDialog } from 'components/shared/table/DeleteDialog'
 import Axios from 'constants/functions/Axios'
 import { DeviceOptions } from 'contexts/web/interface'
 import { MenuDialog } from 'components/shared/MenuDialog'
@@ -152,12 +152,12 @@ export const Brands = () => {
 
   return (
     <Container header={<Header />}>
-      <AlertDialog
+      <DeleteDialog
         id={dialog.id}
         isOpen={dialog.open}
         handleConfirm={handleConfirm}
         handleClose={() => setDialog({ open: false, id: null })}
-      ></AlertDialog>
+      ></DeleteDialog>
       <StickyTable columns={columnData} rows={rowData} />
     </Container>
   )

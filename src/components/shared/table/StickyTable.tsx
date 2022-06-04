@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import Loading from '../Loading'
-import { CustomPagination } from 'styles'
+import { CustomPagination, CustomTableContainer } from 'styles'
 
 export interface ITableColumn<Column> {
   id: Column
@@ -28,7 +28,7 @@ interface ITable {
 
 export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => {
   const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(50)
+  const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const { theme } = useTheme()
   const { device } = useWeb()
 
@@ -44,23 +44,17 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
   }
 
   return (
-    <>
-    <div style={{ position: 'relative' }}>
+    <CustomTableContainer styled={theme} device={device}>
+    <div className='table-container'>
       { loading && <Loading /> }
-      <TableContainer style={{ paddingBottom: 50, overflowX: 'initial' }}>
+      <TableContainer className='table'>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
                   style={{
-                    backgroundColor: theme.background.secondary,
-                    color: theme.text.primary,
                     minWidth: column.minWidth,
-                    borderBottom: theme.border.secondary,
-                    fontWeight: theme.font.weight,
-                    fontSize: theme.responsive[device]?.text.tertiary,
-                    padding: '11px 20px'
                   }}
                   key={column.id}
                   align={column.align}
@@ -74,27 +68,24 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
+                .map((row, index) => {
                   return (
-                    <TableRow onClick={() => { handleClick && handleClick(row.id) }} hover role='checkbox' tabIndex={-1} key={row.id} style={{ cursor: handleClick ? 'pointer' : 'default' }}>
+                    <TableRow onClick={() => { handleClick && handleClick(row.id) }} hover role='checkbox' tabIndex={-1} key={row.id || index} style={{ cursor: handleClick ? 'pointer' : 'default' }}>
                       {columns.map((column) => {
                         const value = row[column.id]
+                        
                         return (
                           <TableCell
                             key={column.id}
                             align={column.align}
                             style={{
-                              color: theme.text.secondary,
                               minWidth: column.minWidth,
-                              borderBottom: theme.border.quaternary,
-                              fontSize: theme.responsive[device]?.text.quaternary,
-                              fontWeight: theme.font.weight,
-                              padding: '11px 20px'
                             }}
                           >
                             {column.format && typeof value === 'number'
                               ? column.format(value)
-                              : value}
+                              : value
+                            }
                           </TableCell>
                         )
                       })}
@@ -119,6 +110,6 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
           />
         </CustomPagination>
       }
-    </>
+    </CustomTableContainer>
   )
 }

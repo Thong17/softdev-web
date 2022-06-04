@@ -691,4 +691,31 @@ export const CustomMenu = styled(Menu)(
   })
 )
 
+export const CustomTableContainer = styled('div')(
+  ({ styled, device }: { styled: IThemeStyle, device: DeviceOptions }) => ({
+    backgroundColor: styled.background.primary,
+    '& .table-container': {
+      position: 'relative',
+      '& .table': {
+        paddingBottom: 50, 
+        overflowX: 'initial'
+      },
+      '& th': {
+        backgroundColor: styled.background.secondary,
+        color: styled.text.primary,
+        borderBottom: styled.border.secondary,
+        fontWeight: styled.font.weight,
+        fontSize: styled.responsive[device]?.text.tertiary,
+        padding: '11px 20px'
+      }, 
+      '& tr td': {
+        color: styled.text.secondary,
+        borderBottom: styled.border.quaternary,
+        fontSize: styled.responsive[device]?.text.quaternary,
+        fontWeight: styled.font.weight,
+        padding: '11px 20px'
+      }
+    }
+  })
+)
 

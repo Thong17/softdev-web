@@ -1,88 +1,71 @@
-import AdminBreadcrumbs from '../components/Breadcrumbs'
+
 import Container from 'components/shared/Container'
-import { AlertDialog } from 'components/shared/table/AlertDialog'
-import { Button } from '@mui/material'
-import { ITableColumn, StickyTable } from 'components/shared/table/StickyTable'
-import { useNavigate } from 'react-router-dom'
+import { DeleteDialog } from 'components/shared/table/DeleteDialog'
+import { StickyTable } from 'components/shared/table/StickyTable'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { selectListUser, getListUser } from './redux'
-import { ReactElement, useEffect, useState } from 'react'
-import { UpdateButton, DeleteButton, ViewButton } from 'components/shared/table/ActionButton'
-import { MenuDialog } from 'components/shared/MenuDialog'
-import { MenuList } from '@mui/material'
+import { useEffect, useState } from 'react'
 import useLanguage from 'hooks/useLanguage'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { DeviceOptions } from 'contexts/web/interface'
 import useWeb from 'hooks/useWeb'
-
-declare type ColumnHeader = 'username' | 'description' | 'createdBy' | 'role' | 'email' | 'action'
-
-const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'username', label: 'Username' },
-  { id: 'role', label: 'Role' },
-  { id: 'email', label: 'Email' },
-  { id: 'description', label: 'Description' },
-  { id: 'createdBy', label: 'Created\u00a0By', align: 'right' },
-  { id: 'action', label: 'Action', align: 'right' },
-]
-interface Data {
-  id: string,
-  username: string
-  role: string
-  email: string
-  description: string
-  createdBy: string
-  action: ReactElement
-}
-
-const createData = (
-  id: string,
-  username: string,
-  role: string,
-  email: any,
-  description: string,
-  createdBy: string,
-  privilege: any,
-  device: DeviceOptions,
-  navigate: Function,
-  setDialog: Function
-): Data => {
-  let action = <div style={{ float: 'right' }}>
-    { 
-      device === 'mobile' 
-        ? ( privilege?.role?.detail && <MenuDialog label={<ViewButton />}>
-            <MenuList component='div' onClick={() => navigate(`/admin/user/update/${id}`)}>Edit</MenuList>
-            <MenuList component='div' onClick={() => setDialog({ open: true, id })}>Delete</MenuList>
-            <MenuList component='div' onClick={() => navigate(`/admin/user/detail/${id}`)}>View</MenuList>
-          </MenuDialog> ) 
-        : <>
-            {privilege?.role?.update && <UpdateButton onClick={() => navigate(`/admin/user/update/${id}`)} />}
-            {privilege?.role?.delete && <DeleteButton onClick={() => setDialog({ open: true, id })} />}
-          </>
-    }
-  </div>
-  return { id, username, role, email, description, createdBy, action }
-}
+import { debounce } from 'utils'
+import { ImportExcel } from 'constants/functions/Excels'
+import useTheme from 'hooks/useTheme'
+import { AlertDialog } from 'components/shared/table/AlertDialog'
+import { Data, createData, columnData, Header, importColumns, importColumnData } from './constant'
+import { Button, DialogActions } from '@mui/material'
+import { CustomButton } from 'styles'
+import useAlert from 'hooks/useAlert'
 
 export const Users = () => {
   const dispatch = useAppDispatch()
   const { data: users, status } = useAppSelector(selectListUser)
+  const navigate = useNavigate()
   const { lang } = useLanguage()
   const { user } = useAuth()
   const { device } = useWeb()
+  const { theme } = useTheme()
   const { loadify } = useNotify()
+  const confirm = useAlert()
   const [rowData, setRowData] = useState<Data[]>([])
+  const [importDialog, setImportDialog] = useState({ open: false, data: [] })
   const [dialog, setDialog] = useState({ open: false, id: null })
-  const navigate = useNavigate()
-  const Header = () => {
-    return (
-      <>
-        <AdminBreadcrumbs page='user' title='Table' />
-        <Button onClick={() => navigate('/admin/user/create')}>Create</Button>
-      </>
+  const [queryParams, setQueryParams] = useSearchParams()
+  const [loading, setLoading] = useState(status === 'LOADING' ? true : false)
+
+  const updateQuery = debounce((value) => {
+    setLoading(false)
+    setQueryParams({ search: value })
+  }, 300)
+
+  const handleSearch = (e) => {
+    updateQuery(e.target.value)
+  }
+
+  const handleImport = (e) => {
+    const response = ImportExcel(
+      '/admin/user/excel/import',
+      e.target.files[0],
+      importColumns
     )
+    loadify(response)
+    response.then((data) => setImportDialog({ open: true, data: data.data.data }))
+  }
+
+  const handleCloseImport = () => {
+    confirm({
+      title: 'Discard Import',
+      description: 'Do you want to discard all the change?',
+      variant: 'error'
+    }).then(() => setImportDialog({ ...importDialog, open: false }))
+      .catch(() => setImportDialog({ ...importDialog }))
+  }
+
+  const handleConfirmImport = () => {
+    console.log('confirm');
   }
 
   const handleConfirm = (id) => {
@@ -91,27 +74,72 @@ export const Users = () => {
       url: `/admin/user/disable/${id}`,
     })
     loadify(response)
-    response.then(() => dispatch(getListUser()))
-    
+    response.then(() => dispatch(getListUser({})))
+
     setDialog({ open: false, id: null })
   }
 
   useEffect(() => {
-    if (status !== 'INIT') return 
-    dispatch(getListUser())
-  }, [dispatch, status])
+    if (status !== 'INIT') return
+    dispatch(getListUser({ query: queryParams }))
+  }, [dispatch, status, queryParams])
 
   useEffect(() => {
     const list = users.map((data: any) => {
-      return createData(data._id, data.username, data.role?.name?.[lang] || data.role?.name?.['English'], data.email || '...', data.description || '...', data.createdBy || '...', user?.privilege, device, navigate, setDialog)
+      return createData(
+        data._id,
+        data.username,
+        data.role?.name?.[lang] || data.role?.name?.['English'],
+        data.email || '...',
+        data.description || '...',
+        data.createdBy || '...',
+        user?.privilege,
+        device,
+        navigate,
+        setDialog
+      )
     })
     setRowData(list)
   }, [users, lang, user, device, navigate])
 
   return (
-    <Container header={<Header />}>
-      <AlertDialog id={dialog.id} isOpen={dialog.open} handleConfirm={handleConfirm} handleClose={() => setDialog({ open: false, id: null })}></AlertDialog>
-      <StickyTable columns={columnData} rows={rowData} />
+    <Container
+      header={
+        <Header
+          styled={theme}
+          navigate={navigate}
+          handleImport={handleImport}
+          handleSearch={handleSearch}
+        />
+      }
+    >
+      <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
+        <div style={{ position: 'relative' }}>
+          <StickyTable columns={importColumnData} rows={importDialog.data} loading={loading} />
+        </div>
+        <DialogActions>
+          <Button onClick={handleCloseImport}>Cancel</Button>
+          <CustomButton
+            style={{
+              marginLeft: 10,
+              backgroundColor: theme.background.secondary,
+              color: theme.text.secondary,
+            }}
+            styled={theme}
+            onClick={() => handleConfirmImport}
+            autoFocus
+          >
+            Import 
+          </CustomButton>
+        </DialogActions>
+      </AlertDialog>
+      <DeleteDialog
+        id={dialog.id}
+        isOpen={dialog.open}
+        handleConfirm={handleConfirm}
+        handleClose={() => setDialog({ open: false, id: null })}
+      ></DeleteDialog>
+      <StickyTable columns={columnData} rows={rowData} loading={loading} />
     </Container>
   )
 }

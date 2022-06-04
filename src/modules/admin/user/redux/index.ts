@@ -5,10 +5,11 @@ import { initialState } from './constant'
 
 export const getListUser = createAsyncThunk(
   'user/list',
-  async () => {
+  async ({ query }: { query?: URLSearchParams }) => {
     const response = await Axios({
       method: 'GET',
-      url: '/admin/user'
+      url: '/admin/user',
+      params: query
     })
     return response?.data
   }

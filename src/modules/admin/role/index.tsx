@@ -6,7 +6,7 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useWeb from 'hooks/useWeb'
-import { AlertDialog } from 'components/shared/table/AlertDialog'
+import { DeleteDialog } from 'components/shared/table/DeleteDialog'
 import { CustomButton } from 'styles'
 import { ITableColumn, StickyTable } from 'components/shared/table/StickyTable'
 import { useNavigate } from 'react-router-dom'
@@ -147,9 +147,9 @@ export const Roles = () => {
   const { device } = useWeb()
   const { user } = useAuth()
   const [rowData, setRowData] = useState<Data[]>([])
-  const [queryParams, setQueryParams] = useSearchParams()
   const { data: roles, status } = useAppSelector(selectListRole)
   const [dialog, setDialog] = useState({ open: false, id: null })
+  const [queryParams, setQueryParams] = useSearchParams()
   const [loading, setLoading] = useState(status === 'LOADING' ? true : false)
 
   const updateQuery = debounce((value) => {
@@ -212,12 +212,12 @@ export const Roles = () => {
         />
       }
     >
-      <AlertDialog
+      <DeleteDialog
         id={dialog.id}
         isOpen={dialog.open}
         handleConfirm={handleConfirm}
         handleClose={() => setDialog({ open: false, id: null })}
-      ></AlertDialog>
+      ></DeleteDialog>
       <StickyTable columns={columnData} rows={rowData} loading={loading} />
     </Container>
   )
