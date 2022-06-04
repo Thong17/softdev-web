@@ -31,8 +31,6 @@ export const initState: IUserBody = {
 export declare type ColumnHeader =
   | 'no'
   | 'username'
-  | 'description'
-  | 'createdBy'
   | 'role'
   | 'email'
   | 'action'
@@ -42,8 +40,6 @@ export const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'username', label: 'Username' },
   { id: 'role', label: 'Role' },
   { id: 'email', label: 'Email' },
-  { id: 'description', label: 'Description' },
-  { id: 'createdBy', label: 'Created\u00a0By', align: 'right' },
   { id: 'action', label: 'Action', align: 'right' },
 ]
 
@@ -52,8 +48,6 @@ export interface Data {
   username: string
   role: string
   email: string
-  description: string
-  createdBy: string
   action: ReactElement
 }
 
@@ -62,8 +56,6 @@ export const createData = (
   username: string,
   role: string,
   email: any,
-  description: string,
-  createdBy: string,
   privilege: any,
   device: DeviceOptions,
   navigate: Function,
@@ -108,7 +100,7 @@ export const createData = (
       )}
     </div>
   )
-  return { id, username, role, email, description, createdBy, action }
+  return { id, username, role, email, action }
 }
 
 export const Header = ({ styled, navigate, handleSearch, handleImport }) => {
@@ -153,14 +145,13 @@ export const Header = ({ styled, navigate, handleSearch, handleImport }) => {
   )
 }
 
-export const importColumns = ['username', 'role', 'email', 'description']
+export const importColumns = ['username', 'role', 'email']
 
 export const importColumnData: ITableColumn<ColumnHeader>[] = [
   { id: 'no', label: 'No' },
   { id: 'username', label: 'Username', minWidth: 100 },
   { id: 'role', label: 'Role', minWidth: 100 },
   { id: 'email', label: 'Email', minWidth: 150 },
-  { id: 'description', label: 'Description', minWidth: 190 },
   { id: 'status', label: 'Status' },
   { id: 'action', label: 'Action' },
 ]

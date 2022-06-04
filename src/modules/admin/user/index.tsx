@@ -65,7 +65,16 @@ export const Users = () => {
   }
 
   const handleConfirmImport = () => {
-    console.log('confirm');
+    const response = Axios({
+      method: 'POST',
+      url: '/admin/user/batch',
+      body: importDialog.data
+    })
+    loadify(response)
+    response.then(() => {
+      setImportDialog({ ...importDialog, open: false })
+      dispatch(getListUser({}))
+    })
   }
 
   const handleConfirm = (id) => {
@@ -91,8 +100,6 @@ export const Users = () => {
         data.username,
         data.role?.name?.[lang] || data.role?.name?.['English'],
         data.email || '...',
-        data.description || '...',
-        data.createdBy || '...',
         user?.privilege,
         device,
         navigate,
@@ -126,12 +133,12 @@ export const Users = () => {
               color: theme.text.secondary,
             }}
             styled={theme}
-            onClick={() => handleConfirmImport}
+            onClick={handleConfirmImport}
             autoFocus
           >
             Import 
           </CustomButton>
-        </DialogActions>
+        </DialogActions> 
       </AlertDialog>
       <DeleteDialog
         id={dialog.id}
