@@ -20,6 +20,7 @@ export const Header = ({
     useEffect(() => {
       const newUsers = data.map((user) => {
         return { 
+          _id: user._id,
           username: user.username, 
           email: user.email, 
           role: user.role._id }
@@ -58,7 +59,7 @@ export const Header = ({
               </CSVLink>
             </MenuList>
             <MenuList>
-              <CSVLink headers={headerColumns} data={[]} filename={`Template_${new Date().toDateString()}.csv`} style={{
+              <CSVLink headers={headerColumns} data={[]} filename={`Template.csv`} style={{
                 color: styled.text.secondary,
                 textDecoration: 'none'
               }}>

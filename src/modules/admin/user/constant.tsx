@@ -24,9 +24,10 @@ export const initState: IUserBody = {
   role: '',
 }
 
-export const importColumns = ['username', 'role', 'email']
+export const importColumns = ['_id', 'username', 'role', 'email']
 
 export const headerColumns = [
+  { label: '_id', key: '_id' },
   { label: 'username', key: 'username' },
   { label: 'role', key: 'role' },
   { label: 'email', key: 'email' },

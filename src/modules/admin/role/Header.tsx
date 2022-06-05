@@ -14,6 +14,7 @@ export const Header = ({ data, styled, navigate, handleSearch, handleImport }) =
     useEffect(() => {
         const newRoles = data.map((role) => {
             return { 
+              _id: role._id,
               name: JSON.stringify(role.name).replace(/"/g, '""'), 
               description: role.description, 
               privilege: JSON.stringify(role.privilege).replace(/"/g, '""')
@@ -53,7 +54,7 @@ export const Header = ({ data, styled, navigate, handleSearch, handleImport }) =
               </CSVLink>
             </MenuList>
             <MenuList>
-              <CSVLink headers={headerColumns} data={[]} filename={`Template_${new Date().toDateString()}.csv`} style={{
+              <CSVLink headers={headerColumns} data={[]} filename={`Template.csv`} style={{
                 color: styled.text.secondary,
                 textDecoration: 'none'
               }}>

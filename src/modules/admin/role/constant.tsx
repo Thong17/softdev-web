@@ -23,9 +23,13 @@ export const initState = {
 
 export declare type ColumnHeader = 'name' | 'description' | 'createdBy' | 'action' | 'privilege'
 
-export const importColumns = ['name', 'description', 'privilege']
+export const importColumns = ['_id', 'name', 'description', 'privilege']
 
 export const headerColumns = [
+  {
+    label: '_id',
+    key: '_id'
+  },
   {
     label: 'name',
     key: 'name'
