@@ -15,10 +15,9 @@ import { debounce } from 'utils'
 import { useSearchParams } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import { Header } from './Header'
-import { Data, createData, columnData, importColumnData } from './constant'
+import { Data, createData, columnData, importColumnData, importColumns } from './constant'
 import { ImportExcel } from 'constants/functions/Excels'
 import useAlert from 'hooks/useAlert'
-import { importColumns } from './constant'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { Button, DialogActions } from '@mui/material'
 import { CustomButton } from 'styles'
@@ -102,7 +101,7 @@ export const Roles = () => {
         role._id,
         role.name?.[lang] || role.name?.['English'],
         role.description || '...',
-        role.createdBy || '...',
+        role.createdBy?.username || '...',
         user?.privilege,
         device,
         navigate,

@@ -5,10 +5,11 @@ import { initialState } from './constant'
 
 export const getListCategory = createAsyncThunk(
   'category/list',
-  async () => {
+  async ({ query }: { query?: URLSearchParams }) => {
     const response = await Axios({
       method: 'GET',
-      url: '/store/category'
+      url: '/store/category',
+      params: query
     })
     return response?.data
   }
@@ -16,10 +17,11 @@ export const getListCategory = createAsyncThunk(
 
 export const getCategory = createAsyncThunk(
   'category/detail',
-  async ({id, query, fields}: { id: string, query: Object, fields: Array<string> }) => {
+  async ({id, query, fields}: { id: string, query?: URLSearchParams, fields: Array<string> }) => {
     const response = await Axios({
       method: 'GET',
-      url: `/store/category/detail/${id}`
+      url: `/store/category/detail/${id}`,
+      params: query
     })
     let data = {}
     fields.forEach((field) => {

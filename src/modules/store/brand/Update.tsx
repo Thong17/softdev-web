@@ -17,7 +17,7 @@ export const UpdateBrand = () => {
   
   useEffect(() => {
     if (id) {
-      dispatch(getBrand({ id, query: {}, fields: ['name', 'icon', 'status', 'description'] }))
+      dispatch(getBrand({ id, fields: ['name', 'icon', 'status', 'description'] }))
     }
   }, [dispatch, id])
   

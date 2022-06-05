@@ -102,18 +102,27 @@ export const RoleForm = ({ defaultValues, id }: any) => {
             gridTemplateAreas:
               device === 'mobile'
                 ? ` 
-                  'role username username' 
+                  'username username role' 
                   'email email email'
                   'password password password'
                   'action action action'
                 `
                 : ` 
-                  'role username username' 
-                  'email email password'
+                  'username username role' 
+                  'password email email'
                   'action action action'
                 `,
           }}
         >
+          
+          <div style={{ gridArea: 'username' }}>
+            <TextField
+              type='text'
+              label='Username'
+              err={errors.username?.message}
+              {...register('username')}
+            />
+          </div>
           <div style={{ gridArea: 'role' }}>
             <SelectField
               value={role}
@@ -124,28 +133,21 @@ export const RoleForm = ({ defaultValues, id }: any) => {
               {...register('role')}
             />
           </div>
-          <div style={{ gridArea: 'username' }}>
-            <TextField
-              type='text'
-              label='Username'
-              err={errors.username?.message}
-              {...register('username')}
-            />
-          </div>
-          <div style={{ gridArea: 'email' }}>
-            <TextField
-              type='email'
-              label='Email'
-              err={errors.email?.message}
-              {...register('email')}
-            />
-          </div>
           <div style={{ gridArea: 'password' }}>
             <TextField
               type='password'
               label={id ? 'Update Password' : 'Password'}
               err={errors.password?.message}
               {...register('password')}
+            />
+          </div>
+          
+          <div style={{ gridArea: 'email' }}>
+            <TextField
+              type='email'
+              label='Email'
+              err={errors.email?.message}
+              {...register('email')}
             />
           </div>
           <div

@@ -53,7 +53,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
       body: data,
     })
       .then((data) => {
-        dispatch(getListBrand())
+        dispatch(getListBrand({}))
         notify(data?.data?.msg, 'success')
       })
       .catch((err) => {

@@ -473,7 +473,7 @@ export const CustomUpload = styled('div')(
 )
 
 export const CustomSelect = styled('div')(
-  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
+  ({ styled, device, value }: { styled: IThemeStyle; device: DeviceOptions, value: any }) => ({
     minWidth: 130,
     padding: '30px 0 20px 0',
     position: 'relative',
@@ -481,11 +481,11 @@ export const CustomSelect = styled('div')(
       transition: '0.2s ease',
       position: 'absolute',
       cursor: 'text',
-      top: '15px',
-      left: '6px',
-      fontSize: styled.responsive[device]?.text.quaternary,
       color: styled.text.tertiary,
       userSelect: 'none',
+      fontSize: value ? styled.responsive[device]?.text.quaternary : styled.responsive[device]?.text.primary,
+      top: value ? '15px' : '39px',
+      left: value ? '6px' : '14px',
     },
     '& .MuiSelect-select, & .MuiList-root li': {
       fontFamily: `${styled.font.family} !important`,

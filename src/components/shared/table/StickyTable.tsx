@@ -72,7 +72,14 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
                   return (
                     <TableRow onClick={() => { handleClick && handleClick(row.id) }} hover role='checkbox' tabIndex={-1} key={row.id || index} style={{ cursor: handleClick ? 'pointer' : 'default' }}>
                       {columns.map((column) => {
-                        const value = row[column.id]
+                        let value = row[column.id]
+                        if (typeof value === 'boolean') {
+                          value = value ? (
+                            <span style={{ color: theme.color.success }}>Enabled</span>
+                          ) : (
+                            <span style={{ color: theme.color.error }}>Disabled</span>
+                          )
+                        }
                         
                         return (
                           <TableCell

@@ -53,7 +53,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
       body: data,
     })
       .then((data) => {
-        dispatch(getListCategory())
+        dispatch(getListCategory({}))
         notify(data?.data?.msg, 'success')
       })
       .catch((err) => {
