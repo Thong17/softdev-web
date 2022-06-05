@@ -6,7 +6,7 @@ export const Axios = async ({method, url, body, params, headers}: IAxiosProps): 
   const token = window.localStorage.getItem('x-access-token') || ''
   const ts = Date.now().toString()
   const hash = await generateHash(ts, token, body)
-  const API_HOST = 'http://localhost:3030'
+  const API_HOST = process.env.REACT_APP_API_URL
 
   const response = await axios({
     method,

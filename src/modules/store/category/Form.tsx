@@ -102,7 +102,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
           <SelectField
             options={statusOption}
             label='Status'
-            defaultValue={status}
+            value={status}
             {...register('status')}
           />
         </div>

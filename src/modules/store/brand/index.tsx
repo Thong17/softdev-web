@@ -98,14 +98,13 @@ export const Brands = () => {
     const listBrands = brands.map((brand: any) => {
       return createData(
         brand._id,
-        brand.icon,
+        brand.icon?.filename,
         brand.name?.[lang] || brand.name?.["English"],
         brand.description || "...",
         brand.createdBy || "...",
         brand.status,
         user?.privilege,
         device,
-        theme,
         navigate,
         setDialog
       )

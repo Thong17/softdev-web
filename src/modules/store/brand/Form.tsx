@@ -32,9 +32,10 @@ const BrandForm = ({ defaultValues, id }: any) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(brandSchema), defaultValues })
   const { device } = useWeb()
-  const { notify } = useNotify()
+  const { notify, loadify } = useNotify()
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState(defaultValues.status)
+  const [iconPath, setIconPath] = useState(null)
   const statusValue = watch('status')
 
   useEffect(() => {
@@ -44,6 +45,27 @@ const BrandForm = ({ defaultValues, id }: any) => {
 
   const handleChangeBrand = (brand) => {
     setValue('name', brand)
+  }
+
+  const handleChangeFile = (event) => {
+    const image = event.target.files[0]
+    const formData = new FormData()
+    formData.append('image', image)
+    const response = Axios({
+      method: 'POST',
+      url: `/shared/upload/image`,
+      body: formData,
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    })
+    loadify(response)
+    response.then((data) => {
+      const filename = data.data.data.filename
+      const fileId = data.data.data._id
+      setValue('icon', fileId)
+      setIconPath(filename)
+    })
   }
 
   const submit = async (data) => {
@@ -58,9 +80,11 @@ const BrandForm = ({ defaultValues, id }: any) => {
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {
-          setError(err?.response?.data[0]?.key, { message: err?.response?.data[0]?.path })
+          setError(err?.response?.data[0]?.key, {
+            message: err?.response?.data[0]?.path,
+          })
         }
-        
+
         notify(err?.response?.data?.msg, 'error')
       })
       .finally(() => setLoading(false))
@@ -100,7 +124,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
         </div>
         <div style={{ gridArea: 'status' }}>
           <SelectField
-            defaultValue={status}
+            value={status}
             options={statusOption}
             label='Status'
             err={errors?.status}
@@ -108,7 +132,13 @@ const BrandForm = ({ defaultValues, id }: any) => {
           />
         </div>
         <div style={{ gridArea: 'icon' }}>
-          <FileField label='Icon' {...register('icon')} />
+          <FileField
+            path={iconPath}
+            name='icon'
+            label='Icon'
+            accept='image/png, image/jpeg'
+            onChange={handleChangeFile}
+          />
         </div>
         <div style={{ gridArea: 'description' }}>
           <DetailField
@@ -136,7 +166,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
             color='success'
             style={{ marginLeft: 20 }}
           >
-            { id ? 'Save' : 'Create' }
+            {id ? 'Save' : 'Create'}
           </Button>
         </div>
       </div>

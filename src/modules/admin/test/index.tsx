@@ -57,9 +57,9 @@ export const Test = () => {
         <div style={{ gridArea: 'select' }}>
           <SelectField
             onChange={(event) => console.log(event.target.value)}
-            options={[{ label: 'Nine', value: 9, selected: true }, { label: 'Test', value: 4 }]}
+            options={[{ label: 'Nine', value: 'asdfjh', selected: true }, { label: 'Test', value: 4 }]}
             label='Gender'
-            defaultValue=''
+            value=''
             hint='This is hint'
           />
         </div>

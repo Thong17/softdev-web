@@ -14,4 +14,3 @@ export const ImportExcel = (endpoint, excel, fields) => {
   })
 }
 
-export const ExportExcel = (fields) => {}

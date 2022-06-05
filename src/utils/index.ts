@@ -9,7 +9,7 @@ export const generateHash = async (
 ) => {
   const str =
     JSON.stringify(data) +
-    '283022c0ac08af46e0587d6a571ed433a9eb4b1f82efbd56563d3cce00b0c486' +
+    process.env.REACT_APP_HASH_SECRET +
     ts +
     token
   const hash = sha256.hex(str).toString()

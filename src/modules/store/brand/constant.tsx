@@ -28,7 +28,7 @@ export const columnData: ITableColumn<ColumnHeader>[] = [
 ]
 export interface Data {
   id: string
-  icon: string
+  icon: ReactElement
   name: string
   description: string
   createdBy: string
@@ -72,7 +72,6 @@ export const createData = (
   status: boolean,
   privilege: any,
   device: DeviceOptions,
-  theme: IThemeStyle,
   navigate: Function,
   setDialog: Function
 ): Data => {
@@ -116,7 +115,7 @@ export const createData = (
     </div>
   )
 
-  
+  const Icon = <div style={{ width: 30, height: 30 }}><img style={{ width: '100%', height: '100%', objectFit: 'contain' }} src={`${process.env.REACT_APP_API_UPLOADS}${icon ? icon : 'default.png'}`} alt={icon} /></div>
 
-  return { id, icon, name, description, createdBy, status, action }
+  return { id, icon: Icon, name, description, createdBy, status, action }
 }
