@@ -1,4 +1,3 @@
-import { IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
 import { MenuDialog } from 'components/shared/MenuDialog'
 import {
