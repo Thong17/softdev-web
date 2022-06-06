@@ -8,6 +8,7 @@ import {
 import { MenuList } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
+import { CircleIcon } from 'components/shared/table/CustomIcon'
 
 export declare type ColumnHeader =
   | 'no'
@@ -122,17 +123,5 @@ export const createData = (
     </div>
   )
 
-  const Icon = (
-    <div style={{ width: 30, height: 30, borderRadius: '50%', overflow: 'hidden' }}>
-      <img
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        src={`${process.env.REACT_APP_API_UPLOADS}${
-          icon ? icon : 'default.jpg'
-        }`}
-        alt={icon}
-      />
-    </div>
-  )
-
-  return { id, icon: Icon, name, description, createdBy, status, action }
+  return { id, icon: <CircleIcon icon={icon} />, name, description, createdBy, status, action }
 }

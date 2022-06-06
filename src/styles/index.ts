@@ -56,10 +56,10 @@ export const CustomSideNav = styled(Stack)(
     width: '100%',
     backgroundColor: styled.background.secondary,
     boxShadow: styled.shadow.container,
-    borderRadius: styled.radius.primary,
+    borderRadius: styled.radius.secondary,
     '& a': {
       color: styled.text.primary,
-      borderRadius: styled.radius.primary,
+      borderRadius: styled.radius.secondary,
       marginLeft: 11,
       width: 'calc(100% - 22px)',
       padding: '9px 0',
@@ -213,10 +213,18 @@ export const CustomNavbar = styled(Stack)(
       boxShadow: 'none',
     },
     '& a.active': {
-      backgroundColor: styled.active.secondary,
+      backgroundColor: styled.background.secondary,
+      boxShadow: styled.shadow.container,
+      color: styled.text.primary,
+    },
+    '& a:hover': {
+      textDecoration: 'underline',
+      color: styled.text.primary,
     },
     '& a': {
-      color: styled.text.primary,
+      color: styled.text.secondary,
+      padding: '7px 17px',
+      borderRadius: styled.radius.secondary,
     },
     transition: '0.3s ease',
     position: 'fixed',
@@ -306,6 +314,21 @@ export const CustomInput = styled('div')(
     position: 'relative',
     padding: '30px 0 20px 0',
     overflow: 'hidden',
+    '& label': {
+      transition: '0.2s ease',
+      position: 'absolute',
+      cursor: 'text',
+      top: '39px',
+      left: '14px',
+      fontSize: styled.responsive[device]?.text.primary,
+      color: styled.text.quaternary,
+      userSelect: 'none',
+      display: 'inline',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      width: '100%',
+      overflow: 'hidden'
+    },
     '& input': {
       position: 'relative',
       zIndex: 10,
@@ -328,7 +351,6 @@ export const CustomInput = styled('div')(
       },
       '&:focus ~ label, &:not(:placeholder-shown) ~ label': {
         transform: 'translate(-8px, -24px)',
-        width: 'max-content',
         backgroundColor: 'inherit',
         fontSize: styled.responsive[device].text.quaternary,
         color: styled.text.tertiary,
@@ -384,16 +406,6 @@ export const CustomInput = styled('div')(
         },
       },
     },
-    '& label': {
-      transition: '0.2s ease',
-      position: 'absolute',
-      cursor: 'text',
-      top: '39px',
-      left: '14px',
-      fontSize: styled.responsive[device]?.text.primary,
-      color: styled.text.quaternary,
-      userSelect: 'none',
-    },
     '& .hint': {
       fontSize: styled.responsive[device].text.quaternary,
       color: styled.color.info,
@@ -426,6 +438,11 @@ export const CustomUpload = styled('div')(
       top: '15px',
       left: '6px',
       userSelect: 'none',
+      display: 'inline',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      width: '100%',
+      overflow: 'hidden'
     },
     '& .hint': {
       fontSize: styled.responsive[device].text.quaternary,
@@ -486,6 +503,11 @@ export const CustomSelect = styled('div')(
       fontSize: active ? styled.responsive[device]?.text.quaternary : styled.responsive[device]?.text.primary,
       top: active ? '15px' : '39px',
       left: active ? '6px' : '14px',
+      display: 'inline',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      width: '100%',
+      overflow: 'hidden'
     },
     '& .MuiSelect-select, & .MuiList-root li': {
       fontFamily: `${styled.font.family} !important`,
@@ -543,7 +565,7 @@ export const CustomButton = styled(Button)(
   ({ styled }: { styled: IThemeStyle }) => ({
     borderRadius: styled.radius.primary,
     padding: '6px 13px',
-    overflow: 'hidden'
+    overflow: 'hidden',
   })
 )
 

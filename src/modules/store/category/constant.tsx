@@ -4,6 +4,7 @@ import { DeviceOptions } from 'contexts/web/interface'
 import { MenuDialog } from 'components/shared/MenuDialog'
 import { DeleteButton, UpdateButton, ViewButton } from 'components/shared/table/ActionButton'
 import { MenuList } from '@mui/material'
+import { CircleIcon } from 'components/shared/table/CustomIcon'
 
 export declare type ColumnHeader = 'icon' | 'name' | 'status' | 'description' | 'createdBy' | 'action' | 'no'
 
@@ -110,17 +111,5 @@ export const createData = (
     </div>
   )
 
-  const Icon = (
-    <div style={{ width: 30, height: 30, borderRadius: '50%', overflow: 'hidden' }}>
-      <img
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        src={`${process.env.REACT_APP_API_UPLOADS}${
-          icon ? icon : 'default.jpg'
-        }`}
-        alt={icon}
-      />
-    </div>
-  )
-
-  return { id, icon: Icon, name, description, createdBy, status, action }
+  return { id, icon: <CircleIcon icon={icon} />, name, description, createdBy, status, action }
 }
