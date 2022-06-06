@@ -12,13 +12,20 @@ import { DeleteDialog } from 'components/shared/table/DeleteDialog'
 import Axios from 'constants/functions/Axios'
 import useTheme from 'hooks/useTheme'
 import { Header } from './Header'
-import { Data, createData, columnData, importColumns, importColumnData } from './constant'
+import {
+  Data,
+  createData,
+  columnData,
+  importColumns,
+  importColumnData,
+} from './constant'
 import { ImportExcel } from 'constants/functions/Excels'
 import { debounce } from 'utils'
 import { useSearchParams } from 'react-router-dom'
 import useAlert from 'hooks/useAlert'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
-import { Button, DialogActions } from '@mui/material'
+import { Button, DialogActions, IconButton } from '@mui/material'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CustomButton } from 'styles'
 
 export const Brands = () => {
@@ -45,7 +52,7 @@ export const Brands = () => {
   const handleSearch = (e) => {
     updateQuery(e.target.value)
   }
-  
+
   const handleImport = (e) => {
     const response = ImportExcel(
       '/store/brand/excel/import',
@@ -53,15 +60,36 @@ export const Brands = () => {
       importColumns
     )
     loadify(response)
-    response.then((data) => setImportDialog({ open: true, data: data.data.data }))
+    response.then((data) => {
+      const importList = data.data.data.map((importData) => {
+        const ImportAction = ({ no }) => (
+          <IconButton
+            onClick={
+              () => {
+                setImportDialog((prevData) => {
+                  return { ...prevData, data: prevData.data.filter((prevItem: any) => prevItem.no !== no) }
+                })
+              }
+            }
+            style={{ color: theme.text.secondary }}
+          >
+            <CloseRoundedIcon />
+          </IconButton>
+        )
+        return { ...importData, action: <ImportAction no={importData?.no} /> }
+      })
+
+      return setImportDialog({ open: true, data: importList })
+    })
   }
 
   const handleCloseImport = () => {
     confirm({
       title: 'Discard Import',
       description: 'Do you want to discard all the change?',
-      variant: 'error'
-    }).then(() => setImportDialog({ ...importDialog, open: false }))
+      variant: 'error',
+    })
+      .then(() => setImportDialog({ ...importDialog, open: false }))
       .catch(() => setImportDialog({ ...importDialog }))
   }
 
@@ -69,7 +97,7 @@ export const Brands = () => {
     const response = Axios({
       method: 'POST',
       url: '/store/brand/batch',
-      body: importDialog.data
+      body: importDialog.data,
     })
     loadify(response)
     response.then(() => {
@@ -77,10 +105,10 @@ export const Brands = () => {
       dispatch(getListBrand({ query: queryParams }))
     })
   }
-  
+
   const handleConfirm = (id) => {
     const response = Axios({
-      method: "DELETE",
+      method: 'DELETE',
       url: `/store/brand/disable/${id}`,
     })
     loadify(response)
@@ -90,7 +118,7 @@ export const Brands = () => {
   }
 
   useEffect(() => {
-    if (status !== "INIT") return
+    if (status !== 'INIT') return
     dispatch(getListBrand({}))
   }, [dispatch, status])
 
@@ -99,9 +127,9 @@ export const Brands = () => {
       return createData(
         brand._id,
         brand.icon?.filename,
-        brand.name?.[lang] || brand.name?.["English"],
-        brand.description || "...",
-        brand.createdBy || "...",
+        brand.name?.[lang] || brand.name?.['English'],
+        brand.description || '...',
+        brand.createdBy || '...',
         brand.status,
         user?.privilege,
         device,
@@ -113,20 +141,24 @@ export const Brands = () => {
   }, [brands, lang, user, device, theme, navigate])
 
   return (
-    <Container 
+    <Container
       header={
-        <Header 
+        <Header
           data={brands}
           styled={theme}
           navigate={navigate}
           handleSearch={handleSearch}
-          handleImport={handleImport} 
-          />
-        }
-      >
+          handleImport={handleImport}
+        />
+      }
+    >
       <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
         <div style={{ position: 'relative' }}>
-          <StickyTable columns={importColumnData} rows={importDialog.data} loading={loading} />
+          <StickyTable
+            columns={importColumnData}
+            rows={importDialog.data}
+            loading={loading}
+          />
         </div>
         <DialogActions>
           <Button onClick={handleCloseImport}>Cancel</Button>
@@ -140,9 +172,9 @@ export const Brands = () => {
             onClick={handleConfirmImport}
             autoFocus
           >
-            Import 
+            Import
           </CustomButton>
-        </DialogActions> 
+        </DialogActions>
       </AlertDialog>
       <DeleteDialog
         id={dialog.id}

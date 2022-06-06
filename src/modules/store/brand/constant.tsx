@@ -63,10 +63,11 @@ export const headerColumns = [
 
 export const importColumnData: ITableColumn<ColumnHeader>[] = [
   { id: 'no', label: 'No' },
+  { id: 'icon', label: 'Icon' },
   { id: 'name', label: 'Name' },
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
-  { id: 'icon', label: 'Icon' },
+  { id: 'action', label: 'Remove' },
 ]
 
 export const createData = (
@@ -122,9 +123,9 @@ export const createData = (
   )
 
   const Icon = (
-    <div style={{ width: 30, height: 30 }}>
+    <div style={{ width: 30, height: 30, borderRadius: '50%', overflow: 'hidden' }}>
       <img
-        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         src={`${process.env.REACT_APP_API_UPLOADS}${
           icon ? icon : 'default.jpg'
         }`}

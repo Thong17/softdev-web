@@ -19,7 +19,7 @@ export const Header = ({
         name: JSON.stringify(brand.name).replace(/"/g, '""'),
         description: brand.description,
         status: brand.status,
-        icon: brand.icon?._id
+        icon: brand.icon?._id,
       }
     })
     setBrands(newBrands)
