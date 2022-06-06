@@ -3,7 +3,7 @@ import AuthGuard from '../auth/AuthGuard'
 import { Login } from 'modules/auth/Login'
 import { Register } from 'modules/auth/Register'
 import { Admin, Roles, CreateRole, UpdateRole, DetailRole, Users, CreateUser, UpdateUser, DetailUser } from 'modules/admin'
-import { Store, Brands, Categories, CreateCategory, DetailCategory, UpdateCategory, CreateBrand, DetailBrand, UpdateBrand } from 'modules/store'
+import { Store, Brands, Categories, CreateCategory, DetailCategory, UpdateCategory, CreateBrand, DetailBrand, UpdateBrand, Products, CreateProduct, DetailProduct, UpdateProduct } from 'modules/store'
 import { Sale } from 'modules/sale'
 import { Report } from 'modules/report'
 import { Counter } from 'modules/counter/Counter'
@@ -108,6 +108,7 @@ const routes: RouteObject[] = [
     path: '/store',
     element: <Store />,
     children: [
+      // Category
       {
         path: 'category',
         element: (
@@ -140,6 +141,8 @@ const routes: RouteObject[] = [
           </AuthGuard>
         ),
       },
+
+      // Brand
       {
         path: 'brand',
         element: <Brands />,
@@ -165,6 +168,36 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'category', action: 'detail' }}>
             <DetailBrand />
+          </AuthGuard>
+        ),
+      },
+
+      // Product
+      {
+        path: 'product',
+        element: <Products />,
+      },
+      {
+        path: 'product/create',
+        element: (
+          <AuthGuard role={{ route: 'category', action: 'create' }}>
+            <CreateProduct />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'product/update/:id',
+        element: (
+          <AuthGuard role={{ route: 'category', action: 'update' }}>
+            <UpdateProduct />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'product/detail/:id',
+        element: (
+          <AuthGuard role={{ route: 'category', action: 'detail' }}>
+            <DetailProduct />
           </AuthGuard>
         ),
       },

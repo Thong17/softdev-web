@@ -4,6 +4,8 @@ export const stages = {
       title: 'Store',
     },
   ],
+
+  // Category
   category: [
     {
       title: 'Store',
@@ -39,6 +41,8 @@ export const stages = {
       title: 'Update',
     },
   ],
+
+  // Brand
   brand: [
     {
       title: 'Store',
@@ -69,6 +73,43 @@ export const stages = {
     {
       title: 'Brand',
       path: '/store/brand'
+    },
+    {
+      title: 'Update',
+    },
+  ],
+
+  // Product
+  product: [
+    {
+      title: 'Store',
+      path: '/store'
+    },
+    {
+      title: 'Product',
+    },
+  ],
+  productCreate: [
+    {
+      title: 'Store',
+      path: '/store'
+    },
+    {
+      title: 'Product',
+      path: '/store/product'
+    },
+    {
+      title: 'Create',
+    },
+  ],
+  productUpdate: [
+    {
+      title: 'Store',
+      path: '/store'
+    },
+    {
+      title: 'Product',
+      path: '/store/product'
     },
     {
       title: 'Update',
