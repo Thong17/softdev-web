@@ -45,7 +45,7 @@ export const Brands = () => {
   const handleSearch = (e) => {
     updateQuery(e.target.value)
   }
-
+  
   const handleImport = (e) => {
     const response = ImportExcel(
       '/store/brand/excel/import',

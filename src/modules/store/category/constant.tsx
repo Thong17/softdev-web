@@ -4,9 +4,8 @@ import { DeviceOptions } from 'contexts/web/interface'
 import { MenuDialog } from 'components/shared/MenuDialog'
 import { DeleteButton, UpdateButton, ViewButton } from 'components/shared/table/ActionButton'
 import { MenuList } from '@mui/material'
-import { IThemeStyle } from 'contexts/theme/interface'
 
-export declare type ColumnHeader = 'icon' | 'name' | 'status' | 'description' | 'createdBy' | 'action'
+export declare type ColumnHeader = 'icon' | 'name' | 'status' | 'description' | 'createdBy' | 'action' | 'no'
 
 export const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'icon', label: 'Icon' },
@@ -18,14 +17,14 @@ export const columnData: ITableColumn<ColumnHeader>[] = [
 ]
 export interface Data {
   id: string
-  icon: string
+  icon: ReactElement
   name: string
   description: string
   createdBy: string
-  status: ReactElement
+  status: boolean
   action: ReactElement
 }
-export const importColumns = ['_id', 'name', 'description', 'status']
+export const importColumns = ['_id', 'name', 'description', 'status', 'icon']
 
 export const headerColumns = [
   {
@@ -44,12 +43,18 @@ export const headerColumns = [
     label: 'status',
     key: 'status',
   },
+  {
+    label: 'icon',
+    key: 'icon',
+  },
 ]
 
 export const importColumnData: ITableColumn<ColumnHeader>[] = [
+  { id: 'no', label: 'No' },
   { id: 'name', label: 'Name' },
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
+  { id: 'icon', label: 'Icon' },
 ]
 
 export const createData = (
@@ -61,7 +66,6 @@ export const createData = (
   status: boolean,
   privilege: any,
   device: DeviceOptions,
-  theme: IThemeStyle,
   navigate: Function,
   setDialog: Function
 ): Data => {
@@ -105,7 +109,17 @@ export const createData = (
     </div>
   )
 
-  const categoryStatus = status ? <span style={{ color: theme.color.success }}>Enabled</span> : <span style={{ color: theme.color.error }}>Disabled</span>
+  const Icon = (
+    <div style={{ width: 30, height: 30 }}>
+      <img
+        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+        src={`${process.env.REACT_APP_API_UPLOADS}${
+          icon ? icon : 'default.jpg'
+        }`}
+        alt={icon}
+      />
+    </div>
+  )
 
-  return { id, icon, name, description, createdBy, status: categoryStatus, action }
+  return { id, icon: Icon, name, description, createdBy, status, action }
 }

@@ -10,6 +10,7 @@ import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
 
 export declare type ColumnHeader =
+  | 'no'
   | 'icon'
   | 'name'
   | 'status'
@@ -35,7 +36,7 @@ export interface Data {
   action: ReactElement
 }
 
-export const importColumns = ['_id', 'name', 'description', 'status']
+export const importColumns = ['_id', 'name', 'description', 'status', 'icon']
 
 export const headerColumns = [
   {
@@ -54,12 +55,18 @@ export const headerColumns = [
     label: 'status',
     key: 'status',
   },
+  {
+    label: 'icon',
+    key: 'icon',
+  },
 ]
 
 export const importColumnData: ITableColumn<ColumnHeader>[] = [
+  { id: 'no', label: 'No' },
   { id: 'name', label: 'Name' },
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
+  { id: 'icon', label: 'Icon' },
 ]
 
 export const createData = (
@@ -114,7 +121,17 @@ export const createData = (
     </div>
   )
 
-  const Icon = <div style={{ width: 30, height: 30 }}><img style={{ width: '100%', height: '100%', objectFit: 'contain' }} src={`${process.env.REACT_APP_API_UPLOADS}${icon ? icon : 'default.png'}`} alt={icon} /></div>
+  const Icon = (
+    <div style={{ width: 30, height: 30 }}>
+      <img
+        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+        src={`${process.env.REACT_APP_API_UPLOADS}${
+          icon ? icon : 'default.jpg'
+        }`}
+        alt={icon}
+      />
+    </div>
+  )
 
   return { id, icon: Icon, name, description, createdBy, status, action }
 }

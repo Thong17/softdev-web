@@ -32,9 +32,10 @@ const CategoryForm = ({ defaultValues, id }: any) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(categorySchema), defaultValues })
   const { device } = useWeb()
-  const { notify } = useNotify()
+  const { notify, loadify } = useNotify()
   const [status, setStatus] = useState(defaultValues.status)
   const [loading, setLoading] = useState(false)
+  const [iconPath, setIconPath] = useState(null)
   const statusValue = watch('status')
 
   useEffect(() => {
@@ -44,6 +45,27 @@ const CategoryForm = ({ defaultValues, id }: any) => {
 
   const handleChangeCategory = (category) => {
     setValue('name', category)
+  }
+
+  const handleChangeFile = (event) => {
+    const image = event.target.files[0]
+    const formData = new FormData()
+    formData.append('image', image)
+    const response = Axios({
+      method: 'POST',
+      url: `/shared/upload/image`,
+      body: formData,
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    })
+    loadify(response)
+    response.then((data) => {
+      const filename = data.data.data.filename
+      const fileId = data.data.data._id
+      setValue('icon', fileId)
+      setIconPath(filename)
+    })
   }
 
   const submit = async (data) => {
@@ -107,7 +129,13 @@ const CategoryForm = ({ defaultValues, id }: any) => {
           />
         </div>
         <div style={{ gridArea: 'icon' }}>
-          <FileField label='Icon' {...register('icon')} />
+          <FileField
+            path={iconPath}
+            name='icon'
+            label='Icon'
+            accept='image/png, image/jpeg'
+            onChange={handleChangeFile}
+          />
         </div>
         <div style={{ gridArea: 'description' }}>
           <DetailField

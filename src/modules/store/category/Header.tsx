@@ -19,6 +19,7 @@ export const Header = ({
         name: JSON.stringify(category.name).replace(/"/g, '""'),
         description: category.description,
         status: category.status,
+        icon: category.icon?._id
       }
     })
     setCategories(newCategories)

@@ -1,6 +1,6 @@
 import { TextField, SelectField, PrivilegeField } from 'components/shared/form'
 import { useForm } from 'react-hook-form'
-import { userSchema } from './schema'
+import { createUserSchema, updateUserSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useEffect, useState } from 'react'
 import { IOptions } from 'components/shared/form/SelectField'
@@ -23,7 +23,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(userSchema), defaultValues })
+  } = useForm({ resolver: yupResolver(id ? updateUserSchema : createUserSchema), defaultValues })
   const { device } = useWeb()
   const { notify } = useNotify()
   const { lang } = useLanguage()

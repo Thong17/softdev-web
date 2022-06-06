@@ -98,14 +98,13 @@ export const Categories = () => {
     const listCategories = categories.map((category: any) => {
       return createData(
         category._id,
-        category.icon,
+        category.icon?.filename,
         category.name?.[lang] || category.name?.["English"],
         category.description || "...",
         category.createdBy || "...",
         category.status,
         user?.privilege,
         device,
-        theme,
         navigate,
         setDialog
       )

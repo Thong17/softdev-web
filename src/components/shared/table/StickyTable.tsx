@@ -10,6 +10,9 @@ import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import Loading from '../Loading'
 import { CustomPagination, CustomTableContainer } from 'styles'
+import ToggleOnIcon from '@mui/icons-material/ToggleOn'
+import ToggleOffIcon from '@mui/icons-material/ToggleOff'
+import { IconButton } from '@mui/material'
 
 export interface ITableColumn<Column> {
   id: Column
@@ -20,13 +23,18 @@ export interface ITableColumn<Column> {
 }
 
 interface ITable {
-  columns: ITableColumn<string>[],
-  rows: any[],
-  loading?: boolean,
+  columns: ITableColumn<string>[]
+  rows: any[]
+  loading?: boolean
   handleClick?: (id) => void
 }
 
-export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => {
+export const StickyTable = ({
+  columns,
+  rows,
+  loading,
+  handleClick,
+}: ITable) => {
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const { theme } = useTheme()
@@ -45,66 +53,78 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
 
   return (
     <CustomTableContainer styled={theme} device={device}>
-    <div className='table-container'>
-      { loading && <Loading /> }
-      <TableContainer className='table'>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  style={{
-                    minWidth: column.minWidth,
-                  }}
-                  key={column.id}
-                  align={column.align}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          { !loading &&
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  return (
-                    <TableRow onClick={() => { handleClick && handleClick(row.id) }} hover role='checkbox' tabIndex={-1} key={row.id || index} style={{ cursor: handleClick ? 'pointer' : 'default' }}>
-                      {columns.map((column) => {
-                        let value = row[column.id]
-                        if (typeof value === 'boolean') {
-                          value = value ? (
-                            <span style={{ color: theme.color.success }}>Enabled</span>
-                          ) : (
-                            <span style={{ color: theme.color.error }}>Disabled</span>
+      <div className='table-container'>
+        {loading && <Loading />}
+        <TableContainer className='table'>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    style={{
+                      minWidth: column.minWidth,
+                    }}
+                    key={column.id}
+                    align={column.align}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            {!loading && (
+              <TableBody>
+                {rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    return (
+                      <TableRow
+                        onClick={() => {
+                          handleClick && handleClick(row.id)
+                        }}
+                        hover
+                        role='checkbox'
+                        tabIndex={-1}
+                        key={row.id || index}
+                        style={{ cursor: handleClick ? 'pointer' : 'default' }}
+                      >
+                        {columns.map((column) => {
+                          let value = row[column.id]
+                          if (typeof value === 'boolean') {
+                            value = value ? (
+                              <IconButton size='small' style={{ color: theme.color.success }}>
+                                <ToggleOnIcon style={{ fontSize: 30 }} />
+                              </IconButton>
+                            ) : (
+                              <IconButton size='small' style={{ color: theme.color.error }}>
+                                <ToggleOffIcon style={{ fontSize: 30 }} />
+                              </IconButton>
+                            )
+                          }
+
+                          return (
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              style={{
+                                minWidth: column.minWidth,
+                              }}
+                            >
+                              {column.format && typeof value === 'number'
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
                           )
-                        }
-                        
-                        return (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{
-                              minWidth: column.minWidth,
-                            }}
-                          >
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value
-                            }
-                          </TableCell>
-                        )
-                      })}
-                    </TableRow>
-                  )
-                })}
-            </TableBody>
-          }
-        </Table>
-      </TableContainer>
-    </div>
-    { !loading && 
+                        })}
+                      </TableRow>
+                    )
+                  })}
+              </TableBody>
+            )}
+          </Table>
+        </TableContainer>
+      </div>
+      {!loading && (
         <CustomPagination styled={theme}>
           <TablePagination
             rowsPerPageOptions={[10, 25, 50, 100]}
@@ -116,7 +136,7 @@ export const StickyTable = ({ columns, rows, loading, handleClick }: ITable) => 
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </CustomPagination>
-      }
+      )}
     </CustomTableContainer>
   )
 }
