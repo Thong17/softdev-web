@@ -19,8 +19,9 @@ import { Data, createData, columnData, importColumnData, importColumns } from '.
 import { ImportExcel } from 'constants/functions/Excels'
 import useAlert from 'hooks/useAlert'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
-import { Button, DialogActions } from '@mui/material'
+import { Button, DialogActions, IconButton } from '@mui/material'
 import { CustomButton } from 'styles'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 
 export const Roles = () => {
   const dispatch = useAppDispatch()
@@ -54,7 +55,27 @@ export const Roles = () => {
       importColumns
     )
     loadify(response)
-    response.then((data) => setImportDialog({ open: true, data: data.data.data }))
+    response.then((data) => {
+      const importList = data.data.data.map((importData) => {
+        const ImportAction = ({ no }) => (
+          <IconButton
+            onClick={
+              () => {
+                setImportDialog((prevData) => {
+                  return { ...prevData, data: prevData.data.filter((prevItem: any) => prevItem.no !== no) }
+                })
+              }
+            }
+            style={{ color: theme.text.secondary }}
+          >
+            <CloseRoundedIcon />
+          </IconButton>
+        )
+        return { ...importData, action: <ImportAction no={importData?.no} /> }
+      })
+
+      return setImportDialog({ open: true, data: importList })
+    })
   }
 
   const handleCloseImport = () => {

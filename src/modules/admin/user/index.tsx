@@ -17,9 +17,10 @@ import useTheme from 'hooks/useTheme'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { Data, createData, columnData, importColumns, importColumnData } from './constant'
 import { Header } from './Header'
-import { Button, DialogActions } from '@mui/material'
+import { Button, DialogActions, IconButton } from '@mui/material'
 import { CustomButton } from 'styles'
 import useAlert from 'hooks/useAlert'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 
 export const Users = () => {
   const dispatch = useAppDispatch()
@@ -53,7 +54,27 @@ export const Users = () => {
       importColumns
     )
     loadify(response)
-    response.then((data) => setImportDialog({ open: true, data: data.data.data }))
+    response.then((data) => {
+      const importList = data.data.data.map((importData) => {
+        const ImportAction = ({ no }) => (
+          <IconButton
+            onClick={
+              () => {
+                setImportDialog((prevData) => {
+                  return { ...prevData, data: prevData.data.filter((prevItem: any) => prevItem.no !== no) }
+                })
+              }
+            }
+            style={{ color: theme.text.secondary }}
+          >
+            <CloseRoundedIcon />
+          </IconButton>
+        )
+        return { ...importData, action: <ImportAction no={importData?.no} /> }
+      })
+
+      return setImportDialog({ open: true, data: importList })
+    })
   }
 
   const handleCloseImport = () => {

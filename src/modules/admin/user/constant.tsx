@@ -38,8 +38,7 @@ export const importColumnData: ITableColumn<ColumnHeader>[] = [
   { id: 'username', label: 'Username', minWidth: 100 },
   { id: 'role', label: 'Role', minWidth: 100 },
   { id: 'email', label: 'Email', minWidth: 150 },
-  { id: 'status', label: 'Status' },
-  { id: 'action', label: 'Action' },
+  { id: 'action', label: 'Remove' },
 ]
 
 export declare type ColumnHeader =
