@@ -25,21 +25,6 @@ export declare type ColumnHeader =
   | 'createdBy'
   | 'action'
 
-export const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'profile', label: 'Profile' },
-  { id: 'name', label: 'Name' },
-  { id: 'price', label: 'Price' },
-  { id: 'code', label: 'Code' },
-  { id: 'isStock', label: 'Is Stock' },
-  { id: 'brand', label: 'Brand' },
-  { id: 'category', label: 'Category' },
-  { id: 'description', label: 'Description' },
-  { id: 'createdBy', label: 'Created\u00a0By' },
-  { id: 'status', label: 'Status' },
-  { id: 'action', label: 'Action', align: 'center' },
-]
-
-
 export const importColumns = ['_id', 'name', 'price', 'code', 'isStock', 'brand', 'category', 'description', 'status', 'profile']
 
 export const headerColumns = [

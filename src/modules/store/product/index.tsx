@@ -15,7 +15,6 @@ import { Header } from './Header'
 import {
   Data,
   createData,
-  columnData,
   importColumns,
   importColumnData,
 } from './constant'
@@ -27,6 +26,8 @@ import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { Button, DialogActions, IconButton } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CustomButton } from 'styles'
+import { GridLayout } from 'components/layouts/GridLayout'
+import { ListLayout } from 'components/layouts/ListLayout'
 
 export const Products = () => {
   const dispatch = useAppDispatch()
@@ -43,6 +44,7 @@ export const Products = () => {
   const [loading, setLoading] = useState(status === 'LOADING' ? true : false)
   const [importDialog, setImportDialog] = useState({ open: false, data: [] })
   const confirm = useAlert()
+  const [isGrid, setIsGrid] = useState(true)
 
   const updateQuery = debounce((value) => {
     setLoading(false)
@@ -117,6 +119,10 @@ export const Products = () => {
     setDialog({ open: false, id: null })
   }
 
+  const changeLayout = () => {
+    setIsGrid(!isGrid)
+  }
+
   useEffect(() => {
     if (status !== 'INIT') return
     dispatch(getListProduct({}))
@@ -149,6 +155,8 @@ export const Products = () => {
     <Container
       header={
         <Header
+          changeLayout={changeLayout}
+          isGrid={isGrid}
           data={products}
           styled={theme}
           navigate={navigate}
@@ -187,7 +195,7 @@ export const Products = () => {
         handleConfirm={handleConfirm}
         handleClose={() => setDialog({ open: false, id: null })}
       />
-      <StickyTable columns={columnData} rows={rowData} />
+      { isGrid ? <GridLayout data={rowData} isLoading={loading} />: <ListLayout data={rowData} isLoading={loading} /> }
     </Container>
   )
 }

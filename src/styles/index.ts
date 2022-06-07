@@ -1,4 +1,5 @@
 import { styled } from '@mui/system'
+import { shineLine } from './animation'
 import { Button, Menu, Stack } from '@mui/material'
 import { IThemeMode, IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
@@ -214,7 +215,7 @@ export const CustomNavbar = styled(Stack)(
     },
     '& a.active': {
       backgroundColor: styled.background.secondary,
-      boxShadow: styled.shadow.container,
+      boxShadow: styled.shadow.primary,
       color: styled.text.primary,
     },
     '& a:hover': {
@@ -693,6 +694,22 @@ export const CustomOptionButton = styled('div')(
   })
 )
 
+export const CustomHeaderButton = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: styled.background.secondary,
+    borderRadius: styled.radius.primary,
+    height: 36,
+    width: 40,
+    '& button': {
+      color: styled.text.secondary
+    }
+  })
+)
+
 export const CustomMenu = styled(Menu)(
   ({ styled }: { styled: IThemeStyle }) => ({
     '& div.MuiPaper-root': {
@@ -738,6 +755,115 @@ export const CustomTableContainer = styled('div')(
         padding: '11px 20px'
       }
     }
+  })
+)
+
+export const CustomGridContainer = styled('div')(
+  ({ styled, device }: { styled: IThemeStyle, device: DeviceOptions }) => ({
+    padding: '10px 0',
+    display: 'grid',
+    gridGap: 20,
+    gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 150px))',
+    justifyContent: 'center',
+    '& .grid-item': {
+      position: 'relative',
+      height: 200,
+      width: '100%',
+      backgroundColor: styled.background.secondary,
+      borderRadius: styled.radius.secondary,
+      boxShadow: styled.shadow.secondary,
+      overflow: 'hidden',
+      boxSizing: 'border-box',
+      '&:hover .img .action': {
+        opacity: 1
+      },
+      '& .skeleton': {
+        backgroundImage: `linear-gradient(90deg, ${styled.background.quaternary} 0px, ${styled.active.tertiary} 40px, ${styled.background.quaternary} 80px)`,
+        backgroundSize: '600px',
+        color: `${styled.background.quaternary} !important`,
+        borderRadius: styled.radius.primary,
+        animation: `${shineLine} 1.6s infinite linear`,
+      },
+      '& .img.skeleton': {
+        borderRadius: 0
+      },
+      '& .img': {
+        width: '100%',
+        height: 130,
+        '& .action': {
+          transition: '0.3s ease',
+          opacity: 0,
+          backgroundColor: styled.active.secondary,
+          position: 'absolute',
+          right: 7,
+          top: 7,
+          padding: '5px 5px',
+          display: 'flex',
+          alignItem: 'center',
+          justifyContent: 'space-between',
+          width: 45,
+          borderRadius: styled.radius.primary,
+          '& span': {
+            cursor: 'pointer',
+            color: styled.text.tertiary,
+            display: 'flex',
+            alignItem: 'center',
+            '& svg': {
+              fontSize: styled.responsive[device]?.text.h5
+            }
+          },
+          '& span:hover': {
+            color: styled.text.primary
+          }
+        },
+        '& img': {
+          objectFit: 'contain',
+          width: '100%',
+          height: '100%'
+        },
+      },
+      '& .content': {
+        width: '100%',
+        height: 70,
+        padding: 10,
+        boxSizing: 'border-box',
+        '& .title': {
+          position: 'relative',
+          display: 'inline-block',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          width: '100%',
+          overflow: 'hidden',
+        },
+        '& .sub-title': {
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItem: 'center',
+          '& div': {
+            position: 'relative',
+            display: 'inline-block',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            fontSize: styled.responsive?.[device]?.text.secondary,
+            color: styled.text.secondary,
+          },
+          '& .sub-right': {
+            marginLeft: 5,
+            width: '30%',
+          },
+          '& .sub-left': {
+            width: '70%',
+          }
+        }
+      }
+    },
+  })
+)
+
+export const CustomListContainer = styled('div')(
+  ({ styled, device, loading }: { styled: IThemeStyle, device: DeviceOptions, loading: string }) => ({
+    backgroundColor: 'red',
   })
 )
 
