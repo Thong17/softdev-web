@@ -21,6 +21,7 @@ import { getListBrand, selectListBrand } from '../brand/redux'
 import useLanguage from 'hooks/useLanguage'
 import { currencyOptions } from 'constants/variables'
 import CropFreeIcon from '@mui/icons-material/CropFree'
+import { getListProduct } from './redux'
 
 const statusOptions = [
   { label: 'Enabled', value: true },
@@ -37,13 +38,14 @@ const ProductForm = ({ defaultValues, id }: any) => {
     register,
     handleSubmit,
     setValue,
+    setError,
     getValues,
     formState: { errors },
   } = useForm({ resolver: yupResolver(productSchema), defaultValues })
   const { device } = useWeb()
   const { lang } = useLanguage()
-  const { loadify } = useNotify()
-  const [loading] = useState(false)
+  const { loadify, notify } = useNotify()
+  const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState(defaultValues.status)
   const [currency, setCurrency] = useState(defaultValues.currency)
   const [categoryOption, setCategoryOption] = useState<IOptions[]>([])
@@ -124,7 +126,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
     response.then((data) => {
       const filename = data.data.data.filename
       const fileId = data.data.data._id
-      setValue('icon', fileId)
+      setValue('profile', fileId)
       setIconPath(filename)
     })
   }
@@ -134,27 +136,27 @@ const ProductForm = ({ defaultValues, id }: any) => {
   }
 
   const submit = async (data) => {
-    console.log(data);
-    
-    // Axios({
-    //   method: id ? 'PUT' : 'POST',
-    //   url: id ? `/store/product/update/${id}` : `/store/product/create`,
-    //   body: data,
-    // })
-    //   .then((data) => {
-    //     dispatch(getListProduct({}))
-    //     notify(data?.data?.msg, 'success')
-    //   })
-    //   .catch((err) => {
-    //     if (!err?.response?.data?.msg) {
-    //       setError(err?.response?.data[0]?.key, {
-    //         message: err?.response?.data[0]?.path,
-    //       })
-    //     }
+    Axios({
+      method: id ? 'PUT' : 'POST',
+      url: id ? `/store/product/update/${id}` : `/store/product/create`,
+      body: data,
+    })
+      .then((data) => {
+        dispatch(getListProduct({}))
+        notify(data?.data?.msg, 'success')
+      })
+      .catch((err) => {
+        console.log(err);
+        
+        if (!err?.response?.data?.msg) {
+          setError(err?.response?.data[0]?.key, {
+            message: err?.response?.data[0]?.path,
+          })
+        }
 
-    //     notify(err?.response?.data?.msg, 'error')
-    //   })
-    //   .finally(() => setLoading(false))
+        notify(err?.response?.data?.msg, 'error')
+      })
+      .finally(() => setLoading(false))
   }
 
   return (
@@ -189,7 +191,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
             value={category}
             label='Category'
             options={categoryOption}
-            err={errors.category?.message}
+            err={errors?.category?.message}
             loading={statusListCategory === 'LOADING' ? true : false}
             {...register('category')}
           />
@@ -199,7 +201,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
             value={brand}
             label='Brand'
             options={brandOption}
-            err={errors.brand?.message}
+            err={errors?.brand?.message}
             loading={statusListBrand === 'LOADING' ? true : false}
             {...register('brand')}
           />
@@ -217,7 +219,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
           <TextField
             type='number'
             label='Price'
-            err={errors?.price}
+            err={errors?.price?.message}
             {...register('price')}
           />
         </div>
@@ -226,7 +228,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
             value={currency}
             options={currencyOptions}
             label='Currency'
-            err={errors?.currency}
+            err={errors?.currency?.message}
             {...register('currency')}
           />
         </div>
@@ -235,7 +237,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
             value={status}
             options={statusOptions}
             label='Status'
-            err={errors?.status}
+            err={errors?.status?.message}
             {...register('status')}
           />
         </div>
@@ -244,7 +246,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
             type='text'
             label='Code'
             icon={<CropFreeIcon />}
-            err={errors?.code}
+            err={errors?.code?.message}
             {...register('code')}
           />
         </div>

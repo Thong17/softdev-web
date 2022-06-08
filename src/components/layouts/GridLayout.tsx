@@ -2,29 +2,27 @@ import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { useEffect, useState } from 'react'
 import { CustomGridContainer } from 'styles'
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditRoundedIcon from '@mui/icons-material/EditRounded'
 
-export const GridItem = ({
-  id,
-  title,
-  subLeft,
-  subRight,
-  onEdit,
-  onDelete,
-  loading
-}) => {
+export const GridItem = (props) => {
+  const { title, picture, subLeft, subRight, action, loading } =
+    props
+
   return (
     <div className='grid-item'>
       <div className={`img ${loading && 'skeleton'}`}>
-        {!loading && <div className='action'>
-          <span onClick={() => onEdit(id)}>
-            <EditRoundedIcon />
-          </span>
-          <span onClick={() => onDelete(id)}>
-            <DeleteIcon />
-          </span>
-        </div>}
+        {!loading && (
+          <>
+            <div className='action'>
+              {action}
+            </div>
+            <img
+              src={`${process.env.REACT_APP_API_UPLOADS}${
+                picture ? picture : 'default.jpg'
+              }`}
+              alt={picture}
+            />
+          </>
+        )}
       </div>
       <div className='content'>
         <div className={`title ${loading && 'skeleton'}`} title={title}>
@@ -58,94 +56,21 @@ export const GridLayout = ({
     setList(data)
   }, [data])
 
-  const handleEdit = (id) => {
-    console.log(id)
-  }
-
-  const handleDelete = (id) => {
-    console.log(id)
-  }
-
   return (
-    <CustomGridContainer
-      styled={theme}
-      device={device}
-    >
-      {list.map((obj, index) => {
-        return <div className='grid-item'></div>
+    <CustomGridContainer styled={theme} device={device}>
+      {list.map((obj: any, index) => {
+        return (
+          <GridItem
+            key={index}
+            title={obj.name}
+            picture={obj.profile}
+            subLeft={obj.description}
+            subRight={obj.price}
+            action={obj.action}
+            loading={isLoading}
+          />
+        )
       })}
-      <GridItem
-        id={3}
-        title='Hello'
-        subLeft='Left'
-        subRight='Right'
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        loading={isLoading}
-      />
-      <GridItem
-        id={3}
-        title='Hello'
-        subLeft='Left'
-        subRight='Right'
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        loading={isLoading}
-      />
-      <GridItem
-        id={3}
-        title='Hello'
-        subLeft='Left'
-        subRight='Right'
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        loading={isLoading}
-      />
-      <GridItem
-        id={3}
-        title='Hello'
-        subLeft='Left'
-        subRight='Right'
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        loading={isLoading}
-      />
-      <GridItem
-        id={3}
-        title='Hello'
-        subLeft='Left'
-        subRight='Right'
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        loading={isLoading}
-      />
-      <GridItem
-        id={3}
-        title='Hello'
-        subLeft='Left'
-        subRight='Right'
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        loading={isLoading}
-      />
-      <GridItem
-        id={3}
-        title='Hello'
-        subLeft='Left'
-        subRight='Right'
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        loading={isLoading}
-      />
-      <GridItem
-        id={3}
-        title='Hello'
-        subLeft='Left'
-        subRight='Right'
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        loading={isLoading}
-      />
     </CustomGridContainer>
   )
 }

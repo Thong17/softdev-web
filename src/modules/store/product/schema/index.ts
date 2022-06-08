@@ -5,6 +5,12 @@ export const productSchema = yup.object().shape({
     English: yup.string().required('English is required'),
   }),
   status: yup.boolean().optional(),
-  icon: yup.mixed().optional(),
+  profile: yup.string().optional(),
   description: yup.string().optional(),
+  price: yup.number().required(),
+  currency: yup.string().required(),
+  code: yup.string().optional(),
+  isStock: yup.boolean().required(),
+  brand: yup.string().required(),
+  category: yup.string().required(),
 })

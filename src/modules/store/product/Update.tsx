@@ -17,7 +17,7 @@ export const UpdateProduct = () => {
   
   useEffect(() => {
     if (id) {
-      dispatch(getProduct({ id, fields: ['name', 'icon', 'status', 'description'] }))
+      dispatch(getProduct({ id, fields: ['name', 'price', 'profile', 'status', 'currency', 'code', 'brand', 'category', 'description', 'isStock'] }))
     }
   }, [dispatch, id])
   

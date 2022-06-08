@@ -827,7 +827,7 @@ export const CustomGridContainer = styled('div')(
           }
         },
         '& img': {
-          objectFit: 'contain',
+          objectFit: 'cover',
           width: '100%',
           height: '100%'
         },

@@ -100,7 +100,7 @@ export const stages = {
     },
     {
       title: 'Create',
-    },
+    }
   ],
   productUpdate: [
     {

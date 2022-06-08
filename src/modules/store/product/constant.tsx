@@ -8,7 +8,6 @@ import {
 import { MenuList } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
-import { CircleIcon } from 'components/shared/table/CustomIcon'
 
 export declare type ColumnHeader =
   | 'no'
@@ -92,7 +91,7 @@ export interface Data {
   code: string | null,
   description: string,
   isStock: boolean,
-  profile: ReactElement,
+  profile: string,
   brand: string,
   category: string,
   createdBy: string
@@ -157,7 +156,7 @@ export const createData = (
     </div>
   )
 
-  return { id, profile: <CircleIcon icon={profile} />, name, price, code, isStock, brand, category, description, createdBy, status, action }
+  return { id, profile, name, price, code, isStock, brand, category, description, createdBy, status, action }
 }
 
 

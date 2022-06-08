@@ -50,10 +50,10 @@ const CategoryForm = ({ defaultValues, id }: any) => {
   const handleChangeFile = (event) => {
     const image = event.target.files[0]
     const formData = new FormData()
-    formData.append('image', image)
+    formData.append('icon', image)
     const response = Axios({
       method: 'POST',
-      url: `/shared/upload/image`,
+      url: `/shared/upload/icon`,
       body: formData,
       headers: {
         'content-type': 'multipart/form-data',
