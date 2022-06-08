@@ -177,7 +177,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
                               'product product product product'
                               'price price price currency'
                               'status code code code'
-                              'profile profile images images'
+                              'profile profile profile profile'
                               'description description description description'
                               'isStock isStock isStock isStock'
                               'action action action action'
@@ -256,15 +256,6 @@ const ProductForm = ({ defaultValues, id }: any) => {
             label='Profile'
             accept='image/png, image/jpeg'
             onChange={handleChangeProfile}
-          />
-        </div>
-        <div style={{ gridArea: 'images' }}>
-          <FileField
-            height={200}
-            multiple
-            label='Images'
-            accept='image/png, image/jpeg'
-            {...register('images')}
           />
         </div>
         <div style={{ gridArea: 'description' }}>
