@@ -17,6 +17,7 @@ export const Section = ({ children, describe }) => {
           position: 'absolute',
           top: -12,
           backgroundColor: theme.background.primary,
+          color: theme.text.secondary,
           padding: '0 5px',
         }}
       >

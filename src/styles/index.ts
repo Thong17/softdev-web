@@ -353,7 +353,7 @@ export const CustomInput = styled('div')(
         transform: 'translate(-8px, -24px)',
         backgroundColor: 'inherit',
         fontSize: styled.responsive[device].text.quaternary,
-        color: styled.text.tertiary,
+        color: styled.text.secondary,
       },
       '&[type=number]::-webkit-inner-spin-button, &[type=number]::-webkit-outer-spin-button':
         {
@@ -393,7 +393,7 @@ export const CustomInput = styled('div')(
         width: 'max-content',
         backgroundColor: 'inherit',
         fontSize: styled.responsive[device].text.quaternary,
-        color: styled.text.tertiary,
+        color: styled.text.secondary,
       },
       '&[type=number]::-webkit-inner-spin-button, &[type=number]::-webkit-outer-spin-button':
         {
@@ -441,7 +441,7 @@ export const CustomUpload = styled('div')(
     minWidth: 130,
     '& .label': {
       fontSize: styled.responsive[device].text.quaternary,
-      color: styled.text.tertiary,
+      color: styled.text.secondary,
       position: 'absolute',
       cursor: 'text',
       top: '15px',
@@ -507,7 +507,7 @@ export const CustomSelect = styled('div')(
       transition: '0.2s ease',
       position: 'absolute',
       cursor: 'text',
-      color: styled.text.tertiary,
+      color: styled.text.secondary,
       userSelect: 'none',
       fontSize: active ? styled.responsive[device]?.text.quaternary : styled.responsive[device]?.text.primary,
       top: active ? '15px' : '39px',
@@ -590,6 +590,7 @@ export const CustomPrivilege = styled('div')(
       top: -11,
       left: 20,
       padding: '0 5px',
+      color: styled.text.secondary,
       backgroundColor: styled.background.primary
     },
     '& label span.Mui-disabled.MuiFormControlLabel-label, label span.Mui-disabled': {

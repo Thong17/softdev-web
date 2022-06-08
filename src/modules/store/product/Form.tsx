@@ -20,6 +20,7 @@ import { getListCategory, selectListCategory } from '../category/redux'
 import { getListBrand, selectListBrand } from '../brand/redux'
 import useLanguage from 'hooks/useLanguage'
 import { currencyOptions } from 'constants/variables'
+import CropFreeIcon from '@mui/icons-material/CropFree'
 
 const statusOptions = [
   { label: 'Enabled', value: true },
@@ -242,6 +243,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
           <TextField
             type='text'
             label='Code'
+            icon={<CropFreeIcon />}
             err={errors?.code}
             {...register('code')}
           />
