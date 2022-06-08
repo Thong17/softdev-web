@@ -54,8 +54,6 @@ export const GridLayout = ({
   const { device } = useWeb()
   const [list, setList] = useState<Object[]>(data)
 
-  isLoading = true
-
   useEffect(() => {
     setList(data)
   }, [data])

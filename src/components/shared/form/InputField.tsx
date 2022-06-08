@@ -3,6 +3,7 @@ import {
   ForwardRefRenderFunction,
   InputHTMLAttributes,
   forwardRef,
+  ReactElement,
 } from 'react'
 import { CustomInput } from 'styles'
 import useWeb from 'hooks/useWeb'
@@ -11,6 +12,7 @@ interface ITextInput extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
   err?: string
   hint?: string
+  icon?: ReactElement
 }
 
 interface IDetailInput extends InputHTMLAttributes<HTMLTextAreaElement> {
@@ -20,14 +22,14 @@ interface IDetailInput extends InputHTMLAttributes<HTMLTextAreaElement> {
 }
 
 export const Input: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
-  { label, err, hint, ...props },
+  { label, err, hint, icon, ...props },
   ref
 ) => {
   const { theme } = useTheme()
   const { device } = useWeb()
 
   return (
-    <CustomInput styled={theme} device={device}>
+    <CustomInput styled={theme} device={device} icon={icon}>
       <input
         ref={ref}
         placeholder=' '
@@ -38,6 +40,7 @@ export const Input: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
       <label>{label}</label>
       <div className='err'>{err}</div>
       <div className='hint'>{hint}</div>
+      <div className="icon">{icon}</div>
     </CustomInput>
   )
 }
@@ -47,7 +50,7 @@ export const Detail: ForwardRefRenderFunction<HTMLTextAreaElement, IDetailInput>
   const { device } = useWeb()
 
   return (
-    <CustomInput styled={theme} device={device}>
+    <CustomInput styled={theme} device={device} icon={undefined}>
       <textarea
         ref={ref}
         placeholder=' '

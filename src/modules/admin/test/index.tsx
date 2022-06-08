@@ -4,6 +4,7 @@ import { SelectField, TextField, FileField } from 'components/shared/form'
 import useNotify from 'hooks/useNotify'
 import useWeb from 'hooks/useWeb'
 import { Button } from '@mui/material'
+import CropFreeIcon from '@mui/icons-material/CropFree';
 
 export const Test = () => {
   const { notify } = useNotify()
@@ -21,7 +22,7 @@ export const Test = () => {
       <h1>Role</h1>
       <button onClick={() => notify('Success', 'success')}>Notify</button>
       <button onClick={() => notify('Fucked', 'error')}>Fuck</button>
-      <button onClick={() => notify('Wawrn', 'warning')}>Warn</button>
+      <button onClick={() => notify('Warn', 'warning')}>Warn</button>
       <button
         onClick={() =>
           notify(
@@ -57,7 +58,7 @@ export const Test = () => {
         <div style={{ gridArea: 'select' }}>
           <SelectField
             onChange={(event) => console.log(event.target.value)}
-            options={[{ label: 'Nine', value: 'asdfjh', selected: true }, { label: 'Test', value: 4 }]}
+            options={[{ label: 'Nine', value: 'test', selected: true }, { label: 'Test', value: 4 }]}
             label='Gender'
             value=''
             hint='This is hint'
@@ -75,7 +76,7 @@ export const Test = () => {
           <TextField type='date' label='Date' onChange={(event) => console.log(event.target.value)} />
         </div>
         <div style={{ gridArea: 'number' }}>
-          <TextField type='number' label='Number' hint='This is info' onChange={(event) => console.log(event.target.value)} />
+          <TextField type='number' label='Number' hint='This is info' icon={<CropFreeIcon />} onChange={(event) => console.log(event.target.value)} />
         </div>
         <div style={{ gridArea: 'email' }}>
           <TextField type='email' label='Email' onChange={(event) => console.log(event.target.value)} />

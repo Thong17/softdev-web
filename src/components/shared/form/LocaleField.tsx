@@ -25,7 +25,7 @@ export const LocaleField = ({ name, onChange, describe, defaultValue, err, ...pr
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: `repeat(auto-fill, minmax(200px, 1fr))`,
+          gridTemplateColumns: `repeat(auto-fit, minmax(200px, 1fr))`,
           gridColumnGap: 20,
         }}
       >

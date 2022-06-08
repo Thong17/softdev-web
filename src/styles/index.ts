@@ -215,7 +215,6 @@ export const CustomNavbar = styled(Stack)(
     },
     '& a.active': {
       backgroundColor: styled.background.secondary,
-      boxShadow: styled.shadow.primary,
       color: styled.text.primary,
     },
     '& a:hover': {
@@ -311,7 +310,7 @@ export const Breadcrumbs = styled('div')(
 )
 
 export const CustomInput = styled('div')(
-  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
+  ({ styled, device, icon }: { styled: IThemeStyle; device: DeviceOptions, icon: any }) => ({
     position: 'relative',
     padding: '30px 0 20px 0',
     overflow: 'hidden',
@@ -340,7 +339,7 @@ export const CustomInput = styled('div')(
       border: styled.border.tertiary,
       height: INPUT_HEIGHT,
       borderRadius: styled.radius.primary,
-      padding: '0 13px',
+      padding: icon ? '0 40px 0 13px' : '0 13px',
       outline: 'none !important',
       boxShadow: 'none',
       transition: '0.3s ease',
@@ -414,6 +413,15 @@ export const CustomInput = styled('div')(
       cursor: 'text',
       top: '15px',
       right: '6px',
+      userSelect: 'none',
+    },
+    '& .icon': {
+      fontSize: styled.responsive[device].text.quaternary,
+      color: styled.text.secondary,
+      position: 'absolute',
+      cursor: 'text',
+      top: '37px',
+      right: '10px',
       userSelect: 'none',
     },
     '& .err': {
@@ -515,7 +523,8 @@ export const CustomSelect = styled('div')(
       fontWeight: `${styled.font.weight} !important`,
       fontSize: `${styled.responsive[device].text.primary} !important`,
     },
-    '& div': {
+    '& div': {  
+      zIndex: 10,
       color: styled.text.primary,
       width: '100%',
       padding: 0,
