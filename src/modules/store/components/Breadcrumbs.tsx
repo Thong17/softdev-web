@@ -6,8 +6,18 @@ import { stages } from './constant'
 
 declare type page = 'store' | 'category' | 'categoryCreate' | 'categoryUpdate' | 'brand' | 'brandCreate' | 'brandUpdate' | 'product' | 'productCreate' | 'productUpdate'
 
-const StoreBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
-  return <Breadcrumb stages={stages[page]} title={<StorefrontRoundedIcon />} />
+const StoreBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page, id }) => {
+  let stage = stages[page]
+  if (id) {
+    stage = [
+      ...stage,
+      {
+        title: 'Property',
+        path: `/store/product/update/property/${id}`
+      }
+    ]
+  }
+  return <Breadcrumb stages={stage} title={<StorefrontRoundedIcon />} />
 }
 
 export default StoreBreadcrumbs

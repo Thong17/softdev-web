@@ -7,21 +7,30 @@ import {
 } from 'react'
 import { CustomUpload } from 'styles'
 
+export interface IImage {
+  filename: string,
+  _id: string
+}
+
 interface IUploadField extends InputHTMLAttributes<HTMLInputElement> {
   name?: string
   label?: string
   height?: string | number
   err?: string
-  path?: string | null
-  hint?: string
+  images?: Array<IImage>
+  hint?: string,
+  selected?: string
 }
 
 const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
-  { name, label, err, hint, height, path, ...props },
+  { name, label, err, hint, height, images, selected, ...props },
   ref
 ) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  let slides = images && images.map((image: IImage, key) => {
+    return <img src={`${process.env.REACT_APP_API_UPLOADS}${image?.filename}`} alt='file upload' key={key} className={selected === image._id ? 'active' : ''} />
+  })
 
   return (
     <CustomUpload styled={theme} device={device}>
@@ -30,11 +39,15 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
         className={err && 'input-error'}
         style={{ height: height ? height : 35 }}
       >
-        {path ? (
-          <img src={`${process.env.REACT_APP_API_UPLOADS}${path}`} alt={path} />
-        ) : (
-          <span>Drag & Drop</span>
-        )}
+        
+        {images?.length ? 
+          (
+            <>{slides}</>
+          ) : (
+            <span>Drag & Drop</span>
+          )
+        }
+        
       </label>
       <input ref={ref} type='file' name={name} id={name} {...props} />
       <span className='label'>{label}</span>

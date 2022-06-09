@@ -475,6 +475,7 @@ export const CustomUpload = styled('div')(
       borderStyle: 'dashed !important',
       padding: '0 13px',
       cursor: 'pointer',
+      overflow: 'hidden',
       '&:hover, &:focus': {
         border: styled.border.secondary,
       },

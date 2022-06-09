@@ -22,6 +22,8 @@ import useLanguage from 'hooks/useLanguage'
 import { currencyOptions } from 'constants/variables'
 import CropFreeIcon from '@mui/icons-material/CropFree'
 import { getListProduct } from './redux'
+import { useNavigate } from 'react-router-dom'
+import { IImage } from 'components/shared/form/UploadField'
 
 const statusOptions = [
   { label: 'Enabled', value: true },
@@ -42,6 +44,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
     getValues,
     formState: { errors },
   } = useForm({ resolver: yupResolver(productSchema), defaultValues })
+  const navigate = useNavigate()
   const { device } = useWeb()
   const { lang } = useLanguage()
   const { loadify, notify } = useNotify()
@@ -53,7 +56,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
   const [brand, setBrand] = useState('')
   const [category, setCategory] = useState('')
   const [isStock, setIsStock] = useState(defaultValues.isStock)
-  const [iconPath, setIconPath] = useState(null)
+  const [imagesPath, setImagesPath] = useState<IImage[]>(defaultValues.images)
   const currencyValue = watch('currency')
   const statusValue = watch('status')
   const brandId = watch('brand')
@@ -116,10 +119,14 @@ const ProductForm = ({ defaultValues, id }: any) => {
     setValue('name', product)
   }
 
-  const handleChangeProfile = (event) => {
-    const image = event.target.files[0]
+  const handleChangeImages = (event) => {
+    const images = event.target.files
+    
     const formData = new FormData()
-    formData.append('image', image)
+    for (let image = 0; image < images.length; image++) {
+      formData.append('images', images[image])
+    }
+
     const response = Axios({
       method: 'POST',
       url: `/shared/upload/image`,
@@ -130,10 +137,21 @@ const ProductForm = ({ defaultValues, id }: any) => {
     })
     loadify(response)
     response.then((data) => {
-      const filename = data.data.data.filename
-      const fileId = data.data.data._id
-      setValue('profile', fileId)
-      setIconPath(filename)
+      const fileIds = data.data.data.map(file => {
+        return file._id
+      })
+      const files: IImage[] = data.data.data.map(file => {
+        return { filename: file.filename, id: file._id }
+      })
+      
+      !getValues('profile') && setValue('profile', fileIds[0])
+      if (imagesPath.length) {
+        setValue('images', [...getValues('images'), ...fileIds])
+        setImagesPath([ ...imagesPath, ...files ])
+      } else {
+        setValue('images', fileIds)
+        setImagesPath(files)
+      }
     })
   }
 
@@ -148,12 +166,11 @@ const ProductForm = ({ defaultValues, id }: any) => {
       body: data,
     })
       .then((data) => {
-        dispatch(getListProduct({}))
         notify(data?.data?.msg, 'success')
+        dispatch(getListProduct({}))
+        !id && navigate(`/store/product/create/property/${data?.data?.data?._id}`)
       })
       .catch((err) => {
-        console.log(err);
-        
         if (!err?.response?.data?.msg) {
           setError(err?.response?.data[0]?.key, {
             message: err?.response?.data[0]?.path,
@@ -259,11 +276,14 @@ const ProductForm = ({ defaultValues, id }: any) => {
         <div style={{ gridArea: 'profile' }}>
           <FileField
             height={200}
-            path={iconPath}
+            images={imagesPath}
             name='profile'
             label='Profile'
             accept='image/png, image/jpeg'
-            onChange={handleChangeProfile}
+            multiple
+            err={errors?.profile?.message}
+            selected={getValues('profile')}
+            onChange={handleChangeImages}
           />
         </div>
         <div style={{ gridArea: 'description' }}>

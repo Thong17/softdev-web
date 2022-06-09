@@ -14,6 +14,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { useAppDispatch } from 'app/hooks'
 import { getListBrand } from './redux'
+import { IImage } from 'components/shared/form/UploadField'
 
 const statusOption = [
   { label: 'Enabled', value: true },
@@ -35,7 +36,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
   const { notify, loadify } = useNotify()
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState(defaultValues.status)
-  const [iconPath, setIconPath] = useState(null)
+  const [iconPath, setIconPath] = useState<IImage[]>([])
   const statusValue = watch('status')
 
   useEffect(() => {
@@ -61,10 +62,10 @@ const BrandForm = ({ defaultValues, id }: any) => {
     })
     loadify(response)
     response.then((data) => {
-      const filename = data.data.data.filename
+      const filename: IImage = data.data.data as IImage
       const fileId = data.data.data._id
       setValue('icon', fileId)
-      setIconPath(filename)
+      setIconPath([filename])
     })
   }
 
@@ -133,7 +134,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
         </div>
         <div style={{ gridArea: 'icon' }}>
           <FileField
-            path={iconPath}
+            images={iconPath}
             name='icon'
             label='Icon'
             accept='image/png, image/jpeg'

@@ -2,7 +2,7 @@ import { IBody } from 'shared/interface'
 
 export interface IProductBody {
   name: Object,
-  price: number | null,
+  price?: number,
   currency: string,
   code: string,
   status: boolean,
@@ -15,13 +15,13 @@ export interface IProductBody {
 
 export const initState: IProductBody = {
   name: {},
-  price: null,
   currency: 'USD',
+  price: undefined,
   code: '',
   status: true,
   description: '',
   isStock: false,
-  profile: null,
+  profile: '',
   brand: '',
   category: '',
 }

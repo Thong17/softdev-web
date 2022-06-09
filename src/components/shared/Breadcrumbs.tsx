@@ -7,6 +7,7 @@ export interface Stage {
   title?: string
   icon?: Element
   path?: string
+  id?: string
 }
 
 interface IBreadcrumb {
@@ -22,9 +23,10 @@ const Breadcrumb: FC<IBreadcrumb> = ({ stages, title }) => {
       {title && <span>{title}</span>}
       <div>
         {stages &&
-          stages.map((stage, index) =>
-            stage.path ? (
-              <Link key={index} to={stage.path}>
+          stages.map((stage, index) => {
+            const path = stage.id ? `${stage.path}/${stage.id}` : stage.path as string
+            return stage.path ? (
+              <Link key={index} to={path}>
                 {stage.title}
                 {stage.icon}
               </Link>
@@ -41,7 +43,7 @@ const Breadcrumb: FC<IBreadcrumb> = ({ stages, title }) => {
                 {stage.title}
               </Link>
             )
-          )}
+          })}
       </div>
     </Breadcrumbs>
   )

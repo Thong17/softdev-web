@@ -204,3 +204,4 @@ export const Products = () => {
 export { CreateProduct } from './Create'
 export { UpdateProduct } from './Update'
 export { DetailProduct } from './Detail'
+export { PropertyProduct } from './Property'

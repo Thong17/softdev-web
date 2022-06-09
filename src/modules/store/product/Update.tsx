@@ -6,8 +6,8 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useParams } from 'react-router-dom'
 import { getProduct, selectProduct } from './redux'
 
-const Header = () => {
-    return <><StoreBreadcrumbs page='productUpdate' /></>
+const Header = ({ id }) => {
+    return <><StoreBreadcrumbs page='productUpdate' id={id} /></>
 }
 
 export const UpdateProduct = () => {
@@ -17,12 +17,12 @@ export const UpdateProduct = () => {
   
   useEffect(() => {
     if (id) {
-      dispatch(getProduct({ id, fields: ['name', 'price', 'profile', 'status', 'currency', 'code', 'brand', 'category', 'description', 'isStock'] }))
+      dispatch(getProduct({ id, fields: ['name', 'price', 'profile', 'status', 'currency', 'code', 'brand', 'category', 'images', 'description', 'isStock'] }))
     }
   }, [dispatch, id])
   
   return (
-    <Container header={<Header />}>
+    <Container header={<Header id={id} />}>
       {
         status === 'SUCCESS' && <ProductForm id={id} defaultValues={defaultValues} />
       }
