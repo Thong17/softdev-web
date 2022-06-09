@@ -14,6 +14,7 @@ export declare type ColumnHeader =
   | 'no'
   | 'profile'
   | 'price'
+  | 'currency'
   | 'code'
   | 'isStock'
   | 'brand'
@@ -25,47 +26,51 @@ export declare type ColumnHeader =
   | 'createdBy'
   | 'action'
 
-export const importColumns = ['_id', 'name', 'price', 'code', 'isStock', 'brand', 'category', 'description', 'status', 'profile']
+export const importColumns = ['_id', 'name', 'price', 'currency', 'code', 'isStock', 'brand', 'category', 'description', 'status', 'profile']
 
 export const headerColumns = [
   {
-    label: 'ID',
+    label: '_id',
     key: '_id',
   },
   {
-    label: 'Name',
+    label: 'name',
     key: 'name',
   },
   {
-    label: 'Price',
+    label: 'price',
     key: 'price',
   },
   {
-    label: 'Code',
+    label: 'currency',
+    key: 'currency',
+  },
+  {
+    label: 'code',
     key: 'code',
   },
   {
-    label: 'Is Stock',
+    label: 'isStock',
     key: 'isStock',
   },
   {
-    label: 'Brand',
+    label: 'brand',
     key: 'brand',
   },
   {
-    label: 'Category',
+    label: 'category',
     key: 'category',
   },
   {
-    label: 'Description',
+    label: 'description',
     key: 'description',
   },
   {
-    label: 'Status',
+    label: 'status',
     key: 'status',
   },
   {
-    label: 'Profile',
+    label: 'profile',
     key: 'profile',
   },
 ]
@@ -75,12 +80,12 @@ export const importColumnData: ITableColumn<ColumnHeader>[] = [
   { id: 'profile', label: 'Profile' },
   { id: 'name', label: 'Name' },
   { id: 'price', label: 'Price' },
+  { id: 'currency', label: 'Currency' },
   { id: 'code', label: 'Code' },
-  { id: 'isStock', label: 'Is Stock' },
+  { id: 'isStock', label: 'Is Stock', minWidth: 70 },
   { id: 'brand', label: 'Brand' },
   { id: 'category', label: 'Category' },
   { id: 'description', label: 'Description' },
-  { id: 'createdBy', label: 'Created\u00a0By' },
   { id: 'status', label: 'Status' },
   { id: 'action', label: 'Remove' },
 ]

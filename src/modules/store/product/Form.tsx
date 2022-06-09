@@ -63,7 +63,6 @@ const ProductForm = ({ defaultValues, id }: any) => {
   useEffect(() => {
     setIsStock(isStockCheck)
   }, [isStockCheck])
-  
 
   useEffect(() => {
     const brand: any = listBrand.find((value: any) => value._id === brandId)

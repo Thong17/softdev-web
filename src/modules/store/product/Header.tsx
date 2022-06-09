@@ -27,9 +27,15 @@ export const Header = ({
       return {
         _id: product._id,
         name: JSON.stringify(product.name).replace(/"/g, '""'),
+        price: product.price,
+        currency: product.currency,
+        code: product.code,
+        isStock: product.isStock,
+        brand: product.brand?._id,
+        category: product.category?._id,
         description: product.description,
         status: product.status,
-        icon: product.icon?._id,
+        profile: product.profile?.filename,
       }
     })
     setProducts(newProducts)

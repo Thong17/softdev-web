@@ -18,6 +18,7 @@ export interface ITableColumn<Column> {
   id: Column
   label: string
   minWidth?: number
+  maxWidth?: number
   align?: 'left' | 'right' | 'center'
   format?: (value: any) => any
 }
@@ -63,6 +64,7 @@ export const StickyTable = ({
                   <TableCell
                     style={{
                       minWidth: column.minWidth,
+                      maxWidth: column.maxWidth,
                     }}
                     key={column.id}
                     align={column.align}
@@ -108,6 +110,7 @@ export const StickyTable = ({
                               align={column.align}
                               style={{
                                 minWidth: column.minWidth,
+                                maxWidth: column.maxWidth,
                               }}
                             >
                               {column.format && typeof value === 'number'

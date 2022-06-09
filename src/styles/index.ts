@@ -56,7 +56,7 @@ export const CustomSideNav = styled(Stack)(
     height: '100%',
     width: '100%',
     backgroundColor: styled.background.secondary,
-    boxShadow: styled.shadow.container,
+    boxShadow: styled.shadow.secondary,
     borderRadius: styled.radius.secondary,
     '& a': {
       color: styled.text.primary,
@@ -216,6 +216,7 @@ export const CustomNavbar = styled(Stack)(
     '& a.active': {
       backgroundColor: styled.background.secondary,
       color: styled.text.primary,
+      boxShadow: styled.shadow.secondary,
     },
     '& a:hover': {
       textDecoration: 'underline',
@@ -224,7 +225,7 @@ export const CustomNavbar = styled(Stack)(
     '& a': {
       color: styled.text.secondary,
       padding: '7px 17px',
-      borderRadius: styled.radius.secondary,
+      borderRadius: styled.radius.primary,
     },
     transition: '0.3s ease',
     position: 'fixed',
@@ -743,6 +744,7 @@ export const CustomMenu = styled(Menu)(
 export const CustomTableContainer = styled('div')(
   ({ styled, device }: { styled: IThemeStyle, device: DeviceOptions }) => ({
     backgroundColor: styled.background.primary,
+    maxWidth: '90vw',
     '& .table-container': {
       position: 'relative',
       '& .table': {
@@ -755,14 +757,16 @@ export const CustomTableContainer = styled('div')(
         borderBottom: styled.border.secondary,
         fontWeight: styled.font.weight,
         fontSize: styled.responsive[device]?.text.tertiary,
-        padding: '11px 20px'
+        padding: '11px 20px',
+        wordWrap: 'break-word'
       }, 
       '& tr td': {
         color: styled.text.secondary,
         borderBottom: styled.border.quaternary,
         fontSize: styled.responsive[device]?.text.quaternary,
         fontWeight: styled.font.weight,
-        padding: '11px 20px'
+        padding: '11px 20px',
+        overflow: 'hidden'
       }
     }
   })
@@ -800,6 +804,7 @@ export const CustomGridContainer = styled('div')(
         overflow: 'hidden',
         width: '100%',
         height: 130,
+        boxShadow: styled.shadow.secondary,
         '& .status': {
           position: 'absolute',
           left: 10,
@@ -844,15 +849,16 @@ export const CustomGridContainer = styled('div')(
         '& img': {
           objectFit: 'cover',
           width: '100%',
-          height: '100%'
+          height: '100%',
         },
       },
       '& .content': {
         marginTop: 5,
         borderRadius: styled.radius.ternary,
         width: '100%',
-        padding: 5,
+        padding: 7,
         backgroundColor: styled.background.secondary,
+        boxShadow: styled.shadow.secondary,
         boxSizing: 'border-box',
         '& .title': {
           position: 'relative',

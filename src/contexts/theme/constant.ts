@@ -38,8 +38,8 @@ export const themeMode = {
   },
   Light: {
     background: {
-      primary: '#ffffff',
-      secondary: '#f3f3f3',
+      primary: '#f2f2f2',
+      secondary: '#e1e1e1',
       tertiary: '#eeeeee',
       quaternary: '#dddddd'
     },
