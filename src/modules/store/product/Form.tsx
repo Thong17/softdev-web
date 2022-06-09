@@ -52,11 +52,18 @@ const ProductForm = ({ defaultValues, id }: any) => {
   const [brandOption, setBrandOption] = useState<IOptions[]>([])
   const [brand, setBrand] = useState('')
   const [category, setCategory] = useState('')
+  const [isStock, setIsStock] = useState(defaultValues.isStock)
   const [iconPath, setIconPath] = useState(null)
   const currencyValue = watch('currency')
   const statusValue = watch('status')
   const brandId = watch('brand')
   const categoryId = watch('category')
+  const isStockCheck = watch('isStock')
+
+  useEffect(() => {
+    setIsStock(isStockCheck)
+  }, [isStockCheck])
+  
 
   useEffect(() => {
     const brand: any = listBrand.find((value: any) => value._id === brandId)
@@ -270,7 +277,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
         </div>
         
         <div style={{ gridArea: 'isStock' }}>
-          <CheckboxField label='Is Stock' err={errors?.isStock} name='isStock' value={getValues('isStock')} onChange={handleCheckIsStock} />
+          <CheckboxField label='Is Stock' err={errors?.isStock?.message} name='isStock' checked={isStock} onChange={handleCheckIsStock} />
         </div>
         <div
           style={{

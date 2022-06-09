@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { CustomGridContainer } from 'styles'
 
 export const GridItem = (props) => {
-  const { title, picture, subLeft, subRight, action, loading } =
+  const { title, picture, subLeft, subRight, action, status, loading } =
     props
 
   return (
@@ -15,6 +15,7 @@ export const GridItem = (props) => {
             <div className='action'>
               {action}
             </div>
+            <div className={`status ${status ? 'active' : 'inactive'}`}></div>
             <img
               src={`${process.env.REACT_APP_API_UPLOADS}${
                 picture ? picture : 'default.jpg'
@@ -30,10 +31,10 @@ export const GridItem = (props) => {
         </div>
         <div className='sub-title'>
           <div className={`sub-left ${loading && 'skeleton'}`}>
-            <span>{subLeft}</span>
+            {subLeft}
           </div>
           <div className={`sub-right ${loading && 'skeleton'}`}>
-            <span>{subRight}</span>
+            {subRight}
           </div>
         </div>
       </div>
@@ -64,9 +65,10 @@ export const GridLayout = ({
             key={index}
             title={obj.name}
             picture={obj.profile}
-            subLeft={obj.description}
+            subLeft={obj.category}
             subRight={obj.price}
             action={obj.action}
+            status={obj.status}
             loading={isLoading}
           />
         )

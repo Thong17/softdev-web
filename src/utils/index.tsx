@@ -58,3 +58,9 @@ export const debounce = (cb, delay = 1000) => {
     }, delay)
   }
 }
+
+export const currencyFormat = (value, currency) => {
+  const symbol = currency === 'USD' ? <>&#xFF04;</> : <>&#x17DB;</>
+  const decimal = currency === 'USD' ? 2 : 0
+  return <span>{symbol}{value.toFixed(decimal).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</span> 
+}

@@ -779,10 +779,8 @@ export const CustomGridContainer = styled('div')(
       position: 'relative',
       height: 200,
       width: '100%',
-      backgroundColor: styled.background.secondary,
-      borderRadius: styled.radius.secondary,
-      boxShadow: styled.shadow.secondary,
-      overflow: 'hidden',
+      backgroundColor: styled.background.primary,
+      borderRadius: styled.radius.ternary,
       boxSizing: 'border-box',
       '&:hover .img .action': {
         opacity: 1
@@ -798,20 +796,37 @@ export const CustomGridContainer = styled('div')(
         borderRadius: 0
       },
       '& .img': {
+        borderRadius: styled.radius.ternary,
+        overflow: 'hidden',
         width: '100%',
         height: 130,
+        '& .status': {
+          position: 'absolute',
+          left: 10,
+          top: 10,
+          width: 13,
+          height: 13,
+          borderRadius: styled.radius.circle,
+          boxShadow: styled.shadow.secondary,
+          '&.active': {
+            backgroundColor: styled.color.success,
+          },
+          '&.inactive': {
+            backgroundColor: styled.color.error,
+          }
+        },
         '& .action': {
           transition: '0.3s ease',
           opacity: 0,
-          backgroundColor: styled.active.secondary,
+          backgroundColor: styled.background.primary,
           position: 'absolute',
           right: 7,
           top: 7,
-          padding: '5px 5px',
+          padding: '5px 5px 5px 0',
           display: 'flex',
           alignItem: 'center',
           justifyContent: 'space-between',
-          width: 45,
+          width: 'fit-content',
           borderRadius: styled.radius.primary,
           '& span': {
             cursor: 'pointer',
@@ -833,9 +848,11 @@ export const CustomGridContainer = styled('div')(
         },
       },
       '& .content': {
+        marginTop: 5,
+        borderRadius: styled.radius.ternary,
         width: '100%',
-        height: 70,
-        padding: 10,
+        padding: 5,
+        backgroundColor: styled.background.secondary,
         boxSizing: 'border-box',
         '& .title': {
           position: 'relative',
@@ -860,10 +877,14 @@ export const CustomGridContainer = styled('div')(
           },
           '& .sub-right': {
             marginLeft: 5,
-            width: '30%',
+            width: 'fit-content',
+            fontSize: styled.responsive?.[device]?.text.quaternary,
+            color: styled.text.quaternary,
           },
           '& .sub-left': {
-            width: '70%',
+            width: 'fit-content',
+            fontSize: styled.responsive?.[device]?.text.quaternary,
+            color: styled.text.quaternary,
           }
         }
       }

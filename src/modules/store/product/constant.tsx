@@ -8,6 +8,7 @@ import {
 import { MenuList } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
+import { currencyFormat } from 'utils'
 
 export declare type ColumnHeader =
   | 'no'
@@ -87,7 +88,8 @@ export const importColumnData: ITableColumn<ColumnHeader>[] = [
 export interface Data {
   id: string
   name: string,
-  price: string,
+  price: ReactElement,
+  currency: string,
   code: string | null,
   description: string,
   isStock: boolean,
@@ -103,7 +105,8 @@ export const createData = (
   id: string,
   profile: string,
   name: string,
-  price: string,
+  price: number,
+  currency: string,
   code: string | null,
   isStock: boolean,
   brand: string,
@@ -117,7 +120,7 @@ export const createData = (
   setDialog: Function
 ): Data => {
   let action = (
-    <div style={{ float: 'right' }}>
+    <>
       {device === 'mobile' ? (
         privilege?.product?.detail && (
           <MenuDialog label={<ViewButton />}>
@@ -145,6 +148,7 @@ export const createData = (
         <>
           {privilege?.product?.update && (
             <UpdateButton
+            style={{ margin: 0 }}
               onClick={() => navigate(`/store/product/update/${id}`)}
             />
           )}
@@ -153,10 +157,10 @@ export const createData = (
           )}
         </>
       )}
-    </div>
+    </>
   )
 
-  return { id, profile, name, price, code, isStock, brand, category, description, createdBy, status, action }
+  return { id, profile, name, price: currencyFormat(price, currency), currency, code, isStock, brand, category, description, createdBy, status, action }
 }
 
 
