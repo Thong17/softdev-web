@@ -35,7 +35,7 @@ export const Header = ({
         category: product.category?._id,
         description: product.description,
         status: product.status,
-        profile: product.profile?.filename,
+        profile: product.profile?._id,
       }
     })
     setProducts(newProducts)

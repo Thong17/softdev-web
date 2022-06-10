@@ -480,9 +480,13 @@ export const CustomUpload = styled('div')(
         border: styled.border.secondary,
       },
     },
+    '& .container': {
+      cursor: 'default',
+    },
     '& .container label': {
+      cursor: 'pointer',
       position: 'absolute',
-      top: 40,
+      top: 35,
       right: 10,
       width: 30,
       height: 30,
@@ -490,19 +494,24 @@ export const CustomUpload = styled('div')(
       alignItems: 'center'
     },
     '& .container .img-container': {
+      cursor: 'pointer',
       position: 'relative',
       width: '100%',
       height: '100%',
       '& .action': {
         position: 'absolute',
-        top: 10,
-        right: 10
+        top: 7,
+        right: 7,
+        '& button': {
+          color: styled.color.error,
+          backgroundColor: `${styled.color.error}33`
+        }
       },
       '& label.image': {
         display: 'block',
         position: 'absolute',
-        top: 10,
-        left: 10,
+        top: 15,
+        left: 15,
         width: 20,
         height: 20,
         backgroundColor: styled.background.primary,
@@ -510,6 +519,39 @@ export const CustomUpload = styled('div')(
         borderRadius: styled.radius.primary,
         '&.active': {
           backgroundColor: styled.color.success,
+        }
+      }
+    },
+    '& .navigationButton': {
+      position: 'absolute',
+      bottom: 20,
+      zIndex: 10,
+      width: '100%',
+      height: 30,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      '& div': {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 2,
+        margin: '0 3px',
+        borderRadius: styled.radius.circle,
+        '& span': {
+          display: 'inline-block',
+          width: 15,
+          height: 15,
+          backgroundColor: styled.background.secondary,
+          boxShadow: styled.shadow.inset,
+          borderRadius: styled.radius.circle,
+          cursor: 'pointer',
+        }
+      },
+      '& div.active': {
+        border: styled.border.quaternary,
+        '& span': {
+          backgroundColor: styled.active.primary,
         }
       }
     },
@@ -542,7 +584,7 @@ export const CustomSelect = styled('div')(
       transition: '0.2s ease',
       position: 'absolute',
       cursor: 'text',
-      color: styled.text.secondary,
+      color: active ? styled.text.secondary : styled.text.quaternary,
       userSelect: 'none',
       fontSize: active ? styled.responsive[device]?.text.quaternary : styled.responsive[device]?.text.primary,
       top: active ? '15px' : '39px',

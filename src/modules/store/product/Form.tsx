@@ -56,7 +56,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
   const [brand, setBrand] = useState('')
   const [category, setCategory] = useState('')
   const [isStock, setIsStock] = useState(defaultValues.isStock)
-  const [imagesPath, setImagesPath] = useState<IImage[]>(defaultValues.images)
+  const [imagesPath, setImagesPath] = useState<IImage[]>(defaultValues.images || [])
   const currencyValue = watch('currency')
   const statusValue = watch('status')
   const brandId = watch('brand')
@@ -142,7 +142,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
       })
       const files: IImage[] = data.data.data.map(file => {
         return { filename: file.filename, _id: file._id }
-      })
+      })      
       
       !getValues('profile') && setValue('profile', fileIds[0])
       if (imagesPath.length) {

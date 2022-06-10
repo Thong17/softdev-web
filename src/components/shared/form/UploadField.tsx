@@ -11,6 +11,7 @@ import { CustomUpload } from 'styles'
 import Carousel from 'react-spring-3d-carousel'
 import PhotoCameraRoundedIcon from '@mui/icons-material/PhotoCameraRounded'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { IconButton } from '@mui/material'
 
 export interface IImage {
   filename: string
@@ -60,22 +61,28 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
         key: key,
         content: (
           <div className='img-container' key={key}>
-            <div
-              className='action'
-              onClick={() => {
-                handleDelete && handleDelete(image._id)
-              }}
-            >
-              <DeleteIcon />
-            </div>
-            <label
-              htmlFor='preview'
-              className={`image ${active === image._id && 'active'}`}
-              onClick={() => {
-                setActive(image._id)
-                handleChangeActive && handleChangeActive(image._id)
-              }}
-            ></label>
+            {height ? (
+              <>
+                <div
+                  className='action'
+                  onClick={() => {
+                    handleDelete && handleDelete(image._id)
+                  }}
+                >
+                  <IconButton>
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+                <label
+                  htmlFor='preview'
+                  className={`image ${active === image._id && 'active'}`}
+                  onClick={() => {
+                    setActive(image._id)
+                    handleChangeActive && handleChangeActive(image._id)
+                  }}
+                />
+              </>
+            ) : null}
             <img
               src={`${process.env.REACT_APP_API_UPLOADS}${image?.filename}`}
               alt='file upload'
@@ -88,7 +95,7 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
 
   return (
     <CustomUpload styled={theme} device={device}>
-      {slides?.length && slides.length > 1 ? (
+      {slides?.length ? (
         <div
           className={`container ${err && 'input-error'}`}
           style={{ height: height ? height : 35 }}
@@ -102,6 +109,18 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
           <label htmlFor={name}>
             <PhotoCameraRoundedIcon />
           </label>
+          {slides.length > 1 && (
+            <div className='navigationButton'>
+              {slides.map((slide) => (
+                <div
+                  key={slide.key}
+                  className={slide.key === toSlide ? 'active' : ''}
+                >
+                  <span onClick={slide.onClick}></span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <label
@@ -109,14 +128,7 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
           className={`input ${err && 'input-error'}`}
           style={{ height: height ? height : 35 }}
         >
-          {slides?.length ? (
-            <img
-              src={`${process.env.REACT_APP_API_UPLOADS}${images?.[0]?.filename}`}
-              alt='file upload'
-            />
-          ) : (
-            <span>Drag & Drop</span>
-          )}
+          <span>Drag & Drop</span>
         </label>
       )}
       <input ref={ref} type='file' name={name} id={name} {...props} />
