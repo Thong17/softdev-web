@@ -12,6 +12,7 @@ import { currencyFormat } from 'utils'
 
 export declare type ColumnHeader =
   | 'no'
+  | 'images'
   | 'profile'
   | 'price'
   | 'currency'
@@ -26,7 +27,7 @@ export declare type ColumnHeader =
   | 'createdBy'
   | 'action'
 
-export const importColumns = ['_id', 'name', 'price', 'currency', 'code', 'isStock', 'brand', 'category', 'description', 'status', 'profile']
+export const importColumns = ['_id', 'name', 'price', 'currency', 'code', 'isStock', 'brand', 'category', 'description', 'status', 'profile', 'images']
 
 export const headerColumns = [
   {
@@ -73,11 +74,16 @@ export const headerColumns = [
     label: 'profile',
     key: 'profile',
   },
+  {
+    label: 'images',
+    key: 'images',
+  },
 ]
 
 export const importColumnData: ITableColumn<ColumnHeader>[] = [
   { id: 'no', label: 'No' },
   { id: 'profile', label: 'Profile' },
+  { id: 'images', label: 'Images' },
   { id: 'name', label: 'Name' },
   { id: 'price', label: 'Price' },
   { id: 'currency', label: 'Currency' },

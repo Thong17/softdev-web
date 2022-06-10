@@ -36,6 +36,7 @@ export const Header = ({
         description: product.description,
         status: product.status,
         profile: product.profile?._id,
+        images: JSON.stringify(product.images).replace(/"/g, '""')
       }
     })
     setProducts(newProducts)
