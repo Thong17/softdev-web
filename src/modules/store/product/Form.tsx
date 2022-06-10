@@ -141,7 +141,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
         return file._id
       })
       const files: IImage[] = data.data.data.map(file => {
-        return { filename: file.filename, id: file._id }
+        return { filename: file.filename, _id: file._id }
       })
       
       !getValues('profile') && setValue('profile', fileIds[0])
@@ -153,6 +153,24 @@ const ProductForm = ({ defaultValues, id }: any) => {
         setImagesPath(files)
       }
     })
+  }
+
+  const handleDeleteImage = (id) => {
+    const newImages = imagesPath.filter((image) => image._id !== id)
+    let hasProfile = false
+    newImages.forEach(image => {
+      if (image._id === getValues('profile')) {
+        hasProfile = true
+      }
+    })
+
+    !hasProfile && setValue('profile', newImages?.[0]?._id)
+    setImagesPath(newImages)
+    setValue('images', newImages)
+  }
+
+  const handleChangeActive = (active) => {
+    setValue('profile', active)
   }
 
   const handleCheckIsStock = (event) => {
@@ -278,12 +296,14 @@ const ProductForm = ({ defaultValues, id }: any) => {
             height={200}
             images={imagesPath}
             name='profile'
-            label='Profile'
+            label='Images'
             accept='image/png, image/jpeg'
             multiple
             err={errors?.profile?.message}
             selected={getValues('profile')}
             onChange={handleChangeImages}
+            handleDelete={handleDeleteImage}
+            handleChangeActive={handleChangeActive}
           />
         </div>
         <div style={{ gridArea: 'description' }}>

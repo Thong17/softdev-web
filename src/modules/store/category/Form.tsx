@@ -34,9 +34,9 @@ const CategoryForm = ({ defaultValues, id }: any) => {
   } = useForm({ resolver: yupResolver(categorySchema), defaultValues })
   const { device } = useWeb()
   const { notify, loadify } = useNotify()
-  const [status, setStatus] = useState(defaultValues.status)
+  const [status, setStatus] = useState(defaultValues?.status)
   const [loading, setLoading] = useState(false)
-  const [iconPath, setIconPath] = useState<IImage[]>([])
+  const [iconPath, setIconPath] = useState<IImage>(defaultValues?.icon)
   const statusValue = watch('status')
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
       const filename: IImage = data.data.data as IImage
       const fileId = data.data.data._id
       setValue('icon', fileId)
-      setIconPath([filename])
+      setIconPath(filename)
     })
   }
 
@@ -131,7 +131,8 @@ const CategoryForm = ({ defaultValues, id }: any) => {
         </div>
         <div style={{ gridArea: 'icon' }}>
           <FileField
-            images={iconPath}
+            images={iconPath && [iconPath]}
+            selected={getValues('icon')?._id}
             name='icon'
             label='Icon'
             accept='image/png, image/jpeg'

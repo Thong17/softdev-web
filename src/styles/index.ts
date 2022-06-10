@@ -463,7 +463,7 @@ export const CustomUpload = styled('div')(
       right: '6px',
       userSelect: 'none',
     },
-    '& label': {
+    '& label.input, & .container': {
       color: styled.text.tertiary,
       backgroundColor: 'transparent',
       width: 'calc(100% - 28px)',
@@ -479,6 +479,39 @@ export const CustomUpload = styled('div')(
       '&:hover, &:focus': {
         border: styled.border.secondary,
       },
+    },
+    '& .container label': {
+      position: 'absolute',
+      top: 40,
+      right: 10,
+      width: 30,
+      height: 30,
+      display: 'flex',
+      alignItems: 'center'
+    },
+    '& .container .img-container': {
+      position: 'relative',
+      width: '100%',
+      height: '100%',
+      '& .action': {
+        position: 'absolute',
+        top: 10,
+        right: 10
+      },
+      '& label.image': {
+        display: 'block',
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        width: 20,
+        height: 20,
+        backgroundColor: styled.background.primary,
+        border: styled.border.quaternary,
+        borderRadius: styled.radius.primary,
+        '&.active': {
+          backgroundColor: styled.color.success,
+        }
+      }
     },
     '& label.input-error': {
       borderColor: styled.color.error,
