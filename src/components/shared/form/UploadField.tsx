@@ -66,7 +66,7 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
                 <div
                   className='action'
                   onClick={() => {
-                    handleDelete && handleDelete(image._id)
+                    handleDelete && handleDelete(image?._id)
                   }}
                 >
                   <IconButton>
@@ -75,10 +75,10 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
                 </div>
                 <label
                   htmlFor='preview'
-                  className={`image ${active === image._id && 'active'}`}
+                  className={`image ${active === image?._id && 'active'}`}
                   onClick={() => {
-                    setActive(image._id)
-                    handleChangeActive && handleChangeActive(image._id)
+                    setActive(image?._id)
+                    handleChangeActive && handleChangeActive(image?._id)
                   }}
                 />
               </>

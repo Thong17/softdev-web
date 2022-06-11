@@ -1,5 +1,4 @@
 import { styled } from '@mui/system'
-import { shineLine } from './animation'
 import { Button, Menu, Stack } from '@mui/material'
 import { IThemeMode, IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
@@ -157,7 +156,7 @@ export const CustomLoading = styled('div')(
     position: 'absolute',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   })
 )
 
@@ -311,7 +310,15 @@ export const Breadcrumbs = styled('div')(
 )
 
 export const CustomInput = styled('div')(
-  ({ styled, device, icon }: { styled: IThemeStyle; device: DeviceOptions, icon: any }) => ({
+  ({
+    styled,
+    device,
+    icon,
+  }: {
+    styled: IThemeStyle
+    device: DeviceOptions
+    icon: any
+  }) => ({
     position: 'relative',
     padding: '30px 0 20px 0',
     overflow: 'hidden',
@@ -328,7 +335,7 @@ export const CustomInput = styled('div')(
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       width: '100%',
-      overflow: 'hidden'
+      overflow: 'hidden',
     },
     '& input': {
       position: 'relative',
@@ -452,7 +459,7 @@ export const CustomUpload = styled('div')(
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       width: '100%',
-      overflow: 'hidden'
+      overflow: 'hidden',
     },
     '& .hint': {
       fontSize: styled.responsive[device].text.quaternary,
@@ -491,7 +498,7 @@ export const CustomUpload = styled('div')(
       width: 30,
       height: 30,
       display: 'flex',
-      alignItems: 'center'
+      alignItems: 'center',
     },
     '& .container .img-container': {
       cursor: 'pointer',
@@ -504,8 +511,8 @@ export const CustomUpload = styled('div')(
         right: 7,
         '& button': {
           color: styled.color.error,
-          backgroundColor: `${styled.color.error}33`
-        }
+          backgroundColor: `${styled.color.error}33`,
+        },
       },
       '& label.image': {
         display: 'block',
@@ -519,8 +526,8 @@ export const CustomUpload = styled('div')(
         borderRadius: styled.radius.primary,
         '&.active': {
           backgroundColor: styled.color.success,
-        }
-      }
+        },
+      },
     },
     '& .navigationButton': {
       position: 'absolute',
@@ -546,14 +553,14 @@ export const CustomUpload = styled('div')(
           boxShadow: styled.shadow.inset,
           borderRadius: styled.radius.circle,
           cursor: 'pointer',
-        }
+        },
       },
       '& div.active': {
         border: styled.border.quaternary,
         '& span': {
           backgroundColor: styled.active.primary,
-        }
-      }
+        },
+      },
     },
     '& label.input-error': {
       borderColor: styled.color.error,
@@ -576,7 +583,15 @@ export const CustomUpload = styled('div')(
 )
 
 export const CustomSelect = styled('div')(
-  ({ styled, device, active }: { styled: IThemeStyle; device: DeviceOptions, active: any }) => ({
+  ({
+    styled,
+    device,
+    active,
+  }: {
+    styled: IThemeStyle
+    device: DeviceOptions
+    active: any
+  }) => ({
     minWidth: 130,
     padding: '30px 0 20px 0',
     position: 'relative',
@@ -586,21 +601,23 @@ export const CustomSelect = styled('div')(
       cursor: 'text',
       color: active ? styled.text.secondary : styled.text.quaternary,
       userSelect: 'none',
-      fontSize: active ? styled.responsive[device]?.text.quaternary : styled.responsive[device]?.text.primary,
+      fontSize: active
+        ? styled.responsive[device]?.text.quaternary
+        : styled.responsive[device]?.text.primary,
       top: active ? '15px' : '39px',
       left: active ? '6px' : '14px',
       display: 'inline',
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       width: '100%',
-      overflow: 'hidden'
+      overflow: 'hidden',
     },
     '& .MuiSelect-select, & .MuiList-root li': {
       fontFamily: `${styled.font.family} !important`,
       fontWeight: `${styled.font.weight} !important`,
       fontSize: `${styled.responsive[device].text.primary} !important`,
     },
-    '& div': {  
+    '& div': {
       zIndex: 10,
       color: styled.text.primary,
       width: '100%',
@@ -668,11 +685,12 @@ export const CustomPrivilege = styled('div')(
       left: 20,
       padding: '0 5px',
       color: styled.text.secondary,
-      backgroundColor: styled.background.primary
+      backgroundColor: styled.background.primary,
     },
-    '& label span.Mui-disabled.MuiFormControlLabel-label, label span.Mui-disabled': {
-      color: styled.text.quaternary,
-    },
+    '& label span.Mui-disabled.MuiFormControlLabel-label, label span.Mui-disabled':
+      {
+        color: styled.text.quaternary,
+      },
     '& .privilege-container, & .checkAll-container': {
       display: 'flex',
       flexDirection: 'column',
@@ -681,8 +699,8 @@ export const CustomPrivilege = styled('div')(
       '& label': {
         '& span': {
           fontWeight: styled.font.weight,
-        }
-      }
+        },
+      },
     },
     '& .privilege-container': {
       marginLeft: 20,
@@ -691,8 +709,8 @@ export const CustomPrivilege = styled('div')(
         marginLeft: 20,
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))',
-      }
-    }
+      },
+    },
   })
 )
 
@@ -708,12 +726,20 @@ export const CustomPagination = styled('div')(
     overflow: 'hidden',
     '& div, & div div svg': {
       color: styled.text.secondary,
-    }
+    },
   })
 )
 
 export const CustomSearchField = styled('div')(
-  ({ styled, active, device }: { styled: IThemeStyle, active: string, device: DeviceOptions }) => ({
+  ({
+    styled,
+    active,
+    device,
+  }: {
+    styled: IThemeStyle
+    active: string
+    device: DeviceOptions
+  }) => ({
     position: 'relative',
     overflow: 'hidden',
     display: 'flex',
@@ -741,11 +767,11 @@ export const CustomSearchField = styled('div')(
       height: 36,
       width: 36,
       right: 2,
-      color: styled.text.secondary
+      color: styled.text.secondary,
     },
     '& button': {
-      color: styled.text.secondary
-    }
+      color: styled.text.secondary,
+    },
   })
 )
 
@@ -760,8 +786,8 @@ export const CustomFilterButton = styled('div')(
     height: 36,
     width: 40,
     '& button': {
-      color: styled.text.secondary
-    }
+      color: styled.text.secondary,
+    },
   })
 )
 
@@ -776,8 +802,8 @@ export const CustomOptionButton = styled('div')(
     height: 36,
     width: 40,
     '& button': {
-      color: styled.text.secondary
-    }
+      color: styled.text.secondary,
+    },
   })
 )
 
@@ -792,8 +818,8 @@ export const CustomHeaderButton = styled('div')(
     height: 36,
     width: 40,
     '& button': {
-      color: styled.text.secondary
-    }
+      color: styled.text.secondary,
+    },
   })
 )
 
@@ -811,172 +837,10 @@ export const CustomMenu = styled(Menu)(
         cursor: 'pointer',
         '&:hover': {
           backgroundColor: styled.active.secondary,
-        }
-      }
-    }
-  })
-)
-
-export const CustomTableContainer = styled('div')(
-  ({ styled, device }: { styled: IThemeStyle, device: DeviceOptions }) => ({
-    backgroundColor: styled.background.primary,
-    maxWidth: '90vw',
-    '& .table-container': {
-      position: 'relative',
-      '& .table': {
-        paddingBottom: 50, 
-        overflowX: 'initial'
-      },
-      '& th': {
-        backgroundColor: styled.background.secondary,
-        color: styled.text.primary,
-        borderBottom: styled.border.secondary,
-        fontWeight: styled.font.weight,
-        fontSize: styled.responsive[device]?.text.tertiary,
-        padding: '11px 20px',
-        wordWrap: 'break-word'
-      }, 
-      '& tr td': {
-        color: styled.text.secondary,
-        borderBottom: styled.border.quaternary,
-        fontSize: styled.responsive[device]?.text.quaternary,
-        fontWeight: styled.font.weight,
-        padding: '11px 20px',
-        overflow: 'hidden'
-      }
-    }
-  })
-)
-
-export const CustomGridContainer = styled('div')(
-  ({ styled, device }: { styled: IThemeStyle, device: DeviceOptions }) => ({
-    padding: '10px 0',
-    display: 'grid',
-    gridGap: 20,
-    gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 150px))',
-    justifyContent: 'center',
-    '& .grid-item': {
-      position: 'relative',
-      height: 200,
-      width: '100%',
-      backgroundColor: styled.background.primary,
-      borderRadius: styled.radius.ternary,
-      boxSizing: 'border-box',
-      '&:hover .img .action': {
-        opacity: 1
-      },
-      '& .skeleton': {
-        backgroundImage: `linear-gradient(90deg, ${styled.background.quaternary} 0px, ${styled.active.tertiary} 40px, ${styled.background.quaternary} 80px)`,
-        backgroundSize: '600px',
-        color: `${styled.background.quaternary} !important`,
-        borderRadius: styled.radius.primary,
-        animation: `${shineLine} 1.6s infinite linear`,
-      },
-      '& .img.skeleton': {
-        borderRadius: 0
-      },
-      '& .img': {
-        borderRadius: styled.radius.ternary,
-        overflow: 'hidden',
-        width: '100%',
-        height: 130,
-        boxShadow: styled.shadow.secondary,
-        '& .status': {
-          position: 'absolute',
-          left: 10,
-          top: 10,
-          width: 13,
-          height: 13,
-          borderRadius: styled.radius.circle,
-          boxShadow: styled.shadow.secondary,
-          '&.active': {
-            backgroundColor: styled.color.success,
-          },
-          '&.inactive': {
-            backgroundColor: styled.color.error,
-          }
-        },
-        '& .action': {
-          transition: '0.3s ease',
-          opacity: 0,
-          backgroundColor: styled.background.primary,
-          position: 'absolute',
-          right: 7,
-          top: 7,
-          padding: '5px 5px 5px 0',
-          display: 'flex',
-          alignItem: 'center',
-          justifyContent: 'space-between',
-          width: 'fit-content',
-          borderRadius: styled.radius.primary,
-          '& span': {
-            cursor: 'pointer',
-            color: styled.text.tertiary,
-            display: 'flex',
-            alignItem: 'center',
-            '& svg': {
-              fontSize: styled.responsive[device]?.text.h5
-            }
-          },
-          '& span:hover': {
-            color: styled.text.primary
-          }
-        },
-        '& img': {
-          objectFit: 'cover',
-          width: '100%',
-          height: '100%',
         },
       },
-      '& .content': {
-        marginTop: 5,
-        borderRadius: styled.radius.ternary,
-        width: '100%',
-        padding: 7,
-        backgroundColor: styled.background.secondary,
-        boxShadow: styled.shadow.secondary,
-        boxSizing: 'border-box',
-        '& .title': {
-          position: 'relative',
-          display: 'inline-block',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis',
-          width: '100%',
-          overflow: 'hidden',
-        },
-        '& .sub-title': {
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItem: 'center',
-          '& div': {
-            position: 'relative',
-            display: 'inline-block',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden',
-            fontSize: styled.responsive?.[device]?.text.secondary,
-            color: styled.text.secondary,
-          },
-          '& .sub-right': {
-            marginLeft: 5,
-            width: 'fit-content',
-            fontSize: styled.responsive?.[device]?.text.quaternary,
-            color: styled.text.quaternary,
-          },
-          '& .sub-left': {
-            width: 'fit-content',
-            fontSize: styled.responsive?.[device]?.text.quaternary,
-            color: styled.text.quaternary,
-          }
-        }
-      }
     },
   })
 )
 
-export const CustomListContainer = styled('div')(
-  ({ styled, device, loading }: { styled: IThemeStyle, device: DeviceOptions, loading: string }) => ({
-    backgroundColor: 'red',
-  })
-)
-
+export * from './container'

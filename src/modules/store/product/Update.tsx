@@ -4,7 +4,7 @@ import Container from 'components/shared/Container'
 import StoreBreadcrumbs from '../components/Breadcrumbs'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useParams } from 'react-router-dom'
-import { getProduct, selectProduct } from './redux'
+import { getDetailProduct, selectDetailProduct } from './redux'
 
 const Header = ({ id }) => {
     return <><StoreBreadcrumbs page='productUpdate' id={id} /></>
@@ -12,12 +12,12 @@ const Header = ({ id }) => {
 
 export const UpdateProduct = () => {
   const dispatch = useAppDispatch()
-  const { data: defaultValues, status } = useAppSelector(selectProduct)
+  const { data: defaultValues, status } = useAppSelector(selectDetailProduct)
   const { id } = useParams()
   
   useEffect(() => {
     if (id) {
-      dispatch(getProduct({ id, fields: ['name', 'price', 'profile', 'status', 'currency', 'code', 'brand', 'category', 'images', 'description', 'isStock'] }))
+      dispatch(getDetailProduct({ id, fields: ['name', 'price', 'profile', 'status', 'currency', 'code', 'brand', 'category', 'images', 'description', 'isStock'] }))
     }
   }, [dispatch, id])
   

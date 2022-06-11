@@ -15,20 +15,35 @@ export const getListProduct = createAsyncThunk(
   }
 )
 
-export const getProduct = createAsyncThunk(
+export const getDetailProduct = createAsyncThunk(
   'product/detail',
-  async ({id, query, fields}: { id: string, query?: URLSearchParams, fields: Array<string> }) => {
+  async ({id, query, fields}: { id: string, query?: URLSearchParams, fields?: Array<string> }) => {
     const response = await Axios({
       method: 'GET',
       url: `/store/product/detail/${id}`,
       params: query
     })
     let data = {}
-    fields.forEach((field) => {
-      data[field] = response?.data?.data?.[field]
-    })
+    fields 
+      ? fields?.forEach((field) => {
+        data[field] = response?.data?.data?.[field]
+      })
+      : data = response?.data?.data
     
     return { ...response?.data, data }
+  }
+)
+
+export const getProduct = createAsyncThunk(
+  'product/single',
+  async ({id, query}: { id: string, query?: URLSearchParams }) => {
+    const response = await Axios({
+      method: 'GET',
+      url: `/store/product/detail/${id}`,
+      params: query
+    })
+    
+    return response?.data
   }
 )
 
@@ -51,20 +66,33 @@ export const productSlice = createSlice({
       })
 
       // Detail product
-      .addCase(getProduct.pending, (state) => {
+      .addCase(getDetailProduct.pending, (state) => {
         state.detail.status = 'LOADING'
       })
-      .addCase(getProduct.rejected, (state) => {
+      .addCase(getDetailProduct.rejected, (state) => {
         state.detail.status = 'FAILED'
       })
-      .addCase(getProduct.fulfilled, (state, action) => {
+      .addCase(getDetailProduct.fulfilled, (state, action) => {
         state.detail.status = 'SUCCESS'
         state.detail.data = action.payload.data
+      })
+
+      // Get product
+      .addCase(getProduct.pending, (state) => {
+        state.single.status = 'LOADING'
+      })
+      .addCase(getProduct.rejected, (state) => {
+        state.single.status = 'FAILED'
+      })
+      .addCase(getProduct.fulfilled, (state, action) => {
+        state.single.status = 'SUCCESS'
+        state.single.data = action.payload.data
       })
   },
 })
 
-export const selectProduct = (state: RootState) => state.product.detail
+export const selectProduct = (state: RootState) => state.product.single
 export const selectListProduct = (state: RootState) => state.product.list
+export const selectDetailProduct = (state: RootState) => state.product.detail
 
 export default productSlice.reducer

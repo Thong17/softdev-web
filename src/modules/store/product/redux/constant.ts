@@ -29,6 +29,7 @@ export const initState: IProductBody = {
 export interface ProductState {
   list: IBody<Object[]>
   detail: IBody<IProductBody>
+  single: IBody<any>
 }
 
 export const initialState: ProductState = {
@@ -39,5 +40,9 @@ export const initialState: ProductState = {
   detail: {
     data: initState,
     status: 'INIT',
-  }
+  },
+  single: {
+    data: initState,
+    status: 'INIT',
+  },
 }
