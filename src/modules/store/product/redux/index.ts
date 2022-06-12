@@ -50,7 +50,19 @@ export const getProduct = createAsyncThunk(
 export const productSlice = createSlice({
   name: 'product',
   initialState,
-  reducers: {},
+  reducers: {
+    updateOption(state, action) {
+      state.single.data.options = state.single.data.options.map((option) => {
+        if (option._id === action.payload._id) {
+          option = action.payload
+        }
+        return option
+      })
+    },
+    deleteOption(state, action) {
+      state.single.data.options = state.single.data.options?.filter((option) => option._id !== action.payload)
+    }
+  },
   extraReducers: (builder) => {
     builder
       // List product
@@ -94,5 +106,6 @@ export const productSlice = createSlice({
 export const selectProduct = (state: RootState) => state.product.single
 export const selectListProduct = (state: RootState) => state.product.list
 export const selectDetailProduct = (state: RootState) => state.product.detail
+export const { updateOption, deleteOption } = productSlice.actions
 
 export default productSlice.reducer

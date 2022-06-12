@@ -24,7 +24,7 @@ export const NotifyContext = createContext({
 
 const NotifyProvider = ({ children }) => {
   const notify = (message: any, type?: TypeOptions) => {
-    toast(message, { ...initState, type })
+    toast(message || 'Internal Server Error', { ...initState, type })
   }
 
   const loadify = (promise: Promise<Function>) => {

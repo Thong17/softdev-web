@@ -216,10 +216,27 @@ export const CustomTableContainer = styled('div')(
         cursor: 'pointer',
         color: styled.text.primary
       },
-      '& div': {
-        height: 100,
-        backgroundColor: 'red',
+      '& div.option-container': {
+        position: 'relative',
+        height: 98,
+        border: styled.border.quaternary,
         borderRadius: styled.radius.secondary,
+        overflow: 'hidden',
+        '& .action': {
+          position: 'absolute',
+          zIndex: 10,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: styled.background.primary,
+          opacity: 0,
+          transition: '0.3s ease'
+        },
+        '&:hover .action': {
+          opacity: 0.9
+        }
       }
     })
   )

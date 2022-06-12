@@ -16,12 +16,15 @@ import { propertySchema } from './schema'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { selectProduct, getProduct } from './redux'
+import { selectProduct, getProduct, deleteOption } from './redux'
 import useLanguage from 'hooks/useLanguage'
 import { MenuDialog } from 'components/shared/MenuDialog'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { OptionForm } from './OptionForm'
+import { DeleteButton, UpdateButton } from 'components/shared/table/ActionButton'
+import useAlert from 'hooks/useAlert'
+import { initOption, mapOptionBody } from './redux/constant'
 
 const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
@@ -32,15 +35,18 @@ export const PropertyProduct = () => {
   const { data: product, status } = useAppSelector(selectProduct)
   const { id, action } = useParams()
   const [showForm, setShowForm] = useState(false)
+  const [optionValue, setOptionValue] = useState(initOption)
   const [optionDialog, setOptionDialog] = useState({
     open: false,
     propertyId: null,
-    productId: id
+    productId: id,
+    optionId: null
   })
   const { lang } = useLanguage()
   const { device } = useWeb()
   const { theme } = useTheme()
   const { notify } = useNotify()
+  const confirm = useAlert()
   const {
     register,
     handleSubmit,
@@ -94,6 +100,7 @@ export const PropertyProduct = () => {
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
+        id && dispatch(getProduct({ id }))
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {
@@ -114,12 +121,55 @@ export const PropertyProduct = () => {
     console.log(id)
   }
 
+  const handleEditOption = (oid, propId) => {
+    Axios({
+      method: 'GET',
+      url: `/store/product/option/detail/${oid}`,
+    })
+      .then((data) => {
+        setOptionValue(mapOptionBody(data.data.data))
+        setOptionDialog({
+          ...optionDialog,
+          propertyId: propId,
+          optionId: oid,
+          open: true,
+        })
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
+  }
+
+  const handleDeleteOption = (id) => {
+    confirm({
+      title: 'Delete Option',
+      description: 'Are you sure?',
+      variant: 'error',
+    })
+      .then(() => {
+        Axios({
+          method: 'DELETE',
+          url: `/store/product/option/disable/${id}`,
+        })
+          .then((data: any) => {
+            if (data?.data?.code === 'SUCCESS') {
+              dispatch(deleteOption(data?.data?.data?._id))
+            }
+          })
+          .catch((err) => {
+            notify(err?.response?.data?.msg, 'error')
+          })
+      })
+      .catch()
+  }
+
   return (
     <Container header={<Header stages={propertyBreadcrumb} />}>
       <OptionForm
         optionDialog={optionDialog}
         setOptionDialog={setOptionDialog}
         theme={theme}
+        defaultValues={optionValue}
       />
       <div
         style={{
@@ -231,23 +281,36 @@ export const PropertyProduct = () => {
                   >
                     <Button
                       className='create-button'
-                      onClick={() =>
+                      onClick={() => {
+                        setOptionValue(initOption)
                         setOptionDialog({
                           ...optionDialog,
                           propertyId: property?._id,
                           open: true,
                         })
-                      }
+                      }}
                     >
                       <AddRoundedIcon />
                     </Button>
-                    { product.options.map((option, index) => {
-                        return option.property === property._id && <div key={index}>
-                          {option.name?.[lang] || option.name?.['English']}
-                          <span>{option.price} {option.currency}</span>
-                        </div>
-                      }) 
-                    }
+                    {product.options.map((option, index) => {
+                      return (
+                        option.property === property._id && (
+                          <div key={index} className='option-container'>
+                            <div className='action'>
+                              <UpdateButton
+                                style={{ margin: 0 }}
+                                onClick={() => handleEditOption(option._id, property._id)}
+                              />
+                              <DeleteButton onClick={() => handleDeleteOption(option._id)} />
+                            </div>
+                            {option.name?.[lang] || option.name?.['English']}
+                            <span>
+                              {option.price} {option.currency}
+                            </span>
+                          </div>
+                        )
+                      )
+                    })}
                   </CustomOptionContainer>
                 </Section>
               )

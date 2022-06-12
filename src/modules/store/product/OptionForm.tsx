@@ -17,6 +17,8 @@ import { currencyOptions } from 'constants/variables'
 import { useEffect, useState } from 'react'
 import { IImage } from 'components/shared/form/UploadField'
 import useWeb from 'hooks/useWeb'
+import { updateOption } from './redux'
+import { useAppDispatch } from 'app/hooks'
 
 export const OptionForm = ({
   optionDialog,
@@ -25,6 +27,7 @@ export const OptionForm = ({
   theme,
 }: any) => {
   const {
+    reset,
     watch,
     register,
     handleSubmit,
@@ -32,10 +35,11 @@ export const OptionForm = ({
     setError,
     getValues,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(optionSchema), defaultValues: { price: 0, ...defaultValues } })
+  } = useForm({ resolver: yupResolver(optionSchema), defaultValues })
+  const dispatch = useAppDispatch()
   const { notify, loadify } = useNotify()
   const { width } = useWeb()
-  const [imagesPath, setImagesPath] = useState<IImage>(defaultValues?.profile)
+  const [imagePath, setImagePath] = useState<IImage | undefined>(defaultValues?.imagePath)
   const [currency, setCurrency] = useState(defaultValues?.currency)
   const currencyValue = watch('currency')
 
@@ -46,6 +50,12 @@ export const OptionForm = ({
 
     setCurrency(selectedCurrency?.value || 'USD')
   }, [currencyValue])
+
+  useEffect(() => {
+    reset(defaultValues)
+    setImagePath(defaultValues?.imagePath)
+  }, [defaultValues, reset])
+  
 
   const handleLocaleChange = (data) => {
     setValue('name', data)
@@ -67,24 +77,30 @@ export const OptionForm = ({
     })
     loadify(response)
     response.then((data) => {
-      const fileIds = data?.data?.data?._id
+      const fileIds = data?.data?.data?.[0]?._id
       const file: IImage = {
-        filename: data?.data?.data?.filename,
-        _id: data?.data?.data?._id,
+        filename: data?.data?.data?.[0]?.filename,
+        _id: data?.data?.data?.[0]?._id,
       }
       setValue('profile', fileIds)
-      setImagesPath(file)
+      setImagePath(file)
     })
+  }
+
+  const handleCloseDialog = () => {
+    setOptionDialog({ ...optionDialog, propertyId: null, optionId: null, open: false })
   }
 
   const handleDeleteImage = () => {
     setValue('profile', null)
+    setImagePath(undefined)
   }
 
   const submit = (data) => {
+    delete data.imagePath
     Axios({
-      method: 'POST',
-      url: `/store/product/option/create`,
+      method: optionDialog.optionId ? 'PUT' : 'POST',
+      url: optionDialog.optionId ? `/store/product/option/update/${optionDialog.optionId}` : `/store/product/option/create`,
       body: {
         ...data,
         product: optionDialog.productId,
@@ -93,6 +109,7 @@ export const OptionForm = ({
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
+        dispatch(updateOption(data?.data?.data))
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {
@@ -104,13 +121,11 @@ export const OptionForm = ({
         notify(err?.response?.data?.msg, 'error')
       })
   }
-
+  
   return (
     <AlertDialog
       isOpen={optionDialog.open}
-      handleClose={() =>
-        setOptionDialog({ ...optionDialog, propertyId: null, open: false })
-      }
+      handleClose={handleCloseDialog}
     >
       <form
         style={{
@@ -134,6 +149,7 @@ export const OptionForm = ({
             name='name'
             err={errors?.name}
             describe='Option'
+            defaultValue={getValues('name')}
             onChange={handleLocaleChange}
           />
         </div>
@@ -157,7 +173,7 @@ export const OptionForm = ({
         <div style={{ gridArea: 'profile' }}>
           <FileField
             height={200}
-            images={imagesPath && [imagesPath]}
+            images={imagePath && [imagePath]}
             name='profile'
             label='Profile'
             accept='image/png, image/jpeg'
@@ -175,15 +191,9 @@ export const OptionForm = ({
             {...register('description')}
           />
         </div>
-        <div style={{ gridArea: 'action' }}>
+        <div style={{ gridArea: 'action', display: 'flex', justifyContent: 'end' }}>
           <Button
-            onClick={() =>
-              setOptionDialog({
-                ...optionDialog,
-                propertyId: null,
-                open: false,
-              })
-            }
+            onClick={handleCloseDialog}
           >
             Cancel
           </Button>
@@ -198,7 +208,7 @@ export const OptionForm = ({
             onClick={handleSubmit(submit)}
             autoFocus
           >
-            Create
+            { optionDialog.optionId ? 'Update' : 'Create' }
           </CustomButton>
         </div>
       </form>
