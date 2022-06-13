@@ -29,6 +29,6 @@ export const optionSchema = yup.object().shape({
   }),
   price: yup.number().optional(),
   currency: yup.string().optional(),
-  profile: yup.string().optional(),
+  profile: yup.string().optional().nullable(),
   description: yup.string().optional(),
 })

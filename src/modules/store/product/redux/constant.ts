@@ -19,8 +19,13 @@ export interface IOptionBody {
   price?: number,
   currency: string,
   description: string,
-  profile: any,
+  profile?: any,
   imagePath?: IImage
+}
+
+export interface IPropertyBody {
+  name: Object,
+  description: string,
 }
 
 export const initState: IProductBody = {
@@ -41,7 +46,11 @@ export const initOption: IOptionBody = {
   currency: 'USD',
   price: 0,
   description: '',
-  profile: null
+}
+
+export const initProperty: IPropertyBody = {
+  name: {},
+  description: '',
 }
 
 export const mapOptionBody = (body) => {
@@ -55,6 +64,13 @@ export const mapOptionBody = (body) => {
       _id: body.profile?._id,
       filename: body.profile?.filename
     }
+  }
+}
+
+export const mapPropertyBody = (body) => {
+  return {
+    name: body.name,
+    description: body.description,
   }
 }
 

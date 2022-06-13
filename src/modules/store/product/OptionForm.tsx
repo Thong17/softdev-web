@@ -17,12 +17,12 @@ import { currencyOptions } from 'constants/variables'
 import { useEffect, useState } from 'react'
 import { IImage } from 'components/shared/form/UploadField'
 import useWeb from 'hooks/useWeb'
-import { updateOption } from './redux'
+import { updateOption, createOption } from './redux'
 import { useAppDispatch } from 'app/hooks'
 
 export const OptionForm = ({
-  optionDialog,
-  setOptionDialog,
+  dialog,
+  setDialog,
   defaultValues,
   theme,
 }: any) => {
@@ -88,7 +88,7 @@ export const OptionForm = ({
   }
 
   const handleCloseDialog = () => {
-    setOptionDialog({ ...optionDialog, propertyId: null, optionId: null, open: false })
+    setDialog({ ...dialog, propertyId: null, optionId: null, open: false })
   }
 
   const handleDeleteImage = () => {
@@ -99,17 +99,19 @@ export const OptionForm = ({
   const submit = (data) => {
     delete data.imagePath
     Axios({
-      method: optionDialog.optionId ? 'PUT' : 'POST',
-      url: optionDialog.optionId ? `/store/product/option/update/${optionDialog.optionId}` : `/store/product/option/create`,
+      method: dialog.optionId ? 'PUT' : 'POST',
+      url: dialog.optionId ? `/store/product/option/update/${dialog.optionId}` : `/store/product/option/create`,
       body: {
         ...data,
-        product: optionDialog.productId,
-        property: optionDialog.propertyId,
+        product: dialog.productId,
+        property: dialog.propertyId,
       },
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
-        dispatch(updateOption(data?.data?.data))
+        dialog.optionId 
+          ? dispatch(updateOption(data?.data?.data))
+          : dispatch(createOption(data?.data?.data))
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {
@@ -124,7 +126,7 @@ export const OptionForm = ({
   
   return (
     <AlertDialog
-      isOpen={optionDialog.open}
+      isOpen={dialog.open}
       handleClose={handleCloseDialog}
     >
       <form
@@ -208,7 +210,7 @@ export const OptionForm = ({
             onClick={handleSubmit(submit)}
             autoFocus
           >
-            { optionDialog.optionId ? 'Update' : 'Create' }
+            { dialog.optionId ? 'Update' : 'Create' }
           </CustomButton>
         </div>
       </form>

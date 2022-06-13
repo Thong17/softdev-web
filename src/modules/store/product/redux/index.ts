@@ -51,6 +51,9 @@ export const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
+    createOption(state, action) {
+      state.single.data.options = [...state.single.data.options, action.payload]
+    },
     updateOption(state, action) {
       state.single.data.options = state.single.data.options.map((option) => {
         if (option._id === action.payload._id) {
@@ -60,7 +63,21 @@ export const productSlice = createSlice({
       })
     },
     deleteOption(state, action) {
-      state.single.data.options = state.single.data.options?.filter((option) => option._id !== action.payload)
+      state.single.data.options = state.single.data.options?.filter((property) => property._id !== action.payload)
+    },
+    createProperty(state, action) {
+      state.single.data.properties = [...state.single.data.properties, action.payload]
+    },
+    updateProperty(state, action) {
+      state.single.data.properties = state.single.data.properties.map((property) => {
+        if (property._id === action.payload._id) {
+          property = action.payload
+        }
+        return property
+      })
+    },
+    deleteProperty(state, action) {
+      state.single.data.properties = state.single.data.properties?.filter((property) => property._id !== action.payload)
     }
   },
   extraReducers: (builder) => {
@@ -106,6 +123,6 @@ export const productSlice = createSlice({
 export const selectProduct = (state: RootState) => state.product.single
 export const selectListProduct = (state: RootState) => state.product.list
 export const selectDetailProduct = (state: RootState) => state.product.detail
-export const { updateOption, deleteOption } = productSlice.actions
+export const { updateOption, deleteOption, createOption, updateProperty, deleteProperty, createProperty } = productSlice.actions
 
 export default productSlice.reducer

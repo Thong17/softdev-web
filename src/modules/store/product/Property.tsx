@@ -4,27 +4,37 @@ import { useParams } from 'react-router-dom'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import NotFound from 'components/shared/NotFound'
 import { CustomColorContainer, CustomOptionContainer } from 'styles'
-import { LocaleField, DetailField } from 'components/shared/form'
 import { Section } from 'components/shared/Section'
 import useWeb from 'hooks/useWeb'
 import useTheme from 'hooks/useTheme'
 import { Button, MenuList } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { propertySchema } from './schema'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { selectProduct, getProduct, deleteOption } from './redux'
+import {
+  selectProduct,
+  getProduct,
+  deleteOption,
+  deleteProperty,
+} from './redux'
 import useLanguage from 'hooks/useLanguage'
 import { MenuDialog } from 'components/shared/MenuDialog'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { OptionForm } from './OptionForm'
-import { DeleteButton, UpdateButton } from 'components/shared/table/ActionButton'
+import {
+  DeleteButton,
+  UpdateButton,
+} from 'components/shared/table/ActionButton'
 import useAlert from 'hooks/useAlert'
-import { initOption, mapOptionBody } from './redux/constant'
+import {
+  initOption,
+  initProperty,
+  mapOptionBody,
+  mapPropertyBody,
+} from './redux/constant'
+import { PropertyForm } from './PropertyForm'
 
 const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
@@ -34,26 +44,24 @@ export const PropertyProduct = () => {
   const dispatch = useAppDispatch()
   const { data: product, status } = useAppSelector(selectProduct)
   const { id, action } = useParams()
-  const [showForm, setShowForm] = useState(false)
   const [optionValue, setOptionValue] = useState(initOption)
+  const [propertyValue, setPropertyValue] = useState(initProperty)
   const [optionDialog, setOptionDialog] = useState({
     open: false,
     propertyId: null,
     productId: id,
-    optionId: null
+    optionId: null,
+  })
+  const [propertyDialog, setPropertyDialog] = useState({
+    open: false,
+    propertyId: null,
+    productId: id,
   })
   const { lang } = useLanguage()
   const { device } = useWeb()
   const { theme } = useTheme()
   const { notify } = useNotify()
   const confirm = useAlert()
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    setError,
-    formState: { errors },
-  } = useForm({ resolver: yupResolver(propertySchema) })
 
   useEffect(() => {
     if (id) {
@@ -84,41 +92,50 @@ export const PropertyProduct = () => {
     },
   ]
 
-  const handleLocaleChange = (data) => {
-    setValue('name', data)
-  }
-
-  const toggleForm = () => {
-    setShowForm(!showForm)
-  }
-
-  const submit = (data) => {
+  const handleEditProperty = (propId) => {
     Axios({
-      method: 'POST',
-      url: `/store/product/property/create`,
-      body: { ...data, product: id },
+      method: 'GET',
+      url: `/store/product/property/detail/${propId}`,
     })
       .then((data) => {
-        notify(data?.data?.msg, 'success')
-        id && dispatch(getProduct({ id }))
+        setPropertyValue(mapPropertyBody(data.data.data))
+        setPropertyDialog({
+          ...optionDialog,
+          propertyId: propId,
+          open: true,
+        })
       })
       .catch((err) => {
-        if (!err?.response?.data?.msg) {
-          setError(err?.response?.data[0]?.key, {
-            message: err?.response?.data[0]?.path,
-          })
-        }
-
         notify(err?.response?.data?.msg, 'error')
       })
   }
 
-  const handleEditProperty = (id) => {
-    console.log(id)
-  }
-
   const handleDeleteProperty = (id) => {
-    console.log(id)
+    confirm({
+      title: 'Delete Property',
+      description: 'Are you sure?',
+      variant: 'error',
+    })
+      .then(() => {
+        Axios({
+          method: 'DELETE',
+          url: `/store/product/property/disable/${id}`,
+        })
+          .then((data: any) => {
+            if (data?.data?.code !== 'SUCCESS') {
+              notify(data?.data?.msg, 'error')
+              return
+            }
+            dispatch(deleteProperty(data?.data?.data?._id))
+            notify(data?.data?.msg, 'success')
+          })
+          .catch((err) => {
+            notify(err?.response?.data?.msg, 'error')
+          })
+      })
+      .catch(() => {
+        return
+      })
   }
 
   const handleEditOption = (oid, propId) => {
@@ -152,24 +169,35 @@ export const PropertyProduct = () => {
           url: `/store/product/option/disable/${id}`,
         })
           .then((data: any) => {
-            if (data?.data?.code === 'SUCCESS') {
-              dispatch(deleteOption(data?.data?.data?._id))
+            if (data?.data?.code !== 'SUCCESS') {
+              notify(data?.data?.msg, 'error')
+              return
             }
+            dispatch(deleteOption(data?.data?.data?._id))
+            notify(data?.data?.msg, 'success')
           })
           .catch((err) => {
             notify(err?.response?.data?.msg, 'error')
           })
       })
-      .catch()
+      .catch(() => {
+        return
+      })
   }
 
   return (
     <Container header={<Header stages={propertyBreadcrumb} />}>
       <OptionForm
-        optionDialog={optionDialog}
-        setOptionDialog={setOptionDialog}
+        dialog={optionDialog}
+        setDialog={setOptionDialog}
         theme={theme}
         defaultValues={optionValue}
+      />
+      <PropertyForm
+        dialog={propertyDialog}
+        setDialog={setPropertyDialog}
+        theme={theme}
+        defaultValues={propertyValue}
       />
       <div
         style={{
@@ -180,7 +208,13 @@ export const PropertyProduct = () => {
       >
         <div className='preview'>Preview</div>
         <div>
-          <Section describe='Color'>
+          <Section
+            describe='Color'
+            style={{
+              boxShadow: theme.shadow.container,
+              borderRadius: theme.radius.secondary
+            }}
+          >
             <CustomColorContainer
               device={device}
               styled={theme}
@@ -193,55 +227,29 @@ export const PropertyProduct = () => {
               <div className='color'></div>
             </CustomColorContainer>
           </Section>
-          <form
-            onSubmit={handleSubmit(submit)}
-            className='property-form'
-            style={{
-              marginTop: 40,
-              height: showForm ? 'fit-content' : 36.5,
-              padding: showForm ? 30 : 0,
-              border: theme.border.quaternary,
-              borderRadius: theme.radius.secondary,
+          <Button
+            fullWidth
+            variant='outlined'
+            style={{ marginTop: 20 }}
+            onClick={() => {
+              setPropertyValue(initProperty)
+              setPropertyDialog({
+                ...propertyDialog,
+                open: true,
+              })
             }}
           >
-            {showForm && (
-              <>
-                <LocaleField
-                  name='name'
-                  err={errors?.name}
-                  describe='Property'
-                  onChange={handleLocaleChange}
-                />
-                <DetailField
-                  type='text'
-                  label='Description'
-                  style={{ height: 70 }}
-                  {...register('description')}
-                />
-              </>
-            )}
-            <Button
-              fullWidth={showForm ? false : true}
-              variant='contained'
-              color={showForm ? 'error' : 'info'}
-              onClick={toggleForm}
-            >
-              {showForm ? 'Cancel' : 'Add Property'}
-            </Button>
-            {showForm && (
-              <Button
-                variant='contained'
-                type='submit'
-                style={{ marginLeft: 20 }}
-              >
-                Create
-              </Button>
-            )}
-          </form>
+            Add Property
+          </Button>
           {status === 'SUCCESS' &&
             product?.properties?.map((property, index) => {
               return (
                 <Section
+                  style={{
+                    boxShadow: theme.shadow.container,
+                    borderRadius: theme.radius.secondary,
+                    marginTop: 30,
+                  }}
                   key={index}
                   describe={
                     property?.name?.[lang] || property?.name?.['English']
@@ -299,9 +307,13 @@ export const PropertyProduct = () => {
                             <div className='action'>
                               <UpdateButton
                                 style={{ margin: 0 }}
-                                onClick={() => handleEditOption(option._id, property._id)}
+                                onClick={() =>
+                                  handleEditOption(option._id, property._id)
+                                }
                               />
-                              <DeleteButton onClick={() => handleDeleteOption(option._id)} />
+                              <DeleteButton
+                                onClick={() => handleDeleteOption(option._id)}
+                              />
                             </div>
                             {option.name?.[lang] || option.name?.['English']}
                             <span>
