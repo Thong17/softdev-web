@@ -32,3 +32,15 @@ export const optionSchema = yup.object().shape({
   profile: yup.string().optional().nullable(),
   description: yup.string().optional(),
 })
+
+export const colorSchema = yup.object().shape({
+  name: yup.object({
+    English: yup.string().required('English is required'),
+  }),
+  price: yup.number().optional(),
+  currency: yup.string().optional(),
+  code: yup.string().optional(),
+  profile: yup.string().optional(),
+  images: yup.array().optional(),
+  description: yup.string().optional(),
+})

@@ -23,6 +23,16 @@ export interface IOptionBody {
   imagePath?: IImage
 }
 
+export interface IColorBody {
+  name: Object,
+  code: string,
+  price?: number,
+  currency: string,
+  description: string,
+  profile?: any,
+  images?: IImage[]
+}
+
 export interface IPropertyBody {
   name: Object,
   description: string,
@@ -48,6 +58,14 @@ export const initOption: IOptionBody = {
   description: '',
 }
 
+export const initColor: IColorBody = {
+  name: {},
+  code: '',
+  currency: 'USD',
+  price: 0,
+  description: '',
+}
+
 export const initProperty: IPropertyBody = {
   name: {},
   description: '',
@@ -64,6 +82,18 @@ export const mapOptionBody = (body) => {
       _id: body.profile?._id,
       filename: body.profile?.filename
     }
+  }
+}
+
+export const mapColorBody = (body) => {
+  return {
+    name: body.name,
+    currency: body.currency,
+    price: body.price,
+    code: body.code,
+    description: body.description,
+    profile: body.profile?._id,
+    images: body.images
   }
 }
 

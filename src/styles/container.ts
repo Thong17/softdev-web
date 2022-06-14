@@ -189,7 +189,19 @@ export const CustomTableContainer = styled('div')(
       '& div': {
         height: 100,
         backgroundColor: '#333'
-      }
+      },
+      '& button.create-button': {
+        height: 100,
+        borderRadius: styled.radius.secondary,
+        border: styled.border.quaternary,
+        borderColor: `${styled.color.info}55`,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        cursor: 'pointer',
+        color: styled.color.info,
+        backgroundColor: `${styled.color.info}11`,
+      },
     })
   )
   

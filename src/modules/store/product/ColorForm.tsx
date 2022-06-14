@@ -1,7 +1,7 @@
 import { CustomButton } from 'styles'
 import { Button } from '@mui/material'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
-import { optionSchema } from './schema'
+import { colorSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import {
@@ -17,10 +17,10 @@ import { currencyOptions } from 'constants/variables'
 import { useEffect, useState } from 'react'
 import { IImage } from 'components/shared/form/UploadField'
 import useWeb from 'hooks/useWeb'
-import { updateOption, createOption } from './redux'
+import { updateColor, createColor } from './redux'
 import { useAppDispatch } from 'app/hooks'
 
-export const OptionForm = ({
+export const ColorForm = ({
   dialog,
   setDialog,
   defaultValues,
@@ -35,11 +35,11 @@ export const OptionForm = ({
     setError,
     getValues,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(optionSchema), defaultValues })
+  } = useForm({ resolver: yupResolver(colorSchema), defaultValues })
   const dispatch = useAppDispatch()
   const { notify, loadify } = useNotify()
   const { width } = useWeb()
-  const [imagePath, setImagePath] = useState<IImage | undefined>(defaultValues?.imagePath)
+  const [imagesPath, setImagesPath] = useState<IImage[]>(defaultValues?.images || [])
   const [currency, setCurrency] = useState(defaultValues?.currency)
   const currencyValue = watch('currency')
 
@@ -53,7 +53,7 @@ export const OptionForm = ({
 
   useEffect(() => {
     reset(defaultValues)
-    setImagePath(defaultValues?.imagePath)
+    setImagesPath(defaultValues?.images || [])
   }, [defaultValues, reset])
   
 
@@ -62,10 +62,12 @@ export const OptionForm = ({
   }
 
   const handleChangeImages = (event) => {
-    const profile = event.target.files[0]
-
+    const images = event.target.files
+    
     const formData = new FormData()
-    formData.append('images', profile)
+    for (let image = 0; image < images.length; image++) {
+      formData.append('images', images[image])
+    }
 
     const response = Axios({
       method: 'POST',
@@ -77,41 +79,64 @@ export const OptionForm = ({
     })
     loadify(response)
     response.then((data) => {
-      const fileIds = data?.data?.data?.[0]?._id
-      const file: IImage = {
-        filename: data?.data?.data?.[0]?.filename,
-        _id: data?.data?.data?.[0]?._id,
+      const fileIds = data.data.data.map(file => {
+        return file._id
+      })
+      const files: IImage[] = data.data.data.map(file => {
+        return { filename: file.filename, _id: file._id }
+      })  
+
+      console.log(imagesPath);
+      
+
+      !getValues('profile') && setValue('profile', fileIds[0])
+      if (imagesPath.length) {
+        setValue('images', [...getValues('images'), ...fileIds])
+        setImagesPath([ ...imagesPath, ...files ])
+      } else {
+        setValue('images', fileIds)
+        setImagesPath(files)
       }
-      setValue('profile', fileIds)
-      setImagePath(file)
     })
   }
 
   const handleCloseDialog = () => {
-    setDialog({ ...dialog, propertyId: null, optionId: null, open: false })
+    setDialog({ ...dialog, colorId: null, open: false })
   }
 
-  const handleDeleteImage = () => {
-    setValue('profile', null)
-    setImagePath(undefined)
+  const handleDeleteImage = (id) => {
+    const newImages = imagesPath.filter((image) => image._id !== id)
+    let hasProfile = false
+    newImages.forEach(image => {
+      if (image._id === getValues('profile')) {
+        hasProfile = true
+      }
+    })
+
+    !hasProfile && setValue('profile', newImages?.[0]?._id)
+    setImagesPath(newImages)
+    setValue('images', newImages)
+  }
+
+  const handleChangeActive = (active) => {
+    setValue('profile', active)
   }
 
   const submit = (data) => {
-    delete data.imagePath
+    delete data.imagesPath
     Axios({
-      method: dialog.optionId ? 'PUT' : 'POST',
-      url: dialog.optionId ? `/store/product/option/update/${dialog.optionId}` : `/store/product/option/create`,
+      method: dialog.colorId ? 'PUT' : 'POST',
+      url: dialog.colorId ? `/store/product/color/update/${dialog.colorId}` : `/store/product/color/create`,
       body: {
         ...data,
         product: dialog.productId,
-        property: dialog.propertyId,
       },
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
-        dialog.optionId 
-          ? dispatch(updateOption(data?.data?.data))
-          : dispatch(createOption(data?.data?.data))
+        dialog.colorId 
+          ? dispatch(updateColor(data?.data?.data))
+          : dispatch(createColor(data?.data?.data))
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {
@@ -150,7 +175,7 @@ export const OptionForm = ({
           <LocaleField
             name='name'
             err={errors?.name}
-            describe='Option'
+            describe='Color'
             defaultValue={getValues('name')}
             onChange={handleLocaleChange}
           />
@@ -175,14 +200,16 @@ export const OptionForm = ({
         <div style={{ gridArea: 'profile' }}>
           <FileField
             height={130}
-            images={imagePath && [imagePath]}
+            images={imagesPath}
             name='profile'
             label='Profile'
             accept='image/png, image/jpeg'
+            multiple
             err={errors?.profile?.message}
             selected={getValues('profile')}
             onChange={handleChangeImages}
             handleDelete={handleDeleteImage}
+            handleChangeActive={handleChangeActive}
           />
         </div>
         <div style={{ gridArea: 'description' }}>
@@ -210,7 +237,7 @@ export const OptionForm = ({
             onClick={handleSubmit(submit)}
             autoFocus
           >
-            { dialog.optionId ? 'Update' : 'Create' }
+            { dialog.colorId ? 'Update' : 'Create' }
           </CustomButton>
         </div>
       </form>

@@ -17,6 +17,7 @@ import {
   getProduct,
   deleteOption,
   deleteProperty,
+  deleteColor
 } from './redux'
 import useLanguage from 'hooks/useLanguage'
 import { MenuDialog } from 'components/shared/MenuDialog'
@@ -29,12 +30,15 @@ import {
 } from 'components/shared/table/ActionButton'
 import useAlert from 'hooks/useAlert'
 import {
+  initColor,
   initOption,
   initProperty,
   mapOptionBody,
   mapPropertyBody,
+  mapColorBody
 } from './redux/constant'
 import { PropertyForm } from './PropertyForm'
+import { ColorForm } from './ColorForm'
 
 const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
@@ -45,12 +49,18 @@ export const PropertyProduct = () => {
   const { data: product, status } = useAppSelector(selectProduct)
   const { id, action } = useParams()
   const [optionValue, setOptionValue] = useState(initOption)
+  const [colorValue, setColorValue] = useState(initColor)
   const [propertyValue, setPropertyValue] = useState(initProperty)
   const [optionDialog, setOptionDialog] = useState({
     open: false,
     propertyId: null,
     productId: id,
     optionId: null,
+  })
+  const [colorDialog, setColorDialog] = useState({
+    open: false,
+    colorId: null,
+    productId: id,
   })
   const [propertyDialog, setPropertyDialog] = useState({
     open: false,
@@ -185,6 +195,52 @@ export const PropertyProduct = () => {
       })
   }
 
+  const handleEditColor = (cid) => {
+    Axios({
+      method: 'GET',
+      url: `/store/product/color/detail/${cid}`,
+    })
+      .then((data) => {
+        setColorValue(mapColorBody(data.data.data))
+        setColorDialog({
+          ...optionDialog,
+          colorId: cid,
+          open: true,
+        })
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
+  }
+
+  const handleDeleteColor = (id) => {
+    confirm({
+      title: 'Delete Color',
+      description: 'Are you sure?',
+      variant: 'error',
+    })
+      .then(() => {
+        Axios({
+          method: 'DELETE',
+          url: `/store/product/color/disable/${id}`,
+        })
+          .then((data: any) => {
+            if (data?.data?.code !== 'SUCCESS') {
+              notify(data?.data?.msg, 'error')
+              return
+            }
+            dispatch(deleteColor(data?.data?.data?._id))
+            notify(data?.data?.msg, 'success')
+          })
+          .catch((err) => {
+            notify(err?.response?.data?.msg, 'error')
+          })
+      })
+      .catch(() => {
+        return
+      })
+  }
+
   return (
     <Container header={<Header stages={propertyBreadcrumb} />}>
       <OptionForm
@@ -192,6 +248,12 @@ export const PropertyProduct = () => {
         setDialog={setOptionDialog}
         theme={theme}
         defaultValues={optionValue}
+      />
+      <ColorForm
+        dialog={colorDialog}
+        setDialog={setColorDialog}
+        theme={theme}
+        defaultValues={colorValue}
       />
       <PropertyForm
         dialog={propertyDialog}
@@ -220,11 +282,38 @@ export const PropertyProduct = () => {
               styled={theme}
               loading={'false'}
             >
-              <div className='color'></div>
-              <div className='color'></div>
-              <div className='color'></div>
-              <div className='color'></div>
-              <div className='color'></div>
+              <Button
+                className='create-button'
+                onClick={() => {
+                  setColorValue(initColor)
+                  setColorDialog({
+                    ...colorDialog,
+                    open: true,
+                  })
+                }}
+              >
+                <AddRoundedIcon />
+              </Button>
+              {
+                product?.colors?.map((color, index) => {
+                  return (
+                    <div key={index}>
+                       <div className='action'>
+                        <UpdateButton
+                          style={{ margin: 0 }}
+                          onClick={() =>
+                            handleEditColor(color._id)
+                          }
+                        />
+                        <DeleteButton
+                          onClick={() => handleDeleteColor(color._id)}
+                        />
+                      </div>
+                      {color?.name?.[lang] || color?.name?.['English']}
+                    </div>
+                  )
+                })
+              }
             </CustomColorContainer>
           </Section>
           <Button
