@@ -40,7 +40,7 @@ export const Input: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
       <label>{label}</label>
       <div className='err'>{err}</div>
       <div className='hint'>{hint}</div>
-      <div className="icon">{icon}</div>
+      <div className="icon" style={{ zIndex: 10, cursor: 'pointer' }}>{icon}</div>
     </CustomInput>
   )
 }

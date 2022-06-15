@@ -98,7 +98,7 @@ export const PropertyProduct = () => {
           : `/store/product/update/${id}`,
     },
     {
-      title: 'Property',
+      title: 'Setup',
     },
   ]
 

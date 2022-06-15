@@ -19,13 +19,10 @@ import { IImage } from 'components/shared/form/UploadField'
 import useWeb from 'hooks/useWeb'
 import { updateColor, createColor } from './redux'
 import { useAppDispatch } from 'app/hooks'
+import ColorLensRoundedIcon from '@mui/icons-material/ColorLensRounded'
+import { SketchPicker } from 'react-color'
 
-export const ColorForm = ({
-  dialog,
-  setDialog,
-  defaultValues,
-  theme,
-}: any) => {
+export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
   const {
     reset,
     watch,
@@ -38,10 +35,20 @@ export const ColorForm = ({
   } = useForm({ resolver: yupResolver(colorSchema), defaultValues })
   const dispatch = useAppDispatch()
   const { notify, loadify } = useNotify()
-  const { width } = useWeb()
-  const [imagesPath, setImagesPath] = useState<IImage[]>(defaultValues?.images || [])
+  const { width, device } = useWeb()
+  const [imagesPath, setImagesPath] = useState<IImage[]>(
+    defaultValues?.images || []
+  )
   const [currency, setCurrency] = useState(defaultValues?.currency)
+  const [picker, setPicker] = useState(false)
+  const [color, setColor] = useState(getValues('code'))
   const currencyValue = watch('currency')
+  const colorCode = watch('code')
+
+  useEffect(() => {
+    setColor(colorCode)
+  }, [colorCode])
+  
 
   useEffect(() => {
     const selectedCurrency = currencyOptions.find(
@@ -55,15 +62,24 @@ export const ColorForm = ({
     reset(defaultValues)
     setImagesPath(defaultValues?.images || [])
   }, [defaultValues, reset])
-  
 
   const handleLocaleChange = (data) => {
     setValue('name', data)
   }
 
+  const handleChangeColor = (color) => {
+    setValue('code', color.hex)
+    setColor(color.hex)
+  }
+
+  const handleChangeCode = (event) => {
+    setValue('code', event.target.value)
+    setColor(event.target.value)
+  }
+
   const handleChangeImages = (event) => {
     const images = event.target.files
-    
+
     const formData = new FormData()
     for (let image = 0; image < images.length; image++) {
       formData.append('images', images[image])
@@ -79,20 +95,17 @@ export const ColorForm = ({
     })
     loadify(response)
     response.then((data) => {
-      const fileIds = data.data.data.map(file => {
+      const fileIds = data.data.data.map((file) => {
         return file._id
       })
-      const files: IImage[] = data.data.data.map(file => {
+      const files: IImage[] = data.data.data.map((file) => {
         return { filename: file.filename, _id: file._id }
-      })  
-
-      console.log(imagesPath);
-      
+      })
 
       !getValues('profile') && setValue('profile', fileIds[0])
       if (imagesPath.length) {
         setValue('images', [...getValues('images'), ...fileIds])
-        setImagesPath([ ...imagesPath, ...files ])
+        setImagesPath([...imagesPath, ...files])
       } else {
         setValue('images', fileIds)
         setImagesPath(files)
@@ -107,7 +120,7 @@ export const ColorForm = ({
   const handleDeleteImage = (id) => {
     const newImages = imagesPath.filter((image) => image._id !== id)
     let hasProfile = false
-    newImages.forEach(image => {
+    newImages.forEach((image) => {
       if (image._id === getValues('profile')) {
         hasProfile = true
       }
@@ -126,7 +139,9 @@ export const ColorForm = ({
     delete data.imagesPath
     Axios({
       method: dialog.colorId ? 'PUT' : 'POST',
-      url: dialog.colorId ? `/store/product/color/update/${dialog.colorId}` : `/store/product/color/create`,
+      url: dialog.colorId
+        ? `/store/product/color/update/${dialog.colorId}`
+        : `/store/product/color/create`,
       body: {
         ...data,
         product: dialog.productId,
@@ -134,7 +149,7 @@ export const ColorForm = ({
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
-        dialog.colorId 
+        dialog.colorId
           ? dispatch(updateColor(data?.data?.data))
           : dispatch(createColor(data?.data?.data))
       })
@@ -148,12 +163,9 @@ export const ColorForm = ({
         notify(err?.response?.data?.msg, 'error')
       })
   }
-  
+
   return (
-    <AlertDialog
-      isOpen={dialog.open}
-      handleClose={handleCloseDialog}
-    >
+    <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
       <form
         style={{
           fontFamily: theme.font.family,
@@ -162,16 +174,26 @@ export const ColorForm = ({
           width: width < 1024 ? '80vw' : '60vw',
           padding: 20,
           gridColumnGap: 20,
-          gridTemplateAreas: `
-                            'option option option'
-                            'price price currency'
-                            'profile profile profile'
-                            'description description description'
-                            'action action action'
-                        `,
+          gridTemplateAreas: device === 'mobile' 
+                            ? `
+                              'color color color'
+                              'price price price'
+                              'currency currency currency'
+                              'code code code'
+                              'profile profile profile'
+                              'description description description'
+                              'action action action'
+                            ` 
+                            : `
+                              'color color color'
+                              'price currency code'
+                              'profile profile profile'
+                              'description description description'
+                              'action action action'
+                            `,
         }}
       >
-        <div style={{ gridArea: 'option' }}>
+        <div style={{ gridArea: 'color' }}>
           <LocaleField
             name='name'
             err={errors?.name}
@@ -197,6 +219,31 @@ export const ColorForm = ({
             {...register('currency')}
           />
         </div>
+        <div style={{ gridArea: 'code' }}>
+          <TextField
+            type='text'
+            label='Code'
+            icon={<ColorLensRoundedIcon style={{ color: color }} onClick={() => setPicker(!picker)} />}
+            err={errors?.code?.message}
+            onChange={handleChangeCode}
+            value={getValues('code')}
+          />
+          {picker && (
+            <div style={{ position: 'absolute', zIndex: 100, right: 20 }}>
+              <div
+                onClick={() => setPicker(false)}
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  right: 0,
+                  left: 0,
+                  bottom: 0,
+                }}
+              ></div>
+              <SketchPicker color={color} onChange={handleChangeColor} />
+            </div>
+          )}
+        </div>
         <div style={{ gridArea: 'profile' }}>
           <FileField
             height={130}
@@ -220,12 +267,10 @@ export const ColorForm = ({
             {...register('description')}
           />
         </div>
-        <div style={{ gridArea: 'action', display: 'flex', justifyContent: 'end' }}>
-          <Button
-            onClick={handleCloseDialog}
-          >
-            Cancel
-          </Button>
+        <div
+          style={{ gridArea: 'action', display: 'flex', justifyContent: 'end' }}
+        >
+          <Button onClick={handleCloseDialog}>Cancel</Button>
           <CustomButton
             type='submit'
             style={{
@@ -237,7 +282,7 @@ export const ColorForm = ({
             onClick={handleSubmit(submit)}
             autoFocus
           >
-            { dialog.colorId ? 'Update' : 'Create' }
+            {dialog.colorId ? 'Update' : 'Create'}
           </CustomButton>
         </div>
       </form>
