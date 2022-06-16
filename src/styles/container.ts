@@ -186,9 +186,23 @@ export const CustomTableContainer = styled('div')(
       display: 'grid',
       gridTemplateColumns: `repeat(auto-fill, minmax(130px, 1fr))`,
       gridGap: 20,
-      '& div': {
+      '& div.color-container': {
         height: 100,
-        backgroundColor: '#333'
+        backgroundColor: '#333',
+        position: 'relative',
+        borderRadius: styled.radius.secondary,
+        padding: 10,
+        boxSizing: 'border-box',
+        '& .action': {
+          width: '100%',
+          transition: '0.3s ease',
+          position: 'absolute',
+          opacity: 0,
+          backgroundColor: styled.background.primary,
+        },
+        '&:hover .action': {
+          opacity: 0.9
+        }
       },
       '& button.create-button': {
         height: 100,
@@ -236,6 +250,8 @@ export const CustomTableContainer = styled('div')(
         border: styled.border.quaternary,
         borderRadius: styled.radius.secondary,
         overflow: 'hidden',
+        padding: 10,
+        boxSizing: 'border-box',
         '& .action': {
           position: 'absolute',
           zIndex: 10,

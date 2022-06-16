@@ -297,7 +297,7 @@ export const PropertyProduct = () => {
               {
                 product?.colors?.map((color, index) => {
                   return (
-                    <div key={index}>
+                    <div className='color-container' key={index}>
                        <div className='action'>
                         <UpdateButton
                           style={{ margin: 0 }}
@@ -309,7 +309,14 @@ export const PropertyProduct = () => {
                           onClick={() => handleDeleteColor(color._id)}
                         />
                       </div>
-                      {color?.name?.[lang] || color?.name?.['English']}
+                      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                        <span>{color?.name?.[lang] || color?.name?.['English']}</span>
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ width: 20, height: 20, backgroundColor: color?.code }}></span>
+                          <span>{color?.price} {color?.currency}</span>
+                        </div>
+                      </div>
+                      
                     </div>
                   )
                 })
