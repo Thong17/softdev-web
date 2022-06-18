@@ -46,17 +46,18 @@ export const DefaultHeader = ({ importData, styled, navigate, handleSearch, hand
               </CSVLink>
             </MenuList>
           </OptionButton>
-          <CustomButton
-            style={{
-              marginLeft: 10,
-              backgroundColor: styled.background.secondary,
-              color: styled.text.secondary,
-            }}
-            styled={styled}
-            onClick={() => navigate(createUrl)}
-          >
-            Create
-          </CustomButton>
+          { createUrl && <CustomButton
+              style={{
+                marginLeft: 10,
+                backgroundColor: styled.background.secondary,
+                color: styled.text.secondary,
+              }}
+              styled={styled}
+              onClick={() => navigate(createUrl)}
+            >
+              Create
+            </CustomButton>
+          }
         </div>
       </>
     )

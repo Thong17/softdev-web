@@ -112,6 +112,8 @@ export const OptionForm = ({
         dialog.optionId 
           ? dispatch(updateOption(data?.data?.data))
           : dispatch(createOption(data?.data?.data))
+          
+        handleCloseDialog()
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {

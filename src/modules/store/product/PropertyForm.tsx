@@ -62,6 +62,8 @@ export const PropertyForm = ({
         dialog.propertyId 
           ? dispatch(updateProperty(data?.data?.data))
           : dispatch(createProperty(data?.data?.data))
+        
+        handleCloseDialog()
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {

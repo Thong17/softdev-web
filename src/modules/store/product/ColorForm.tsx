@@ -152,6 +152,8 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
         dialog.colorId
           ? dispatch(updateColor(data?.data?.data))
           : dispatch(createColor(data?.data?.data))
+          
+        handleCloseDialog()
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {
