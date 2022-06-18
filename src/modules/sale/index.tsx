@@ -10,7 +10,7 @@ export const Sale = () => {
   const Header = () => {
     return (
       <>
-        <SaleBreadcrumbs page='sale' title='Dashboard' />
+        <SaleBreadcrumbs page='sale' />
       </>
     )
   }
@@ -21,3 +21,5 @@ export const Sale = () => {
     </Layout>
   )
 }
+
+export { Stocks } from './stock'
