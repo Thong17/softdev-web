@@ -1,6 +1,5 @@
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
-import { useEffect, useState } from 'react'
 import { CustomGridContainer } from 'styles'
 
 export const GridItem = (props) => {
@@ -43,36 +42,14 @@ export const GridItem = (props) => {
 }
 
 export const GridLayout = ({
-  data,
-  isLoading,
-}: {
-  data: Object[]
-  isLoading?: boolean
+  children
 }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
-  const [list, setList] = useState<Object[]>(data)
-
-  useEffect(() => {
-    setList(data)
-  }, [data])
 
   return (
     <CustomGridContainer styled={theme} device={device}>
-      {list.map((obj: any, index) => {
-        return (
-          <GridItem
-            key={index}
-            title={obj.name}
-            picture={obj.profile}
-            subLeft={obj.category}
-            subRight={obj.price}
-            action={obj.action}
-            status={obj.status}
-            loading={isLoading}
-          />
-        )
-      })}
+      {children}
     </CustomGridContainer>
   )
 }

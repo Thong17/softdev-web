@@ -22,4 +22,4 @@ export const Sale = () => {
   )
 }
 
-export { Stocks } from './stock'
+export { Stocks, Stock } from './stock'

@@ -1,17 +1,12 @@
 import * as yup from 'yup'
 
-export const productSchema = yup.object().shape({
-  name: yup.object({
-    English: yup.string().required('English is required'),
-  }),
-  status: yup.boolean().optional(),
-  profile: yup.string().optional(),
-  description: yup.string().optional(),
-  price: yup.number().required(),
+export const stockSchema = yup.object().shape({
+  cost: yup.number().required(),
   currency: yup.string().required(),
+  quantity: yup.number().required(),
   code: yup.string().optional(),
-  isStock: yup.boolean().required(),
-  images: yup.array().optional(),
-  brand: yup.string().required(),
-  category: yup.string().required(),
+  expireAt: yup.date().optional(),
+  alertAt: yup.number().optional(),
+  color: yup.string().optional(),
+  options: yup.array().optional(),
 })

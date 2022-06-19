@@ -25,7 +25,7 @@ import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { Button, DialogActions, IconButton } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CustomButton } from 'styles'
-import { GridLayout } from 'components/layouts/GridLayout'
+import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import { ListLayout } from 'components/layouts/ListLayout'
 
 export const Stocks = () => {
@@ -121,6 +121,7 @@ export const Stocks = () => {
         product._id,
         product.profile?.filename,
         product.name?.[lang] || product.name?.['English'],
+        product.stocks,
         parseFloat(product?.price),
         product?.currency,
         product?.code || '...',
@@ -176,7 +177,24 @@ export const Stocks = () => {
           </CustomButton>
         </DialogActions>
       </AlertDialog>
-      { isGrid ? <GridLayout data={rowData} isLoading={loading} />: <ListLayout data={rowData} isLoading={loading} /> }
+      { isGrid ? <GridLayout>
+        {rowData.map((obj: any, index) => {
+          return (
+            <GridItem
+              key={index}
+              title={obj.name}
+              picture={obj.profile}
+              subLeft={obj.category}
+              subRight={obj.stock}
+              action={obj.action}
+              status={obj.status}
+              loading={loading}
+            />
+          )
+        })}
+      </GridLayout>: <ListLayout data={rowData} isLoading={loading} /> }
     </Container>
   )
 }
+
+export { Stock } from './Stock'

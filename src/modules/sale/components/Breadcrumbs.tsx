@@ -17,7 +17,7 @@ const stages = {
     {
       title: 'Stock',
     }
-  ],
+  ]
 }
 declare type page = 'sale' | 'stock'
 

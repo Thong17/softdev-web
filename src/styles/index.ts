@@ -843,4 +843,15 @@ export const CustomMenu = styled(Menu)(
   })
 )
 
+export const CustomTextEllipsis = styled('div')(
+  {
+    position: 'relative',
+    display: 'inline-block',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    width: '100%',
+    overflow: 'hidden',
+  }
+)
+
 export * from './container'

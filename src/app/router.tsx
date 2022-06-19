@@ -4,7 +4,7 @@ import { Login } from 'modules/auth/Login'
 import { Register } from 'modules/auth/Register'
 import { Admin, Roles, CreateRole, UpdateRole, DetailRole, Users, CreateUser, UpdateUser, DetailUser } from 'modules/admin'
 import { Store, Brands, Categories, CreateCategory, DetailCategory, UpdateCategory, CreateBrand, DetailBrand, UpdateBrand, Products, CreateProduct, DetailProduct, UpdateProduct, PropertyProduct } from 'modules/store'
-import { Sale, Stocks } from 'modules/sale'
+import { Sale, Stock, Stocks } from 'modules/sale'
 import { Report } from 'modules/report'
 import { Counter } from 'modules/counter/Counter'
 import Config from 'modules/config/Config'
@@ -218,6 +218,10 @@ const routes: RouteObject[] = [
       {
         path: 'stock',
         element: <Stocks />,
+      },
+      {
+        path: 'stock/item/:id',
+        element: <Stock />,
       }
     ]
   },

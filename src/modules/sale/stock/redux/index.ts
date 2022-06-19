@@ -4,11 +4,11 @@ import Axios from 'constants/functions/Axios'
 import { initialState } from './constant'
 
 export const getListStock = createAsyncThunk(
-  'product/list/stock',
+  'stock/list',
   async ({ query }: { query?: URLSearchParams }) => {
     const response = await Axios({
       method: 'GET',
-      url: '/store/product/stock',
+      url: '/sale/stock',
       params: query
     })
     return response?.data
@@ -16,11 +16,11 @@ export const getListStock = createAsyncThunk(
 )
 
 export const getStock = createAsyncThunk(
-  'product/stock',
+  'stock/detail',
   async ({id, query}: { id: string, query?: URLSearchParams }) => {
     const response = await Axios({
       method: 'GET',
-      url: `/store/product/stock/${id}`,
+      url: `/sale/stock/detail/${id}`,
       params: query
     })
     
@@ -28,10 +28,25 @@ export const getStock = createAsyncThunk(
   }
 )
 
-export const productSlice = createSlice({
-  name: 'product',
+export const stockSlice = createSlice({
+  name: 'stock',
   initialState,
-  reducers: {},
+  reducers: {
+    createStock(state, action) {
+      state.list.data = [...state.list.data, action.payload]
+    },
+    updateStock(state, action) {
+      state.list.data = state.list.data.map((stock: any) => {
+        if (stock._id === action.payload._id) {
+          stock = action.payload
+        }
+        return stock
+      })
+    },
+    deleteStock(state, action) {
+      state.list.data = state.list.data?.filter((stock: any) => stock._id !== action.payload)
+    },
+  },
   extraReducers: (builder) => {
     builder
       // List product
@@ -63,4 +78,6 @@ export const productSlice = createSlice({
 export const selectStock = (state: RootState) => state.stock.detail
 export const selectListStock = (state: RootState) => state.stock.list
 
-export default productSlice.reducer
+export const { updateStock, deleteStock, createStock } = stockSlice.actions
+
+export default stockSlice.reducer

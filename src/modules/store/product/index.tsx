@@ -26,7 +26,7 @@ import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { Button, DialogActions, IconButton } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CustomButton } from 'styles'
-import { GridLayout } from 'components/layouts/GridLayout'
+import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import { ListLayout } from 'components/layouts/ListLayout'
 
 export const Products = () => {
@@ -196,7 +196,25 @@ export const Products = () => {
         handleConfirm={handleConfirm}
         handleClose={() => setDialog({ open: false, id: null })}
       />
-      { isGrid ? <GridLayout data={rowData} isLoading={loading} />: <ListLayout data={rowData} isLoading={loading} /> }
+      { isGrid ? 
+        <GridLayout>
+          {rowData.map((obj: any, index) => {
+            return (
+              <GridItem
+                key={index}
+                title={obj.name}
+                picture={obj.profile}
+                subLeft={obj.category}
+                subRight={obj.price}
+                action={obj.action}
+                status={obj.status}
+                loading={loading}
+              />
+            )
+          })}
+        </GridLayout>
+        : <ListLayout data={rowData} isLoading={loading} /> 
+      }
     </Container>
   )
 }

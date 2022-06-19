@@ -9,6 +9,20 @@ import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
 import { currencyFormat } from 'utils'
 
+export interface IStockBody {
+  cost: number,
+  currency: string,
+  quantity: number,
+  code?: string,
+  expireAt?: Date,
+  alertAt: number,
+  color?: string,
+  option?: string,
+  product: string
+}
+
+export const initStock = {}
+
 export declare type ColumnHeader =
   | 'no'
   | 'images'
@@ -98,6 +112,7 @@ export const importColumnData: ITableColumn<ColumnHeader>[] = [
 export interface Data {
   id: string
   name: string,
+  stock: string,
   price: ReactElement,
   currency: string,
   code: string | null,
@@ -115,6 +130,7 @@ export const createData = (
   id: string,
   profile: string,
   name: string,
+  stocks: Object[],
   price: number,
   currency: string,
   code: string | null,
@@ -135,7 +151,7 @@ export const createData = (
           <MenuDialog label={<ViewButton />}>
             <MenuList
               component='div'
-              onClick={() => navigate(`/store/product/stock/${id}`)}
+              onClick={() => navigate(`/sale/stock/item/${id}`)}
             >
               Stock
             </MenuList>
@@ -146,7 +162,7 @@ export const createData = (
           {privilege?.product?.update && (
             <StockButton
             style={{ margin: 0 }}
-              onClick={() => navigate(`/store/product/stock/${id}`)}
+              onClick={() => navigate(`/sale/stock/item/${id}`)}
             />
           )}
         </>
@@ -154,7 +170,9 @@ export const createData = (
     </>
   )
 
-  return { id, profile, name, price: currencyFormat(price, currency), currency, code, isStock, brand, category, description, createdBy, status, action }
+  let stock = 0
+
+  return { id, profile, name, stock: `${stock} Left`, price: currencyFormat(price, currency), currency, code, isStock, brand, category, description, createdBy, status, action }
 }
 
 
