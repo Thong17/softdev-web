@@ -28,17 +28,27 @@ export const initState: IProductBody = {
   images: []
 }
 
-export interface ProductState {
+export interface StockState {
   list: IBody<Object[]>
-  detail: IBody<IProductBody>
+  stocks: IBody<Object[]>
+  product: IBody<IProductBody>
+  detail: IBody<Object>
 }
 
-export const initialState: ProductState = {
+export const initialState: StockState = {
   list: {
     data: [],
     status: 'INIT',
   },
+  stocks: {
+    data: [],
+    status: 'INIT',
+  },
   detail: {
+    data: {},
+    status: 'INIT',
+  },
+  product: {
     data: initState,
     status: 'INIT',
   },

@@ -64,3 +64,20 @@ export const currencyFormat = (value, currency) => {
   const decimal = currency === 'USD' ? 2 : 0
   return <span>{symbol}{value.toFixed(decimal).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</span> 
 }
+
+export const dateFormat = (date) => {
+  const localDate = new Date(date).toDateString()
+  return localDate
+}
+
+export const inputDateFormat = (d) => {
+  let date = new Date(d)
+  let dd: any = date.getDate()
+  let mm: any = date.getMonth()+1
+  let yyyy = date.getFullYear()
+  if(dd<10){dd='0'+dd} 
+  if(mm<10){mm='0'+mm}
+  return d = yyyy+'-'+mm+'-'+dd
+}
+
+

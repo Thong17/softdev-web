@@ -1,7 +1,12 @@
 import Container from 'components/shared/Container'
 import Breadcrumb from 'components/shared/Breadcrumbs'
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
-import { selectStock, getStock } from './redux'
+import {
+  selectListStock,
+  getListStock,
+  getProduct,
+  selectProduct,
+} from './redux'
 import { useAppSelector, useAppDispatch } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
 import { useParams } from 'react-router-dom'
@@ -10,7 +15,12 @@ import { ProductInfo } from 'components/shared/ProductInfo'
 import { CustomButton } from 'styles'
 import useTheme from 'hooks/useTheme'
 import { Form } from './Form'
-import { initStock } from './constant'
+import { createStockData, initStock, mapStockBody, stockColumnData } from './constant'
+import { StickyTable } from 'components/shared/table/StickyTable'
+import useAuth from 'hooks/useAuth'
+import useWeb from 'hooks/useWeb'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 const Header = ({ stages, styled, onClickAdd }) => {
   return (
@@ -33,16 +43,21 @@ const Header = ({ stages, styled, onClickAdd }) => {
 
 export const Stock = () => {
   const dispatch = useAppDispatch()
-  const { data: product, status } = useAppSelector(selectStock)
+  const { data: product, status } = useAppSelector(selectProduct)
+  const { data: stocks, status: stockStatus } = useAppSelector(selectListStock)
   const { lang } = useLanguage()
   const { theme } = useTheme()
   const { id } = useParams()
   const [stockDialog, setStockDialog] = useState({
     open: false,
     productId: id,
-    stockId: null
+    stockId: null,
   })
   const [stockValue, setStockValue] = useState(initStock)
+  const [stockRowData, setStockRowData] = useState<Object[]>([])
+  const { device } = useWeb()
+  const { user } = useAuth()
+  const { notify } = useNotify()
 
   const stockBreadcrumb = [
     {
@@ -54,16 +69,72 @@ export const Stock = () => {
       path: '/sale/stock',
     },
     {
-      title: status === 'SUCCESS' ? product?.name?.[lang] || product?.name?.['English'] : '...',
+      title:
+        status === 'SUCCESS'
+          ? product?.name?.[lang] || product?.name?.['English']
+          : '...',
     },
   ]
 
   useEffect(() => {
     if (status !== 'INIT') return
     if (id) {
-      dispatch(getStock({ id }))
+      dispatch(getProduct({ id }))
     }
   }, [dispatch, status, id])
+
+  useEffect(() => {
+    if (stockStatus !== 'INIT') return
+    dispatch(getListStock({}))
+  }, [dispatch, stockStatus])
+
+  useEffect(() => {
+    const handleEditStock = async (id) => {
+      try {
+        const defaultValue: any = await Axios({
+          method: 'GET',
+          url: `/sale/stock/detail/${id}`
+        })
+        const body = mapStockBody(defaultValue?.data?.data)
+    
+        setStockValue(body)
+        setStockDialog({ ...stockDialog, stockId: id, open: true })
+      } catch (err: any) {
+        notify(err.message)
+      }
+    }
+  
+    const handleDeleteStock = (id) => {
+      console.log(id);
+      
+    }
+
+    const rowData = stocks?.map((stock: any) => {
+      let options = stock.options?.map((opt) => {
+        return opt?.name?.[lang] || opt?.name?.['English']
+      })
+
+      return createStockData(
+        stock._id,
+        stock.cost,
+        stock.currency,
+        stock.quantity,
+        stock.remain,
+        stock.code,
+        stock.expireAt,
+        stock.alertAt,
+        stock.color?.code,
+        options,
+        stock.createdBy,
+        user?.privilege,
+        device,
+        theme,
+        handleEditStock,
+        handleDeleteStock
+      )
+    })
+    setStockRowData(rowData)
+  }, [stocks, device, lang, user, theme, notify, stockDialog])
 
   const handleAddStock = () => {
     setStockValue(initStock)
@@ -71,7 +142,15 @@ export const Stock = () => {
   }
 
   return (
-    <Container header={<Header stages={stockBreadcrumb} styled={theme} onClickAdd={handleAddStock} />}>
+    <Container
+      header={
+        <Header
+          stages={stockBreadcrumb}
+          styled={theme}
+          onClickAdd={handleAddStock}
+        />
+      }
+    >
       <Form
         dialog={stockDialog}
         setDialog={setStockDialog}
@@ -81,9 +160,20 @@ export const Stock = () => {
         properties={product?.properties || []}
         options={product?.options || []}
       />
-      <div style={{ display: 'grid', gridTemplateColumns: '330px 1fr', paddingTop: 10 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '270px 1fr',
+          paddingTop: 10,
+          gridGap: 20
+        }}
+      >
         <ProductInfo info={product} />
-        <div className='stock-list'></div>
+        <StickyTable
+          columns={stockColumnData}
+          rows={stockRowData}
+          loading={false}
+        />
       </div>
     </Container>
   )

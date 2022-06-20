@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { StickyTable } from 'components/shared/table/StickyTable'
 import { useNavigate } from 'react-router'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getListStock, selectListStock } from './redux'
+import { getListProduct, selectListProduct } from './redux'
 import useLanguage from 'hooks/useLanguage'
 import useWeb from 'hooks/useWeb'
 import useAuth from 'hooks/useAuth'
@@ -30,7 +30,7 @@ import { ListLayout } from 'components/layouts/ListLayout'
 
 export const Stocks = () => {
   const dispatch = useAppDispatch()
-  const { data: products, status } = useAppSelector(selectListStock)
+  const { data: products, status } = useAppSelector(selectListProduct)
   const { lang } = useLanguage()
   const { device } = useWeb()
   const { user } = useAuth()
@@ -102,7 +102,7 @@ export const Stocks = () => {
     loadify(response)
     response.then(() => {
       setImportDialog({ ...importDialog, open: false })
-      dispatch(getListStock({ query: queryParams }))
+      dispatch(getListProduct({ query: queryParams }))
     })
   }
 
@@ -112,7 +112,7 @@ export const Stocks = () => {
 
   useEffect(() => {
     if (status !== 'INIT') return
-    dispatch(getListStock({}))
+    dispatch(getListProduct({}))
   }, [dispatch, status])
 
   useEffect(() => {

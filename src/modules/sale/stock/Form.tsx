@@ -42,7 +42,7 @@ export const Form = ({
   const [currency, setCurrency] = useState(defaultValues?.currency)
   const currencyValue = watch('currency')
   const { lang } = useLanguage()
-  const [optionObj, setOptionObj] = useState({})
+  const [optionObj, setOptionObj] = useState(defaultValues?.options || {})
   const [color, setColor] = useState(defaultValues?.color)
   const colorValue = watch('color')
 
@@ -64,6 +64,11 @@ export const Form = ({
 
   useEffect(() => {
     reset(defaultValues)
+    let obj = {}
+    defaultValues?.options?.forEach((option) => {
+      obj = { ...obj, [option?.property?.name?.['English']]: option._id }
+    })
+    setOptionObj(obj)
   }, [defaultValues, reset])
 
   const handleCloseDialog = () => {
@@ -76,7 +81,6 @@ export const Form = ({
     })
     setValue('options', selectedOption)
   }, [optionObj, setValue])
-  
 
   const submit = (data) => {
     Axios({
@@ -92,8 +96,10 @@ export const Form = ({
         dialog.stockId 
           ? dispatch(updateStock(data?.data?.data))
           : dispatch(createStock(data?.data?.data))
-          
+        
         handleCloseDialog()
+        setOptionObj({})
+        reset()
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {
@@ -203,19 +209,22 @@ export const Form = ({
                 label='Color'
                 onChange={handleChangeColor}
               />
+              
               {properties?.map((property, index) => {
+                let menuItems: any = []
+
+                options.forEach((option) => {
+                  if (option.property === property._id) {
+                    menuItems = [ ...menuItems, { value: option?._id, label: option?.name?.[lang] || option?.name?.['English'] }]
+                  }
+                })
+                
                 return (
                   <SelectField
                     name={property?.name?.['English']}
                     key={index}
                     value={optionObj[property?.name?.['English']] || ''}
-                    options={options.map((option) => {
-                      if (option.property === property._id) {
-                        return { value: option?._id, label: option?.name?.[lang] || option?.name?.['English'] }
-                      } else {
-                        return null
-                      }
-                    })}
+                    options={menuItems}
                     label={property?.name?.[lang] || property?.name?.['English']}
                     onChange={handleChangeOption}
                   />
