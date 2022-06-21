@@ -5,7 +5,9 @@ export const stockSchema = yup.object().shape({
   currency: yup.string().required(),
   quantity: yup.number().required(),
   code: yup.string().optional(),
-  expireAt: yup.date().optional(),
+  expireAt: yup.date().nullable().default(undefined)
+    .transform((curr, orig) => orig === '' ? null : curr)
+    .typeError("Invalid Date"),
   alertAt: yup.number().optional(),
   color: yup.string().optional(),
   options: yup.array().optional(),

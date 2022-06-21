@@ -267,7 +267,8 @@ export const createStockData = (
   device: DeviceOptions,
   theme: IThemeStyle,
   onEditStock: Function,
-  onDeleteStock: Function
+  onDeleteStock: Function,
+  onViewStock: Function
 ) => {
   let action = (
     <div style={{ float: 'right' }}>
@@ -283,7 +284,7 @@ export const createStockData = (
         <>
           {privilege?.brand?.update && <UpdateButton onClick={() => onEditStock(id)} />}
           {privilege?.brand?.delete && <DeleteButton onClick={() => onDeleteStock(id)} />}
-          {privilege?.brand?.detail && <IconButton><ViewButton /></IconButton>}
+          {privilege?.brand?.detail && <IconButton onClick={() => onViewStock(id)}><ViewButton /></IconButton>}
         </>
       )}
     </div>

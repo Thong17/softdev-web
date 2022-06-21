@@ -21,6 +21,7 @@ import useAuth from 'hooks/useAuth'
 import useWeb from 'hooks/useWeb'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
+import { Detail } from './Detail'
 
 const Header = ({ stages, styled, onClickAdd }) => {
   return (
@@ -53,11 +54,15 @@ export const Stock = () => {
     productId: id,
     stockId: null,
   })
+  const [detailDialog, setDetailDialog] = useState({
+    open: false,
+  })
   const [stockValue, setStockValue] = useState(initStock)
   const [stockRowData, setStockRowData] = useState<Object[]>([])
   const { device } = useWeb()
   const { user } = useAuth()
   const { notify } = useNotify()
+  const [detailValue, setDetailValue] = useState(initStock)
 
   const stockBreadcrumb = [
     {
@@ -106,7 +111,19 @@ export const Stock = () => {
   
     const handleDeleteStock = (id) => {
       console.log(id);
-      
+    }
+
+    const handleViewStock = async (id) => {
+      try {
+        const defaultValue: any = await Axios({
+          method: 'GET',
+          url: `/sale/stock/detail/${id}`
+        })
+        setDetailValue(defaultValue?.data?.data)
+        setDetailDialog({ open: true })
+      } catch (err: any) {
+        notify(err.message)
+      }
     }
 
     const rowData = stocks?.map((stock: any) => {
@@ -130,7 +147,8 @@ export const Stock = () => {
         device,
         theme,
         handleEditStock,
-        handleDeleteStock
+        handleDeleteStock,
+        handleViewStock
       )
     })
     setStockRowData(rowData)
@@ -159,6 +177,11 @@ export const Stock = () => {
         colors={product?.colors || []}
         properties={product?.properties || []}
         options={product?.options || []}
+      />
+      <Detail
+        dialog={detailDialog}
+        setDialog={setDetailDialog}
+        defaultValues={detailValue}
       />
       <div
         style={{
