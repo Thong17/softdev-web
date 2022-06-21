@@ -119,7 +119,7 @@ export const Stock = () => {
           method: 'GET',
           url: `/sale/stock/detail/${id}`
         })
-        setDetailValue(defaultValue?.data?.data)
+        setDetailValue({ ...defaultValue?.data?.data, ...product })
         setDetailDialog({ open: true })
       } catch (err: any) {
         notify(err.message)
@@ -152,7 +152,7 @@ export const Stock = () => {
       )
     })
     setStockRowData(rowData)
-  }, [stocks, device, lang, user, theme, notify, stockDialog])
+  }, [stocks, product, device, lang, user, theme, notify, stockDialog])
 
   const handleAddStock = () => {
     setStockValue(initStock)
