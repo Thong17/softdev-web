@@ -351,3 +351,11 @@ export const CustomProductInfo = styled('div')(
     }
   })
 )
+
+
+export const CustomDetailContainer = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    padding: 20
+  })
+)
+

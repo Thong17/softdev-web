@@ -22,6 +22,7 @@ import useWeb from 'hooks/useWeb'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { Detail } from './Detail'
+import useAlert from 'hooks/useAlert'
 
 const Header = ({ stages, styled, onClickAdd }) => {
   return (
@@ -61,8 +62,9 @@ export const Stock = () => {
   const [stockRowData, setStockRowData] = useState<Object[]>([])
   const { device } = useWeb()
   const { user } = useAuth()
-  const { notify } = useNotify()
+  const { notify, loadify } = useNotify()
   const [detailValue, setDetailValue] = useState(initStock)
+  const confirm = useAlert()
 
   const stockBreadcrumb = [
     {
@@ -110,7 +112,18 @@ export const Stock = () => {
     }
   
     const handleDeleteStock = (id) => {
-      console.log(id);
+      confirm({
+        title: 'Delete Stock',
+        description: 'Do you want to delete the stock?',
+        variant: 'error'
+      }).then(() => {
+        const response = Axios({
+          method: 'DELETE',
+          url: `/sale/stock/disable/${id}`
+        })
+        loadify(response)
+      })
+        .catch(() => console.log('cancel'))
     }
 
     const handleViewStock = async (id) => {
@@ -119,7 +132,7 @@ export const Stock = () => {
           method: 'GET',
           url: `/sale/stock/detail/${id}`
         })
-        setDetailValue({ ...defaultValue?.data?.data, ...product })
+        setDetailValue({ ...defaultValue?.data?.data })
         setDetailDialog({ open: true })
       } catch (err: any) {
         notify(err.message)
@@ -152,7 +165,7 @@ export const Stock = () => {
       )
     })
     setStockRowData(rowData)
-  }, [stocks, product, device, lang, user, theme, notify, stockDialog])
+  }, [stocks, product, device, lang, user, theme, notify, loadify, confirm, stockDialog])
 
   const handleAddStock = () => {
     setStockValue(initStock)
@@ -182,6 +195,7 @@ export const Stock = () => {
         dialog={detailDialog}
         setDialog={setDetailDialog}
         defaultValues={detailValue}
+        theme={theme}
       />
       <div
         style={{
