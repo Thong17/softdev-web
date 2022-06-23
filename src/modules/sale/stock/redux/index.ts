@@ -58,10 +58,10 @@ export const stockSlice = createSlice({
   initialState,
   reducers: {
     createStock(state, action) {
-      state.list.data = [...state.list.data, action.payload]
+      state.stocks.data = [...state.stocks.data, action.payload]
     },
     updateStock(state, action) {
-      state.list.data = state.list.data.map((stock: any) => {
+      state.stocks.data = state.stocks.data.map((stock: any) => {
         if (stock._id === action.payload._id) {
           stock = action.payload
         }
@@ -69,7 +69,7 @@ export const stockSlice = createSlice({
       })
     },
     deleteStock(state, action) {
-      state.list.data = state.list.data?.filter((stock: any) => stock._id !== action.payload)
+      state.stocks.data = state.stocks.data?.filter((stock: any) => stock._id !== action.payload)
     },
   },
   extraReducers: (builder) => {

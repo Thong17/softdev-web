@@ -231,7 +231,15 @@ export const createData = (
     </>
   )
 
+  let alertStocks: any[] = []
+
   let stock = 0
+  stocks?.forEach((stk: any) => {
+    stock += stk.quantity
+    if (stk.quantity < stk.alertAt) {
+      alertStocks.push(stk)
+    }
+  })
 
   return {
     id,

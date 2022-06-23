@@ -6,6 +6,7 @@ import {
   getListStock,
   getProduct,
   selectProduct,
+  deleteStock
 } from './redux'
 import { useAppSelector, useAppDispatch } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
@@ -122,6 +123,9 @@ export const Stock = () => {
           url: `/sale/stock/disable/${id}`
         })
         loadify(response)
+        response.then(result => {
+          dispatch(deleteStock(result?.data?.data?._id))
+        })
       })
         .catch(() => console.log('cancel'))
     }
@@ -165,7 +169,7 @@ export const Stock = () => {
       )
     })
     setStockRowData(rowData)
-  }, [stocks, product, device, lang, user, theme, notify, loadify, confirm, stockDialog])
+  }, [stocks, product, device, lang, user, theme, notify, loadify, confirm, dispatch, stockDialog])
 
   const handleAddStock = () => {
     setStockValue(initStock)
