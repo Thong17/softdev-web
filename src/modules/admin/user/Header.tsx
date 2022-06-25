@@ -26,7 +26,7 @@ export const Header = ({
 
   return (
     <DefaultHeader
-      importData={users}
+      exportData={users}
       styled={styled}
       navigate={navigate}
       handleSearch={handleSearch}

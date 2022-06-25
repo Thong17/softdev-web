@@ -27,7 +27,7 @@ export const Header = ({
 
   return (
       <DefaultHeader
-        importData={categories}
+        exportData={categories}
         styled={styled}
         navigate={navigate}
         handleSearch={handleSearch}
