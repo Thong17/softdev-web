@@ -145,7 +145,6 @@ export const Stocks = () => {
         <Header
           changeLayout={changeLayout}
           isGrid={isGrid}
-          data={products}
           styled={theme}
           navigate={navigate}
           handleSearch={handleSearch}

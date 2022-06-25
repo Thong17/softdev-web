@@ -5,53 +5,62 @@ import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded'
 import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded'
 import { HeaderButton } from 'components/shared/table/HeaderButton'
 import SaleBreadcrumbs from '../components/Breadcrumbs'
+import { useAppSelector, useAppDispatch } from 'app/hooks'
+import { selectListStock, getListStock } from './redux'
 
 export const Header = ({
   changeLayout,
   isGrid,
-  data,
   styled,
   navigate,
   handleSearch,
   handleImport,
 }) => {
-  const [products, setProducts] = useState([])
+  const { data, status } = useAppSelector(selectListStock)
+  const [stocks, setStocks] = useState<any[]>([])
   const [grid, setGrid] = useState(isGrid)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setGrid(isGrid)
   }, [isGrid])
 
   useEffect(() => {
-    const newProducts = data.map((product) => {
-      return {
-        _id: product._id,
-        name: JSON.stringify(product.name).replace(/"/g, '""'),
-        price: product.price,
-        currency: product.currency,
-        code: product.code,
-        isStock: product.isStock,
-        brand: product.brand?._id,
-        category: product.category?._id,
-        description: product.description,
-        status: product.status,
-        profile: product.profile?._id,
-        images: JSON.stringify(product.images).replace(/"/g, '""'),
-      }
-    })
-    setProducts(newProducts)
-  }, [data])
+    if (status !== 'INIT') return
+    dispatch(getListStock({}))
+  }, [status, dispatch])
+
+  useEffect(() => {
+    if (status === 'SUCCESS') {
+      const mapStocks = data.map((stock: any) => {
+        return {
+          _id: stock._id,
+          cost: stock.cost,
+          currency: stock.currency,
+          quantity: stock.quantity,
+          remain: stock.remain,
+          code: stock.code,
+          expireAt: stock.expireAt,
+          alertAt: stock.alertAt,
+          color: JSON.stringify(stock.color).replace(/"/g, '""'),
+          product: stock.product,
+          options: JSON.stringify(stock.options).replace(/"/g, '""'),
+        }
+      })
+      setStocks(mapStocks)
+    }
+  }, [data, status])
 
   return (
     <DefaultHeader
-      exportData={products}
+      exportData={stocks}
       styled={styled}
       navigate={navigate}
       handleSearch={handleSearch}
       handleImport={handleImport}
       excelHeader={headerColumns}
       breadcrumb={<SaleBreadcrumbs page='stock' />}
-      filename='products'
+      filename='product_stock'
     >
       <HeaderButton
         style={{ marginLeft: 10 }}

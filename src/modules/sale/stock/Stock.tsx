@@ -6,7 +6,8 @@ import {
   getListStock,
   getProduct,
   selectProduct,
-  deleteStock
+  deleteStock,
+  getListProduct
 } from './redux'
 import { useAppSelector, useAppDispatch } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
@@ -125,6 +126,7 @@ export const Stock = () => {
         loadify(response)
         response.then(result => {
           dispatch(deleteStock(result?.data?.data?._id))
+          dispatch(getListProduct({}))
         })
       })
         .catch(() => console.log('cancel'))

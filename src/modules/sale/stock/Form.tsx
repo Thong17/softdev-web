@@ -13,7 +13,7 @@ import useNotify from 'hooks/useNotify'
 import { currencyOptions } from 'constants/variables'
 import { useEffect, useState } from 'react'
 import useWeb from 'hooks/useWeb'
-import { updateStock, createStock } from './redux'
+import { updateStock, createStock, getListProduct } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import { Section } from 'components/shared/Section'
 import useLanguage from 'hooks/useLanguage'
@@ -96,7 +96,7 @@ export const Form = ({
         dialog.stockId 
           ? dispatch(updateStock(data?.data?.data))
           : dispatch(createStock(data?.data?.data))
-        
+        dispatch(getListProduct({}))
         handleCloseDialog()
         setOptionObj({})
         reset()

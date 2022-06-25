@@ -29,36 +29,18 @@ export interface IStockBody {
 
 export const initStock = {}
 
-export declare type ColumnHeader =
-  | 'no'
-  | 'images'
-  | 'profile'
-  | 'price'
-  | 'currency'
-  | 'code'
-  | 'isStock'
-  | 'brand'
-  | 'category'
-  | 'profile'
-  | 'name'
-  | 'status'
-  | 'description'
-  | 'createdBy'
-  | 'action'
-
 export const importColumns = [
   '_id',
-  'name',
-  'price',
+  'cost',
   'currency',
+  'quantity',
+  'remain',
   'code',
-  'isStock',
-  'brand',
-  'category',
-  'description',
-  'status',
-  'profile',
-  'images',
+  'expireAt',
+  'alertAt',
+  'color',
+  'options',
+  'product',
 ]
 
 export const headerColumns = [
@@ -67,64 +49,59 @@ export const headerColumns = [
     key: '_id',
   },
   {
-    label: 'name',
-    key: 'name',
-  },
-  {
-    label: 'price',
-    key: 'price',
+    label: 'cost',
+    key: 'cost',
   },
   {
     label: 'currency',
     key: 'currency',
   },
   {
+    label: 'quantity',
+    key: 'quantity',
+  },
+  {
+    label: 'remain',
+    key: 'remain',
+  },
+  {
     label: 'code',
     key: 'code',
   },
   {
-    label: 'isStock',
-    key: 'isStock',
+    label: 'expireAt',
+    key: 'expireAt',
   },
   {
-    label: 'brand',
-    key: 'brand',
+    label: 'alertAt',
+    key: 'alertAt',
   },
   {
-    label: 'category',
-    key: 'category',
+    label: 'color',
+    key: 'color',
   },
   {
-    label: 'description',
-    key: 'description',
+    label: 'options',
+    key: 'options',
   },
   {
-    label: 'status',
-    key: 'status',
-  },
-  {
-    label: 'profile',
-    key: 'profile',
-  },
-  {
-    label: 'images',
-    key: 'images',
+    label: 'product',
+    key: 'product',
   },
 ]
 
-export const importColumnData: ITableColumn<ColumnHeader>[] = [
+export const importColumnData: ITableColumn<any>[] = [
   { id: 'no', label: 'No' },
-  { id: 'profile', label: 'Profile' },
-  { id: 'images', label: 'Images' },
-  { id: 'name', label: 'Name' },
-  { id: 'price', label: 'Price' },
+  { id: 'cost', label: 'Cost' },
   { id: 'currency', label: 'Currency' },
+  { id: 'quantity', label: 'Quantity' },
+  { id: 'remain', label: 'Remain' },
   { id: 'code', label: 'Code' },
-  { id: 'isStock', label: 'Is Stock', minWidth: 70 },
-  { id: 'brand', label: 'Brand' },
-  { id: 'category', label: 'Category' },
-  { id: 'description', label: 'Description' },
-  { id: 'status', label: 'Status' },
+  { id: 'expireAt', label: 'Expire\u00a0At' },
+  { id: 'alertAt', label: 'Alert\u00a0At' },
+  { id: 'color', label: 'Color' },
+  { id: 'options', label: 'Options' },
+  { id: 'product', label: 'Product' },
   { id: 'action', label: 'Remove' },
 ]
 
@@ -166,10 +143,6 @@ export const stockColumnData: ITableColumn<StockColumnHeader>[] = [
   { id: 'quantity', label: 'Quantity' },
   { id: 'remain', label: 'Remain' },
   { id: 'total', label: 'Total' },
-  // { id: 'alertAt', label: 'Alert\u00a0At' },
-  // { id: 'color', label: 'Color' },
-  // { id: 'option', label: 'Option' },
-  // { id: 'expireAt', label: 'Expire\u00a0At' },
   { id: 'action', label: 'Action', align: 'center' },
 ]
 
