@@ -7,6 +7,7 @@ export const CustomTableContainer = styled('div')(
   ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
     backgroundColor: styled.background.primary,
     '& .table-container': {
+      maxWidth: '90vw',
       position: 'relative',
       '& .table': {
         paddingBottom: 50,

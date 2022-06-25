@@ -15,8 +15,18 @@ import { Header } from './Header'
 import {
   Data,
   createData,
-  importColumns,
-  importColumnData,
+  productColumns,
+  detailColumns,
+  colorColumns,
+  imageColumns,
+  propertyColumns,
+  optionColumns,
+  productColumnData,
+  detailColumnData,
+  colorColumnData,
+  propertyColumnData,
+  optionColumnData,
+  imageColumnData
 } from './constant'
 import { ImportExcel } from 'constants/functions/Excels'
 import { debounce } from 'utils'
@@ -42,9 +52,10 @@ export const Products = () => {
   const navigate = useNavigate()
   const [queryParams, setQueryParams] = useSearchParams()
   const [loading, setLoading] = useState(status === 'LOADING' ? true : false)
-  const [importDialog, setImportDialog] = useState({ open: false, data: [] })
+  const [importDialog, setImportDialog] = useState({ open: false, data: [], model: 'product' })
   const confirm = useAlert()
   const [isGrid, setIsGrid] = useState(true)
+  const [columnData, setColumnData] = useState(productColumnData)
 
   const updateQuery = debounce((value) => {
     setLoading(false)
@@ -56,23 +67,55 @@ export const Products = () => {
   }
 
   const handleImport = (e) => {
+    const model = e.target.name
+    let columns
+    switch (model) {
+      case 'product':
+        columns = productColumns
+        setColumnData(productColumnData)
+        break
+      case 'detail':
+        columns = detailColumns
+        setColumnData(detailColumnData)
+        break
+      case 'image':
+        columns = imageColumns
+        setColumnData(imageColumnData)
+        break
+      case 'color':
+        columns = colorColumns
+        setColumnData(colorColumnData)
+        break
+      case 'property':
+        columns = propertyColumns
+        setColumnData(propertyColumnData)
+        break
+      case 'option':
+        columns = optionColumns
+        setColumnData(optionColumnData)
+        break
+    }
+
     const response = ImportExcel(
       '/store/product/excel/import',
       e.target.files[0],
-      importColumns
+      columns
     )
     loadify(response)
     response.then((data) => {
       const importList = data.data.data.map((importData) => {
         const ImportAction = ({ no }) => (
           <IconButton
-            onClick={
-              () => {
-                setImportDialog((prevData) => {
-                  return { ...prevData, data: prevData.data.filter((prevItem: any) => prevItem.no !== no) }
-                })
-              }
-            }
+            onClick={() => {
+              setImportDialog((prevData) => {
+                return {
+                  ...prevData,
+                  data: prevData.data.filter(
+                    (prevItem: any) => prevItem.no !== no
+                  ),
+                }
+              })
+            }}
             style={{ color: theme.text.secondary }}
           >
             <CloseRoundedIcon />
@@ -81,7 +124,7 @@ export const Products = () => {
         return { ...importData, action: <ImportAction no={importData?.no} /> }
       })
 
-      return setImportDialog({ open: true, data: importList })
+      return setImportDialog({ open: true, data: importList, model })
     })
   }
 
@@ -96,9 +139,29 @@ export const Products = () => {
   }
 
   const handleConfirmImport = () => {
+    let url
+
+    switch (importDialog.model) {
+      case 'product':
+        url = '/store/product/batch'
+        break
+      case 'image':
+        url = '/store/product/image/batch'
+        break
+      case 'color':
+        url = '/store/product/color/batch'
+        break
+      case 'property':
+        url = '/store/product/property/batch'
+        break
+      case 'option':
+        url = '/store/product/option/batch'
+        break
+    }
+
     const response = Axios({
       method: 'POST',
-      url: '/store/product/batch',
+      url,
       body: importDialog.data,
     })
     loadify(response)
@@ -169,7 +232,7 @@ export const Products = () => {
       <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
         <div style={{ position: 'relative' }}>
           <StickyTable
-            columns={importColumnData}
+            columns={columnData}
             rows={importDialog.data}
             loading={loading}
           />
@@ -196,7 +259,7 @@ export const Products = () => {
         handleConfirm={handleConfirm}
         handleClose={() => setDialog({ open: false, id: null })}
       />
-      { isGrid ? 
+      {isGrid ? (
         <GridLayout>
           {rowData.map((obj: any, index) => {
             return (
@@ -213,8 +276,9 @@ export const Products = () => {
             )
           })}
         </GridLayout>
-        : <ListLayout data={rowData} isLoading={loading} /> 
-      }
+      ) : (
+        <ListLayout data={rowData} isLoading={loading} />
+      )}
     </Container>
   )
 }

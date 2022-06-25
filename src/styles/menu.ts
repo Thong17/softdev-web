@@ -23,10 +23,13 @@ export const CustomNestedMenuList = styled(MenuList)(
       backgroundColor: `${styled.background.secondary} !important`,
     },
     '&:hover .nested-menu': {
-      display: 'flex'
+      height: 270
     },
     '& .nested-menu': {
-      display: 'none',
+      transition: '0.3s ease',
+      overflow: 'hidden',
+      height: 0,
+      display: 'flex',
       flexDirection: 'column',
       width: '100%',
       '& *': {
