@@ -96,7 +96,7 @@ export const Stocks = () => {
   const handleConfirmImport = () => {
     const response = Axios({
       method: 'POST',
-      url: '/store/product/batch',
+      url: '/sale/stock/batch',
       body: importDialog.data,
     })
     loadify(response)
