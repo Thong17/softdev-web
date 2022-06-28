@@ -150,7 +150,7 @@ export const CustomProfile = styled(Button)(
 
 export const CustomLoading = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
-    width: 'max-content',
+    width: '100%',
     height: '500%',
     backgroundColor: styled.background.primary,
     position: 'absolute',

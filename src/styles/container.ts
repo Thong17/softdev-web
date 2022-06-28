@@ -170,7 +170,50 @@ export const CustomListContainer = styled('div')(
     device: DeviceOptions
     loading: string
   }) => ({
-    backgroundColor: 'red',
+    '& .list-item': {
+      boxSizing: 'border-box',
+      padding: '10px 0',
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      width: '100%',
+      backgroundColor: styled.background.secondary,
+      borderRadius: styled.radius.primary,
+    },
+    '& .status': {
+      display: 'block',
+      width: 17,
+      height: 17,
+      borderRadius: styled.radius.circle,
+      boxShadow: styled.shadow.inset,
+      '&.active': {
+        backgroundColor: styled.color.success,
+      },
+      '&.inactive': {
+        backgroundColor: styled.color.error,
+      }
+    },
+    '& .img': {
+      width: 100,
+      height: 70,
+      '& img': {
+        objectFit: 'cover',
+        width: '100%',
+        height: '100%'
+      }
+    },
+    '& .content': {
+      marginLeft: 10,
+      display: 'flex',
+      flexDirection: 'column',
+      '& .subject': {
+        color: `${styled.text.tertiary} !important`
+      },
+      '& .price': {
+        color: `${styled.color.info} !important`,
+        fontSize: styled.responsive?.[device]?.text.h3
+      }
+    },
   })
 )
 

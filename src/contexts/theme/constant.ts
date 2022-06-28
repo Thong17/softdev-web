@@ -83,7 +83,7 @@ export const themeMode = {
     text: {
       primary: '#ffffff',
       secondary: '#cccccc',
-      tertiary: 'aaaaaa',
+      tertiary: '#aaaaaa',
       quaternary: '#777777'
     },
     active: {

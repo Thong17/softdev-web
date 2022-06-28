@@ -39,6 +39,7 @@ import {
 } from './redux/constant'
 import { PropertyForm } from './PropertyForm'
 import { ColorForm } from './ColorForm'
+import { ProductInfo } from 'components/shared/ProductInfo'
 
 const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
@@ -264,11 +265,13 @@ export const PropertyProduct = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: device === 'desktop' ? '500px 1fr' : '1fr',
+          gridTemplateColumns: device === 'desktop' ? '400px 1fr' : '1fr',
           gridGap: 20,
         }}
       >
-        <div className='preview'>Preview</div>
+        <div className='preview' style={{ paddingTop: 20 }}>
+          <ProductInfo info={product} />
+        </div>
         <div>
           <Section
             describe='Color'

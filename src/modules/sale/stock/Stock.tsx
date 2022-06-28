@@ -86,16 +86,18 @@ export const Stock = () => {
   ]
 
   useEffect(() => {
-    if (status !== 'INIT') return
     if (id) {
       dispatch(getProduct({ id }))
     }
-  }, [dispatch, status, id])
+  }, [dispatch, id])
 
   useEffect(() => {
-    if (stockStatus !== 'INIT') return
-    dispatch(getListStock({}))
-  }, [dispatch, stockStatus])
+    if (id) {
+      const params = new URLSearchParams()
+      params.append('productId', id)
+      dispatch(getListStock({ query: params }))
+    }
+  }, [dispatch, id])
 
   useEffect(() => {
     const handleEditStock = async (id) => {
@@ -211,11 +213,11 @@ export const Stock = () => {
           gridGap: 20
         }}
       >
-        <ProductInfo info={product} />
+        <ProductInfo info={product} loading={status !== 'SUCCESS' ? true : false} />
         <StickyTable
           columns={stockColumnData}
           rows={stockRowData}
-          loading={false}
+          loading={stockStatus !== 'SUCCESS' ? true : false}
         />
       </div>
     </Container>

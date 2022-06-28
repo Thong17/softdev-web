@@ -26,7 +26,7 @@ import { Button, DialogActions, IconButton } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CustomButton } from 'styles'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
-import { ListLayout } from 'components/layouts/ListLayout'
+import { ListItem, ListLayout } from 'components/layouts/ListLayout'
 
 export const Stocks = () => {
   const dispatch = useAppDispatch()
@@ -191,7 +191,22 @@ export const Stocks = () => {
             />
           )
         })}
-      </GridLayout>: <ListLayout data={rowData} isLoading={loading} /> }
+      </GridLayout> : <ListLayout isLoading={loading}>
+        {rowData.map((obj: any, index) => {
+          return (
+            <ListItem
+              key={index}
+              title={obj.name}
+              picture={obj.profile}
+              subLeft={obj.category}
+              subRight={obj.stock}
+              action={obj.action}
+              status={obj.status}
+              loading={loading}
+            />
+          )
+        })}
+      </ListLayout> }
     </Container>
   )
 }

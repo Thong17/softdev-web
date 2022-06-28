@@ -7,7 +7,7 @@ import useLanguage from 'hooks/useLanguage'
 import { FlexBetween } from './container/FlexBetween'
 import { TextEllipsis } from './TextEllipsis'
 
-export const ProductInfo = ({ info, ...props }) => {
+export const ProductInfo = ({ info, loading, ...props }: any) => {
   const [toSlide, setToSlide] = useState(0)
   const { theme } = useTheme()
   const { lang } = useLanguage()
@@ -36,7 +36,7 @@ export const ProductInfo = ({ info, ...props }) => {
           style={{ height: 140 }}
         >
           {
-            info?.images && <Carousel
+            !loading && info?.images && <Carousel
               slides={slides}
               goToSlide={toSlide}
               offsetRadius={Math.floor(slides?.length / 2)}
