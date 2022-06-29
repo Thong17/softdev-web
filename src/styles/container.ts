@@ -170,6 +170,7 @@ export const CustomListContainer = styled('div')(
     device: DeviceOptions
     loading: string
   }) => ({
+    padding: '10px 0',
     '& .list-item': {
       boxSizing: 'border-box',
       padding: '10px 0',
@@ -179,6 +180,7 @@ export const CustomListContainer = styled('div')(
       width: '100%',
       backgroundColor: styled.background.secondary,
       borderRadius: styled.radius.primary,
+      marginBottom: 10
     },
     '& .status': {
       display: 'block',
@@ -318,8 +320,6 @@ export const CustomOptionContainer = styled('div')(
 export const CustomProductInfo = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
     position: 'relative',
-    borderRight: styled.border.quaternary,
-    paddingRight: 20, 
     '& .container': {
       backgroundColor: 'transparent',
       width: '100%',

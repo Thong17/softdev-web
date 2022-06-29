@@ -27,6 +27,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CustomButton } from 'styles'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import { ListItem, ListLayout } from 'components/layouts/ListLayout'
+import useConfig from 'hooks/useConfig'
 
 export const Stocks = () => {
   const dispatch = useAppDispatch()
@@ -38,11 +39,12 @@ export const Stocks = () => {
   const { loadify } = useNotify()
   const [rowData, setRowData] = useState<Data[]>([])
   const navigate = useNavigate()
+  const { toggleDisplay, display } = useConfig()
   const [queryParams, setQueryParams] = useSearchParams()
   const [loading, setLoading] = useState(status === 'LOADING' ? true : false)
   const [importDialog, setImportDialog] = useState({ open: false, data: [] })
   const confirm = useAlert()
-  const [isGrid, setIsGrid] = useState(true)
+  const [isGrid, setIsGrid] = useState(display === 'grid' ? true : false)
 
   const updateQuery = debounce((value) => {
     setLoading(false)
@@ -108,6 +110,7 @@ export const Stocks = () => {
 
   const changeLayout = () => {
     setIsGrid(!isGrid)
+    toggleDisplay(isGrid ? 'list' : 'grid')
   }
 
   useEffect(() => {
@@ -196,10 +199,12 @@ export const Stocks = () => {
           return (
             <ListItem
               key={index}
-              title={obj.name}
               picture={obj.profile}
-              subLeft={obj.category}
-              subRight={obj.stock}
+              title={<><span>{obj.name}</span><span>{obj.description}</span></>}
+              first={<><span className='subject'>Category</span><span>{obj.category}</span></>}
+              second={<><span className='subject'>Brand</span><span>{obj.brand}</span></>}
+              third={<><span className='subject'>Stocks</span><span>{obj.stock}</span></>}
+              fourth={<><span className='subject'>Price</span><span>{obj.price}</span></>}
               action={obj.action}
               status={obj.status}
               loading={loading}

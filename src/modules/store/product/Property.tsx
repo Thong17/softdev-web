@@ -265,13 +265,13 @@ export const PropertyProduct = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: device === 'desktop' ? '400px 1fr' : '1fr',
+          gridTemplateColumns: device === 'mobile' ? '1fr' : '400px 1fr',
           gridGap: 20,
         }}
       >
-        <div className='preview' style={{ paddingTop: 20 }}>
+        {device !== 'mobile' && <div className='preview' style={{ paddingTop: 20 }}>
           <ProductInfo info={product} />
-        </div>
+        </div>}
         <div>
           <Section
             describe='Color'

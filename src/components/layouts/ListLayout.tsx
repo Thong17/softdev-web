@@ -3,7 +3,7 @@ import useWeb from 'hooks/useWeb'
 import { CustomListContainer } from 'styles'
 
 export const ListItem = (props) => {
-  const { picture, action, status, loading } =
+  const { picture, title, first, second, third, fourth, action, status, loading } =
     props
   return (
     <div className='list-item'>
@@ -22,24 +22,20 @@ export const ListItem = (props) => {
           </>
         )}
       </div>
-      <div className="content" style={{ flex: '0 20%' }}>
-        <span>Apple Mac book Pro 13 inches</span>
-        <span>Category</span>
+      <div className="content" style={{ flex: '0 30%' }}>
+        {title}
       </div>
       <div className="content" style={{ flex: '0 15%' }}>
-        <span className='subject'>Category</span>
-        <span>Laptop</span>
+        {first}
       </div>
       <div className="content" style={{ flex: '0 15%' }}>
-        <span className='subject'>Brand</span>
-        <span>Apple</span>
+        {second}
       </div>
-      <div className="content" style={{ flex: '0 15%' }}>
-        <span className='subject'>Stock</span>
-        <span>100 Left</span>
+      <div className="content" style={{ flex: '0 10%' }}>
+        {third} 
       </div>
-      <div className="content" style={{ flex: '0 15%' }}>
-        <span className='price'>18$</span>
+      <div className="content" style={{ flex: '0 10%' }}>
+        {fourth}
       </div>
       <div className='action' style={{ flex: '0 50px' }}>
         {action}

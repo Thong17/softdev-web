@@ -37,7 +37,8 @@ import { Button, DialogActions, IconButton } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CustomButton } from 'styles'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
-import { ListLayout } from 'components/layouts/ListLayout'
+import { ListItem, ListLayout } from 'components/layouts/ListLayout'
+import useConfig from 'hooks/useConfig'
 
 export const Products = () => {
   const dispatch = useAppDispatch()
@@ -47,6 +48,7 @@ export const Products = () => {
   const { user } = useAuth()
   const { theme } = useTheme()
   const { loadify } = useNotify()
+  const { toggleDisplay, display } = useConfig()
   const [rowData, setRowData] = useState<Data[]>([])
   const [dialog, setDialog] = useState({ open: false, id: null })
   const navigate = useNavigate()
@@ -54,7 +56,7 @@ export const Products = () => {
   const [loading, setLoading] = useState(status === 'LOADING' ? true : false)
   const [importDialog, setImportDialog] = useState({ open: false, data: [], model: 'product' })
   const confirm = useAlert()
-  const [isGrid, setIsGrid] = useState(true)
+  const [isGrid, setIsGrid] = useState(display === 'grid' ? true : false)
   const [columnData, setColumnData] = useState(productColumnData)
 
   const updateQuery = debounce((value) => {
@@ -184,6 +186,7 @@ export const Products = () => {
 
   const changeLayout = () => {
     setIsGrid(!isGrid)
+    toggleDisplay(isGrid ? 'list' : 'grid')
   }
 
   useEffect(() => {
@@ -277,7 +280,24 @@ export const Products = () => {
           })}
         </GridLayout>
       ) : (
-        <ListLayout data={rowData} isLoading={loading} />
+        <ListLayout isLoading={loading}>
+          {rowData.map((obj: any, index) => {
+            return (
+              <ListItem
+                key={index}
+                picture={obj.profile}
+                title={<><span>{obj.name}</span><span>{obj.description}</span></>}
+                first={<><span className='subject'>Category</span><span>{obj.category}</span></>}
+                second={<><span className='subject'>Brand</span><span>{obj.brand}</span></>}
+                third={<><span className='subject'>Stocks</span><span>{obj.stock}</span></>}
+                fourth={<><span className='subject'>Price</span><span>{obj.price}</span></>}
+                action={obj.action}
+                status={obj.status}
+                loading={loading}
+              />
+            )
+          })}
+        </ListLayout>
       )}
     </Container>
   )
