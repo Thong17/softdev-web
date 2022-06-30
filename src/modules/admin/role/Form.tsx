@@ -86,7 +86,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
           {...register('description')}
         />
       </div>
-      <div style={{ gridArea: 'privilege', minHeight: 42 }}>
+      <div style={{ gridArea: 'privilege', minHeight: 42, position: 'relative' }}>
         {statusPreRole === 'SUCCESS' ? <PrivilegeField preValue={preRole} value={getValues('privilege')} returnValue={handleSetPrivilege} /> : <Loading />}
       </div>
       <div

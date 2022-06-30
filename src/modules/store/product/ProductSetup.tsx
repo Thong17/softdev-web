@@ -45,7 +45,7 @@ const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
 }
 
-export const PropertyProduct = () => {
+export const ProductSetup = () => {
   const dispatch = useAppDispatch()
   const { data: product, status } = useAppSelector(selectProduct)
   const { id, action } = useParams()
