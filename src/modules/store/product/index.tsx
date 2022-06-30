@@ -289,7 +289,7 @@ export const Products = () => {
                 title={<><span>{obj.name}</span><span>{obj.description}</span></>}
                 first={<><span className='subject'>Category</span><span>{obj.category}</span></>}
                 second={<><span className='subject'>Brand</span><span>{obj.brand}</span></>}
-                third={<><span className='subject'>Stocks</span><span>{obj.stock}</span></>}
+                third={<><span className='subject'>Stock</span><span>{obj.stock}</span></>}
                 fourth={<><span className='subject'>Price</span><span>{obj.price}</span></>}
                 action={obj.action}
                 status={obj.status}

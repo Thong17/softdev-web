@@ -42,9 +42,9 @@ export const Header = ({
           code: stock.code,
           expireAt: stock.expireAt,
           alertAt: stock.alertAt,
-          color: JSON.stringify(stock.color).replace(/"/g, '""'),
+          color: JSON.stringify(stock.color)?.replace(/"/g, '""'),
           product: stock.product,
-          options: JSON.stringify(stock.options).replace(/"/g, '""'),
+          options: JSON.stringify(stock.options)?.replace(/"/g, '""'),
         }
       })
       setStocks(mapStocks)
