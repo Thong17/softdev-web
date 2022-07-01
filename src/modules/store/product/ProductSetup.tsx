@@ -251,19 +251,22 @@ export const ProductSetup = () => {
   }
 
   const handleDropProperty = (event: any) => {
+    if (!event.destination || event.destination?.index === event.source?.index) return
+    
     const items = Array.from(properties)
     const [reorderItem] = items.splice(event?.source?.index, 1)
     items.splice(event?.destination?.index, 0, reorderItem)
     const reorderedItems = items.map((item: any, index) => {
       return { _id: item._id, order: index }
     })
+    setProperties(items)
     Axios({
       method: 'PUT',
       url: `/store/product/property/reorder`,
       body: reorderedItems
     })
-      .then(() => {
-        setProperties(items)
+      .then((data) => {
+        notify(data?.data?.msg, data?.data?.code?.toLowerCase())
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
@@ -413,7 +416,7 @@ export const ProductSetup = () => {
                               style={{
                                 boxShadow: theme.shadow.container,
                                 borderRadius: theme.radius.secondary,
-                                marginTop: 30,
+                                marginTop: 0,
                               }}
                               describe={
                                 property?.name?.[lang] ||
