@@ -1,6 +1,6 @@
 import useTheme from 'hooks/useTheme'
 
-export const Section = ({ children, describe, ...props }) => {
+export const Section = ({ children, describe, boxShadow, ...props }: any) => {
   const { theme } = useTheme()
   return (
     <div {...props}>
@@ -9,8 +9,8 @@ export const Section = ({ children, describe, ...props }) => {
           padding: 20,
           border: theme.border.quaternary,
           borderRadius: theme.radius.secondary,
-          margin: '20px 0',
           position: 'relative',
+          boxShadow: boxShadow || ''
         }}
       >
         <span

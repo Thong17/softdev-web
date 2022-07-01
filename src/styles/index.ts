@@ -339,6 +339,9 @@ export const CustomInput = styled('div')(
       width: '100%',
       overflow: 'hidden',
     },
+    '& input[type="date"]::-webkit-calendar-picker-indicator': {
+      filter: 'invert(0.5)'
+    },
     '& input': {
       position: 'relative',
       zIndex: 10,

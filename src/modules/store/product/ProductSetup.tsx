@@ -251,8 +251,9 @@ export const ProductSetup = () => {
   }
 
   const handleDropProperty = (event: any) => {
-    if (!event.destination || event.destination?.index === event.source?.index) return
-    
+    if (!event.destination || event.destination?.index === event.source?.index)
+      return
+
     const items = Array.from(properties)
     const [reorderItem] = items.splice(event?.source?.index, 1)
     items.splice(event?.destination?.index, 0, reorderItem)
@@ -263,7 +264,7 @@ export const ProductSetup = () => {
     Axios({
       method: 'PUT',
       url: `/store/product/property/reorder`,
-      body: reorderedItems
+      body: reorderedItems,
     })
       .then((data) => {
         notify(data?.data?.msg, data?.data?.code?.toLowerCase())
@@ -310,7 +311,7 @@ export const ProductSetup = () => {
             describe='Color'
             style={{
               boxShadow: theme.shadow.container,
-              borderRadius: theme.radius.secondary,
+              marginTop: 20,
             }}
           >
             <CustomColorContainer
@@ -395,10 +396,7 @@ export const ProductSetup = () => {
           <DragDropContext onDragEnd={handleDropProperty}>
             <Droppable droppableId='properties'>
               {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                >
+                <div ref={provided.innerRef} {...provided.droppableProps}>
                   {properties?.map((property, index) => {
                     return (
                       <Draggable
@@ -414,10 +412,11 @@ export const ProductSetup = () => {
                           >
                             <Section
                               style={{
-                                boxShadow: theme.shadow.container,
-                                borderRadius: theme.radius.secondary,
-                                marginTop: 0,
+                                position: 'relative',
+                                boxSizing: 'border-box',
+                                paddingTop: 20
                               }}
+                              boxShadow={theme.shadow.container}
                               describe={
                                 property?.name?.[lang] ||
                                 property?.name?.['English']
