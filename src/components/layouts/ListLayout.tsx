@@ -3,24 +3,20 @@ import useWeb from 'hooks/useWeb'
 import { CustomListContainer } from 'styles'
 
 export const ListItem = (props) => {
-  const { picture, title, first, second, third, fourth, action, status, loading } =
+  const { picture, title, first, second, third, fourth, action, status } =
     props
   return (
     <div className='list-item'>
       <div style={{ flex: '0 50px', display: 'flex', justifyContent: 'center' }}>
         <span className={`status ${status ? 'active' : 'inactive'}`} />
       </div>
-      <div className={`img ${loading && 'skeleton'}`} style={{ flex: 'initial', padding: '0 10px' }}>
-        {!loading && (
-          <>
-            <img
-              src={`${process.env.REACT_APP_API_UPLOADS}${
-                picture ? picture : 'default.jpg'
-              }`}
-              alt={picture}
-            />
-          </>
-        )}
+      <div className='img' style={{ flex: 'initial', padding: '0 10px' }}>
+        <img
+          src={`${process.env.REACT_APP_API_UPLOADS}${
+            picture ? picture : 'default.jpg'
+          }`}
+          alt={picture}
+        />
       </div>
       <div className="content" style={{ flex: '0 30%' }}>
         {title}

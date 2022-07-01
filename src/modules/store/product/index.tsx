@@ -33,7 +33,7 @@ import { debounce } from 'utils'
 import { useSearchParams } from 'react-router-dom'
 import useAlert from 'hooks/useAlert'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
-import { Button, DialogActions, IconButton } from '@mui/material'
+import { Button, DialogActions, IconButton, Skeleton } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CustomButton } from 'styles'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
@@ -53,7 +53,7 @@ export const Products = () => {
   const [dialog, setDialog] = useState({ open: false, id: null })
   const navigate = useNavigate()
   const [queryParams, setQueryParams] = useSearchParams()
-  const [loading, setLoading] = useState(status === 'LOADING' ? true : false)
+  const [loading, setLoading] = useState(status !== 'SUCCESS' ? true : false)
   const [importDialog, setImportDialog] = useState({ open: false, data: [], model: 'product' })
   const confirm = useAlert()
   const [isGrid, setIsGrid] = useState(display === 'grid' ? true : false)
@@ -195,6 +195,13 @@ export const Products = () => {
   }, [dispatch, status])
 
   useEffect(() => {
+    if (status !== 'SUCCESS') return
+    setTimeout(() => {
+      setLoading(false)
+    }, 700)
+  }, [status])
+
+  useEffect(() => {
     const listProducts = products.map((product: any) => {
       return createData(
         product._id,
@@ -264,9 +271,10 @@ export const Products = () => {
       />
       {isGrid ? (
         <GridLayout>
-          {rowData.map((obj: any, index) => {
-            return (
-              <GridItem
+          {
+            !loading ? rowData.map((obj: any, index) => {
+              return (
+                <GridItem
                 key={index}
                 title={obj.name}
                 picture={obj.profile}
@@ -274,29 +282,40 @@ export const Products = () => {
                 subRight={obj.price}
                 action={obj.action}
                 status={obj.status}
-                loading={loading}
               />
-            )
-          })}
+              )
+            }) : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(index => {
+              return <div key={index}>
+                <Skeleton variant='rectangular' height={130} width={150} style={{ borderRadius: theme.radius.secondary }} />
+                <div className="content" style={{ padding: '7px 0', boxSizing: 'border-box' }}>
+                  <Skeleton variant='rectangular' height={30} width='100%' style={{ borderRadius: theme.radius.secondary }} />
+                  <Skeleton variant='text' height={30} width={70} style={{ borderRadius: theme.radius.secondary }} />
+                </div>
+              </div>
+            })
+          }
         </GridLayout>
       ) : (
         <ListLayout isLoading={loading}>
-          {rowData.map((obj: any, index) => {
-            return (
-              <ListItem
-                key={index}
-                picture={obj.profile}
-                title={<><span>{obj.name}</span><span>{obj.description}</span></>}
-                first={<><span className='subject'>Category</span><span>{obj.category}</span></>}
-                second={<><span className='subject'>Brand</span><span>{obj.brand}</span></>}
-                third={<><span className='subject'>Stock</span><span>{obj.stock}</span></>}
-                fourth={<><span className='subject'>Price</span><span>{obj.price}</span></>}
-                action={obj.action}
-                status={obj.status}
-                loading={loading}
-              />
-            )
-          })}
+          {
+            !loading ? rowData.map((obj: any, index) => {
+              return (
+                <ListItem
+                  key={index}
+                  picture={obj.profile}
+                  title={<><span>{obj.name}</span><span>{obj.description}</span></>}
+                  first={<><span className='subject'>Category</span><span>{obj.category}</span></>}
+                  second={<><span className='subject'>Brand</span><span>{obj.brand}</span></>}
+                  third={<><span className='subject'>Stock</span><span>{obj.stock}</span></>}
+                  fourth={<><span className='subject'>Price</span><span>{obj.price}</span></>}
+                  action={obj.action}
+                  status={obj.status}
+                />
+              )
+            }) : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(index => {
+              return <Skeleton key={index} variant='rectangular' width='100%' height={90} style={{ marginBottom: 10, borderRadius: theme.radius.secondary }} />
+            })
+          }
         </ListLayout>
       )}
     </Container>

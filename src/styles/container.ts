@@ -1,5 +1,4 @@
 import { styled } from '@mui/system'
-import { shineLine } from './animation'
 import { IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
 
@@ -50,16 +49,6 @@ export const CustomGridContainer = styled('div')(
       boxSizing: 'border-box',
       '&:hover .img .action': {
         opacity: 1,
-      },
-      '& .skeleton': {
-        backgroundImage: `linear-gradient(90deg, ${styled.background.quaternary} 0px, ${styled.active.tertiary} 40px, ${styled.background.quaternary} 80px)`,
-        backgroundSize: '600px',
-        color: `${styled.background.quaternary} !important`,
-        borderRadius: styled.radius.primary,
-        animation: `${shineLine} 1.6s infinite linear`,
-      },
-      '& .img.skeleton': {
-        borderRadius: 0,
       },
       '& .img': {
         borderRadius: styled.radius.ternary,
@@ -396,10 +385,8 @@ export const CustomProductInfo = styled('div')(
   })
 )
 
-
 export const CustomDetailContainer = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
     padding: 20
   })
 )
-

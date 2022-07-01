@@ -3,36 +3,34 @@ import useWeb from 'hooks/useWeb'
 import { CustomGridContainer } from 'styles'
 
 export const GridItem = (props) => {
-  const { title, picture, subLeft, subRight, action, status, loading } =
+  const { title, picture, subLeft, subRight, action, status } =
     props
 
   return (
     <div className='grid-item'>
-      <div className={`img ${loading && 'skeleton'}`}>
-        {!loading && (
-          <>
-            <div className='action'>
-              {action}
-            </div>
-            <div className={`status ${status ? 'active' : 'inactive'}`}></div>
-            <img
-              src={`${process.env.REACT_APP_API_UPLOADS}${
-                picture ? picture : 'default.jpg'
-              }`}
-              alt={picture}
-            />
-          </>
-        )}
+      <div className='img'>
+        <>
+          <div className='action'>
+            {action}
+          </div>
+          <div className={`status ${status ? 'active' : 'inactive'}`}></div>
+          <img
+            src={`${process.env.REACT_APP_API_UPLOADS}${
+              picture ? picture : 'default.jpg'
+            }`}
+            alt={picture}
+          />
+        </>
       </div>
       <div className='content'>
-        <div className={`title ${loading && 'skeleton'}`} title={title}>
+        <div className='title' title={title}>
           <span>{title}</span>
         </div>
         <div className='sub-title'>
-          <div className={`sub-left ${loading && 'skeleton'}`}>
+          <div className='sub-left'>
             {subLeft}
           </div>
-          <div className={`sub-right ${loading && 'skeleton'}`}>
+          <div className='sub-right'>
             {subRight}
           </div>
         </div>
