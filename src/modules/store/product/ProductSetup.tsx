@@ -17,7 +17,7 @@ import {
   getProduct,
   deleteOption,
   deleteProperty,
-  deleteColor
+  deleteColor,
 } from './redux'
 import useLanguage from 'hooks/useLanguage'
 import { MenuDialog } from 'components/shared/MenuDialog'
@@ -35,11 +35,12 @@ import {
   initProperty,
   mapOptionBody,
   mapPropertyBody,
-  mapColorBody
+  mapColorBody,
 } from './redux/constant'
 import { PropertyForm } from './PropertyForm'
 import { ColorForm } from './ColorForm'
 import { ProductInfo } from 'components/shared/ProductInfo'
+import { Draggable, Droppable, DragDropContext } from 'react-beautiful-dnd'
 
 const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
@@ -49,6 +50,7 @@ export const ProductSetup = () => {
   const dispatch = useAppDispatch()
   const { data: product, status } = useAppSelector(selectProduct)
   const { id, action } = useParams()
+  const [properties, setProperties] = useState(product?.properties || [])
   const [optionValue, setOptionValue] = useState(initOption)
   const [colorValue, setColorValue] = useState(initColor)
   const [propertyValue, setPropertyValue] = useState(initProperty)
@@ -73,6 +75,12 @@ export const ProductSetup = () => {
   const { theme } = useTheme()
   const { notify } = useNotify()
   const confirm = useAlert()
+
+  useEffect(() => {
+    if (status !== 'SUCCESS') return
+
+    setProperties(product.properties)
+  }, [product, status])
 
   useEffect(() => {
     if (id) {
@@ -242,6 +250,26 @@ export const ProductSetup = () => {
       })
   }
 
+  const handleDropProperty = (event: any) => {
+    const items = Array.from(properties)
+    const [reorderItem] = items.splice(event?.source?.index, 1)
+    items.splice(event?.destination?.index, 0, reorderItem)
+    const reorderedItems = items.map((item: any, index) => {
+      return { _id: item._id, order: index }
+    })
+    Axios({
+      method: 'PUT',
+      url: `/store/product/property/reorder`,
+      body: reorderedItems
+    })
+      .then(() => {
+        setProperties(items)
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
+  }
+
   return (
     <Container header={<Header stages={propertyBreadcrumb} />}>
       <OptionForm
@@ -269,15 +297,17 @@ export const ProductSetup = () => {
           gridGap: 20,
         }}
       >
-        {device !== 'mobile' && <div className='preview' style={{ paddingTop: 20 }}>
-          <ProductInfo info={product} />
-        </div>}
+        {device !== 'mobile' && (
+          <div className='preview' style={{ paddingTop: 20 }}>
+            <ProductInfo info={product} />
+          </div>
+        )}
         <div>
           <Section
             describe='Color'
             style={{
               boxShadow: theme.shadow.container,
-              borderRadius: theme.radius.secondary
+              borderRadius: theme.radius.secondary,
             }}
           >
             <CustomColorContainer
@@ -297,33 +327,52 @@ export const ProductSetup = () => {
               >
                 <AddRoundedIcon />
               </Button>
-              {
-                product?.colors?.map((color, index) => {
-                  return (
-                    <div className='color-container' key={index}>
-                       <div className='action'>
-                        <UpdateButton
-                          style={{ margin: 0 }}
-                          onClick={() =>
-                            handleEditColor(color._id)
-                          }
-                        />
-                        <DeleteButton
-                          onClick={() => handleDeleteColor(color._id)}
-                        />
-                      </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-                        <span>{color?.name?.[lang] || color?.name?.['English']}</span>
-                        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ width: 20, height: 20, backgroundColor: color?.code }}></span>
-                          <span>{color?.price} {color?.currency}</span>
-                        </div>
-                      </div>
-                      
+              {product?.colors?.map((color, index) => {
+                return (
+                  <div className='color-container' key={index}>
+                    <div className='action'>
+                      <UpdateButton
+                        style={{ margin: 0 }}
+                        onClick={() => handleEditColor(color._id)}
+                      />
+                      <DeleteButton
+                        onClick={() => handleDeleteColor(color._id)}
+                      />
                     </div>
-                  )
-                })
-              }
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        height: '100%',
+                      }}
+                    >
+                      <span>
+                        {color?.name?.[lang] || color?.name?.['English']}
+                      </span>
+                      <div
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: 20,
+                            height: 20,
+                            backgroundColor: color?.code,
+                          }}
+                        ></span>
+                        <span>
+                          {color?.price} {color?.currency}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
             </CustomColorContainer>
           </Section>
           <Button
@@ -340,92 +389,134 @@ export const ProductSetup = () => {
           >
             Add Property
           </Button>
-          {status === 'SUCCESS' &&
-            product?.properties?.map((property, index) => {
-              return (
-                <Section
-                  style={{
-                    boxShadow: theme.shadow.container,
-                    borderRadius: theme.radius.secondary,
-                    marginTop: 30,
-                  }}
-                  key={index}
-                  describe={
-                    property?.name?.[lang] || property?.name?.['English']
-                  }
+          <DragDropContext onDragEnd={handleDropProperty}>
+            <Droppable droppableId='properties'>
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
                 >
-                  <div
-                    className='action'
-                    style={{ position: 'absolute', top: -7, right: 0 }}
-                  >
-                    <MenuDialog
-                      label={
-                        <MoreHorizIcon
-                          style={{
-                            color: theme.text.secondary,
-                          }}
-                        />
-                      }
-                    >
-                      <MenuList
-                        component='div'
-                        onClick={() => handleEditProperty(property?._id)}
+                  {properties?.map((property, index) => {
+                    return (
+                      <Draggable
+                        key={property._id}
+                        draggableId={property._id}
+                        index={index}
                       >
-                        Edit
-                      </MenuList>
-                      <MenuList
-                        component='div'
-                        onClick={() => handleDeleteProperty(property?._id)}
-                      >
-                        Delete
-                      </MenuList>
-                    </MenuDialog>
-                  </div>
-                  <CustomOptionContainer
-                    device={device}
-                    styled={theme}
-                    loading={'false'}
-                  >
-                    <Button
-                      className='create-button'
-                      onClick={() => {
-                        setOptionValue(initOption)
-                        setOptionDialog({
-                          ...optionDialog,
-                          propertyId: property?._id,
-                          open: true,
-                        })
-                      }}
-                    >
-                      <AddRoundedIcon />
-                    </Button>
-                    {product.options.map((option, index) => {
-                      return (
-                        option.property === property._id && (
-                          <div key={index} className='option-container'>
-                            <div className='action'>
-                              <UpdateButton
-                                style={{ margin: 0 }}
-                                onClick={() =>
-                                  handleEditOption(option._id, property._id)
-                                }
-                              />
-                              <DeleteButton
-                                onClick={() => handleDeleteOption(option._id)}
-                              />
-                            </div>
-                            {option.name?.[lang] || option.name?.['English']}
-                            <span>
-                              {option.price} {option.currency}
-                            </span>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <Section
+                              style={{
+                                boxShadow: theme.shadow.container,
+                                borderRadius: theme.radius.secondary,
+                                marginTop: 30,
+                              }}
+                              describe={
+                                property?.name?.[lang] ||
+                                property?.name?.['English']
+                              }
+                            >
+                              <div
+                                className='action'
+                                style={{
+                                  position: 'absolute',
+                                  top: -7,
+                                  right: 0,
+                                }}
+                              >
+                                <MenuDialog
+                                  label={
+                                    <MoreHorizIcon
+                                      style={{
+                                        color: theme.text.secondary,
+                                      }}
+                                    />
+                                  }
+                                >
+                                  <MenuList
+                                    component='div'
+                                    onClick={() =>
+                                      handleEditProperty(property?._id)
+                                    }
+                                  >
+                                    Edit
+                                  </MenuList>
+                                  <MenuList
+                                    component='div'
+                                    onClick={() =>
+                                      handleDeleteProperty(property?._id)
+                                    }
+                                  >
+                                    Delete
+                                  </MenuList>
+                                </MenuDialog>
+                              </div>
+                              <CustomOptionContainer
+                                device={device}
+                                styled={theme}
+                                loading={'false'}
+                              >
+                                <Button
+                                  className='create-button'
+                                  onClick={() => {
+                                    setOptionValue(initOption)
+                                    setOptionDialog({
+                                      ...optionDialog,
+                                      propertyId: property?._id,
+                                      open: true,
+                                    })
+                                  }}
+                                >
+                                  <AddRoundedIcon />
+                                </Button>
+                                {product.options.map((option, index) => {
+                                  return (
+                                    option.property === property._id && (
+                                      <div
+                                        key={index}
+                                        className='option-container'
+                                      >
+                                        <div className='action'>
+                                          <UpdateButton
+                                            style={{ margin: 0 }}
+                                            onClick={() =>
+                                              handleEditOption(
+                                                option._id,
+                                                property._id
+                                              )
+                                            }
+                                          />
+                                          <DeleteButton
+                                            onClick={() =>
+                                              handleDeleteOption(option._id)
+                                            }
+                                          />
+                                        </div>
+                                        {option.name?.[lang] ||
+                                          option.name?.['English']}
+                                        <span>
+                                          {option.price} {option.currency}
+                                        </span>
+                                      </div>
+                                    )
+                                  )
+                                })}
+                              </CustomOptionContainer>
+                            </Section>
                           </div>
-                        )
-                      )
-                    })}
-                  </CustomOptionContainer>
-                </Section>
-              )
-            })}
+                        )}
+                      </Draggable>
+                    )
+                  })}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </div>
       </div>
     </Container>
