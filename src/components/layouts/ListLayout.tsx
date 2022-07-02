@@ -30,10 +30,10 @@ export const ListItem = (props) => {
       <div className="content" style={{ flex: '0 10%' }}>
         {third} 
       </div>
-      <div className="content" style={{ flex: '0 10%' }}>
+      <div className="content" style={{ flex: '0 20%' }}>
         {fourth}
       </div>
-      <div className='action' style={{ flex: '0 50px' }}>
+      <div className='action' style={{ position: 'absolute', right: 20 }}>
         {action}
       </div>
     </div>

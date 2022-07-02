@@ -198,7 +198,7 @@ export const Products = () => {
     if (status !== 'SUCCESS') return
     setTimeout(() => {
       setLoading(false)
-    }, 700)
+    }, 300)
   }, [status])
 
   useEffect(() => {
@@ -245,6 +245,7 @@ export const Products = () => {
             columns={columnData}
             rows={importDialog.data}
             loading={loading}
+            style={{ maxWidth: '90vw' }}
           />
         </div>
         <DialogActions>

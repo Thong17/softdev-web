@@ -16,10 +16,10 @@ export const Header = ({
     const newCategories = data.map((category) => {
       return {
         _id: category._id,
-        name: JSON.stringify(category.name).replace(/"/g, '""'),
+        name: JSON.stringify(category.name)?.replace(/"/g, '""'),
         description: category.description,
         status: category.status,
-        icon: category.icon?._id
+        icon: JSON.stringify(category.icon)?.replace(/"/g, '""')
       }
     })
     setCategories(newCategories)

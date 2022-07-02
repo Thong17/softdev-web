@@ -147,7 +147,7 @@ export const Categories = () => {
     >
       <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
         <div style={{ position: 'relative' }}>
-          <StickyTable columns={importColumnData} rows={importDialog.data} loading={loading} />
+          <StickyTable columns={importColumnData} rows={importDialog.data} loading={loading} style={{ maxWidth: '90vw' }} />
         </div>
         <DialogActions>
           <Button onClick={handleCloseImport}>Cancel</Button>

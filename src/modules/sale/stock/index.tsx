@@ -122,7 +122,7 @@ export const Stocks = () => {
     if (status !== 'SUCCESS') return
     setTimeout(() => {
       setLoading(false)
-    }, 700)
+    }, 300)
   }, [status])
 
   useEffect(() => {
@@ -168,6 +168,7 @@ export const Stocks = () => {
             columns={importColumnData}
             rows={importDialog.data}
             loading={loading}
+            style={{ maxWidth: '90vw' }}
           />
         </div>
         <DialogActions>

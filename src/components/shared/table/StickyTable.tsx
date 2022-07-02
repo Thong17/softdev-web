@@ -27,7 +27,8 @@ interface ITable {
   columns: ITableColumn<string>[]
   rows: any[]
   loading?: boolean
-  handleClick?: (id) => void
+  handleClick?: (id) => void,
+  style?: React.CSSProperties
 }
 
 export const StickyTable = ({
@@ -35,6 +36,7 @@ export const StickyTable = ({
   rows,
   loading,
   handleClick,
+  style
 }: ITable) => {
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -53,7 +55,7 @@ export const StickyTable = ({
   }
 
   return (
-    <CustomTableContainer styled={theme} device={device}>
+    <CustomTableContainer styled={theme} device={device} style={style}>
       <div className='table-container'>
         {loading && <Loading />}
         <TableContainer className='table'>

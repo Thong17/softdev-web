@@ -16,10 +16,10 @@ export const Header = ({
     const newBrands = data.map((brand) => {
       return {
         _id: brand._id,
-        name: JSON.stringify(brand.name).replace(/"/g, '""'),
+        name: JSON.stringify(brand.name)?.replace(/"/g, '""'),
         description: brand.description,
         status: brand.status,
-        icon: brand.icon?._id,
+        icon: JSON.stringify(brand.icon)?.replace(/"/g, '""')
       }
     })
     setBrands(newBrands)

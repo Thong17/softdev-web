@@ -19,6 +19,8 @@ export const Header = ({
         username: user.username,
         email: user.email,
         role: user.role._id,
+        config: user.config,
+        profile: user.profile
       }
     })
     setUsers(newUsers)

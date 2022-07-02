@@ -158,6 +158,7 @@ export const Brands = () => {
             columns={importColumnData}
             rows={importDialog.data}
             loading={loading}
+            style={{ maxWidth: '90vw' }}
           />
         </div>
         <DialogActions>

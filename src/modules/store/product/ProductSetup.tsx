@@ -303,7 +303,7 @@ export const ProductSetup = () => {
       >
         {device !== 'mobile' && (
           <div className='preview' style={{ paddingTop: 20 }}>
-            <ProductInfo info={product} />
+            <ProductInfo info={product} loading={status !== 'SUCCESS' ? true : false} />
           </div>
         )}
         <div>
