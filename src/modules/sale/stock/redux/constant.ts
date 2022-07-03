@@ -29,17 +29,12 @@ export const initState: IProductBody = {
 }
 
 export interface StockState {
-  list: IBody<any[]>
   stocks: IBody<any[]>
   product: IBody<IProductBody>
   detail: IBody<Object>
 }
 
 export const initialState: StockState = {
-  list: {
-    data: [],
-    status: 'INIT',
-  },
   stocks: {
     data: [],
     status: 'INIT',
