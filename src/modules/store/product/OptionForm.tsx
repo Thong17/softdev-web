@@ -19,6 +19,7 @@ import { IImage } from 'components/shared/form/UploadField'
 import useWeb from 'hooks/useWeb'
 import { updateOption, createOption } from './redux'
 import { useAppDispatch } from 'app/hooks'
+import { TextTitle } from 'components/shared/TextTitle'
 
 export const OptionForm = ({
   dialog,
@@ -131,6 +132,7 @@ export const OptionForm = ({
       isOpen={dialog.open}
       handleClose={handleCloseDialog}
     >
+      <TextTitle title='Option Form' />
       <form
         style={{
           fontFamily: theme.font.family,

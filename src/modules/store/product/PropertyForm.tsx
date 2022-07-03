@@ -14,6 +14,7 @@ import useWeb from 'hooks/useWeb'
 import { updateProperty, createProperty } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import { useEffect } from 'react'
+import { TextTitle } from 'components/shared/TextTitle'
 
 export const PropertyForm = ({
   dialog,
@@ -81,6 +82,7 @@ export const PropertyForm = ({
       isOpen={dialog.open}
       handleClose={handleCloseDialog}
     >
+      <TextTitle title='Property Form' />
       <form
         style={{
           fontFamily: theme.font.family,

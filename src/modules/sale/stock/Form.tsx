@@ -17,6 +17,7 @@ import { updateStock, createStock, getListProduct } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import { Section } from 'components/shared/Section'
 import useLanguage from 'hooks/useLanguage'
+import { TextTitle } from 'components/shared/TextTitle'
 
 export const Form = ({
   dialog,
@@ -125,6 +126,7 @@ export const Form = ({
       isOpen={dialog.open}
       handleClose={handleCloseDialog}
     >
+      <TextTitle title='Stock Form' />
       <form
         style={{
           fontFamily: theme.font.family,
@@ -192,7 +194,7 @@ export const Form = ({
           />
         </div>
         <div style={{ gridArea: 'option' }}>
-          <Section describe='Option'>
+          <Section describe='Option' style={{ marginTop: 20 }}>
             <div
               style={{
                 display: 'grid',

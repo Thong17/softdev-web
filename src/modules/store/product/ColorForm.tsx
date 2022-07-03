@@ -21,6 +21,7 @@ import { updateColor, createColor } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import ColorLensRoundedIcon from '@mui/icons-material/ColorLensRounded'
 import { SketchPicker } from 'react-color'
+import { TextTitle } from 'components/shared/TextTitle'
 
 export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
   const {
@@ -168,6 +169,7 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
 
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
+      <TextTitle title='Color Form' />
       <form
         style={{
           fontFamily: theme.font.family,

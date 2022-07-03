@@ -311,6 +311,7 @@ export const ProductSetup = () => {
             describe='Color'
             style={{
               boxShadow: theme.shadow.container,
+              borderRadius: theme.radius.secondary,
               marginTop: 20,
             }}
           >
