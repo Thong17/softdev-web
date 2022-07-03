@@ -17,6 +17,8 @@ export const Axios = async ({method, url, body, params, headers}: IAxiosProps): 
       'x-access-hash': hash,
       'x-access-ts': ts,
       'x-access-token': token || '',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': '*'
     },
     params: params
   })
