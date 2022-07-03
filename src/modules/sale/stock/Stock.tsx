@@ -6,8 +6,7 @@ import {
   getListStock,
   getProduct,
   selectProduct,
-  deleteStock,
-  getListProduct
+  deleteStock
 } from './redux'
 import { useAppSelector, useAppDispatch } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
@@ -25,6 +24,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { Detail } from './Detail'
 import useAlert from 'hooks/useAlert'
+import { getListProduct } from 'modules/store/product/redux'
 
 const Header = ({ stages, styled, onClickAdd }) => {
   return (

@@ -13,11 +13,12 @@ import useNotify from 'hooks/useNotify'
 import { currencyOptions } from 'constants/variables'
 import { useEffect, useState } from 'react'
 import useWeb from 'hooks/useWeb'
-import { updateStock, createStock, getListProduct } from './redux'
+import { updateStock, createStock } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import { Section } from 'components/shared/Section'
 import useLanguage from 'hooks/useLanguage'
 import { TextTitle } from 'components/shared/TextTitle'
+import { getListProduct } from 'modules/store/product/redux'
 
 export const Form = ({
   dialog,

@@ -3,18 +3,6 @@ import { RootState } from 'app/store'
 import Axios from 'constants/functions/Axios'
 import { initialState } from './constant'
 
-export const getListProduct = createAsyncThunk(
-  'stock/products',
-  async ({ query }: { query?: URLSearchParams }) => {
-    const response = await Axios({
-      method: 'GET',
-      url: '/sale/stock',
-      params: query
-    })
-    return response?.data
-  }
-)
-
 export const getListStock = createAsyncThunk(
   'stock/list',
   async ({ query }: { query?: URLSearchParams }) => {
@@ -74,18 +62,6 @@ export const stockSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // List product
-      .addCase(getListProduct.pending, (state) => {
-        state.list.status = 'LOADING'
-      })
-      .addCase(getListProduct.rejected, (state) => {
-        state.list.status = 'FAILED'
-      })
-      .addCase(getListProduct.fulfilled, (state, action) => {
-        state.list.status = 'SUCCESS'
-        state.list.data = action.payload.data
-      })
-
       // List stock
       .addCase(getListStock.pending, (state) => {
         state.stocks.status = 'LOADING'
@@ -126,7 +102,6 @@ export const stockSlice = createSlice({
 
 export const selectProduct = (state: RootState) => state.stock.product
 export const selectStock = (state: RootState) => state.stock.detail
-export const selectListProduct = (state: RootState) => state.stock.list
 export const selectListStock = (state: RootState) => state.stock.stocks
 
 export const { updateStock, deleteStock, createStock } = stockSlice.actions
