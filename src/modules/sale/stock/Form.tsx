@@ -236,7 +236,7 @@ export const Form = ({
             </div>
           </Section>
         </div>
-        <div style={{ gridArea: 'action', display: 'flex', justifyContent: 'end' }}>
+        <div style={{ gridArea: 'action', display: 'flex', justifyContent: 'end', marginTop: 20 }}>
           <Button
             onClick={handleCloseDialog}
           >
