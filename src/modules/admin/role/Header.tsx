@@ -16,9 +16,9 @@ export const Header = ({
     const newRoles = data.map((role) => {
       return {
         _id: role._id,
-        name: JSON.stringify(role.name).replace(/"/g, '""'),
+        name: JSON.stringify(role.name)?.replace(/"/g, '""'),
         description: role.description,
-        privilege: JSON.stringify(role.privilege).replace(/"/g, '""'),
+        privilege: JSON.stringify(role.privilege)?.replace(/"/g, '""'),
       }
     })
     setRoles(newRoles)
