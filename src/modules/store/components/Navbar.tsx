@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-const StoreNavbar = () => {
+const Navbar = () => {
   return (
     <>
         <NavLink to='/store/category'>Category</NavLink>
@@ -11,4 +11,4 @@ const StoreNavbar = () => {
   )
 }
 
-export default StoreNavbar
+export default Navbar

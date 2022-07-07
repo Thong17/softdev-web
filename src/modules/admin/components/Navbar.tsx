@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-const AdminNavbar = () => {
+const Navbar = () => {
   return (
     <>
         <NavLink to='/admin/role'>Role</NavLink>
@@ -11,4 +11,4 @@ const AdminNavbar = () => {
   )
 }
 
-export default AdminNavbar
+export default Navbar

@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-const SaleNavbar = () => {
+const Navbar = () => {
   return (
     <>
         <NavLink to='/sale/cashing'>Cashing</NavLink>
@@ -10,4 +10,4 @@ const SaleNavbar = () => {
   )
 }
 
-export default SaleNavbar
+export default Navbar

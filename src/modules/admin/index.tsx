@@ -1,5 +1,5 @@
 import { Layout } from 'components/layouts/Layout'
-import AdminNavbar from './components/AdminNavbar'
+import Navbar from './components/Navbar'
 import { useOutlet } from 'react-router'
 import Container from 'components/shared/Container'
 import AdminBreadcrumbs from './components/Breadcrumbs'
@@ -16,7 +16,7 @@ export const Admin = () => {
   }
 
   return (
-    <Layout navbar={<AdminNavbar />}>
+    <Layout navbar={<Navbar />}>
       {outlet || <Container header={<Header />}>Admin Updated</Container>}
     </Layout>
   )

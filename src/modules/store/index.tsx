@@ -1,7 +1,7 @@
 import { Layout } from 'components/layouts/Layout'
 import { useOutlet } from 'react-router'
 import Container from 'components/shared/Container'
-import StoreNavbar from './components/StoreNavbar'
+import Navbar from './components/Navbar'
 import StoreBreadcrumbs from './components/Breadcrumbs'
 
 export const Store = () => {
@@ -16,7 +16,7 @@ export const Store = () => {
   }
 
   return (
-    <Layout navbar={<StoreNavbar />}>
+    <Layout navbar={<Navbar />}>
       {outlet || <Container header={<Header />}>Store Updated</Container>}
     </Layout>
   )
