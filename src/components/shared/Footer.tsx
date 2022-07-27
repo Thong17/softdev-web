@@ -1,7 +1,7 @@
 import useTheme from 'hooks/useTheme'
 import { CustomFooter } from 'styles'
 
-const Footer = () => {
+const Footer = ({ ...props }) => {
   const { theme } = useTheme()
 
   return (
@@ -10,8 +10,11 @@ const Footer = () => {
       justifyContent='center'
       alignItems='center'
       styled={theme}
+      {...props}
     >
-      Footer
+      <p style={{ color: theme.text.tertiary }}>
+        Copyright &copy; 2022 All Rights Reserved by <span style={{ color: theme.text.primary }}>SoftDev</span>
+      </p>
     </CustomFooter>
   )
 }

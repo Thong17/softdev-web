@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef, ForwardRefRenderFunction } from 'react'
 import { ButtonProps } from '@mui/material'
 import { MUIStyledCommonProps } from '@mui/system'
 import useTheme from 'hooks/useTheme'
@@ -12,15 +12,16 @@ interface IButton
   loading?: boolean
 }
 
-const Button: React.FC<IButton> = ({ children, loading, ...prop }) => {
+const ButtonRef: ForwardRefRenderFunction<HTMLButtonElement, IButton> = ({ children, loading, ...prop }, ref) => {
   const { theme } = useTheme()
   
   return (
-    <CustomButton styled={theme} {...prop}>
+    <CustomButton styled={theme} {...prop} ref={ref}>
       {children}
       {loading && <Loading />}
     </CustomButton>
   )
 }
 
+const Button = forwardRef(ButtonRef)
 export default Button

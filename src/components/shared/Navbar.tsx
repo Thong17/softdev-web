@@ -1,3 +1,4 @@
+import logo from '../../assets/logo.jpg'
 import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import { Link } from 'react-router-dom'
@@ -30,7 +31,7 @@ const Navbar = ({ children }) => {
   const { user } = useAuth()
   const { theme } = useTheme()
   const { toggleSidebar, sidebar } = useConfig()
-  const { device } = useWeb()
+  const { device, width } = useWeb()
   const navRef = useRef<HTMLDivElement>(document.createElement("div"))
 
   const openNavbar = () => {
@@ -61,20 +62,25 @@ const Navbar = ({ children }) => {
         device !== 'mobile' && device !== 'tablet' ? (sidebar ? 258 : 78) : 0
       }
     >
-      {device === 'mobile' ? (
-        <MenuBar
-          theme={theme}
-          open={navbar}
-          toggleSidebar={openNavbar}
-        ></MenuBar>
+      {width < 1024 ? (
+        <div style={{ display: 'flex' }}>
+          <MenuBar
+            theme={theme}
+            open={navbar}
+            toggleSidebar={openNavbar}
+          ></MenuBar>
+        </div>
+        
       ) : (
-        <MenuBar
-          theme={theme}
-          open={sidebar}
-          toggleSidebar={toggleSidebar}
-        ></MenuBar>
+        <div style={{ display: 'flex' }}>
+          <MenuBar
+            theme={theme}
+            open={sidebar}
+            toggleSidebar={toggleSidebar}
+          ></MenuBar>
+        </div>
       )}
-      {device === 'mobile' ? (
+      {width < 1024 ? (
         <Dialog display={navbar}>
           <NavbarContainer
             ref={navRef}
@@ -88,7 +94,7 @@ const Navbar = ({ children }) => {
       ) : (
         <ListNavbar>{children}</ListNavbar>
       )}
-      {user ? (
+      {user?.id ? (
         <Profile username={user.username} picture={user.photo} />
       ) : (
         <Link to='/login'>Login</Link>

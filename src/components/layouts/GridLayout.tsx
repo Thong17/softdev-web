@@ -16,7 +16,7 @@ export const GridItem = (props) => {
           <div className={`status ${status ? 'active' : 'inactive'}`}></div>
           <img
             src={`${process.env.REACT_APP_API_UPLOADS}${
-              picture ? picture : 'default.jpg'
+              picture ? picture : 'default.png'
             }`}
             alt={picture}
           />

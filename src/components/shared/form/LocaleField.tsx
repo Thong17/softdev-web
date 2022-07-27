@@ -21,7 +21,7 @@ export const LocaleField = ({ name, onChange, describe, defaultValue, err, ...pr
   }
 
   return (
-    <Section describe={describe} style={{ marginTop: 20 }}>
+    <Section describe={describe}>
       <div
         style={{
           display: 'grid',

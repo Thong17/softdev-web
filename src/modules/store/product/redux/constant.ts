@@ -46,7 +46,7 @@ export const initState: IProductBody = {
   status: true,
   description: '',
   isStock: false,
-  profile: '',
+  profile: null,
   brand: '',
   category: '',
 }

@@ -5,7 +5,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
-export const DeleteDialog = ({ id, isOpen, handleConfirm, handleClose }) => {
+export const DeleteDialog = ({ title, description, action, id, isOpen, handleConfirm, handleClose }: any) => {
   return (
     <div>
       <Dialog
@@ -15,17 +15,17 @@ export const DeleteDialog = ({ id, isOpen, handleConfirm, handleClose }) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Do you want to delete?"}
+          {title || "Do you want to delete?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Delete role will proceed and you will not be able to select this role again.
+            {description || 'Delete role will proceed and you will not be able to select this role again.'}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={() => handleConfirm(id)} variant='contained' color='error' autoFocus>
-            Delete
+            {action || 'Delete'}
           </Button>
         </DialogActions>
       </Dialog>

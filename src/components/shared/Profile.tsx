@@ -1,8 +1,9 @@
-import { Menu, MenuList } from '@mui/material'
+import { Menu, MenuItem } from '@mui/material'
 import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import { FC, useState } from 'react'
 import { CustomProfile } from 'styles'
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
 
 interface IProfile {
   username: string,
@@ -16,7 +17,7 @@ const Profile: FC<IProfile> = ({ username, picture }) => {
 
   return (
     <>
-      <CustomProfile
+      {username && <CustomProfile
         styled={theme}
         aria-controls='profile-menu'
         onClick={(event) => setAnchorEl(event.currentTarget)}
@@ -27,17 +28,17 @@ const Profile: FC<IProfile> = ({ username, picture }) => {
             : (<div style={{ alignItems: 'center' }}>{username[0]}</div>)
         }
         {username}
-      </CustomProfile>
+      </CustomProfile>}
       <Menu
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
         anchorEl={anchorEl}
         id='profile-menu'
         style={{
-          marginTop: 10
+          marginTop: 10,
         }}
       >
-        <MenuList onClick={() => logout()}>Logout</MenuList>
+        <MenuItem onClick={() => logout()}><LogoutRoundedIcon style={{ marginRight: 10 }} /> Logout</MenuItem>
       </Menu>
     </>
   )

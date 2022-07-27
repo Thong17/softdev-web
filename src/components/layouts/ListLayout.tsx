@@ -13,7 +13,7 @@ export const ListItem = (props) => {
       <div className='img' style={{ flex: 'initial', padding: '0 10px' }}>
         <img
           src={`${process.env.REACT_APP_API_UPLOADS}${
-            picture ? picture : 'default.jpg'
+            picture ? picture : 'default.png'
           }`}
           alt={picture}
         />

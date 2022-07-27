@@ -3,8 +3,8 @@ import SearchIcon from '@mui/icons-material/Search'
 import KeyboardCommandKeyIcon from '@mui/icons-material/KeyboardCommandKey'
 import { MenuDialog } from '../MenuDialog'
 import { CustomSearchField } from 'styles'
-import { IconButton, MenuList } from '@mui/material'
-import { useRef, useState } from 'react'
+import { IconButton, MenuItem } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
 import useWeb from 'hooks/useWeb'
 
 export const SearchField = ({ ...props }) => {
@@ -14,9 +14,13 @@ export const SearchField = ({ ...props }) => {
   const [active, setActive] = useState(false)
 
   const handleClick = () => {
-    !active && searchField.current.focus()
     setActive(!active)
   }
+
+  useEffect(() => {
+    if (!active) return
+    searchField.current.focus()
+  }, [active])
 
   return (
     <CustomSearchField styled={theme} device={device} active={active ? 'active' : 'inactive'}>
@@ -35,7 +39,7 @@ export const SearchField = ({ ...props }) => {
             <KeyboardCommandKeyIcon style={{ fontSize: 15 }} />
           }
         >
-          <MenuList>Hello</MenuList>
+          <MenuItem>No Options</MenuItem>
         </MenuDialog> 
         <input ref={searchField} type='text' placeholder='Search' {...props} />
       </div>
