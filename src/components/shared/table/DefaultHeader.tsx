@@ -5,7 +5,7 @@ import { MenuList } from '@mui/material'
 import { CustomButton } from 'styles'
 import { CSVLink } from 'react-csv'
 
-export const DefaultHeader = ({ exportComponent, importComponent, downloadComponent, exportData, styled, navigate, handleSearch, handleImport, breadcrumb, filename, createUrl, excelHeader, children }: any) => {    
+export const DefaultHeader = ({ exportComponent, importComponent, downloadComponent, exportData, styled, navigate, handleSearch, handleImport, breadcrumb, filename, createUrl, excelHeader, filterOption, children }: any) => {    
   return (
       <>
         {breadcrumb}
@@ -13,8 +13,7 @@ export const DefaultHeader = ({ exportComponent, importComponent, downloadCompon
           <SearchField onChange={handleSearch} />
           {children}
           <FilterButton style={{ marginLeft: 10 }}>
-            <MenuList>Sort By Name</MenuList>
-            <MenuList>Sort By Date</MenuList>
+            {filterOption}
           </FilterButton>
           <OptionButton style={{ marginLeft: 10 }}>
             {
