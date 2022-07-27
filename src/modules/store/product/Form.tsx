@@ -247,7 +247,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
             {...register('brand')}
           />
         </div>
-        <div style={{ gridArea: 'product', marginTop: 20 }}>
+        <div style={{ gridArea: 'product', marginTop: 20, marginBottom: 20 }}>
           <LocaleField
             onChange={handleChangeProduct}
             err={errors?.name}

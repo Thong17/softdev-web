@@ -112,7 +112,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
                               `,
         }}
       >
-        <div style={{ gridArea: 'category', marginTop: 20 }}>
+        <div style={{ gridArea: 'category', marginTop: 20, marginBottom: 20 }}>
           <LocaleField
             onChange={handleChangeCategory}
             err={errors?.name}
