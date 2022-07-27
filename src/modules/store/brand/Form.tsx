@@ -114,7 +114,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
                               `,
         }}
       >
-        <div style={{ gridArea: 'brand' }}>
+        <div style={{ gridArea: 'brand', marginTop: 20 }}>
           <LocaleField
             onChange={handleChangeBrand}
             err={errors?.name}
