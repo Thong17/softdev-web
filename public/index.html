@@ -32,7 +32,8 @@
         box-sizing: 'border-box';
       }
       ::-webkit-scrollbar {
-        width: 0;
+        width: 3px;
+        height: 3px;
         position: fixed;
         right: 0;
       }
@@ -47,6 +48,18 @@
 
       ::-webkit-scrollbar-thumb:hover {
         background: #666; 
+      }
+
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+        -moz-appearance: textfield;
       }
     </style>
   </head>

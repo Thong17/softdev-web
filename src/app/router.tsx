@@ -8,7 +8,6 @@ import { Sale, Stock, Stocks } from 'modules/sale'
 import { Report } from 'modules/report'
 import { Counter } from 'modules/counter/Counter'
 import Config from 'modules/config/Config'
-import { Test } from 'modules/admin/test'
 import NotFound from 'components/shared/NotFound'
 
 const routes: RouteObject[] = [
@@ -62,12 +61,6 @@ const routes: RouteObject[] = [
           <AuthGuard role={{ route: 'user', action: 'detail' }}>
             <DetailUser />
           </AuthGuard>
-        ),
-      },
-      {
-        path: 'test',
-        element: (
-          <Test />
         ),
       },
       {

@@ -9,6 +9,7 @@ export const initialState: UserState = {
   list: {
     data: [],
     status: 'INIT',
+    count: 0
   },
   detail: {
     data: {},

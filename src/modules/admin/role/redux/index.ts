@@ -47,6 +47,7 @@ export const roleSlice = createSlice({
       .addCase(getListRole.fulfilled, (state, action) => {
         state.list.status = 'SUCCESS'
         state.list.data = action.payload.data
+        state.list.count = action.payload.length
       })
 
       // Detail Role

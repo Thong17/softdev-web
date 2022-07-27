@@ -37,7 +37,7 @@ export const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // List Role
+      // List User
       .addCase(getListUser.pending, (state) => {
         state.list.status = 'LOADING'
       })
@@ -47,9 +47,10 @@ export const userSlice = createSlice({
       .addCase(getListUser.fulfilled, (state, action) => {
         state.list.status = 'SUCCESS'
         state.list.data = action.payload.data
+        state.list.count = action.payload.length
       })
 
-      // Detail Role
+      // Detail User
       .addCase(getUser.pending, (state) => {
         state.detail.status = 'LOADING'
       })

@@ -10,7 +10,8 @@ export interface IListRole {
 export interface ShareState {
   listRole: IBody<IListRole[]>,
   privilege: IBody<Object>,
-  preRole: IBody<Object>
+  preRole: IBody<Object>,
+  adminDashboard: IBody<any>
 }
 
 export const initialState: ShareState = {
@@ -23,6 +24,10 @@ export const initialState: ShareState = {
     status: 'INIT',
   },
   preRole: {
+    data: {},
+    status: 'INIT',
+  },
+  adminDashboard: {
     data: {},
     status: 'INIT',
   },

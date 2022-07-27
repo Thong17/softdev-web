@@ -2,7 +2,7 @@ import { DetailField, LocaleField, PrivilegeField } from 'components/shared/form
 import { useForm } from 'react-hook-form'
 import { roleSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { getPreRole, selectPreRole } from 'shared/redux'
+import { getPreRole, selectPreRole, getListRole } from 'shared/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Loading from 'components/shared/Loading'
 import useWeb from 'hooks/useWeb'
@@ -44,7 +44,10 @@ export const RoleForm = ({ defaultValues, id }: any) => {
       url: id ? `/admin/role/update/${id}` : `/admin/role/create`,
       body: data,
     })
-      .then((data) => notify(data?.data?.msg, 'success'))
+      .then((data) => {
+        notify(data?.data?.msg, 'success')
+        dispatch(getListRole())
+      })
       .catch((err) => notify(err?.response?.data?.msg, 'error'))
       .finally(() => setLoading(false))
   }
@@ -71,7 +74,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
               `,
       }}
     >
-      <div style={{ gridArea: 'input' }}>
+      <div style={{ gridArea: 'input', marginTop: 20 }}>
         <LocaleField
           onChange={handleChangeRole}
           err={errors?.name}

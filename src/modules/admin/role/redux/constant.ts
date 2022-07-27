@@ -9,6 +9,7 @@ export const initialState: RoleState = {
   list: {
     data: [],
     status: 'INIT',
+    count: 0
   },
   detail: {
     data: {},

@@ -44,7 +44,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
         dispatch(getListUser({}))
         notify(data?.data?.msg, 'success')
       })
-      .catch((err) => notify(err?.response?.data?.msg, 'error'))
+      .catch((err) => notify(err.response?.data?.[0]?.path, 'error'))
       .finally(() => setLoading(false))
   }
 
@@ -103,13 +103,14 @@ export const RoleForm = ({ defaultValues, id }: any) => {
               device === 'mobile'
                 ? ` 
                   'username username role' 
-                  'email email email'
                   'password password password'
+                  'email email email'
                   'action action action'
                 `
                 : ` 
                   'username username role' 
-                  'password email email'
+                  'password password password'
+                  'email email email'
                   'action action action'
                 `,
           }}

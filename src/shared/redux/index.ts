@@ -36,6 +36,17 @@ export const getPreRole = createAsyncThunk(
   }
 )
 
+export const getAdminDashboard = createAsyncThunk(
+  'dashboard/admin',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/dashboard/admin'
+    })
+    return response?.data
+  }
+)
+
 export const sharedSlice = createSlice({
   name: 'shared',
   initialState,
@@ -77,11 +88,24 @@ export const sharedSlice = createSlice({
         state.preRole.status = 'SUCCESS'
         state.preRole.data = action.payload.data
       })
+      
+      // Get Admin Dashboard from API
+      .addCase(getAdminDashboard.pending, (state) => {
+        state.adminDashboard.status = 'LOADING'
+      })
+      .addCase(getAdminDashboard.rejected, (state) => {
+        state.adminDashboard.status = 'FAILED'
+      })
+      .addCase(getAdminDashboard.fulfilled, (state, action) => {
+        state.adminDashboard.status = 'SUCCESS'
+        state.adminDashboard.data = action.payload.data
+      })
   },
 })
 
 export const selectListRole = (state: RootState) => state.shared.listRole
 export const selectPrivilege = (state: RootState) => state.shared.privilege
 export const selectPreRole = (state: RootState) => state.shared.preRole
+export const selectAdminDashboard = (state: RootState) => state.shared.adminDashboard
 
 export default sharedSlice.reducer

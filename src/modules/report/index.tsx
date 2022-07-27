@@ -10,7 +10,7 @@ export const Report = () => {
   const Header = () => {
     return (
       <>
-        <ReportBreadcrumbs page='report' title='Dashboard' />
+        <ReportBreadcrumbs page='report' />
       </>
     )
   }

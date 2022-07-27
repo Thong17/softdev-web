@@ -1,7 +1,7 @@
 import { DeviceOptions } from 'contexts/web/interface'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
-import { MenuList } from '@mui/material'
+import { MenuItem } from '@mui/material'
 
 import {
   UpdateButton,
@@ -24,7 +24,14 @@ export const initState: IUserBody = {
   role: '',
 }
 
-export const importColumns = ['_id', 'username', 'role', 'email', 'config', 'profile']
+export const importColumns = [
+  '_id',
+  'username',
+  'role',
+  'email',
+  'config',
+  'profile',
+]
 
 export const headerColumns = [
   { label: '_id', key: '_id' },
@@ -79,36 +86,32 @@ export const createData = (
   let action = (
     <div style={{ float: 'right' }}>
       {device === 'mobile' ? (
-        privilege?.role?.detail && (
-          <MenuDialog label={<ViewButton />}>
-            <MenuList
+        <MenuDialog label={<ViewButton />}>
+          {privilege?.user?.update && (
+            <MenuItem
               component='div'
               onClick={() => navigate(`/admin/user/update/${id}`)}
             >
               Edit
-            </MenuList>
-            <MenuList
+            </MenuItem>
+          )}
+          {privilege?.user?.delete && (
+            <MenuItem
               component='div'
               onClick={() => setDialog({ open: true, id })}
             >
               Delete
-            </MenuList>
-            <MenuList
-              component='div'
-              onClick={() => navigate(`/admin/user/detail/${id}`)}
-            >
-              View
-            </MenuList>
-          </MenuDialog>
-        )
+            </MenuItem>
+          )}
+        </MenuDialog>
       ) : (
         <>
-          {privilege?.role?.update && (
+          {privilege?.user?.update && (
             <UpdateButton
               onClick={() => navigate(`/admin/user/update/${id}`)}
             />
           )}
-          {privilege?.role?.delete && (
+          {privilege?.user?.delete && (
             <DeleteButton onClick={() => setDialog({ open: true, id })} />
           )}
         </>
