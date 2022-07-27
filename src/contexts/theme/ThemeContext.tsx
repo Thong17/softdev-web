@@ -4,6 +4,7 @@ import { themeMode, themeStyle } from './constant'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
+import 'assets/styles/index.css'
 
 const initMode: ThemeOptions = localStorage.getItem('setting-theme') as ThemeOptions || 'Light'
 

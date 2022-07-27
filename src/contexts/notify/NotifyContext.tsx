@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import './Notify.css'
 
 const initState: ToastOptions = {
-  position: 'bottom-right',
+  position: 'bottom-left',
   autoClose: 5000,
   hideProgressBar: false,
   closeOnClick: true,

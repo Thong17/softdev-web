@@ -1,0 +1,4 @@
+@font-face {
+    font-family: 'Hanuman';
+    src: url('/src/assets/fonts/Hanuman-Regular.ttf') format('truetype'), url('/src/assets/fonts/Hanuman-Bold.ttf') format('truetype');
+} 

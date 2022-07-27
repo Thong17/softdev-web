@@ -21,7 +21,7 @@ export const themeMode = {
     border: {
       primary: '1px solid rgba(255, 255, 255, 0.5)',
       secondary: '1px solid rgba(255, 255, 255, 0.3)',
-      tertiary: '1px solid rgba(255, 255, 255, 0.1)',
+      tertiary: '1px solid rgba(255, 255, 255, 0.2)',
       quaternary: '1px solid rgba(255, 255, 255, 0.1)'
     },
     shadow: {
@@ -58,7 +58,7 @@ export const themeMode = {
     border: {
       primary: '1px solid rgba(0, 0, 0, 0.5)',
       secondary: '1px solid rgba(0, 0, 0, 0.3)',
-      tertiary: '1px solid rgba(0, 0, 0, 0.1)',
+      tertiary: '1px solid rgba(0, 0, 0, 0.2)',
       quaternary: '1px solid rgba(0, 0, 0, 0.1)'
     },
     shadow: {
@@ -95,7 +95,7 @@ export const themeMode = {
     border: {
       primary: '1px solid rgba(255, 255, 255, 0.5)',
       secondary: '1px solid rgba(255, 255, 255, 0.3)',
-      tertiary: '1px solid rgba(255, 255, 255, 0.1)',
+      tertiary: '1px solid rgba(255, 255, 255, 0.2)',
       quaternary: '1px solid rgba(255, 255, 255, 0.1)'
     },
     shadow: {
@@ -122,7 +122,7 @@ export const themeStyle = {
     rounded: '20px',
   },
   font: {
-    family: `-apple-system, BlinkMacSystemFont, 'Open Sans', 'Helvetica Neue', sans-serif`,
+    family: `-apple-system, BlinkMacSystemFont, Arial, 'Open Sans', 'Helvetica Neue', 'Hanuman', sans-serif`,
     weight: 300,
   },
   color: {
