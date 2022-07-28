@@ -279,7 +279,7 @@ export const Products = () => {
                 key={index}
                 title={obj.name}
                 picture={obj.profile}
-                subLeft={obj.category}
+                subLeft='Price'
                 subRight={obj.price}
                 action={obj.action}
                 status={obj.status}

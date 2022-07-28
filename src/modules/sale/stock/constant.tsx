@@ -5,8 +5,9 @@ import {
   ViewButton,
   DeleteButton,
   UpdateButton,
+  DetailButton,
 } from 'components/shared/table/ActionButton'
-import { IconButton, MenuList } from '@mui/material'
+import { MenuList } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
 import { currencyFormat, dateFormat } from 'utils'
@@ -265,7 +266,7 @@ export const createStockData = (
         <>
           {privilege?.brand?.update && <UpdateButton onClick={() => onEditStock(id)} />}
           {privilege?.brand?.delete && <DeleteButton onClick={() => onDeleteStock(id)} />}
-          {privilege?.brand?.detail && <IconButton onClick={() => onViewStock(id)}><ViewButton /></IconButton>}
+          {privilege?.brand?.detail && <DetailButton onClick={() => onViewStock(id)} />}
         </>
       )}
     </div>

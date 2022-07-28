@@ -37,7 +37,7 @@ export const languages = {
     SCHOOL_REPORT: 'របាយការណ៍​សិក្សា',
     ATTENDANCE_REPORT: 'របាយការណ៍វត្តមាន',
   },
-  Arab: {
+  Chinese: {
     TEST: 'اختبار',
     HOME: 'مسكن',
     OPERATION: 'عملية',

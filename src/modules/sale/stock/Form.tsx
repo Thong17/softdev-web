@@ -204,6 +204,7 @@ export const Form = ({
               }}
             >
               <SelectField
+                search={true}
                 name='Color'
                 value={color}
                 options={colors.map((color) => {
@@ -224,6 +225,7 @@ export const Form = ({
                 
                 return (
                   <SelectField
+                    search={true}
                     name={property?.name?.['English']}
                     key={index}
                     value={optionObj[property?.name?.['English']] || ''}

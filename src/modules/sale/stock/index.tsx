@@ -195,7 +195,7 @@ export const Stocks = () => {
                 key={index}
                 title={obj.name}
                 picture={obj.profile}
-                subLeft={obj.category}
+                subLeft='Qty'
                 subRight={obj.stock}
                 action={obj.action}
                 status={obj.status}

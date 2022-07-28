@@ -1,3 +1,4 @@
+import { TextEllipsis } from 'components/shared/TextEllipsis'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { CustomGridContainer } from 'styles'
@@ -24,15 +25,15 @@ export const GridItem = (props) => {
       </div>
       <div className='content'>
         <div className='title' title={title}>
-          <span>{title}</span>
+          <TextEllipsis>{title}</TextEllipsis>
         </div>
         <div className='sub-title'>
-          <div className='sub-left'>
+          <TextEllipsis className='sub-left'>
             {subLeft}
-          </div>
-          <div className='sub-right'>
+          </TextEllipsis>
+          <TextEllipsis className='sub-right'>
             {subRight}
-          </div>
+          </TextEllipsis>
         </div>
       </div>
     </div>

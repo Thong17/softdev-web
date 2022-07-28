@@ -3,7 +3,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded'
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
-import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
+import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
 
 export const sideNav = [
   {
@@ -14,7 +14,7 @@ export const sideNav = [
   {
     route: '/sale',
     title: 'SALE',
-    icon: <AttachMoneyRoundedIcon />,
+    icon: <PriceChangeRoundedIcon />,
   },
   {
     route: '/store',

@@ -229,6 +229,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
       >
         <div style={{ gridArea: 'category' }}>
           <SelectField
+            search={true}
             value={category}
             label='Category'
             options={categoryOption}
@@ -239,6 +240,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
         </div>
         <div style={{ gridArea: 'brand' }}>
           <SelectField
+            search={true}
             value={brand}
             label='Brand'
             options={brandOption}
