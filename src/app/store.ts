@@ -1,8 +1,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import counterReducer from '../modules/counter/counterSlice'
-import categoryReducer from 'modules/store/category/redux'
-import brandReducer from 'modules/store/brand/redux'
-import productReducer from 'modules/store/product/redux'
+import categoryReducer from 'modules/organize/category/redux'
+import brandReducer from 'modules/organize/brand/redux'
+import productReducer from 'modules/organize/product/redux'
+import storeReducer from 'modules/organize/store/redux'
 import stockReducer from 'modules/sale/stock/redux'
 import roleReducer from 'modules/admin/role/redux'
 import userReducer from 'modules/admin/user/redux'
@@ -14,6 +15,7 @@ export const store = configureStore({
     category: categoryReducer,
     brand: brandReducer,
     product: productReducer,
+    store: storeReducer,
     stock: stockReducer,
     role: roleReducer,
     user: userReducer,

@@ -3,7 +3,7 @@ import AuthGuard from '../auth/AuthGuard'
 import { Login } from 'modules/auth/Login'
 import { Register } from 'modules/auth/Register'
 import { Admin, Roles, CreateRole, UpdateRole, DetailRole, Users, CreateUser, UpdateUser, DetailUser } from 'modules/admin'
-import { Store, Brands, Categories, CreateCategory, DetailCategory, UpdateCategory, CreateBrand, DetailBrand, UpdateBrand, Products, CreateProduct, DetailProduct, UpdateProduct, ProductSetup } from 'modules/store'
+import { Organize, Brands, Categories, CreateCategory, DetailCategory, UpdateCategory, CreateBrand, DetailBrand, UpdateBrand, Products, CreateProduct, DetailProduct, UpdateProduct, ProductSetup, Store, UpdateStore } from 'modules/organize'
 import { Sale, Stock, Stocks } from 'modules/sale'
 import { Report } from 'modules/report'
 import { Counter } from 'modules/counter/Counter'
@@ -98,8 +98,8 @@ const routes: RouteObject[] = [
     ],
   },
   {
-    path: '/store',
-    element: <Store />,
+    path: '/organize',
+    element: <Organize />,
     children: [
       // Category
       {
@@ -199,6 +199,20 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'category', action: 'detail' }}>
             <ProductSetup />
+          </AuthGuard>
+        ),
+      },
+
+      // Store
+      {
+        path: 'store',
+        element: <Store />,
+      },
+      {
+        path: 'store/update/:id',
+        element: (
+          <AuthGuard role={{ route: 'category', action: 'update' }}>
+            <UpdateStore />
           </AuthGuard>
         ),
       },

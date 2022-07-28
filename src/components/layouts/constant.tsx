@@ -17,8 +17,8 @@ export const sideNav = [
     icon: <PriceChangeRoundedIcon />,
   },
   {
-    route: '/store',
-    title: 'STORE',
+    route: '/organize',
+    title: 'ORGANIZE',
     icon: <StorefrontRoundedIcon />,
   },
   {

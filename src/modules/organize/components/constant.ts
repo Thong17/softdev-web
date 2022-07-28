@@ -1,15 +1,15 @@
 export const stages = {
-  store: [
+  organize: [
     {
-      title: 'Store',
+      title: 'Organize',
     },
   ],
 
   // Category
   category: [
     {
-      title: 'Store',
-      path: '/store'
+      title: 'Organize',
+      path: '/organize'
     },
     {
       title: 'Category',
@@ -17,12 +17,12 @@ export const stages = {
   ],
   categoryCreate: [
     {
-      title: 'Store',
-      path: '/store'
+      title: 'Organize',
+      path: '/organize'
     },
     {
       title: 'Category',
-      path: '/store/category'
+      path: '/organize/category'
     },
     {
       title: 'Create',
@@ -30,12 +30,12 @@ export const stages = {
   ],
   categoryUpdate: [
     {
-      title: 'Store',
-      path: '/store'
+      title: 'Organize',
+      path: '/organize'
     },
     {
       title: 'Category',
-      path: '/store/category'
+      path: '/organize/category'
     },
     {
       title: 'Update',
@@ -45,8 +45,8 @@ export const stages = {
   // Brand
   brand: [
     {
-      title: 'Store',
-      path: '/store'
+      title: 'Organize',
+      path: '/organize'
     },
     {
       title: 'Brand',
@@ -54,12 +54,12 @@ export const stages = {
   ],
   brandCreate: [
     {
-      title: 'Store',
-      path: '/store'
+      title: 'Organize',
+      path: '/organize'
     },
     {
       title: 'Brand',
-      path: '/store/brand'
+      path: '/organize/brand'
     },
     {
       title: 'Create',
@@ -67,12 +67,12 @@ export const stages = {
   ],
   brandUpdate: [
     {
-      title: 'Store',
-      path: '/store'
+      title: 'Organize',
+      path: '/organize'
     },
     {
       title: 'Brand',
-      path: '/store/brand'
+      path: '/organize/brand'
     },
     {
       title: 'Update',
@@ -82,8 +82,8 @@ export const stages = {
   // Product
   product: [
     {
-      title: 'Store',
-      path: '/store'
+      title: 'Organize',
+      path: '/organize'
     },
     {
       title: 'Product',
@@ -91,12 +91,12 @@ export const stages = {
   ],
   productCreate: [
     {
-      title: 'Store',
-      path: '/store'
+      title: 'Organize',
+      path: '/organize'
     },
     {
       title: 'Product',
-      path: '/store/product'
+      path: '/organize/product'
     },
     {
       title: 'Create',
@@ -104,12 +104,27 @@ export const stages = {
   ],
   productUpdate: [
     {
-      title: 'Store',
-      path: '/store'
+      title: 'Organize',
+      path: '/organize'
     },
     {
       title: 'Product',
-      path: '/store/product'
+      path: '/organize/product'
+    },
+    {
+      title: 'Update',
+    },
+  ],
+
+  // Store
+  storeUpdate: [
+    {
+      title: 'Organize',
+      path: '/organize'
+    },
+    {
+      title: 'Store',
+      path: '/organize/store'
     },
     {
       title: 'Update',

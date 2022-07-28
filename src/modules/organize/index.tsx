@@ -4,13 +4,13 @@ import Container from 'components/shared/Container'
 import Navbar from './components/Navbar'
 import StoreBreadcrumbs from './components/Breadcrumbs'
 
-export const Store = () => {
+export const Organize = () => {
   const outlet = useOutlet()
 
   const Header = () => {
     return (
       <>
-        <StoreBreadcrumbs page='store' />
+        <StoreBreadcrumbs page='organize' />
       </>
     )
   }
@@ -25,3 +25,5 @@ export const Store = () => {
 export { Brands, CreateBrand, DetailBrand, UpdateBrand  } from './brand'
 export { Categories, CreateCategory, DetailCategory, UpdateCategory  } from './category'
 export { Products, CreateProduct, DetailProduct, UpdateProduct, ProductSetup  } from './product'
+export { Store, UpdateStore } from './store'
+

@@ -24,7 +24,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { Detail } from './Detail'
 import useAlert from 'hooks/useAlert'
-import { getListProduct } from 'modules/store/product/redux'
+import { getListProduct } from 'modules/organize/product/redux'
 
 const Header = ({ stages, styled, onClickAdd }) => {
   return (
@@ -48,7 +48,7 @@ const Header = ({ stages, styled, onClickAdd }) => {
 export const Stock = () => {
   const dispatch = useAppDispatch()
   const { data: product, status } = useAppSelector(selectProduct)
-  const { data: stocks, status: stockStatus } = useAppSelector(selectListStock)
+  const { data: stocks } = useAppSelector(selectListStock)
   const { lang } = useLanguage()
   const { theme } = useTheme()
   const { id } = useParams()
@@ -217,7 +217,6 @@ export const Stock = () => {
         <StickyTable
           columns={stockColumnData}
           rows={stockRowData}
-          loading={stockStatus !== 'SUCCESS' ? true : false}
         />
       </div>
     </Container>

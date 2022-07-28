@@ -18,7 +18,7 @@ import { useAppDispatch } from 'app/hooks'
 import { Section } from 'components/shared/Section'
 import useLanguage from 'hooks/useLanguage'
 import { TextTitle } from 'components/shared/TextTitle'
-import { getListProduct } from 'modules/store/product/redux'
+import { getListProduct } from 'modules/organize/product/redux'
 
 export const Form = ({
   dialog,
