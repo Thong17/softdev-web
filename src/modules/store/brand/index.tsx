@@ -30,7 +30,7 @@ import { CustomButton } from 'styles'
 
 export const Brands = () => {
   const dispatch = useAppDispatch()
-  const { data: brands, status } = useAppSelector(selectListBrand)
+  const { data: brands, count, status } = useAppSelector(selectListBrand)
   const { lang } = useLanguage()
   const { device } = useWeb()
   const { user } = useAuth()
@@ -40,17 +40,39 @@ export const Brands = () => {
   const [dialog, setDialog] = useState({ open: false, id: null })
   const navigate = useNavigate()
   const [queryParams, setQueryParams] = useSearchParams()
-  const [loading, setLoading] = useState(status === 'LOADING' ? true : false)
   const [importDialog, setImportDialog] = useState({ open: false, data: [] })
   const confirm = useAlert()
 
   const updateQuery = debounce((value) => {
-    setLoading(false)
-    setQueryParams({ search: value })
+    handleQuery({ search: value })
   }, 300)
 
   const handleSearch = (e) => {
     updateQuery(e.target.value)
+  }
+
+  const handleFilter = (option) => {
+    handleQuery({ filter: option.filter, sort: option.asc ? 'asc' : 'desc' })
+  }
+
+  const handleQuery = (data) => {
+    let { limit, search } = data
+
+    let query = {}
+    const _limit = queryParams.get('limit')
+    const _page = queryParams.get('page')
+    const _search = queryParams.get('search')
+    const _filter = queryParams.get('filter')
+    const _sort = queryParams.get('sort')
+
+    if (_limit) query = { limit: _limit, ...query }
+    if (_page) query = { page: _page, ...query }
+    if (_search) query = { search: _search, ...query }
+    if (_filter) query = { filter: _filter, ...query }
+    if (_sort) query = { sort: _sort, ...query }
+
+    if (limit || search) return setQueryParams({ ...query, ...data, page: 0 })
+    setQueryParams({ ...query, ...data })
   }
 
   const handleImport = (e) => {
@@ -64,13 +86,16 @@ export const Brands = () => {
       const importList = data.data.data.map((importData) => {
         const ImportAction = ({ no }) => (
           <IconButton
-            onClick={
-              () => {
-                setImportDialog((prevData) => {
-                  return { ...prevData, data: prevData.data.filter((prevItem: any) => prevItem.no !== no) }
-                })
-              }
-            }
+            onClick={() => {
+              setImportDialog((prevData) => {
+                return {
+                  ...prevData,
+                  data: prevData.data.filter(
+                    (prevItem: any) => prevItem.no !== no
+                  ),
+                }
+              })
+            }}
             style={{ color: theme.text.secondary }}
           >
             <CloseRoundedIcon />
@@ -118,9 +143,8 @@ export const Brands = () => {
   }
 
   useEffect(() => {
-    if (status !== 'INIT') return
-    dispatch(getListBrand({}))
-  }, [dispatch, status])
+    dispatch(getListBrand({ query: queryParams }))
+  }, [dispatch, queryParams])
 
   useEffect(() => {
     const listBrands = brands.map((brand: any) => {
@@ -148,6 +172,7 @@ export const Brands = () => {
           styled={theme}
           navigate={navigate}
           handleSearch={handleSearch}
+          handleFilter={handleFilter}
           handleImport={handleImport}
         />
       }
@@ -157,7 +182,6 @@ export const Brands = () => {
           <StickyTable
             columns={importColumnData}
             rows={importDialog.data}
-            loading={loading}
             style={{ maxWidth: '90vw' }}
           />
         </div>
@@ -183,7 +207,16 @@ export const Brands = () => {
         handleConfirm={handleConfirm}
         handleClose={() => setDialog({ open: false, id: null })}
       />
-      <StickyTable columns={columnData} rows={rowData} />
+      <StickyTable
+        columns={columnData}
+        rows={rowData}
+        setQuery={handleQuery}
+        count={count}
+        limit={parseInt(queryParams.get('limit') || '10')}
+        skip={
+          status === 'SUCCESS' ? parseInt(queryParams.get('page') || '0') : 0
+        }
+      />
     </Container>
   )
 }

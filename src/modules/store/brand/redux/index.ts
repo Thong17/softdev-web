@@ -48,6 +48,7 @@ export const brandSlice = createSlice({
       .addCase(getListBrand.fulfilled, (state, action) => {
         state.list.status = 'SUCCESS'
         state.list.data = action.payload.data
+        state.list.count = action.payload.length
       })
 
       // Detail brand
