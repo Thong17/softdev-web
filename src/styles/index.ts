@@ -433,7 +433,7 @@ export const CustomInput = styled('div')(
       color: styled.text.secondary,
       position: 'absolute',
       cursor: 'text',
-      top: '37px',
+      top: '38px',
       right: '10px',
       userSelect: 'none',
     },
@@ -864,6 +864,23 @@ export const CustomTextEllipsis = styled('div')(
     width: '100%',
     overflow: 'hidden',
   }
+)
+
+export const StyledThermalBorder = styled('div')(
+  ({ styled, position }: { styled: IThemeStyle, position: 'top' | 'bottom' }) => ({
+    display: 'flex',
+    position: 'absolute',
+    [position]: 10,
+    left: 1,
+    '& span': {
+      width: 30,
+      height: 30,
+      backgroundColor: styled.background.primary,
+      display: 'block',
+      margin: 1,
+      borderRadius: '50%'
+    }
+  })
 )
 
 export * from './container'

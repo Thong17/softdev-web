@@ -3,13 +3,12 @@ import { RootState } from 'app/store'
 import Axios from 'constants/functions/Axios'
 import { initialState } from './constant'
 
-export const getListStore = createAsyncThunk(
-  'store/list',
-  async ({ query }: { query?: URLSearchParams }) => {
+export const getInfoStore = createAsyncThunk(
+  'store/info',
+  async () => {
     const response = await Axios({
       method: 'GET',
       url: '/organize/store',
-      params: query
     })
     return response?.data
   }
@@ -20,7 +19,7 @@ export const getStore = createAsyncThunk(
   async ({id, query, fields}: { id: string, query?: URLSearchParams, fields: Array<string> }) => {
     const response = await Axios({
       method: 'GET',
-      url: `/organize/organize/detail/${id}`,
+      url: `/organize/store/detail/${id}`,
       params: query
     })
     let data = {}
@@ -38,17 +37,16 @@ export const storeSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // List store
-      .addCase(getListStore.pending, (state) => {
-        state.list.status = 'LOADING'
+      // Info store
+      .addCase(getInfoStore.pending, (state) => {
+        state.store.status = 'LOADING'
       })
-      .addCase(getListStore.rejected, (state) => {
-        state.list.status = 'FAILED'
+      .addCase(getInfoStore.rejected, (state) => {
+        state.store.status = 'FAILED'
       })
-      .addCase(getListStore.fulfilled, (state, action) => {
-        state.list.status = 'SUCCESS'
-        state.list.data = action.payload.data
-        state.list.count = action.payload.length
+      .addCase(getInfoStore.fulfilled, (state, action) => {
+        state.store.status = 'SUCCESS'
+        state.store.data = action.payload.data
       })
 
       // Detail store
@@ -66,6 +64,6 @@ export const storeSlice = createSlice({
 })
 
 export const selectStore = (state: RootState) => state.store.detail
-export const selectListStore = (state: RootState) => state.store.list
+export const selectInfoStore = (state: RootState) => state.store.store
 
 export default storeSlice.reducer

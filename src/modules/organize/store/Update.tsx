@@ -17,7 +17,7 @@ export const UpdateStore = () => {
   
   useEffect(() => {
     if (id) {
-      dispatch(getStore({ id, fields: ['name', 'icon', 'status', 'description'] }))
+      dispatch(getStore({ id, fields: ['name', 'logo', 'contact', 'address', 'type', 'other', 'font', 'tax'] }))
     }
   }, [dispatch, id])
   

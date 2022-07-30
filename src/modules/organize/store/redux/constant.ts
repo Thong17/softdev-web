@@ -15,13 +15,13 @@ export const initState: IStoreBody = {
 }
 
 export interface StoreState {
-  list: IBody<Object[]>
+  store: IBody<any>
   detail: IBody<IStoreBody>
 }
 
 export const initialState: StoreState = {
-  list: {
-    data: [],
+  store: {
+    data: null,
     status: 'INIT',
   },
   detail: {

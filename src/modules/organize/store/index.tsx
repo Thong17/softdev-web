@@ -6,6 +6,10 @@ import { DetailStore } from 'components/shared/container/DetailStore'
 import { DetailTitle } from 'components/shared/container/DetailTitle'
 import Button from 'components/shared/Button'
 import useTheme from 'hooks/useTheme'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { getInfoStore, selectInfoStore } from './redux'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Header = ({ stages }) => {
   return (
@@ -16,7 +20,16 @@ const Header = ({ stages }) => {
 }
 
 export const Store = () => {
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const { theme } = useTheme()
+  const { data } = useAppSelector(selectInfoStore)
+
+  useEffect(() => {
+    dispatch(getInfoStore())
+  }, [dispatch])
+  
+
   const stages = [
     {
       title: 'Organize',
@@ -27,9 +40,13 @@ export const Store = () => {
     },
   ]
 
+  const handleEditStore = (id) => {
+    navigate(`/organize/store/update/${id}`)
+  }
+
   return (
     <Container header={<Header stages={stages} />}>
-      <DetailStore detail='#30, St. 5, Borey Piphub Thmey Chhuk Va 3' name='SoftDev' icon={null} type='Restaurant'>
+      <DetailStore id={data?._id} detail={data?.address} name={data?.name} icon={null} type={data?.type} onEdit={handleEditStore}>
         <div style={{  }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
           <DetailTitle title='Floor' value={7} />

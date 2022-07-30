@@ -13,7 +13,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { useAppDispatch } from 'app/hooks'
-import { getListStore } from './redux'
 import { IImage } from 'components/shared/form/UploadField'
 
 const statusOption = [
@@ -76,7 +75,6 @@ const StructureForm = ({ defaultValues, id }: any) => {
       body: data,
     })
       .then((data) => {
-        dispatch(getListStore({}))
         notify(data?.data?.msg, 'success')
       })
       .catch((err) => {

@@ -127,7 +127,7 @@ export const stages = {
       path: '/organize/store'
     },
     {
-      title: 'Update',
+      title: 'Info',
     },
   ],
 }

@@ -387,7 +387,8 @@ export const CustomDetailContainer = styled('div')(
 
 export const CustomInvoiceContainer = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
-    padding: 20,
-    color: styled.text.secondary
+    padding: '40px 20px',
+    color: '#222',
+    backgroundColor: '#fff',
   })
 )

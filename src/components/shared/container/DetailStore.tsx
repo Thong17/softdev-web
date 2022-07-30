@@ -3,7 +3,7 @@ import useWeb from 'hooks/useWeb'
 import Button from '../Button'
 import { TextEllipsis } from '../TextEllipsis'
 
-export const DetailStore = ({ name, detail, type, icon, children }) => {
+export const DetailStore = ({ id, name, detail, type, icon, onEdit, children }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
 
@@ -94,7 +94,7 @@ export const DetailStore = ({ name, detail, type, icon, children }) => {
             </div>
           </div>
         </div>
-        <Button fullWidth style={{ backgroundColor: theme.background.secondary, color: theme.color.info }}>Edit</Button>
+        <Button fullWidth onClick={() => onEdit(id)} style={{ backgroundColor: theme.background.secondary, color: theme.color.info }}>Edit</Button>
       </div>
       <div style={{ width: '100%', height: '100%' }}>{children}</div>
     </div>

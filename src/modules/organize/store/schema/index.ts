@@ -1,10 +1,12 @@
 import * as yup from 'yup'
 
 export const storeSchema = yup.object().shape({
-  name: yup.object({
-    English: yup.string().required('English is required'),
-  }),
-  status: yup.boolean().optional(),
-  icon: yup.mixed().optional(),
-  description: yup.string().optional(),
+  name: yup.string().optional(),
+  contact: yup.string().optional(),
+  type: yup.string().optional(),
+  font: yup.string().optional(),
+  tax: yup.number().optional(),
+  logo: yup.mixed().optional(),
+  address: yup.string().optional(),
+  other: yup.string().optional(),
 })

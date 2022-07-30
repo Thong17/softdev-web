@@ -1,84 +1,204 @@
 import { invoiceColumns } from 'constants/variables'
+import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
-import { CustomInvoiceContainer } from 'styles'
+import { CustomInvoiceContainer, StyledThermalBorder } from 'styles'
 import { dateFormat, timeFormat } from 'utils'
 import { InvoiceTable } from '../table/InvoiceTable'
 import { TextEllipsis } from '../TextEllipsis'
 import { FlexBetween } from './FlexBetween'
 
 const PreDate = ({ date }) => {
-    return <TextEllipsis><span>Date: </span><span>{dateFormat(date)}</span></TextEllipsis>
+  return (
+    <TextEllipsis>
+      <span>Date: </span>
+      <span>{dateFormat(date)}</span>
+    </TextEllipsis>
+  )
 }
 
 const PreTime = ({ date }) => {
-    return <TextEllipsis style={{ textAlign: 'end' }}><span>{timeFormat(date)}</span></TextEllipsis>
+  return (
+    <TextEllipsis style={{ textAlign: 'end' }}>
+      <span>{timeFormat(date)}</span>
+    </TextEllipsis>
+  )
 }
 
 const PreBorder = ({ styled }) => {
-    return <div style={{ margin: '10px 0', borderTop: styled.border.dashed, width: '100%' }}></div>
+  return (
+    <div
+      style={{
+        margin: '10px 0',
+        borderTop: styled.border.dashed,
+        borderColor: '#666',
+        width: '100%',
+      }}
+    ></div>
+  )
 }
 
-export const InvoiceContainer = ({ width = 400 }) => {
+const ThermalBorder = ({ styled, position = 'bottom' }: any) => {
+  return (
+    <StyledThermalBorder styled={styled} position={position}>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </StyledThermalBorder>
+  )
+}
+
+export const InvoiceContainer = ({
+  width = 410,
+  name = 'Shop Name',
+  address = 'Address',
+  contact = 'Contact',
+  logo = null,
+  tax = 0,
+  footer = ''
+}: any) => {
+  const { user } = useAuth()
   const { theme } = useTheme()
   const { device } = useWeb()
 
   return (
-    <CustomInvoiceContainer style={{ width: width }} styled={theme}>
-      <TextEllipsis
-        style={{
-          fontSize: theme.responsive[device]?.text.h1,
-          textAlign: 'center',
-          marginBottom: 10,
-          color: theme.text.primary
-        }}
+    <div
+      style={{
+        overflowX: 'hidden',
+        overflowY: 'visible',
+        height: 'fit-content',
+        position: 'relative',
+        minWidth: width,
+        boxSizing: 'border-box',
+        padding: '35px 0',
+      }}
+    >
+      <ThermalBorder styled={theme} position='top' />
+      <CustomInvoiceContainer
+        style={{ minWidth: width, maxWidth: width }}
+        styled={theme}
       >
-        Shop Name
-      </TextEllipsis>
-      <FlexBetween><PreDate date={null} /><PreTime date={null} /></FlexBetween>
-      <FlexBetween><span>Invoice: INV0000001</span><span>Cashier: Thong</span></FlexBetween>
-      <PreBorder styled={theme} />
-      <InvoiceTable columns={invoiceColumns} rows={[]} />
-      <PreBorder styled={theme} />
-      <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between' }}>
-        <span>Total</span>
-        <div style={{ width: '50%' }}>
+        {logo && <div style={{ width: 50, height: 50, position: 'absolute', left: 20, top: 70 }}>
+          <img
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: theme.radius.primary,
+              }}
+              src={`${process.env.REACT_APP_API_UPLOADS}${logo}`}
+              alt='logo'
+            />
+        </div>}
+        <p
+          style={{
+            fontSize: theme.responsive[device]?.text.h1,
+            textAlign: 'center',
+            color: '#000',
+          }}
+        >
+          {name}
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <p
+            style={{
+              fontSize: theme.responsive[device]?.text.quaternary,
+              textAlign: 'center',
+              marginBottom: 10,
+              color: '#111',
+              maxWidth: '80%',
+            }}
+          >
+            {address}
+          </p>
+        </div>
+        <p
+          style={{
+            fontSize: theme.responsive[device]?.text.quaternary,
+            textAlign: 'center',
+            marginBottom: 10,
+            color: '#111',
+          }}
+        >{contact}</p>
+        <FlexBetween>
+          <PreDate date={null} />
+          <PreTime date={null} />
+        </FlexBetween>
+        <FlexBetween>
+          <span>Invoice: INV0000000</span>
+          <span>Cashier: {user?.username}</span>
+        </FlexBetween>
+        <PreBorder styled={theme} />
+        <InvoiceTable columns={invoiceColumns} rows={[]} />
+        <PreBorder styled={theme} />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'start',
+            justifyContent: 'space-between',
+          }}
+        >
+          <span>Total</span>
+          <div style={{ width: '50%' }}>
             <FlexBetween>
-                <span>USD:</span>
-                <span>100$</span>
+              <span>USD:</span>
+              <span>$</span>
             </FlexBetween>
             <FlexBetween>
-                <span>KHR:</span>
-                <span>400000$</span>
+              <span>KHR:</span>
+              <span>$</span>
             </FlexBetween>
             <FlexBetween>
-                <span>Disc:</span>
-                <span>50%</span>
+              <span>Disc:</span>
+              <span>%</span>
             </FlexBetween>
             <FlexBetween>
-                <span>Tax:</span>
-                <span>10%</span>
+              <span>Tax:</span>
+              <span>{tax}%</span>
             </FlexBetween>
             <PreBorder styled={theme} />
             <FlexBetween>
-                <span>Receive:</span>
-                <span>100$</span>
+              <span>Receive:</span>
+              <span>$</span>
             </FlexBetween>
             <FlexBetween>
-                <span>Remain:</span>
-                <span>100$</span>
+              <span>Remain:</span>
+              <span>$</span>
             </FlexBetween>
+          </div>
         </div>
-      </div>
-      <TextEllipsis
-        style={{
-          textAlign: 'center',
-          marginTop: 30,
-          color: theme.text.primary
-        }}
-      >
-        Thank you for coming
-      </TextEllipsis>
-    </CustomInvoiceContainer>
+        <p
+          style={{
+            textAlign: 'center',
+            marginTop: 30,
+            color: '#222',
+          }}
+        >
+          {footer}
+        </p>
+        <p
+          style={{
+            textAlign: 'center',
+            marginTop: 10,
+            color: '#222',
+          }}
+        >
+          Thank you for coming
+        </p>
+      </CustomInvoiceContainer>
+      <ThermalBorder styled={theme} />
+    </div>
   )
 }

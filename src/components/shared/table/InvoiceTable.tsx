@@ -6,7 +6,6 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { ITableColumn } from './StickyTable'
-import useTheme from 'hooks/useTheme'
 
 interface ITable {
   columns: ITableColumn<string>[]
@@ -17,7 +16,6 @@ export const InvoiceTable = ({
   columns,
   rows,
 }: ITable) => {
-  const { theme } = useTheme()
   return (
     <div className='table-container'>
       <TableContainer className='table'>
@@ -30,8 +28,8 @@ export const InvoiceTable = ({
                     minWidth: column.minWidth,
                     maxWidth: column.maxWidth,
                     padding: 5,
-                    backgroundColor: theme.background.secondary,
-                    color: theme.text.primary,
+                    backgroundColor: '#ccc',
+                    color: '#000',
                     border: 'none',
                     fontWeight: 600
                   }}
@@ -79,7 +77,7 @@ export const InvoiceTable = ({
           
         </Table>
       </TableContainer>
-      <div style={{ height: rows?.length > 0 ? 70 : 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme.text.tertiary, fontSize: 13 }}>{rows?.length === 0 && 'No Transaction'}</div>
+      <div style={{ height: rows?.length > 0 ? 70 : 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444', fontSize: 13 }}>{rows?.length === 0 && 'No Transaction'}</div>
     </div>
   )
 }

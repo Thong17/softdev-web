@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
-  LocaleField,
+  TextField,
   FileField,
   DetailField,
   SelectField,
@@ -12,17 +12,17 @@ import { storeSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { useAppDispatch } from 'app/hooks'
-import { getListStore } from './redux'
 import { IImage } from 'components/shared/form/UploadField'
+import { InvoiceContainer } from 'components/shared/container/InvoiceContainer'
+import useTheme from 'hooks/useTheme'
+import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
 
-const statusOption = [
-  { label: 'Enabled', value: true },
-  { label: 'Disable', value: false },
+const fontOption = [
+  { label: 'Ariel', value: 'ariel' },
+  { label: 'San Sarif', value: 'san sarif' },
 ]
 
 const StoreForm = ({ defaultValues, id }: any) => {
-  const dispatch = useAppDispatch()
   const {
     watch,
     register,
@@ -32,21 +32,32 @@ const StoreForm = ({ defaultValues, id }: any) => {
     setError,
     formState: { errors },
   } = useForm({ resolver: yupResolver(storeSchema), defaultValues })
+  const { theme } = useTheme()
   const { device } = useWeb()
   const { notify, loadify } = useNotify()
   const [loading, setLoading] = useState(false)
-  const [status, setStatus] = useState(defaultValues?.status)
-  const [iconPath, setIconPath] = useState<IImage>(defaultValues?.icon)
-  const statusValue = watch('status')
+  const [iconPath, setIconPath] = useState<IImage>(defaultValues?.logo)
+  const [preview, setPreview] = useState({...defaultValues, logo: defaultValues?.logo?.filename })
+  const name = watch('name')
+  const address = watch('address')
+  const contact = watch('contact')
+  const tax = watch('tax')
+  const other = watch('other')
+
+  const [font, setFont] = useState(defaultValues?.font || '')
+  const fontValue = watch('font')
 
   useEffect(() => {
-    const selectedStatus = statusOption.find((key) => key.value === statusValue)
-    setStatus(selectedStatus?.value)
-  }, [statusValue])
+    const selectedStatus: any = fontOption.find(
+      (key) => key.value === fontValue
+    )
+    setPreview((prev) => ({ ...prev, font: selectedStatus?.value }))
+    setFont(selectedStatus?.value)
+  }, [fontValue])
 
-  const handleChangeStore = (store) => {
-    setValue('name', store)
-  }
+  useEffect(() => {
+    setPreview((prev) => ({ ...prev, name, address, contact, tax, other }))
+  }, [name, address, contact, tax, other])
 
   const handleChangeFile = (event) => {
     const image = event.target.files[0]
@@ -62,21 +73,21 @@ const StoreForm = ({ defaultValues, id }: any) => {
     })
     loadify(response)
     response.then((data) => {
-      const filename: IImage = data.data.data as IImage
+      const file: IImage = data.data.data as IImage
       const fileId = data.data.data._id
-      setValue('icon', fileId)
-      setIconPath(filename)
+      setValue('logo', fileId)
+      setIconPath(file)
+      setPreview((prev) => ({ ...prev, logo: file?.filename }))
     })
   }
 
   const submit = async (data) => {
     Axios({
-      method: id ? 'PUT' : 'POST',
-      url: id ? `/organize/store/update/${id}` : `/organize/store/create`,
+      method: 'PUT',
+      url: `/organize/store/update/${id}`,
       body: data,
     })
       .then((data) => {
-        dispatch(getListStore({}))
         notify(data?.data?.msg, 'success')
       })
       .catch((err) => {
@@ -92,88 +103,147 @@ const StoreForm = ({ defaultValues, id }: any) => {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(submit)}
-      style={{
-        display: 'grid',
-        gridTemplateColumns:
-          device === 'mobile' || device === 'tablet' ? '1fr' : '500px 1fr',
-        gridGap: 20,
-      }}
-    >
-      <div
+    <div style={{ display: 'flex' }}>
+      <form
+        onSubmit={handleSubmit(submit)}
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
-          gridColumnGap: 20,
-          gridTemplateAreas: `
-                              'store store store'
-                              'status icon icon'
-                              'description description description'
-                              'action action action'
-                              `,
+          gridTemplateColumns:
+            device === 'mobile' || device === 'tablet' ? '1fr' : '500px 1fr',
+          gridGap: 20,
+          height: 'fit-content',
         }}
       >
-        <div style={{ gridArea: 'store', marginTop: 20, marginBottom: 20 }}>
-          <LocaleField
-            onChange={handleChangeStore}
-            err={errors?.name}
-            describe='Store'
-            name='name'
-            defaultValue={getValues('name')}
-          />
-        </div>
-        <div style={{ gridArea: 'status' }}>
-          <SelectField
-            value={status}
-            options={statusOption}
-            label='Status'
-            err={errors?.status}
-            {...register('status')}
-          />
-        </div>
-        <div style={{ gridArea: 'icon' }}>
-          <FileField
-            images={iconPath && [iconPath]}
-            selected={getValues('icon')?._id}
-            name='icon'
-            label='Icon'
-            accept='image/png, image/jpeg'
-            onChange={handleChangeFile}
-          />
-        </div>
-        <div style={{ gridArea: 'description' }}>
-          <DetailField
-            type='text'
-            label='Description'
-            style={{ height: 70 }}
-            {...register('description')}
-          />
-        </div>
         <div
           style={{
-            gridArea: 'action',
-            marginTop: 10,
-            display: 'flex',
-            justifyContent: 'end',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr',
+            gridColumnGap: 20,
+            gridTemplateAreas: `
+                              'name name contact'
+                              'type logo logo'
+                              'font font tax'
+                              'address address address'
+                              'other other other'
+                              'action action action'
+                              `,
           }}
         >
-          <Button variant='contained' color='error'>
-            Cancel
-          </Button>
-          <Button
-            loading={loading}
-            type='submit'
-            variant='contained'
-            color='success'
-            style={{ marginLeft: 20 }}
+          <div style={{ gridArea: 'name' }}>
+            <TextField
+              type='text'
+              label='Name'
+              err={errors?.name?.message}
+              {...register('name')}
+            />
+          </div>
+          <div style={{ gridArea: 'contact' }}>
+            <TextField
+              type='text'
+              label='Contact'
+              err={errors?.contact?.message}
+              {...register('contact')}
+            />
+          </div>
+          <div style={{ gridArea: 'type' }}>
+            <TextField
+              type='text'
+              label='Type'
+              err={errors?.type?.message}
+              {...register('type')}
+            />
+          </div>
+          <div style={{ gridArea: 'logo' }}>
+            <FileField
+              images={iconPath && [iconPath]}
+              selected={getValues('logo')?._id}
+              name='logo'
+              label='Logo'
+              accept='image/png, image/jpeg'
+              onChange={handleChangeFile}
+            />
+          </div>
+          <div style={{ gridArea: 'font' }}>
+            <SelectField
+              value={font}
+              options={fontOption}
+              label='Font'
+              err={errors?.font?.message}
+              {...register('font')}
+            />
+          </div>
+          <div style={{ gridArea: 'tax' }}>
+            <TextField
+              icon={<PercentRoundedIcon fontSize='small' />}
+              min={0}
+              max={100}
+              type='number'
+              label='Tax'
+              err={errors?.tax?.message}
+              {...register('tax')}
+            />
+          </div>
+          <div style={{ gridArea: 'address' }}>
+            <DetailField
+              type='text'
+              label='Address'
+              style={{ height: 70 }}
+              {...register('address')}
+            />
+          </div>
+          <div style={{ gridArea: 'other' }}>
+            <DetailField
+              type='text'
+              label='Footer'
+              style={{ height: 70 }}
+              {...register('other')}
+            />
+          </div>
+          <div
+            style={{
+              gridArea: 'action',
+              marginTop: 10,
+              display: 'flex',
+              justifyContent: 'end',
+            }}
           >
-            {id ? 'Save' : 'Create'}
-          </Button>
+            <Button variant='contained' color='error'>
+              Cancel
+            </Button>
+            <Button
+              loading={loading}
+              type='submit'
+              variant='contained'
+              color='success'
+              style={{ marginLeft: 20 }}
+            >
+              {id ? 'Save' : 'Create'}
+            </Button>
+          </div>
         </div>
+      </form>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginLeft: 20,
+          padding: '20px 0',
+          width: '100%',
+          border: theme.border.dashed,
+          borderRadius: theme.radius.primary,
+        }}
+      >
+        <InvoiceContainer
+          name={preview?.name}
+          address={preview?.address}
+          contact={preview?.contact}
+          logo={preview?.logo || 'default.png'}
+          tax={preview?.tax}
+          font={preview?.font}
+          footer={preview?.other}
+        />
       </div>
-      <div style={{ display: 'grid' }}></div>
-    </form>
+    </div>
   )
 }
 
