@@ -384,3 +384,10 @@ export const CustomDetailContainer = styled('div')(
     padding: 20
   })
 )
+
+export const CustomInvoiceContainer = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    padding: 20,
+    color: styled.text.secondary
+  })
+)

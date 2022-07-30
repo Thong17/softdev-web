@@ -36,6 +36,7 @@ export interface IThemeMode {
     secondary: string
     tertiary: string
     quaternary?: string
+    dashed?: string
   }
   shadow: {
     container: string

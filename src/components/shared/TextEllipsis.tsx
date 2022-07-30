@@ -1,7 +1,7 @@
 import { CustomTextEllipsis } from "styles"
 
-export const TextEllipsis = ({ children, ...props }) => {
+export const TextEllipsis = ({ children, title = '', ...props }) => {
   return (
-    <CustomTextEllipsis {...props}>{children}</CustomTextEllipsis>
+    <CustomTextEllipsis title={title} {...props}>{children}</CustomTextEllipsis>
   )
 }

@@ -1,6 +1,7 @@
 import { sha256 } from 'js-sha256'
 import { IToken } from 'contexts/auth/interface'
 import jwtDecode from 'jwt-decode'
+import { StructureStatusType } from 'shared/interface'
 
 export const generateHash = async (
   ts: string,
@@ -198,4 +199,15 @@ export const generateColor = () => {
     color += letters[Math.floor(Math.random() * 8)]
   }
   return color
+}
+
+export const statusReservation = (status: StructureStatusType) => {
+  switch (status) {
+    case 'reserved':
+      return 'warning'
+    case 'occupied':
+      return 'error'
+    default:
+      return 'info'
+  }
 }

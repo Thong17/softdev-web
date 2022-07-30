@@ -3,3 +3,7 @@ export interface IBody<T> {
   status: 'SUCCESS' | 'LOADING' | 'FAILED' | 'INIT'
   count?: number
 }
+
+export declare type StructureStatusType = 'vacant' | 'occupied' | 'reserved'
+export declare type StructureSizeType = 'small' | 'medium' | 'large'
+export declare type StructureDirectionType = 'row' | 'column'
