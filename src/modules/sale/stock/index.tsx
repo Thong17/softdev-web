@@ -57,7 +57,7 @@ export const Stocks = () => {
 
   const handleImport = (e) => {
     const response = ImportExcel(
-      '/store/product/excel/import',
+      '/organize/product/excel/import',
       e.target.files[0],
       importColumns
     )

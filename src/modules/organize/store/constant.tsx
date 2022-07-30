@@ -90,7 +90,7 @@ export const createData = (
           <MenuDialog label={<ViewButton />}>
             <MenuList
               component='div'
-              onClick={() => navigate(`/store/store/update/${id}`)}
+              onClick={() => navigate(`/organize/store/update/${id}`)}
             >
               Edit
             </MenuList>
@@ -102,7 +102,7 @@ export const createData = (
             </MenuList>
             <MenuList
               component='div'
-              onClick={() => navigate(`/store/store/detail/${id}`)}
+              onClick={() => navigate(`/organize/store/detail/${id}`)}
             >
               View
             </MenuList>
@@ -112,7 +112,7 @@ export const createData = (
         <>
           {privilege?.store?.update && (
             <UpdateButton
-              onClick={() => navigate(`/store/store/update/${id}`)}
+              onClick={() => navigate(`/organize/store/update/${id}`)}
             />
           )}
           {privilege?.store?.delete && (

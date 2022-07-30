@@ -180,13 +180,13 @@ const ProductForm = ({ defaultValues, id }: any) => {
   const submit = async (data) => {
     Axios({
       method: id ? 'PUT' : 'POST',
-      url: id ? `/store/product/update/${id}` : `/store/product/create`,
+      url: id ? `/organize/product/update/${id}` : `/organize/product/create`,
       body: data,
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
         dispatch(getListProduct({}))
-        !id && navigate(`/store/product/create/property/${data?.data?.data?._id}`)
+        !id && navigate(`/organize/product/create/property/${data?.data?.data?._id}`)
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {

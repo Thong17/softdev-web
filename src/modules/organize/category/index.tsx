@@ -77,7 +77,7 @@ export const Categories = () => {
 
   const handleImport = (e) => {
     const response = ImportExcel(
-      '/store/category/excel/import',
+      '/organize/category/excel/import',
       e.target.files[0],
       importColumns
     )
@@ -121,7 +121,7 @@ export const Categories = () => {
   const handleConfirmImport = () => {
     const response = Axios({
       method: 'POST',
-      url: '/store/category/batch',
+      url: '/organize/category/batch',
       body: importDialog.data,
     })
     loadify(response)
@@ -134,7 +134,7 @@ export const Categories = () => {
   const handleConfirm = (id) => {
     const response = Axios({
       method: 'DELETE',
-      url: `/store/category/disable/${id}`,
+      url: `/organize/category/disable/${id}`,
     })
     loadify(response)
     response.then(() => dispatch(getListCategory({})))

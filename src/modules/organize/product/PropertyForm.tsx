@@ -52,7 +52,7 @@ export const PropertyForm = ({
     delete data.imagePath
     Axios({
       method: dialog.propertyId ? 'PUT' : 'POST',
-      url: dialog.propertyId ? `/store/product/property/update/${dialog.propertyId}` : `/store/product/property/create`,
+      url: dialog.propertyId ? `/organize/product/property/update/${dialog.propertyId}` : `/organize/product/property/create`,
       body: {
         ...data,
         product: dialog.productId,

@@ -77,7 +77,7 @@ export const Brands = () => {
 
   const handleImport = (e) => {
     const response = ImportExcel(
-      '/store/brand/excel/import',
+      '/organize/brand/excel/import',
       e.target.files[0],
       importColumns
     )
@@ -121,7 +121,7 @@ export const Brands = () => {
   const handleConfirmImport = () => {
     const response = Axios({
       method: 'POST',
-      url: '/store/brand/batch',
+      url: '/organize/brand/batch',
       body: importDialog.data,
     })
     loadify(response)
@@ -134,7 +134,7 @@ export const Brands = () => {
   const handleConfirm = (id) => {
     const response = Axios({
       method: 'DELETE',
-      url: `/store/brand/disable/${id}`,
+      url: `/organize/brand/disable/${id}`,
     })
     loadify(response)
     response.then(() => dispatch(getListBrand({})))

@@ -260,7 +260,7 @@ export const Header = ({
       navigate={navigate}
       handleSearch={handleSearch}
       breadcrumb={<StoreBreadcrumbs page='product' />}
-      createUrl='/store/product/create'
+      createUrl='/organize/product/create'
       filename='products'
     >
       <HeaderButton

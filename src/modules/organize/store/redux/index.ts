@@ -8,7 +8,7 @@ export const getListStore = createAsyncThunk(
   async ({ query }: { query?: URLSearchParams }) => {
     const response = await Axios({
       method: 'GET',
-      url: '/store/store',
+      url: '/organize/store',
       params: query
     })
     return response?.data
@@ -20,7 +20,7 @@ export const getStore = createAsyncThunk(
   async ({id, query, fields}: { id: string, query?: URLSearchParams, fields: Array<string> }) => {
     const response = await Axios({
       method: 'GET',
-      url: `/store/store/detail/${id}`,
+      url: `/organize/organize/detail/${id}`,
       params: query
     })
     let data = {}

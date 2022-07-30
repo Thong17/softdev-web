@@ -141,8 +141,8 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
     Axios({
       method: dialog.colorId ? 'PUT' : 'POST',
       url: dialog.colorId
-        ? `/store/product/color/update/${dialog.colorId}`
-        : `/store/product/color/create`,
+        ? `/organize/product/color/update/${dialog.colorId}`
+        : `/organize/product/color/create`,
       body: {
         ...data,
         product: dialog.productId,

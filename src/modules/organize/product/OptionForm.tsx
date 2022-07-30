@@ -101,7 +101,7 @@ export const OptionForm = ({
     delete data.imagePath
     Axios({
       method: dialog.optionId ? 'PUT' : 'POST',
-      url: dialog.optionId ? `/store/product/option/update/${dialog.optionId}` : `/store/product/option/create`,
+      url: dialog.optionId ? `/organize/product/option/update/${dialog.optionId}` : `/organize/product/option/create`,
       body: {
         ...data,
         product: dialog.productId,

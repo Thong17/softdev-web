@@ -21,7 +21,7 @@ const statusOption = [
   { label: 'Disable', value: false },
 ]
 
-const StoreForm = ({ defaultValues, id }: any) => {
+const StructureForm = ({ defaultValues, id }: any) => {
   const dispatch = useAppDispatch()
   const {
     watch,
@@ -177,4 +177,4 @@ const StoreForm = ({ defaultValues, id }: any) => {
   )
 }
 
-export default StoreForm
+export default StructureForm

@@ -72,7 +72,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
   const submit = async (data) => {
     Axios({
       method: id ? 'PUT' : 'POST',
-      url: id ? `/store/brand/update/${id}` : `/store/brand/create`,
+      url: id ? `/organize/brand/update/${id}` : `/organize/brand/create`,
       body: data,
     })
       .then((data) => {

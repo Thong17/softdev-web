@@ -97,14 +97,14 @@ export const ProductSetup = () => {
     },
     {
       title: 'Product',
-      path: '/store/product',
+      path: '/organize/product',
     },
     {
       title: action === 'create' ? 'Create' : 'Update',
       path:
         action === 'create'
-          ? '/store/product/create'
-          : `/store/product/update/${id}`,
+          ? '/organize/product/create'
+          : `/organize/product/update/${id}`,
     },
     {
       title: 'Setup',
@@ -114,7 +114,7 @@ export const ProductSetup = () => {
   const handleEditProperty = (propId) => {
     Axios({
       method: 'GET',
-      url: `/store/product/property/detail/${propId}`,
+      url: `/organize/product/property/detail/${propId}`,
     })
       .then((data) => {
         setPropertyValue(mapPropertyBody(data.data.data))
@@ -138,7 +138,7 @@ export const ProductSetup = () => {
       .then(() => {
         Axios({
           method: 'DELETE',
-          url: `/store/product/property/disable/${id}`,
+          url: `/organize/product/property/disable/${id}`,
         })
           .then((data: any) => {
             if (data?.data?.code !== 'SUCCESS') {
@@ -160,7 +160,7 @@ export const ProductSetup = () => {
   const handleEditOption = (oid, propId) => {
     Axios({
       method: 'GET',
-      url: `/store/product/option/detail/${oid}`,
+      url: `/organize/product/option/detail/${oid}`,
     })
       .then((data) => {
         setOptionValue(mapOptionBody(data.data.data))
@@ -185,7 +185,7 @@ export const ProductSetup = () => {
       .then(() => {
         Axios({
           method: 'DELETE',
-          url: `/store/product/option/disable/${id}`,
+          url: `/organize/product/option/disable/${id}`,
         })
           .then((data: any) => {
             if (data?.data?.code !== 'SUCCESS') {
@@ -207,7 +207,7 @@ export const ProductSetup = () => {
   const handleEditColor = (cid) => {
     Axios({
       method: 'GET',
-      url: `/store/product/color/detail/${cid}`,
+      url: `/organize/product/color/detail/${cid}`,
     })
       .then((data) => {
         setColorValue(mapColorBody(data.data.data))
@@ -231,7 +231,7 @@ export const ProductSetup = () => {
       .then(() => {
         Axios({
           method: 'DELETE',
-          url: `/store/product/color/disable/${id}`,
+          url: `/organize/product/color/disable/${id}`,
         })
           .then((data: any) => {
             if (data?.data?.code !== 'SUCCESS') {
@@ -263,7 +263,7 @@ export const ProductSetup = () => {
     setProperties(items)
     Axios({
       method: 'PUT',
-      url: `/store/product/property/reorder`,
+      url: `/organize/product/property/reorder`,
       body: reorderedItems,
     })
       .then((data) => {

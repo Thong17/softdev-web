@@ -99,7 +99,7 @@ export const Products = () => {
     }
 
     const response = ImportExcel(
-      '/store/product/excel/import',
+      '/organize/product/excel/import',
       e.target.files[0],
       columns
     )
@@ -145,19 +145,19 @@ export const Products = () => {
 
     switch (importDialog.model) {
       case 'product':
-        url = '/store/product/batch'
+        url = '/organize/product/batch'
         break
       case 'image':
-        url = '/store/product/image/batch'
+        url = '/organize/product/image/batch'
         break
       case 'color':
-        url = '/store/product/color/batch'
+        url = '/organize/product/color/batch'
         break
       case 'property':
-        url = '/store/product/property/batch'
+        url = '/organize/product/property/batch'
         break
       case 'option':
-        url = '/store/product/option/batch'
+        url = '/organize/product/option/batch'
         break
     }
 
@@ -176,7 +176,7 @@ export const Products = () => {
   const handleConfirm = (id) => {
     const response = Axios({
       method: 'DELETE',
-      url: `/store/product/disable/${id}`,
+      url: `/organize/product/disable/${id}`,
     })
     loadify(response)
     response.then(() => dispatch(getListProduct({})))

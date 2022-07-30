@@ -53,7 +53,7 @@ export const Header = ({
         handleImport={handleImport}
         excelHeader={headerColumns}
         breadcrumb={<StoreBreadcrumbs page='brand' />}
-        createUrl='/store/brand/create'
+        createUrl='/organize/brand/create'
         filename='brands'
         filterOption={<FilterOption />}
       />
