@@ -47,3 +47,23 @@ export const CustomMiniSelect = styled('div')(
     },
   })
 )
+
+export const CustomEditorInput = styled('div')(
+  ({
+    styled,
+    device,
+    active,
+  }: {
+    styled: IThemeStyle
+    device: DeviceOptions
+    active: any
+  }) => ({
+    '& .rdw-editor-toolbar': {
+      backgroundColor: styled.background.primary,
+      '& div': {
+        backgroundColor: styled.background.primary,
+        color: `${styled.text.secondary} !important`
+      }
+    }
+  })
+)

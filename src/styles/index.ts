@@ -878,7 +878,7 @@ export const StyledThermalBorder = styled('div')(
       backgroundColor: styled.background.primary,
       display: 'block',
       margin: 1,
-      borderRadius: '50%'
+      borderRadius: '50%',
     }
   })
 )

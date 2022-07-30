@@ -6,7 +6,7 @@ export const FloorStructure = ({ children, gridColumn, gridArea, floor = 'GF' })
   const { device } = useWeb()
 
   return (
-    <div style={{ position: 'relative', padding: '0 0 0 30px', boxShadow: theme.shadow.primary, borderRadius: theme.radius.primary, overflow: 'hidden', marginBottom: 20, overflowX: 'auto' }}>
+    <div style={{ position: 'relative', padding: '0 0 0 30px', boxShadow: theme.shadow.primary, borderRadius: theme.radius.primary, overflow: 'hidden', marginBottom: 30, overflowX: 'auto' }}>
       <span
         style={{
           transform: 'rotate(90deg)',

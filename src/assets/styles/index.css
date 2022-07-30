@@ -2,3 +2,8 @@
     font-family: 'Hanuman';
     src: url('/src/assets/fonts/Hanuman-Regular.ttf') format('truetype'), url('/src/assets/fonts/Hanuman-Bold.ttf') format('truetype');
 } 
+
+@font-face {
+    font-family: 'PTSans';
+    src: url('/src/assets/fonts/PTSansNarrow-Bold.ttf') format('truetype'), url('/src/assets/fonts/PTSansNarrow-Regular.ttf') format('truetype');
+} 

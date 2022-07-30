@@ -25,7 +25,7 @@ const tableSize = {
   },
 }
 
-const ChairStructure = ({ column, row }) => {
+const ChairStructure = ({ column, row, status = 'vacant' }) => {
   const { theme } = useTheme()
   return (
     <div
@@ -44,8 +44,20 @@ const ChairStructure = ({ column, row }) => {
           backgroundColor: theme.background.secondary,
           borderRadius: theme.radius.quaternary,
           boxShadow: theme.shadow.primary,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
-      ></div>
+      >
+        <span
+          style={{
+            width: 40,
+            height: 40,
+            backgroundColor: theme.background.primary,
+            borderRadius: theme.radius.ternary,
+          }}
+        ></span>
+      </div>
     </div>
   )
 }
@@ -84,16 +96,18 @@ export const TableStructure = ({
           key={`1${index}`}
           column={direction === 'row' ? `${index}/${index + 1}` : '1/2'}
           row={direction === 'row' ? '1/2' : `${index}/${index + 1}`}
+          status={status}
         />,
         <ChairStructure
           key={`2${index}`}
           column={direction === 'row' ? `${index}/${index + 1}` : '2/3'}
           row={direction === 'row' ? '2/3' : `${index}/${index + 1}`}
+          status={status}
         />,
       ]
     }
     setChairs(totalChair)
-  }, [length, direction])
+  }, [length, direction, status])
 
   return (
     <div

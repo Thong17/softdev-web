@@ -23,7 +23,7 @@ export const themeMode = {
       secondary: '1px solid rgba(255, 255, 255, 0.3)',
       tertiary: '1px solid rgba(255, 255, 255, 0.2)',
       quaternary: '1px solid rgba(255, 255, 255, 0.1)',
-      dashed: '2px dashed rgba(255, 255, 255, 0.3)'
+      dashed: '2px dashed rgba(255, 255, 255, 0.1)'
     },
     shadow: {
       container:
@@ -61,7 +61,7 @@ export const themeMode = {
       secondary: '1px solid rgba(0, 0, 0, 0.3)',
       tertiary: '1px solid rgba(0, 0, 0, 0.2)',
       quaternary: '1px solid rgba(0, 0, 0, 0.1)',
-      dashed: '2px dashed rgba(0, 0, 0, 0.3)'
+      dashed: '2px dashed rgba(0, 0, 0, 0.1)'
     },
     shadow: {
       container:
@@ -99,7 +99,7 @@ export const themeMode = {
       secondary: '1px solid rgba(255, 255, 255, 0.3)',
       tertiary: '1px solid rgba(255, 255, 255, 0.2)',
       quaternary: '1px solid rgba(255, 255, 255, 0.1)',
-      dashed: '2px dashed rgba(255, 255, 255, 0.3)'
+      dashed: '2px dashed rgba(255, 255, 255, 0.1)'
     },
     shadow: {
       container:

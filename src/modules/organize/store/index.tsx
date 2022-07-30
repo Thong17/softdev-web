@@ -46,7 +46,7 @@ export const Store = () => {
 
   return (
     <Container header={<Header stages={stages} />}>
-      <DetailStore id={data?._id} detail={data?.address} name={data?.name} icon={null} type={data?.type} onEdit={handleEditStore}>
+      <DetailStore id={data?._id} detail={data?.address} name={data?.name} icon={data?.logo?.filename} type={data?.type} onEdit={handleEditStore}>
         <div style={{  }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
           <DetailTitle title='Floor' value={7} />
@@ -56,7 +56,6 @@ export const Store = () => {
           <Button fullWidth style={{ backgroundColor: theme.background.primary, color: theme.color.info }}>Edit</Button>
         </div>
       </DetailStore>
-      <br />
       <FloorStructure
         gridArea={`
             'r1 r4 r5 r16 r17'

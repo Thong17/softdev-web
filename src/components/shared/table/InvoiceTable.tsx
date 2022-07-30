@@ -10,6 +10,7 @@ import { ITableColumn } from './StickyTable'
 interface ITable {
   columns: ITableColumn<string>[]
   rows: any[]
+  font?: string
 }
 
 export const InvoiceTable = ({
@@ -28,10 +29,8 @@ export const InvoiceTable = ({
                     minWidth: column.minWidth,
                     maxWidth: column.maxWidth,
                     padding: 5,
-                    backgroundColor: '#ccc',
-                    color: '#000',
                     border: 'none',
-                    fontWeight: 600
+                    fontWeight: 600,
                   }}
                   key={column.id}
                   align={column.align}
@@ -77,7 +76,7 @@ export const InvoiceTable = ({
           
         </Table>
       </TableContainer>
-      <div style={{ height: rows?.length > 0 ? 70 : 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444', fontSize: 13 }}>{rows?.length === 0 && 'No Transaction'}</div>
+      <div style={{ height: rows?.length > 0 ? 70 : 130, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>{rows?.length === 0 && 'No Transaction'}</div>
     </div>
   )
 }

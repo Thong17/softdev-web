@@ -19,6 +19,7 @@ export const DetailStore = ({ id, name, detail, type, icon, onEdit, children }) 
         boxShadow: theme.shadow.primary,
         padding: 5,
         boxSizing: 'border-box',
+        marginBottom: 30
       }}
     >
       <div style={{

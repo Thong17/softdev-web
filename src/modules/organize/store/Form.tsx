@@ -18,8 +18,11 @@ import useTheme from 'hooks/useTheme'
 import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
 
 const fontOption = [
-  { label: 'Ariel', value: 'ariel' },
-  { label: 'San Sarif', value: 'san sarif' },
+  { label: 'Arial', value: 'Arial' },
+  { label: 'Open Sans', value: 'Open Sans' },
+  { label: 'Sans Serif', value: 'sans-serif' },
+  { label: 'Hanuman', value: 'Hanuman' },
+  { label: 'PTSans', value: 'PTSans' },
 ]
 
 const StoreForm = ({ defaultValues, id }: any) => {

@@ -31,7 +31,6 @@ const PreBorder = ({ styled }) => {
       style={{
         margin: '10px 0',
         borderTop: styled.border.dashed,
-        borderColor: '#666',
         width: '100%',
       }}
     ></div>
@@ -67,7 +66,8 @@ export const InvoiceContainer = ({
   contact = 'Contact',
   logo = null,
   tax = 0,
-  footer = ''
+  footer = '',
+  font = 'Ariel'
 }: any) => {
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -87,8 +87,10 @@ export const InvoiceContainer = ({
     >
       <ThermalBorder styled={theme} position='top' />
       <CustomInvoiceContainer
+        mode='preview'
         style={{ minWidth: width, maxWidth: width }}
         styled={theme}
+        font={font}
       >
         {logo && <div style={{ width: 50, height: 50, position: 'absolute', left: 20, top: 70 }}>
           <img
@@ -106,7 +108,6 @@ export const InvoiceContainer = ({
           style={{
             fontSize: theme.responsive[device]?.text.h1,
             textAlign: 'center',
-            color: '#000',
           }}
         >
           {name}
@@ -117,7 +118,6 @@ export const InvoiceContainer = ({
               fontSize: theme.responsive[device]?.text.quaternary,
               textAlign: 'center',
               marginBottom: 10,
-              color: '#111',
               maxWidth: '80%',
             }}
           >
@@ -129,7 +129,6 @@ export const InvoiceContainer = ({
             fontSize: theme.responsive[device]?.text.quaternary,
             textAlign: 'center',
             marginBottom: 10,
-            color: '#111',
           }}
         >{contact}</p>
         <FlexBetween>
@@ -183,7 +182,6 @@ export const InvoiceContainer = ({
           style={{
             textAlign: 'center',
             marginTop: 30,
-            color: '#222',
           }}
         >
           {footer}
@@ -191,8 +189,6 @@ export const InvoiceContainer = ({
         <p
           style={{
             textAlign: 'center',
-            marginTop: 10,
-            color: '#222',
           }}
         >
           Thank you for coming

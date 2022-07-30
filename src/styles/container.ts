@@ -386,9 +386,14 @@ export const CustomDetailContainer = styled('div')(
 )
 
 export const CustomInvoiceContainer = styled('div')(
-  ({ styled }: { styled: IThemeStyle }) => ({
+  ({ styled, mode, font }: { styled: IThemeStyle, mode: 'preview' | 'invoice', font: string }) => ({
     padding: '40px 20px',
-    color: '#222',
-    backgroundColor: '#fff',
+    color: mode === 'preview' ? styled.text.secondary : '#222',
+    backgroundColor: mode === 'preview' ? styled.background.secondary : '#ffffff',
+    fontFamily: font,
+    '& th': {
+      fontFamily: font,
+      fontSize: 18
+    }
   })
 )
