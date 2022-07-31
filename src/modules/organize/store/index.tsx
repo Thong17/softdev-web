@@ -53,7 +53,7 @@ export const Store = () => {
           <DetailTitle title='Room' value={13} />
           <DetailTitle title='Table' value={27} />
           </div>
-          <Button fullWidth style={{ backgroundColor: theme.background.primary, color: theme.color.info }} onClick={() => navigate(`/organize/store/${data?._id}/structure`)}>Edit</Button>
+          <Button fullWidth style={{ backgroundColor: theme.background.primary, color: theme.color.info }} onClick={() => navigate(`/organize/store/${data?._id}/layout`)}>Edit</Button>
         </div>
       </DetailStore>
       <FloorStructure
@@ -157,4 +157,4 @@ export const Store = () => {
 }
 
 export { UpdateStore } from './Update'
-export { StructureForm } from './StructureForm'
+export { LayoutForm } from './LayoutForm'

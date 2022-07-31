@@ -130,7 +130,7 @@ export const stages = {
       title: 'Info',
     },
   ],
-  storeStructure: [
+  storeLayout: [
     {
       title: 'Organize',
       path: '/organize'
@@ -140,7 +140,7 @@ export const stages = {
       path: '/organize/store'
     },
     {
-      title: 'Structure',
+      title: 'Layout',
     },
   ],
 }

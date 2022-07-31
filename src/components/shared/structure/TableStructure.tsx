@@ -67,7 +67,6 @@ export const TableStructure = ({
   title,
   description = '',
   status = 'vacant',
-  area,
   length = 1,
   direction = 'row',
   justify = 'center',
@@ -112,7 +111,6 @@ export const TableStructure = ({
   return (
     <div
       style={{
-        gridArea: area,
         position: 'relative',
         width: '100%',
         height: '100%',

@@ -233,9 +233,10 @@ export const checkArraySequence = (array, increment) => {
   if (array.length < 2) return false
 
   let result = true
-
-  array.sort().forEach((element, index) => {
-    let nextElement = array[index+1]
+  let sortedArray = array.sort((a, b) => a - b)
+  sortedArray.forEach((element, index) => {
+    let nextElement = sortedArray[index+1]
+    
     if (!nextElement || !result) return
     if (nextElement !== element + increment) result = false
   })

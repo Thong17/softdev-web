@@ -9,6 +9,7 @@ import { MenuList } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
+import { IOptions } from 'components/shared/form/SelectField'
 
 export declare type ColumnHeader =
   | 'no'
@@ -125,3 +126,56 @@ export const createData = (
 
   return { id, icon: <CircleIcon icon={icon} />, name, description, createdBy, status, action }
 }
+
+export const sizeOptions: IOptions[] = [
+  {
+    value: 'small',
+    label: 'Small',
+  },
+  {
+    value: 'medium',
+    label: 'Medium',
+  },
+  {
+    value: 'large',
+    label: 'Large',
+  },
+]
+
+export const positionOptions: IOptions[] = [
+  {
+    value: 'start',
+    label: 'Start',
+  },
+  {
+    value: 'center',
+    label: 'Center',
+  },
+  {
+    value: 'end',
+    label: 'End',
+  },
+]
+
+export const directionOptions: IOptions[] = [
+  {
+    value: 'row',
+    label: 'Row',
+  },
+  {
+    value: 'column',
+    label: 'Column',
+  },
+]
+
+export const typeOptions: IOptions[] = [
+  {
+    value: 'table',
+    label: 'Table',
+  },
+  {
+    value: 'room',
+    label: 'Room',
+  },
+]
+

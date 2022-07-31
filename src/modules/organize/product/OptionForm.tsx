@@ -147,7 +147,7 @@ export const OptionForm = ({
                             'profile profile profile'
                             'description description description'
                             'action action action'
-                        `,
+                          `,
         }}
       >
         <div style={{ gridArea: 'option' }}>

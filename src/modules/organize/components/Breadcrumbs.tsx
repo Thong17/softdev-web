@@ -4,7 +4,7 @@ import { IBreadcrumbs } from 'constants/interfaces/Breadcrumbs'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import { stages } from './constant'
 
-declare type page = 'organize' | 'category' | 'categoryCreate' | 'categoryUpdate' | 'brand' | 'brandCreate' | 'brandUpdate' | 'product' | 'productCreate' | 'productUpdate' | 'storeUpdate' | 'storeStructure'
+declare type page = 'organize' | 'category' | 'categoryCreate' | 'categoryUpdate' | 'brand' | 'brandCreate' | 'brandUpdate' | 'product' | 'productCreate' | 'productUpdate' | 'storeUpdate' | 'storeLayout'
 
 const StoreBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page, id }) => {
   let stage = stages[page]

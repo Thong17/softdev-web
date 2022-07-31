@@ -10,3 +10,14 @@ export const storeSchema = yup.object().shape({
   address: yup.string().optional(),
   other: yup.string().optional(),
 })
+
+export const structureSchema = yup.object().shape({
+  title: yup.string().required(),
+  size: yup.string().required(),
+  type: yup.string().optional(),
+  length: yup.number().required(),
+  direction: yup.string().required(),
+  justify: yup.string().required(),
+  align: yup.string().required(),
+  description: yup.string().optional(),
+})
