@@ -6,6 +6,9 @@ import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 import CenterFocusStrongRoundedIcon from '@mui/icons-material/CenterFocusStrongRounded'
+import AddRoundedIcon from '@mui/icons-material/AddRounded'
+import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
+import InsertLinkRoundedIcon from '@mui/icons-material/InsertLinkRounded'
 import useTheme from 'hooks/useTheme'
 import { FC } from 'react'
 
@@ -122,6 +125,58 @@ export const DetailButton: FC<ButtonProps> = ({ ...prop }) => {
       {...prop}
     >
       <CenterFocusStrongRoundedIcon fontSize='small' />
+    </IconButton>
+  )
+}
+
+export const AddButton: FC<ButtonProps> = ({ ...prop }) => {
+  const { theme } = useTheme()
+  return (
+    <IconButton
+      size='small'
+      style={{
+        backgroundColor: `${theme.color.info}22`,
+        borderRadius: theme.radius.primary,
+        color: theme.color.info,
+      }}
+      {...prop}
+    >
+      <AddRoundedIcon fontSize='small' />
+    </IconButton>
+  )
+}
+
+export const RemoveButton: FC<ButtonProps> = ({ ...prop }) => {
+  const { theme } = useTheme()
+  return (
+    <IconButton
+      size='small'
+      style={{
+        backgroundColor: `${theme.color.error}22`,
+        borderRadius: theme.radius.primary,
+        color: theme.color.error,
+      }}
+      {...prop}
+    >
+      <RemoveRoundedIcon fontSize='small' />
+    </IconButton>
+  )
+}
+
+export const MergeButton: FC<ButtonProps> = ({ ...prop }) => {
+  const { theme } = useTheme()
+  return (
+    <IconButton
+      size='small'
+      style={{
+        backgroundColor: `${theme.color.info}22`,
+        borderRadius: theme.radius.primary,
+        color: theme.color.info,
+      }}
+      {...prop}
+    >
+      <InsertLinkRoundedIcon fontSize='small' style={{ marginRight: 5 }} />
+      Combine
     </IconButton>
   )
 }

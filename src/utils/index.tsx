@@ -201,6 +201,15 @@ export const generateColor = () => {
   return color
 }
 
+export const generateId = () => {
+  let letters = '1234567890ABCDEFGHIJK'
+  let id = ''
+  for (let i = 0; i < 10; i++) {
+    id += letters[Math.floor(Math.random() * 8)]
+  }
+  return id
+}
+
 export const statusReservation = (status: StructureStatusType) => {
   switch (status) {
     case 'reserved':

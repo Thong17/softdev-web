@@ -130,4 +130,17 @@ export const stages = {
       title: 'Info',
     },
   ],
+  storeStructure: [
+    {
+      title: 'Organize',
+      path: '/organize'
+    },
+    {
+      title: 'Store',
+      path: '/organize/store'
+    },
+    {
+      title: 'Structure',
+    },
+  ],
 }

@@ -27,7 +27,7 @@ export const FloorStructure = ({ children, gridColumn, gridArea, floor = 'GF' })
         style={{
           position: 'relative',
           boxSizing: 'border-box',
-          padding: '20px 0',
+          padding: '50px 0',
           display: 'grid',
           gridTemplateColumns: gridColumn,
           gridTemplateAreas: gridArea,

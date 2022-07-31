@@ -25,5 +25,5 @@ export const Organize = () => {
 export { Brands, CreateBrand, DetailBrand, UpdateBrand  } from './brand'
 export { Categories, CreateCategory, DetailCategory, UpdateCategory  } from './category'
 export { Products, CreateProduct, DetailProduct, UpdateProduct, ProductSetup  } from './product'
-export { Store, UpdateStore } from './store'
+export { Store, UpdateStore, StructureForm } from './store'
 

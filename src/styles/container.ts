@@ -163,7 +163,7 @@ export const CustomListContainer = styled('div')(
       width: '100%',
       backgroundColor: styled.background.secondary,
       borderRadius: styled.radius.primary,
-      marginBottom: 10
+      marginBottom: 10,
     },
     '& .status': {
       display: 'block',
@@ -176,7 +176,7 @@ export const CustomListContainer = styled('div')(
       },
       '&.inactive': {
         backgroundColor: styled.color.error,
-      }
+      },
     },
     '& .img': {
       width: 100,
@@ -184,20 +184,20 @@ export const CustomListContainer = styled('div')(
       '& img': {
         objectFit: 'cover',
         width: '100%',
-        height: '100%'
-      }
+        height: '100%',
+      },
     },
     '& .content': {
       marginLeft: 10,
       display: 'flex',
       flexDirection: 'column',
       '& .subject': {
-        color: `${styled.text.tertiary} !important`
+        color: `${styled.text.tertiary} !important`,
       },
       '& .price': {
         color: `${styled.color.info} !important`,
-        fontSize: styled.responsive?.[device]?.text.h3
-      }
+        fontSize: styled.responsive?.[device]?.text.h3,
+      },
     },
   })
 )
@@ -313,7 +313,7 @@ export const CustomProductInfo = styled('div')(
       border: styled.border.tertiary,
       overflow: 'hidden',
       position: 'relative',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
     },
     '& .container .img-container': {
       cursor: 'pointer',
@@ -360,7 +360,7 @@ export const CustomProductInfo = styled('div')(
       flexDirection: 'column',
       backgroundColor: styled.background.secondary,
       borderRadius: styled.radius.primary,
-      margin: '10px 0'
+      margin: '10px 0',
     },
     '& .color-container': {
       '& .color': {
@@ -372,28 +372,79 @@ export const CustomProductInfo = styled('div')(
           width: 13,
           height: 13,
           borderRadius: styled.radius.circle,
-          boxShadow: styled.shadow.inset
-        }
-      }
-    }
+          boxShadow: styled.shadow.inset,
+        },
+      },
+    },
   })
 )
 
 export const CustomDetailContainer = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
-    padding: 20
+    padding: 20,
   })
 )
 
 export const CustomInvoiceContainer = styled('div')(
-  ({ styled, mode, font }: { styled: IThemeStyle, mode: 'preview' | 'invoice', font: string }) => ({
+  ({
+    styled,
+    mode,
+    font,
+  }: {
+    styled: IThemeStyle
+    mode: 'preview' | 'invoice'
+    font: string
+  }) => ({
     padding: '40px 20px',
     color: mode === 'preview' ? styled.text.secondary : '#222',
-    backgroundColor: mode === 'preview' ? styled.background.secondary : '#ffffff',
+    backgroundColor:
+      mode === 'preview' ? styled.background.secondary : '#ffffff',
     fontFamily: font,
     '& th': {
       fontFamily: font,
-      fontSize: 18
+      fontSize: 18,
+    },
+  })
+)
+
+export const CustomStructureLayout = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    height: '75vh',
+    width: '100%',
+    position: 'relative',
+    borderRadius: styled.radius.primary,
+    overflow: 'hidden',
+    '& .column': {
+      height: 30,
+      width: '100%',
+      position: 'absolute',
+      backgroundColor: styled.background.secondary,
+      zIndex: 1000,
+      boxShadow: styled.shadow.bottom
+    },
+    '& .row': {
+      width: 30,
+      height: '100%',
+      position: 'absolute',
+      backgroundColor: styled.background.secondary,
+      zIndex: 1000,
+    },
+    '& .structure-container': {
+      width: '100%',
+      height: '100%',
+      padding: '30px 0 0 30px',
+      boxSizing: 'border-box',
+      overflow: 'auto',
+      '& button': {
+        border: styled.border.dashed,
+        borderWidth: 1,
+        backgroundColor: `${styled.color.info}11 !important`,
+        color: styled.color.info,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer'
+      }
     }
   })
 )

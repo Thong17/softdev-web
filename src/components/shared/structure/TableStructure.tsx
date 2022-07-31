@@ -65,7 +65,7 @@ const ChairStructure = ({ column, row, status = 'vacant' }) => {
 export const TableStructure = ({
   size = 'small',
   title,
-  description,
+  description = '',
   status = 'vacant',
   area,
   length = 1,
@@ -75,7 +75,7 @@ export const TableStructure = ({
 }: {
   size?: StructureSizeType
   title: string
-  description: string
+  description?: string
   status?: StructureStatusType
   area?: string
   length?: number
