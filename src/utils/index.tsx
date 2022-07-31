@@ -220,3 +220,24 @@ export const statusReservation = (status: StructureStatusType) => {
       return 'info'
   }
 }
+
+export const checkArrayValue = (array, value) => {
+  const result = array.every(element => {
+    if (element === value) return true
+    return false
+  })
+  return result
+}
+
+export const checkArraySequence = (array, increment) => {
+  if (array.length < 2) return false
+
+  let result = true
+
+  array.sort().forEach((element, index) => {
+    let nextElement = array[index+1]
+    if (!nextElement || !result) return
+    if (nextElement !== element + increment) result = false
+  })
+  return result
+}

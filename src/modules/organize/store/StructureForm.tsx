@@ -4,14 +4,16 @@ import {
   AddButton,
   RemoveButton,
   MergeButton,
+  RejectButton,
+  ToggleButton
 } from 'components/shared/table/ActionButton'
 import useTheme from 'hooks/useTheme'
 import { useEffect, useState } from 'react'
 import { CustomStructureLayout } from 'styles/container'
 import StoreBreadcrumbs from '../components/Breadcrumbs'
-import AddRoundedIcon from '@mui/icons-material/AddRounded'
-import Button from 'components/shared/Button'
 import { TableStructure } from 'components/shared/structure'
+import { checkArraySequence, checkArrayValue } from 'utils'
+import useNotify from 'hooks/useNotify'
 
 const Header = () => {
   return (
@@ -32,11 +34,13 @@ const mapStructures = (currentStructures, newStructures) => {
 }
 
 export const StructureForm = () => {
+  const { notify } = useNotify()
   const { theme } = useTheme()
-  const [column, setColumn] = useState<any>(['1'])
-  const [row, setRow] = useState<any>(['1'])
+  const [column, setColumn] = useState<any>([1])
+  const [row, setRow] = useState<any>([1])
   const [template, setTemplate] = useState('')
   const [structures, setStructures] = useState<any>([])
+  const [merges, setMerges] = useState<any[]>([])
 
   useEffect(() => {
     let template = ''
@@ -44,7 +48,7 @@ export const StructureForm = () => {
     row.forEach((r) => {
       let rowTemplate = ''
       column.forEach((c) => {
-        const id = ` ${r}-${c}`
+        const id = ` B${r}S${c}`
         rowTemplate += id
         newStructures = [
           ...newStructures,
@@ -75,15 +79,79 @@ export const StructureForm = () => {
     setStructures(
       structures?.map((structure) =>
         structure.id === id
-          ? { id, type: 'table', direction: 'row', length: 1 }
+          ? { ...structure, id, type: 'table', direction: 'row', length: 3 }
           : structure
       )
     )
   }
 
-  const handleMergeStructure = (structures) => {
-    console.log(structures)
+  const handleRemoveStructure = (id) => {
+    setStructures(
+      structures?.map((structure) =>
+        structure.id === id
+          ? { id, type: 'blank', direction: 'row' }
+          : structure
+      )
+    )
   }
+
+  const handleMergeStructure = (id, merged) => {
+    setStructures(
+      structures?.map((structure) =>
+        structure.id === id
+          ? { ...structure, merged }
+          : structure
+      )
+    )
+    merged ? setMerges([...merges, id]) : setMerges((prev) => prev.filter(prevId => prevId !== id))
+  }
+
+
+  const handleConfirmMergeStructure = () => {
+    const mappedMerge = merges.map(id => {
+      const splitB = id.split('B')[1]
+      return { row: parseInt(splitB.split('S')[0]), colum: parseInt(splitB.split('S')[1]) }
+    })
+    
+    let rows: number[] = []
+    let columns: number[] = []
+
+    mappedMerge.forEach(item => {
+      rows = [...rows, item.row]
+      columns = [...columns, item.colum]
+    })
+
+    if (!checkArrayValue(rows, rows[0]) && !checkArrayValue(columns, columns[0])) return notify('Cannot merge a different position items', 'error')
+    if (!checkArraySequence(rows, 1) && !checkArraySequence(columns, 1)) return notify('Cannot merge an unordered items', 'error')
+    
+    // Create merged ID
+    let newId = ' '
+    merges.forEach((id, index) => {
+      const oldId = id.trim()
+      if (index === merges.length - 1) return newId += `${oldId}`
+      newId += `${oldId}M`
+    })
+    
+    // Replaced old grid area template with new mapped
+    let newTemplate = template
+    merges.forEach(id => {
+      newTemplate = newTemplate.replace(id, newId)
+    })
+    setTemplate(newTemplate)
+
+    // Replace merged elements to a single element
+    let mappedStructures: any[] = []
+    structures.forEach((item) => {
+      if (merges.includes(item.id)) {
+        let mappedItem = { ...item, id: ` ${newId}`, isMain: item.id === merges[0] }
+        return mappedStructures = [...mappedStructures, mappedItem]
+      }
+      mappedStructures = [...mappedStructures, item]
+    })
+    setStructures(mappedStructures)
+    setMerges([])
+  }
+
 
   return (
     <Container header={<Header />}>
@@ -105,7 +173,7 @@ export const StructureForm = () => {
               }}
             >
               <div>
-                <MergeButton onClick={handleMergeStructure} />
+                <MergeButton title='Combine' disabled={merges.length < 2} onClick={handleConfirmMergeStructure} />
               </div>
               <div>
                 <RemoveButton onClick={handleRemoveColumn} />
@@ -132,26 +200,34 @@ export const StructureForm = () => {
               gridGap: '1px',
             }}
           >
-            {structures?.map((structure) =>
-              structure.type === 'blank' ? (
-                <Button
-                  key={structure.id}
-                  style={{ gridArea: structure.id }}
-                  onClick={() => handleAddStructure(structure.id)}
-                >
-                  <AddRoundedIcon />
-                </Button>
-              ) : (
-                <div key={structure.id} className='structure'>
-                  <TableStructure
-                    title={structure.id}
-                    length={structure.length}
-                    area={structure.id}
-                    size='small'
-                    direction={structure.direction}
-                  />
-                </div>
-              )
+            { 
+              structures?.map((structure, index) => {
+                if (structure.merged && structure.isMain === false) return <div key={index} style={{ display: 'none' }}></div>
+                if (structure.type === 'blank') {
+                    return <div
+                      key={index}
+                      style={{ gridArea: `${structure.id} / ${structure.id} / ${structure.id} / ${structure.id}` }}
+                      className={structure.merged ? 'structure merged' : 'structure'}
+                    >
+                      <div className='action blank'>
+                        <ToggleButton onClick={() => handleMergeStructure(structure.id, !structure.merged)} state={structure.merged} />
+                        <AddButton onClick={() => handleAddStructure(structure.id)} />
+                      </div>
+                    </div>
+                } else {
+                  return <div key={index} className={structure.merged ? 'structure merged' : 'structure'} style={{ gridArea: `${structure.id} / ${structure.id} / ${structure.id} / ${structure.id}` }}>
+                    <TableStructure
+                      title='T1'
+                      length={structure.length}
+                      size='small'
+                      direction={structure.direction}
+                    />
+                    <div className='action object'>
+                      <RejectButton onClick={() => handleRemoveStructure(structure.id)} />
+                    </div>
+                  </div>
+                }
+              }
             )}
           </div>
         </CustomStructureLayout>

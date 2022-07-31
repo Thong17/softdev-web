@@ -138,6 +138,7 @@ export const AddButton: FC<ButtonProps> = ({ ...prop }) => {
         backgroundColor: `${theme.color.info}22`,
         borderRadius: theme.radius.primary,
         color: theme.color.info,
+        marginLeft: 2,
       }}
       {...prop}
     >
@@ -155,6 +156,7 @@ export const RemoveButton: FC<ButtonProps> = ({ ...prop }) => {
         backgroundColor: `${theme.color.error}22`,
         borderRadius: theme.radius.primary,
         color: theme.color.error,
+        marginLeft: 2,
       }}
       {...prop}
     >
@@ -163,20 +165,40 @@ export const RemoveButton: FC<ButtonProps> = ({ ...prop }) => {
   )
 }
 
-export const MergeButton: FC<ButtonProps> = ({ ...prop }) => {
+export const MergeButton: FC<ButtonProps> = ({ disabled, title, ...prop }) => {
   const { theme } = useTheme()
   return (
     <IconButton
       size='small'
       style={{
-        backgroundColor: `${theme.color.info}22`,
+        backgroundColor: disabled ? `${theme.text.secondary}22` : `${theme.color.info}22`,
         borderRadius: theme.radius.primary,
-        color: theme.color.info,
+        color: disabled ? theme.text.secondary : theme.color.info,
+        marginLeft: 2,
+      }}
+      disabled={disabled}
+      {...prop}
+    >
+      <InsertLinkRoundedIcon fontSize='small' />
+      {title && <span style={{ marginLeft: 5, fontSize: 13 }}>{title}</span>}
+    </IconButton>
+  )
+}
+
+export const ToggleButton = ({ state, ...prop }) => {
+  const { theme } = useTheme()
+  return (
+    <IconButton
+      size='small'
+      style={{
+        backgroundColor: `${ state ? theme.color.error : theme.color.info}22`,
+        borderRadius: theme.radius.primary,
+        color: state ? theme.color.error : theme.color.info,
+        marginLeft: 2,
       }}
       {...prop}
     >
-      <InsertLinkRoundedIcon fontSize='small' style={{ marginRight: 5 }} />
-      Combine
+      <InsertLinkRoundedIcon fontSize='small' />
     </IconButton>
   )
 }

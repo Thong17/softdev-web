@@ -435,15 +435,34 @@ export const CustomStructureLayout = styled('div')(
       padding: '30px 0 0 30px',
       boxSizing: 'border-box',
       overflow: 'auto',
-      '& button': {
+      '& .structure': {
         border: styled.border.dashed,
         borderWidth: 1,
-        backgroundColor: `${styled.color.info}11 !important`,
-        color: styled.color.info,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        minWidth: 150,
+        minHeight: 150,
+        position: 'relative',
+        '& .action.blank': {
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
+        },
+        '& .action.object': {
+          display: 'none',
+          position: 'absolute',
+          top: 5, 
+          right: 5,
+        },
+        '&:hover .action.object': {
+          display: 'block'
+        },
+        '&.merged': {
+          backgroundColor: `${styled.color.info}11`
+        }
       }
     }
   })
