@@ -441,7 +441,6 @@ export const CustomStructureLayout = styled('div')(
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        cursor: 'pointer',
         minWidth: 150,
         minHeight: 150,
         position: 'relative',
@@ -460,7 +459,7 @@ export const CustomStructureLayout = styled('div')(
         '&:hover .action.object': {
           display: 'block'
         },
-        '&.merged': {
+        '&.selected': {
           backgroundColor: `${styled.color.info}11`
         }
       }
