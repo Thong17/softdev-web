@@ -11,7 +11,7 @@ import useTheme from 'hooks/useTheme'
 import { useEffect, useState } from 'react'
 import { CustomStructureLayout } from 'styles/container'
 import StoreBreadcrumbs from '../components/Breadcrumbs'
-import { TableStructure } from 'components/shared/structure'
+import { RoomStructure, TableStructure } from 'components/shared/structure'
 import { checkArraySequence, checkArrayValue } from 'utils'
 import useNotify from 'hooks/useNotify'
 import { StructureForm } from './StructureForm'
@@ -105,11 +105,10 @@ export const LayoutForm = () => {
     merged ? setMerges([...merges, id]) : setMerges((prev) => prev.filter(prevId => prevId !== id))
   }
 
-
   const handleConfirmMergeStructure = () => {
     const mappedMerge = merges.map(id => {
       const splitB = id.split('B')[1]
-      return { row: parseInt(splitB.split('S')[0]), colum: parseInt(splitB.split('S')[1]) }
+      return { row: parseInt(splitB.split('S')[0]), column: parseInt(splitB.split('S')[1]) }
     })
     
     let rows: number[] = []
@@ -117,7 +116,7 @@ export const LayoutForm = () => {
 
     mappedMerge.forEach(item => {
       rows = [...rows, item.row]
-      columns = [...columns, item.colum]
+      columns = [...columns, item.column]
     })
 
     if (!checkArrayValue(rows, rows[0]) && !checkArrayValue(columns, columns[0])) return notify('Cannot merge a different position items', 'error')
@@ -218,30 +217,47 @@ export const LayoutForm = () => {
               structures?.map((structure, index) => {
                 if (structure.merged && structure.isMain === false) return <div key={index} style={{ display: 'none' }}></div>
                 if (structure.type === 'blank') {
-                    return <div
-                      key={index}
-                      style={{ gridArea: `${structure.id} / ${structure.id} / ${structure.id} / ${structure.id}` }}
-                      className={structure.merged ? 'structure merged' : 'structure'}
-                    >
-                      <div className='action blank'>
-                        <ToggleButton onClick={() => handleMergeStructure(structure.id, !structure.merged)} state={structure.merged} />
-                        <AddButton onClick={() => handleAddStructure(structure.id)} />
-                      </div>
-                    </div>
-                } else {
-                  return <div key={index} className='structure' style={{ gridArea: `${structure.id} / ${structure.id} / ${structure.id} / ${structure.id}` }}>
-                    <TableStructure
-                      title={structure.title}
-                      length={structure.length}
-                      size={structure.size}
-                      align={structure.align}
-                      justify={structure.justify}
-                      direction={structure.direction}
-                    />
-                    <div className='action object'>
-                      <RejectButton onClick={() => handleRemoveStructure(structure.id)} />
+                  return <div
+                    key={index}
+                    style={{ gridArea: `${structure.id}` }}
+                    className={structure.merged ? 'structure merged' : 'structure'}
+                  >
+                    <div className='action blank'>
+                      <ToggleButton onClick={() => handleMergeStructure(structure.id, !structure.merged)} state={structure.merged} />
+                      <AddButton onClick={() => handleAddStructure(structure.id)} />
                     </div>
                   </div>
+                } else {
+                  switch (structure.type) {
+                    case 'table':
+                      return <div key={index} className='structure' style={{ gridArea: `${structure.id}` }}>
+                        <TableStructure
+                          title={structure.title}
+                          length={structure.length}
+                          size={structure.size}
+                          align={structure.align}
+                          justify={structure.justify}
+                          direction={structure.direction}
+                        />
+                        <div className='action object'>
+                          <RejectButton onClick={() => handleRemoveStructure(structure.id)} />
+                        </div>
+                      </div>
+                    default:
+                      return <div key={index} className='structure' style={{ gridArea: `${structure.id}` }}>
+                        <RoomStructure
+                          title={structure.title}
+                          size={structure.size}
+                          align={structure.align}
+                          justify={structure.justify}
+                          direction={structure.direction}
+                        />
+                        <div className='action object'>
+                          <RejectButton onClick={() => handleRemoveStructure(structure.id)} />
+                        </div>
+                      </div>
+                  }
+                  
                 }
               }
             )}

@@ -37,7 +37,7 @@ export const RoomStructure = ({
 }: {
   size?: StructureSizeType
   title: string
-  description: string
+  description?: string
   status?: StructureStatusType
   area?: string
   direction?: StructureDirectionType
