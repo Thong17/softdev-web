@@ -61,14 +61,17 @@ export const LayoutForm = () => {
     open: false,
     structureId: null,
   })
+  const [mergedStructures, setMergedStructures] = useState<any>([])
+  
 
   useEffect(() => {
     let template = ''
     let newStructures: any[] = []
-    row.forEach((r) => {
+    row.forEach((r) => {      
       let rowTemplate = ''
       column.forEach((c) => {
         const id = ` B${r}S${c}`
+        
         rowTemplate += id
         newStructures = [
           ...newStructures,
@@ -80,8 +83,13 @@ export const LayoutForm = () => {
     setStructures((currentStructures) =>
       mapStructures(currentStructures, newStructures)
     )
+
+    mergedStructures?.forEach((item) => {
+      template = template.replace(item.originId, item.id)
+    })
+
     setTemplate(template)
-  }, [column, row])
+  }, [column, row, mergedStructures])
 
   const handleAddColumn = () => {
     const id = column.length + 1
@@ -198,6 +206,7 @@ export const LayoutForm = () => {
           selected: false,
           merged: true,
         }
+        setMergedStructures((prevMerged) => [...prevMerged, mappedItem])
         return (mappedStructures = [...mappedStructures, mappedItem])
       }
       mappedStructures = [...mappedStructures, item]
@@ -221,6 +230,7 @@ export const LayoutForm = () => {
     structures.forEach((str) => {
       if (str.id === structure.id) {
         newTemplate = newTemplate.replace(str.id.trim(), str.originId)
+        setMergedStructures((prev) => prev.filter((item => item.id !== str.id)))
         mappedStructures = [
           ...mappedStructures,
           {
