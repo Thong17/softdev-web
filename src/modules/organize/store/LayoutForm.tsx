@@ -62,7 +62,6 @@ export const LayoutForm = () => {
     structureId: null,
   })
   const [mergedStructures, setMergedStructures] = useState<any>([])
-  
 
   useEffect(() => {
     let template = ''
