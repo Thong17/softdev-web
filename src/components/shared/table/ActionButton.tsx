@@ -9,6 +9,8 @@ import CenterFocusStrongRoundedIcon from '@mui/icons-material/CenterFocusStrongR
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
 import InsertLinkRoundedIcon from '@mui/icons-material/InsertLinkRounded'
+import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded'
+import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded'
 import useTheme from 'hooks/useTheme'
 import { FC } from 'react'
 
@@ -138,7 +140,7 @@ export const AddButton: FC<ButtonProps> = ({ ...prop }) => {
         backgroundColor: `${theme.color.info}22`,
         borderRadius: theme.radius.primary,
         color: theme.color.info,
-        marginLeft: 2,
+        marginLeft: 0,
       }}
       {...prop}
     >
@@ -174,12 +176,49 @@ export const MergeButton: FC<ButtonProps> = ({ disabled, title, ...prop }) => {
         backgroundColor: disabled ? `${theme.text.secondary}22` : `${theme.color.info}22`,
         borderRadius: theme.radius.primary,
         color: disabled ? theme.text.secondary : theme.color.info,
-        marginLeft: 2,
       }}
       disabled={disabled}
       {...prop}
     >
       <InsertLinkRoundedIcon fontSize='small' />
+      {title && <span style={{ marginLeft: 5, fontSize: 13 }}>{title}</span>}
+    </IconButton>
+  )
+}
+
+export const UploadButton: FC<ButtonProps> = ({ title, ...prop }) => {
+  const { theme } = useTheme()
+  return (
+    <IconButton
+      size='small'
+      style={{
+        backgroundColor: `${theme.color.success}22`,
+        borderRadius: theme.radius.primary,
+        color: theme.color.success,
+        marginLeft: 5,
+      }}
+      {...prop}
+    >
+      <FileUploadRoundedIcon fontSize='small' />
+      {title && <span style={{ marginLeft: 5, fontSize: 13 }}>{title}</span>}
+    </IconButton>
+  )
+}
+
+export const ResetButton: FC<ButtonProps> = ({ title, ...prop }) => {
+  const { theme } = useTheme()
+  return (
+    <IconButton
+      size='small'
+      style={{
+        backgroundColor: `${theme.color.error}22`,
+        borderRadius: theme.radius.primary,
+        color: theme.color.error,
+        marginLeft: 5,
+      }}
+      {...prop}
+    >
+      <RestartAltRoundedIcon fontSize='small' />
       {title && <span style={{ marginLeft: 5, fontSize: 13 }}>{title}</span>}
     </IconButton>
   )
@@ -194,7 +233,7 @@ export const ToggleButton = ({ state, ...prop }) => {
         backgroundColor: `${ state ? theme.color.error : theme.color.info}22`,
         borderRadius: theme.radius.primary,
         color: state ? theme.color.error : theme.color.info,
-        marginLeft: 2,
+        marginRight: 5,
       }}
       {...prop}
     >

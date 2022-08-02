@@ -415,7 +415,8 @@ export const CustomStructureLayout = styled('div')(
     borderRadius: styled.radius.primary,
     overflow: 'hidden',
     '& .column': {
-      height: 30,
+      padding: 5,
+      boxSizing: 'border-box',
       width: '100%',
       position: 'absolute',
       backgroundColor: styled.background.secondary,
@@ -423,7 +424,8 @@ export const CustomStructureLayout = styled('div')(
       boxShadow: styled.shadow.bottom
     },
     '& .row': {
-      width: 30,
+      padding: 5,
+      boxSizing: 'border-box',
       height: '100%',
       position: 'absolute',
       backgroundColor: styled.background.secondary,
@@ -432,7 +434,7 @@ export const CustomStructureLayout = styled('div')(
     '& .structure-container': {
       width: '100%',
       height: '100%',
-      padding: '30px 0 0 30px',
+      padding: '40px 0 0 40px',
       boxSizing: 'border-box',
       overflow: 'auto',
       '& .structure': {

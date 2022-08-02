@@ -6,6 +6,8 @@ import {
   MergeButton,
   RejectButton,
   ToggleButton,
+  UploadButton,
+  ResetButton,
 } from 'components/shared/table/ActionButton'
 import useTheme from 'hooks/useTheme'
 import { useEffect, useState } from 'react'
@@ -15,6 +17,12 @@ import { RoomStructure, TableStructure } from 'components/shared/structure'
 import { checkArraySequence, checkArrayValue } from 'utils'
 import useNotify from 'hooks/useNotify'
 import { StructureForm } from './StructureForm'
+import { MiniSelectField } from 'components/shared/form'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { getLayoutStore, getListFloor, selectLayoutStore, selectListFloor } from './redux'
+import { IOptions } from 'components/shared/form/SelectField'
+import Axios from 'constants/functions/Axios'
+import Loading from 'components/shared/Loading'
 
 const Header = () => {
   return (
@@ -27,15 +35,15 @@ const Header = () => {
 const mapStructures = (currentStructures, newStructures) => {
   let mappedStructures: any = []
 
-  const extractCurrentStructures = currentStructures.map(
+  const extractCurrentStructures = currentStructures?.map(
     (current) => {
       if (current.originId) return current.originId
       return current.id
     }
   )
   
-  newStructures.forEach((_new) => {
-    if (extractCurrentStructures.indexOf(_new.id) > -1)
+  newStructures?.forEach((_new) => {
+    if (extractCurrentStructures?.indexOf(_new.id) > -1)
       return (mappedStructures = [
         ...mappedStructures,
         currentStructures.find((current) => {
@@ -50,18 +58,53 @@ const mapStructures = (currentStructures, newStructures) => {
 }
 
 export const LayoutForm = () => {
+  const dispatch = useAppDispatch()
   const { notify } = useNotify()
+  const { data: storeLayout, status: statusLayout } = useAppSelector(selectLayoutStore)
+  const { data: listFloor, status } = useAppSelector(selectListFloor)
   const { theme } = useTheme()
-  const [column, setColumn] = useState<any>([1])
-  const [row, setRow] = useState<any>([1])
+  const [column, setColumn] = useState<any>([])
+  const [row, setRow] = useState<any>([])
   const [template, setTemplate] = useState('')
   const [structures, setStructures] = useState<any>([])
+  const [mergedStructures, setMergedStructures] = useState<any>([])
   const [merges, setMerges] = useState<any[]>([])
   const [structureDialog, setStructureDialog] = useState({
     open: false,
     structureId: null,
   })
-  const [mergedStructures, setMergedStructures] = useState<any>([])
+  const [floor, setFloor] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [floorOption, setFloorOption] = useState<IOptions[]>([])
+
+  useEffect(() => {
+    setFloorOption(listFloor.map(item => ({ label: item.floor, value: item._id, tags: item.tags })))
+  }, [listFloor])
+
+  useEffect(() => {
+    dispatch(getListFloor())
+  }, [dispatch])
+
+  useEffect(() => {
+    if (statusLayout !== 'SUCCESS') return
+
+    setColumn(storeLayout?.column)
+    setRow(storeLayout?.row)
+    setStructures(storeLayout?.structures)
+    setMergedStructures(storeLayout?.mergedStructures)
+  }, [storeLayout, statusLayout])
+
+  useEffect(() => {
+    if (status !== 'SUCCESS') return
+    const floorId = listFloor[0]?._id
+    const params = new URLSearchParams()
+    params.append('id', floorId)
+    setFloor(floorId)
+    dispatch(getLayoutStore({ query: params }))
+    setTimeout(() => {
+      setLoading(false)
+    }, 500)
+  }, [dispatch, status, listFloor])
 
   useEffect(() => {
     let template = ''
@@ -90,6 +133,10 @@ export const LayoutForm = () => {
     setTemplate(template)
   }, [column, row, mergedStructures])
 
+  const handleChangeFloor = (event) => {
+    setFloor(event.target.value)
+  }
+
   const handleAddColumn = () => {
     const id = column.length + 1
     setColumn((prevColumn) => [...prevColumn, id])
@@ -112,6 +159,13 @@ export const LayoutForm = () => {
     }
 
     setColumn(column.slice(0, -1))
+  }
+
+  const handleResetLayout = () => {
+    setColumn([1])
+    setRow([1])
+    setMergedStructures([])
+    setStructures([])
   }
 
   const handleRemoveRow = () => {
@@ -149,7 +203,7 @@ export const LayoutForm = () => {
       )
     )
     selected
-      ? setMerges([...merges, id])
+      ? setMerges([...merges, id].sort())
       : setMerges((prev) => prev.filter((prevId) => prevId !== id))
   }
 
@@ -191,6 +245,7 @@ export const LayoutForm = () => {
     merges.forEach((id) => {
       newTemplate = newTemplate.replace(id, newId)
     })
+    
     setTemplate(newTemplate)
 
     // Replace merged elements to a single element
@@ -204,8 +259,9 @@ export const LayoutForm = () => {
           isMain: item.id === merges[0],
           selected: false,
           merged: true,
+          floor
         }
-        setMergedStructures((prevMerged) => [...prevMerged, mappedItem])
+        setMergedStructures((prevMerged) => [...prevMerged, { originId: mappedItem.originId, id: mappedItem.id }])
         return (mappedStructures = [...mappedStructures, mappedItem])
       }
       mappedStructures = [...mappedStructures, item]
@@ -217,7 +273,7 @@ export const LayoutForm = () => {
   const handleSubmitStructure = (data) => {
     setStructures(
       structures?.map((structure) =>
-        structure.id === data.id ? { ...structure, ...data } : structure
+        structure.id === data.id ? { ...structure, ...data, floor } : structure
       )
     )
   }
@@ -249,8 +305,24 @@ export const LayoutForm = () => {
     setStructures(mappedStructures)
   }
 
+  const handleSaveLayout = () => {
+    Axios({
+      method: 'PUT',
+      url: `/organize/store/layout/update/${floor}`,
+      body: {
+        structures,
+        mergedStructures,
+        column,
+        row
+      }
+    })
+      .then((data) => notify(data?.data?.msg, 'success'))
+      .catch((err) => notify(err?.response?.data?.msg, 'error'))
+  }
+
   return (
     <Container header={<Header />}>
+      {loading && <Loading />}
       <StructureForm
         dialog={structureDialog}
         setDialog={setStructureDialog}
@@ -270,19 +342,22 @@ export const LayoutForm = () => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                boxSizing: 'border-box',
                 position: 'relative',
               }}
             >
-              <div>
+              <div style={{ display: 'flex' }}>
                 <MergeButton
                   title='Combine'
                   disabled={merges.length < 2}
                   onClick={handleConfirmMergeStructure}
                 />
+                <ResetButton title='Reset' onClick={handleResetLayout} />
+                <UploadButton title='Save' onClick={handleSaveLayout} />
+                <MiniSelectField style={{ marginLeft: 10 }} options={floorOption} value={floor} onChange={handleChangeFloor} search={true} />
               </div>
-              <div>
+              <div style={{ display: 'flex' }}>
                 <RemoveButton onClick={handleRemoveColumn} />
+                <span style={{ width: 5, display: 'block' }}></span>
                 <AddButton onClick={handleAddColumn} />
               </div>
             </div>
@@ -296,6 +371,7 @@ export const LayoutForm = () => {
             }}
           >
             <RemoveButton onClick={handleRemoveRow} />
+            <span style={{ height: 5, display: 'block' }}></span>
             <AddButton onClick={handleAddRow} />
           </div>
           <div

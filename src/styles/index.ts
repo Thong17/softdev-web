@@ -156,6 +156,7 @@ export const CustomLoading = styled('div')(
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 10000
   })
 )
 

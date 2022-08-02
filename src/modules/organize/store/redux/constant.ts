@@ -16,11 +16,26 @@ export const initState: IStoreBody = {
 
 export interface StoreState {
   store: IBody<any>
+  structures: IBody<any[]>
+  floors: IBody<any[]>
+  layout: IBody<any>
   detail: IBody<IStoreBody>
 }
 
 export const initialState: StoreState = {
   store: {
+    data: null,
+    status: 'INIT',
+  },
+  structures: {
+    data: [],
+    status: 'INIT',
+  },
+  floors: {
+    data: [],
+    status: 'INIT',
+  },
+  layout: {
     data: null,
     status: 'INIT',
   },

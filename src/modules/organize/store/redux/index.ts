@@ -14,6 +14,41 @@ export const getInfoStore = createAsyncThunk(
   }
 )
 
+export const getLayoutStore = createAsyncThunk(
+  'store/layout',
+  async ({ query }: { query?: URLSearchParams }) => {
+    const response = await Axios({
+      method: 'GET',
+      url: `/organize/store/layout`,
+      params: query
+    })
+    return response?.data
+  }
+)
+
+export const getStructuresStore = createAsyncThunk(
+  'store/structures',
+  async ({ query }: { query?: URLSearchParams }) => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/organize/store/structure',
+      params: query
+    })
+    return response?.data
+  }
+)
+
+export const getListFloor = createAsyncThunk(
+  'store/floors',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/organize/store/floor',
+    })
+    return response?.data
+  }
+)
+
 export const getStore = createAsyncThunk(
   'store/detail',
   async ({id, query, fields}: { id: string, query?: URLSearchParams, fields: Array<string> }) => {
@@ -49,6 +84,42 @@ export const storeSlice = createSlice({
         state.store.data = action.payload.data
       })
 
+      // Layout store
+      .addCase(getLayoutStore.pending, (state) => {
+        state.layout.status = 'LOADING'
+      })
+      .addCase(getLayoutStore.rejected, (state) => {
+        state.layout.status = 'FAILED'
+      })
+      .addCase(getLayoutStore.fulfilled, (state, action) => {
+        state.layout.status = 'SUCCESS'
+        state.layout.data = action.payload.data
+      })
+
+      // Structures store
+      .addCase(getStructuresStore.pending, (state) => {
+        state.structures.status = 'LOADING'
+      })
+      .addCase(getStructuresStore.rejected, (state) => {
+        state.structures.status = 'FAILED'
+      })
+      .addCase(getStructuresStore.fulfilled, (state, action) => {
+        state.structures.status = 'SUCCESS'
+        state.structures.data = action.payload.data
+      })
+
+      // Floors store
+      .addCase(getListFloor.pending, (state) => {
+        state.floors.status = 'LOADING'
+      })
+      .addCase(getListFloor.rejected, (state) => {
+        state.floors.status = 'FAILED'
+      })
+      .addCase(getListFloor.fulfilled, (state, action) => {
+        state.floors.status = 'SUCCESS'
+        state.floors.data = action.payload.data
+      })
+
       // Detail store
       .addCase(getStore.pending, (state) => {
         state.detail.status = 'LOADING'
@@ -64,6 +135,9 @@ export const storeSlice = createSlice({
 })
 
 export const selectStore = (state: RootState) => state.store.detail
+export const selectLayoutStore = (state: RootState) => state.store.layout
+export const selectListFloor = (state: RootState) => state.store.floors
+export const selectStructuresStore = (state: RootState) => state.store.structures
 export const selectInfoStore = (state: RootState) => state.store.store
 
 export default storeSlice.reducer
