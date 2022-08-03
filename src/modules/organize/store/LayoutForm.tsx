@@ -8,6 +8,7 @@ import {
   ToggleButton,
   UploadButton,
   ResetButton,
+  FloorButton,
 } from 'components/shared/table/ActionButton'
 import useTheme from 'hooks/useTheme'
 import { useEffect, useState } from 'react'
@@ -23,6 +24,8 @@ import { getLayoutStore, getListFloor, selectLayoutStore, selectListFloor } from
 import { IOptions } from 'components/shared/form/SelectField'
 import Axios from 'constants/functions/Axios'
 import Loading from 'components/shared/Loading'
+import useAlert from 'hooks/useAlert'
+import { FloorForm } from './FloorForm'
 
 const Header = () => {
   return (
@@ -59,6 +62,7 @@ const mapStructures = (currentStructures, newStructures) => {
 
 export const LayoutForm = () => {
   const dispatch = useAppDispatch()
+  const confirm = useAlert()
   const { notify } = useNotify()
   const { data: storeLayout, status: statusLayout } = useAppSelector(selectLayoutStore)
   const { data: listFloor, status } = useAppSelector(selectListFloor)
@@ -73,12 +77,17 @@ export const LayoutForm = () => {
     open: false,
     structureId: null,
   })
+  const [floorDialog, setFloorDialog] = useState<any>({
+    open: false,
+    floors: []
+  })
   const [floor, setFloor] = useState('')
   const [loading, setLoading] = useState(true)
   const [floorOption, setFloorOption] = useState<IOptions[]>([])
 
   useEffect(() => {
-    setFloorOption(listFloor.map(item => ({ label: item.floor, value: item._id, tags: item.tags })))
+    setFloorOption(listFloor?.map(item => ({ label: item.floor, value: item._id, tags: item.tags })))
+    setFloorDialog((floorDialog) => ({ ...floorDialog, floors: listFloor }))
   }, [listFloor])
 
   useEffect(() => {
@@ -92,18 +101,20 @@ export const LayoutForm = () => {
     setRow(storeLayout?.row)
     setStructures(storeLayout?.structures)
     setMergedStructures(storeLayout?.mergedStructures)
+    setTimeout(() => {
+      setLoading(false)
+    }, 300)
   }, [storeLayout, statusLayout])
 
   useEffect(() => {
-    if (status !== 'SUCCESS') return
+    if (status !== 'SUCCESS' && !listFloor) return
     const floorId = listFloor[0]?._id
-    const params = new URLSearchParams()
-    params.append('id', floorId)
-    setFloor(floorId)
-    dispatch(getLayoutStore({ query: params }))
-    setTimeout(() => {
-      setLoading(false)
-    }, 500)
+    if (floorId) {
+      const params = new URLSearchParams()
+      params.append('id', floorId)
+      setFloor(floorId)
+      dispatch(getLayoutStore({ query: params }))
+    }
   }, [dispatch, status, listFloor])
 
   useEffect(() => {
@@ -134,7 +145,12 @@ export const LayoutForm = () => {
   }, [column, row, mergedStructures])
 
   const handleChangeFloor = (event) => {
-    setFloor(event.target.value)
+    setLoading(true)
+    const id = event.target.value
+    setFloor(id)
+    const params = new URLSearchParams()
+    params.append('id', id)
+    dispatch(getLayoutStore({ query: params }))
   }
 
   const handleAddColumn = () => {
@@ -162,10 +178,16 @@ export const LayoutForm = () => {
   }
 
   const handleResetLayout = () => {
-    setColumn([1])
-    setRow([1])
-    setMergedStructures([])
-    setStructures([])
+    confirm({
+      title: 'Are you sure you want to reset?',
+      description: 'Reset will remove all the structures and layout.',
+      variant: 'error'
+    }).then(() => {
+      setColumn([1])
+      setRow([1])
+      setMergedStructures([])
+      setStructures([])
+    }).catch()
   }
 
   const handleRemoveRow = () => {
@@ -306,28 +328,38 @@ export const LayoutForm = () => {
   }
 
   const handleSaveLayout = () => {
-    Axios({
-      method: 'PUT',
-      url: `/organize/store/layout/update/${floor}`,
-      body: {
-        structures,
-        mergedStructures,
-        column,
-        row
-      }
-    })
-      .then((data) => notify(data?.data?.msg, 'success'))
-      .catch((err) => notify(err?.response?.data?.msg, 'error'))
+    confirm({
+      title: 'Are you sure you want to save this layout?',
+      description: 'Save this layout will override existing.',
+      variant: 'info'
+    }).then(() => {
+      Axios({
+        method: 'PUT',
+        url: `/organize/store/layout/update/${floor}`,
+        body: {
+          structures,
+          mergedStructures,
+          column,
+          row
+        }
+      })
+        .then((data) => notify(data?.data?.msg, 'success'))
+        .catch((err) => notify(err?.response?.data?.msg, 'error'))
+    }).catch()
   }
 
   return (
     <Container header={<Header />}>
-      {loading && <Loading />}
       <StructureForm
         dialog={structureDialog}
         setDialog={setStructureDialog}
         theme={theme}
         onSubmit={handleSubmitStructure}
+      />
+      <FloorForm
+        dialog={floorDialog}
+        setDialog={setFloorDialog}
+        theme={theme}
       />
       <FlexBetween>
         <CustomStructureLayout styled={theme}>
@@ -353,6 +385,7 @@ export const LayoutForm = () => {
                 />
                 <ResetButton title='Reset' onClick={handleResetLayout} />
                 <UploadButton title='Save' onClick={handleSaveLayout} />
+                <FloorButton title='Floor' onClick={() => setFloorDialog({ ...floorDialog, open: true })} />
                 <MiniSelectField style={{ marginLeft: 10 }} options={floorOption} value={floor} onChange={handleChangeFloor} search={true} />
               </div>
               <div style={{ display: 'flex' }}>
@@ -382,6 +415,7 @@ export const LayoutForm = () => {
               gridGap: '1px',
             }}
           >
+            {loading && <Loading />}
             {structures?.map((structure, index) => {
               if (structure.merged && structure.isMain === false)
                 return <div key={index} style={{ display: 'none' }}></div>

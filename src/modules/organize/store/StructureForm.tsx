@@ -80,7 +80,7 @@ export const StructureForm = ({
   }, [defaultValues, reset])
 
   const handleCloseDialog = () => {
-    setDialog({ ...dialog, propertyId: null, optionId: null, open: false })
+    setDialog({ structureId: null, open: false })
   }
 
   const submit = (data) => {

@@ -21,3 +21,9 @@ export const structureSchema = yup.object().shape({
   align: yup.string().required(),
   description: yup.string().optional(),
 })
+
+export const floorSchema = yup.object().shape({
+  floor: yup.string().required(),
+  order: yup.number().required(),
+  description: yup.string().optional(),
+})

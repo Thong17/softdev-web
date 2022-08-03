@@ -11,6 +11,7 @@ import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
 import InsertLinkRoundedIcon from '@mui/icons-material/InsertLinkRounded'
 import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded'
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded'
+import EscalatorRoundedIcon from '@mui/icons-material/EscalatorRounded'
 import useTheme from 'hooks/useTheme'
 import { FC } from 'react'
 
@@ -155,7 +156,7 @@ export const RemoveButton: FC<ButtonProps> = ({ ...prop }) => {
     <IconButton
       size='small'
       style={{
-        backgroundColor: `${theme.color.error}22`,
+        backgroundColor: `${theme.color.error}33`,
         borderRadius: theme.radius.primary,
         color: theme.color.error,
         marginLeft: 2,
@@ -211,7 +212,7 @@ export const ResetButton: FC<ButtonProps> = ({ title, ...prop }) => {
     <IconButton
       size='small'
       style={{
-        backgroundColor: `${theme.color.error}22`,
+        backgroundColor: `${theme.color.error}33`,
         borderRadius: theme.radius.primary,
         color: theme.color.error,
         marginLeft: 5,
@@ -219,6 +220,25 @@ export const ResetButton: FC<ButtonProps> = ({ title, ...prop }) => {
       {...prop}
     >
       <RestartAltRoundedIcon fontSize='small' />
+      {title && <span style={{ marginLeft: 5, fontSize: 13 }}>{title}</span>}
+    </IconButton>
+  )
+}
+
+export const FloorButton: FC<ButtonProps> = ({ title, ...prop }) => {
+  const { theme } = useTheme()
+  return (
+    <IconButton
+      size='small'
+      style={{
+        backgroundColor: `${theme.color.info}22`,
+        borderRadius: theme.radius.primary,
+        color: theme.color.info,
+        marginLeft: 5,
+      }}
+      {...prop}
+    >
+      <EscalatorRoundedIcon fontSize='small' />
       {title && <span style={{ marginLeft: 5, fontSize: 13 }}>{title}</span>}
     </IconButton>
   )
