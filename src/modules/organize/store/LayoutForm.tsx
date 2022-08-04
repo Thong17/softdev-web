@@ -35,7 +35,7 @@ const Header = () => {
   )
 }
 
-const mapStructures = (currentStructures, newStructures) => {
+export const mapStructures = (currentStructures, newStructures) => {
   let mappedStructures: any = []
 
   const extractCurrentStructures = currentStructures?.map(
@@ -101,9 +101,6 @@ export const LayoutForm = () => {
     setRow(storeLayout?.row)
     setStructures(storeLayout?.structures)
     setMergedStructures(storeLayout?.mergedStructures)
-    setTimeout(() => {
-      setLoading(false)
-    }, 300)
   }, [storeLayout, statusLayout])
 
   useEffect(() => {
@@ -142,6 +139,9 @@ export const LayoutForm = () => {
     })
 
     setTemplate(template)
+    setTimeout(() => {
+      setLoading(false)
+    }, 300)
   }, [column, row, mergedStructures])
 
   const handleChangeFloor = (event) => {

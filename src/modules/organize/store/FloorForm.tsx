@@ -95,7 +95,7 @@ export const FloorForm = ({
             color: theme.text.secondary,
             border: theme.border.dashed,
             fontFamily: theme.font.family,
-            maxHeight: '33vh',
+            height: '33vh',
             overflow: 'auto',
             borderWidth: 2,
           }}
