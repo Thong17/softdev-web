@@ -5,7 +5,7 @@ import {
   ViewButton,
   DeleteButton,
   UpdateButton,
-  DetailButton,
+  ReportButton,
 } from 'components/shared/table/ActionButton'
 import { MenuList } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
@@ -109,7 +109,8 @@ export const importColumnData: ITableColumn<any>[] = [
 export interface Data {
   id: string
   name: string
-  stock: string
+  stock: number
+  alertAt: number
   price: ReactElement
   currency: string
   code: string | null
@@ -208,8 +209,10 @@ export const createData = (
   let alertStocks: any[] = []
 
   let stock = 0
+  let alertAt = 0
   stocks?.forEach((stk: any) => {
     stock += stk.quantity
+    alertAt += stk.alertAt
     if (stk.quantity < stk.alertAt) {
       alertStocks.push(stk)
     }
@@ -219,7 +222,8 @@ export const createData = (
     id,
     profile,
     name,
-    stock: `${stock} Left`,
+    stock: stock,
+    alertAt,
     price: currencyFormat(price, currency),
     currency,
     code,
@@ -266,7 +270,7 @@ export const createStockData = (
         <>
           {privilege?.brand?.update && <UpdateButton onClick={() => onEditStock(id)} />}
           {privilege?.brand?.delete && <DeleteButton onClick={() => onDeleteStock(id)} />}
-          {privilege?.brand?.detail && <DetailButton onClick={() => onViewStock(id)} />}
+          {privilege?.brand?.detail && <ReportButton onClick={() => onViewStock(id)} />}
         </>
       )}
     </div>

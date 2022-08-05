@@ -28,6 +28,7 @@ import { CustomButton } from 'styles'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import { ListItem, ListLayout } from 'components/layouts/ListLayout'
 import useConfig from 'hooks/useConfig'
+import { StockStatus } from 'components/shared/StockStatus'
 
 export const Stocks = () => {
   const dispatch = useAppDispatch()
@@ -196,13 +197,13 @@ export const Stocks = () => {
                 title={obj.name}
                 picture={obj.profile}
                 subLeft='Qty'
-                subRight={obj.stock}
+                subRight={<StockStatus qty={obj.stock} min={obj.alertAt} />}
                 action={obj.action}
                 status={obj.status}
               />
             )
-          }) : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(index => {
-            return <div key={index}>
+          }) : Array.apply(null, Array(25)).map((value, key) => {
+            return <div key={key}>
               <Skeleton variant='rectangular' height={130} width={150} style={{ borderRadius: theme.radius.secondary }} />
               <div className="content" style={{ padding: '7px 0', boxSizing: 'border-box' }}>
                 <Skeleton variant='rectangular' height={30} width='100%' style={{ borderRadius: theme.radius.secondary }} />
@@ -227,8 +228,8 @@ export const Stocks = () => {
                 status={obj.status}
               />
             )
-          }) : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(index => {
-            return <Skeleton key={index} variant='rectangular' width='100%' height={90} style={{ marginBottom: 10, borderRadius: theme.radius.secondary }} />
+          }) : Array.apply(null, Array(25)).map((value, key) => {
+            return <Skeleton key={key} variant='rectangular' width='100%' height={90} style={{ marginBottom: 10, borderRadius: theme.radius.secondary }} />
           })
         }
       </ListLayout> }

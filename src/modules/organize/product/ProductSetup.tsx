@@ -7,7 +7,7 @@ import { CustomColorContainer, CustomOptionContainer } from 'styles'
 import { Section } from 'components/shared/Section'
 import useWeb from 'hooks/useWeb'
 import useTheme from 'hooks/useTheme'
-import { Button, MenuList } from '@mui/material'
+import { MenuList } from '@mui/material'
 import { useEffect, useState } from 'react'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
@@ -41,6 +41,7 @@ import { PropertyForm } from './PropertyForm'
 import { ColorForm } from './ColorForm'
 import { ProductInfo } from 'components/shared/ProductInfo'
 import { Draggable, Droppable, DragDropContext } from 'react-beautiful-dnd'
+import Button from 'components/shared/Button'
 
 const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
@@ -310,7 +311,7 @@ export const ProductSetup = () => {
           <Section
             describe='Color'
             style={{
-              boxShadow: theme.shadow.container,
+              boxShadow: theme.shadow.bottom,
               borderRadius: theme.radius.secondary,
               marginTop: 20,
             }}
@@ -382,8 +383,7 @@ export const ProductSetup = () => {
           </Section>
           <Button
             fullWidth
-            variant='outlined'
-            style={{ marginTop: 20 }}
+            style={{ marginTop: 20, backgroundColor: `${theme.color.info}22`, color: theme.text.secondary, boxShadow: theme.shadow.bottom }}
             onClick={() => {
               setPropertyValue(initProperty)
               setPropertyDialog({
@@ -417,7 +417,7 @@ export const ProductSetup = () => {
                                 boxSizing: 'border-box',
                                 paddingTop: 20
                               }}
-                              boxShadow={theme.shadow.container}
+                              boxShadow={theme.shadow.bottom}
                               describe={
                                 property?.name?.[lang] ||
                                 property?.name?.['English']

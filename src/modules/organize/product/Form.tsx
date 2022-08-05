@@ -288,7 +288,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
           <TextField
             type='text'
             label='Code'
-            icon={<CropFreeIcon />}
+            icon={<CropFreeIcon fontSize='small' />}
             err={errors?.code?.message}
             {...register('code')}
           />

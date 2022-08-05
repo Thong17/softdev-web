@@ -35,6 +35,8 @@ import useAlert from 'hooks/useAlert'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { Button, DialogActions, IconButton, Skeleton } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import SellRoundedIcon from '@mui/icons-material/SellRounded'
+import TrendingFlatRoundedIcon from '@mui/icons-material/TrendingFlatRounded'
 import { CustomButton } from 'styles'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import { ListItem, ListLayout } from 'components/layouts/ListLayout'
@@ -276,17 +278,17 @@ export const Products = () => {
             !loading ? rowData.map((obj: any, index) => {
               return (
                 <GridItem
-                key={index}
-                title={obj.name}
-                picture={obj.profile}
-                subLeft='Price'
-                subRight={obj.price}
-                action={obj.action}
-                status={obj.status}
-              />
+                  key={index}
+                  title={obj.name}
+                  picture={obj.profile}
+                  subLeft={<><SellRoundedIcon fontSize='small' />{obj.price}</>}
+                  subRight={<CustomButton styled={theme} style={{ padding: '0 5px', color: theme.text.primary, minWidth: 0 }}><TrendingFlatRoundedIcon fontSize='small' /></CustomButton>}
+                  action={obj.action}
+                  status={obj.status}
+                />
               )
-            }) : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(index => {
-              return <div key={index}>
+            }) : Array.apply(null, Array(25)).map((index, key) => {
+              return <div key={key}>
                 <Skeleton variant='rectangular' height={130} width={150} style={{ borderRadius: theme.radius.secondary }} />
                 <div className="content" style={{ padding: '7px 0', boxSizing: 'border-box' }}>
                   <Skeleton variant='rectangular' height={30} width='100%' style={{ borderRadius: theme.radius.secondary }} />
@@ -313,8 +315,8 @@ export const Products = () => {
                   status={obj.status}
                 />
               )
-            }) : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(index => {
-              return <Skeleton key={index} variant='rectangular' width='100%' height={90} style={{ marginBottom: 10, borderRadius: theme.radius.secondary }} />
+            }) : Array.apply(null, Array(25)).map((index, key) => {
+              return <Skeleton key={key} variant='rectangular' width='100%' height={90} style={{ marginBottom: 10, borderRadius: theme.radius.secondary }} />
             })
           }
         </ListLayout>

@@ -131,7 +131,7 @@ export const Stock = () => {
           dispatch(getListProduct({}))
         })
       })
-        .catch(() => console.log('cancel'))
+        .catch(() => {})
     }
 
     const handleViewStock = async (id) => {

@@ -5,13 +5,14 @@ import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded'
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
-import CenterFocusStrongRoundedIcon from '@mui/icons-material/CenterFocusStrongRounded'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
 import InsertLinkRoundedIcon from '@mui/icons-material/InsertLinkRounded'
 import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded'
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded'
 import EscalatorRoundedIcon from '@mui/icons-material/EscalatorRounded'
+import TrendingFlatRoundedIcon from '@mui/icons-material/TrendingFlatRounded'
+import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded'
 import useTheme from 'hooks/useTheme'
 import { FC } from 'react'
 
@@ -127,7 +128,25 @@ export const DetailButton: FC<ButtonProps> = ({ ...prop }) => {
       }}
       {...prop}
     >
-      <CenterFocusStrongRoundedIcon fontSize='small' />
+      <TrendingFlatRoundedIcon fontSize='small' />
+    </IconButton>
+  )
+}
+
+export const ReportButton: FC<ButtonProps> = ({ ...prop }) => {
+  const { theme } = useTheme()
+  return (
+    <IconButton
+      size='small'
+      style={{
+        backgroundColor: `${theme.color.info}22`,
+        borderRadius: theme.radius.primary,
+        marginLeft: 5,
+        color: theme.color.info,
+      }}
+      {...prop}
+    >
+      <BarChartRoundedIcon fontSize='small' />
     </IconButton>
   )
 }
