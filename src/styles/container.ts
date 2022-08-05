@@ -222,21 +222,40 @@ export const CustomColorContainer = styled('div')(
     gridGap: 20,
     '& div.color-container': {
       height: 100,
-      backgroundColor: '#333',
       position: 'relative',
+      border: styled.border.quaternary,
       borderRadius: styled.radius.secondary,
       padding: 10,
       boxSizing: 'border-box',
       '& .action': {
-        width: '100%',
-        transition: '0.3s ease',
         position: 'absolute',
-        opacity: 0,
+        padding: '5px 5px 5px 0',
+        top: 0,
+        right: 0,
+        zIndex: 10,
         backgroundColor: styled.background.primary,
+        opacity: 0,
+        transition: '0.3s ease',
+        borderRadius: styled.radius.primary
       },
       '&:hover .action': {
         opacity: 0.9,
       },
+      '& .option-detail': {
+        display: 'flex',
+        flexDirection: 'column',
+        '& .title': {
+          color: styled.text.primary
+        },
+        '& .description': {
+          color: styled.text.tertiary,
+          fontSize: styled.responsive[device]?.text.quaternary
+        }
+      },
+      '& .option-price': {
+        display: 'flex',
+        justifyContent: 'end'
+      }
     },
     '& button.create-button': {
       height: 100,
@@ -280,27 +299,44 @@ export const CustomOptionContainer = styled('div')(
     },
     '& div.option-container': {
       position: 'relative',
-      height: 98,
+      height: 100,
       border: styled.border.quaternary,
       borderRadius: styled.radius.secondary,
       overflow: 'hidden',
       padding: 10,
       boxSizing: 'border-box',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
       '& .action': {
         position: 'absolute',
+        padding: '5px 5px 5px 0',
+        top: 0,
+        right: 0,
         zIndex: 10,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: styled.background.primary,
         opacity: 0,
         transition: '0.3s ease',
+        borderRadius: styled.radius.primary
       },
       '&:hover .action': {
         opacity: 0.9,
       },
+      '& .option-detail': {
+        display: 'flex',
+        flexDirection: 'column',
+        '& .title': {
+          color: styled.text.primary
+        },
+        '& .description': {
+          color: styled.text.tertiary,
+          fontSize: styled.responsive[device]?.text.quaternary
+        }
+      },
+      '& .option-price': {
+        display: 'flex',
+        justifyContent: 'end'
+      }
     },
   })
 )
@@ -363,20 +399,27 @@ export const CustomProductInfo = styled('div')(
       padding: 10,
       display: 'flex',
       flexDirection: 'column',
-      backgroundColor: styled.background.secondary,
       borderRadius: styled.radius.primary,
       margin: '10px 0',
+      boxShadow: styled.shadow.secondary,
+      border: styled.border.quaternary,
     },
     '& .color-container': {
       '& .color': {
-        padding: 10,
+        padding: 5,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
+        borderRadius: styled.radius.primary,
+        boxShadow: styled.shadow.secondary,
+        backgroundColor: styled.background.secondary,
+        marginBottom: 10,
+        boxSizing: 'border-box',
+        position: 'relative',
         '& .code': {
-          width: 13,
-          height: 13,
-          borderRadius: styled.radius.circle,
+          height: '100%', 
+          display: 'block',
+          borderRadius: 2,
           boxShadow: styled.shadow.inset,
         },
       },

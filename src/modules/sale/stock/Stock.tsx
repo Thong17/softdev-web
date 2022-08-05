@@ -204,11 +204,12 @@ export const Stock = () => {
         setDialog={setDetailDialog}
         defaultValues={detailValue}
         theme={theme}
+        product={product}
       />
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '270px 1fr',
+          gridTemplateColumns: '400px 1fr',
           paddingTop: 10,
           gridGap: 20
         }}

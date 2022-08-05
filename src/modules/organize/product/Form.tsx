@@ -43,7 +43,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
     setError,
     getValues,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(productSchema), defaultValues })
+  } = useForm({ resolver: yupResolver(productSchema), defaultValues: { ...defaultValues, brand: defaultValues?.brand?._id, category: defaultValues?.category?._id } })
   const navigate = useNavigate()
   const { device } = useWeb()
   const { lang } = useLanguage()

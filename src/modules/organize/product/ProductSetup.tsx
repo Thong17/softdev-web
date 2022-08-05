@@ -42,6 +42,7 @@ import { ColorForm } from './ColorForm'
 import { ProductInfo } from 'components/shared/ProductInfo'
 import { Draggable, Droppable, DragDropContext } from 'react-beautiful-dnd'
 import Button from 'components/shared/Button'
+import { TextEllipsis } from 'components/shared/TextEllipsis'
 
 const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
@@ -311,7 +312,7 @@ export const ProductSetup = () => {
           <Section
             describe='Color'
             style={{
-              boxShadow: theme.shadow.bottom,
+              boxShadow: theme.shadow.secondary,
               borderRadius: theme.radius.secondary,
               marginTop: 20,
             }}
@@ -345,36 +346,40 @@ export const ProductSetup = () => {
                         onClick={() => handleDeleteColor(color._id)}
                       />
                     </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        height: '100%',
-                      }}
-                    >
-                      <span>
-                        {color?.name?.[lang] || color?.name?.['English']}
-                      </span>
+                    <div style={{ display: 'flex', height: '100%', justifyContent: 'space-between' }}>
                       <div
                         style={{
-                          width: '100%',
                           display: 'flex',
+                          flexDirection: 'column',
                           justifyContent: 'space-between',
-                          alignItems: 'center',
+                          height: '100%',
+                          width: 'calc(100% - 7px)',
+                          paddingRight: 10,
+                          boxSizing: 'border-box'
                         }}
                       >
-                        <span
-                          style={{
-                            width: 20,
-                            height: 20,
-                            backgroundColor: color?.code,
-                          }}
-                        ></span>
-                        <span>
+                        <div className='option-detail'>
+                          <TextEllipsis className='title'>
+                            {color?.name?.[lang] || color?.name?.['English']}
+                          </TextEllipsis>
+                          <TextEllipsis className='description'>
+                            {color?.description}
+                          </TextEllipsis>
+                        </div>
+                        <TextEllipsis className='option-price'>
                           {color?.price} {color?.currency}
-                        </span>
+                        </TextEllipsis>
+                        
                       </div>
+                      <span
+                        style={{
+                          width: 7,
+                          height: '100%',
+                          backgroundColor: color?.code,
+                          boxShadow: theme.shadow.inset,
+                          borderRadius: 3
+                        }}
+                      ></span>
                     </div>
                   </div>
                 )
@@ -383,7 +388,7 @@ export const ProductSetup = () => {
           </Section>
           <Button
             fullWidth
-            style={{ marginTop: 20, backgroundColor: `${theme.color.info}22`, color: theme.text.secondary, boxShadow: theme.shadow.bottom }}
+            style={{ marginTop: 20, backgroundColor: theme.background.secondary, color: theme.text.secondary, boxShadow: theme.shadow.secondary }}
             onClick={() => {
               setPropertyValue(initProperty)
               setPropertyDialog({
@@ -417,7 +422,7 @@ export const ProductSetup = () => {
                                 boxSizing: 'border-box',
                                 paddingTop: 20
                               }}
-                              boxShadow={theme.shadow.bottom}
+                              boxShadow={theme.shadow.secondary}
                               describe={
                                 property?.name?.[lang] ||
                                 property?.name?.['English']
@@ -499,11 +504,14 @@ export const ProductSetup = () => {
                                             }
                                           />
                                         </div>
-                                        {option.name?.[lang] ||
-                                          option.name?.['English']}
-                                        <span>
+                                        <div className='option-detail'>
+                                          <TextEllipsis className='title'>{option.name?.[lang] ||
+                                            option.name?.['English']}</TextEllipsis>
+                                          <TextEllipsis className='description'>{option.description}</TextEllipsis>
+                                        </div>
+                                        <TextEllipsis className='option-price'>
                                           {option.price} {option.currency}
-                                        </span>
+                                        </TextEllipsis>
                                       </div>
                                     )
                                   )
