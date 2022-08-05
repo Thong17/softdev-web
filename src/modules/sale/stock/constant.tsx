@@ -178,7 +178,8 @@ export const createData = (
   status: boolean,
   privilege: any,
   device: DeviceOptions,
-  navigate: Function
+  navigate: Function,
+  handleEnableStock
 ): Data => {
   let action = (
     <>
@@ -198,7 +199,8 @@ export const createData = (
           {privilege?.product?.update && (
             <StockButton
               style={{ margin: 0 }}
-              onClick={() => navigate(`/sale/stock/item/${id}`)}
+              onClick={() => isStock ? navigate(`/sale/stock/item/${id}`) : handleEnableStock(id)}
+              isStock={isStock}
             />
           )}
         </>

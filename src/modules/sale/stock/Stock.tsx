@@ -210,7 +210,6 @@ export const Stock = () => {
         style={{
           display: 'grid',
           gridTemplateColumns: '400px 1fr',
-          paddingTop: 10,
           gridGap: 20
         }}
       >

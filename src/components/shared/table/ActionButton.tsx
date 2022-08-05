@@ -52,17 +52,17 @@ export const ConfirmButton: FC<ButtonProps> = ({ ...prop }) => {
   )
 }
 
-export const StockButton: FC<ButtonProps> = ({ ...prop }) => {
+export const StockButton = ({ isStock, ...prop }) => {
   const { theme } = useTheme()
   return (
     <IconButton
       {...prop}
       size='small'
       style={{
-        backgroundColor: `${theme.color.info}22`,
+        backgroundColor: isStock ? `${theme.color.info}22` : `${theme.color.error}22`,
         borderRadius: theme.radius.primary,
         marginLeft: 5,
-        color: theme.color.info,
+        color: isStock ? theme.color.info : theme.color.error,
       }}
     >
       <Inventory2RoundedIcon fontSize='small' />

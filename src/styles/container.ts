@@ -396,7 +396,7 @@ export const CustomProductInfo = styled('div')(
       },
     },
     '& .content': {
-      padding: 10,
+      padding: 7,
       display: 'flex',
       flexDirection: 'column',
       borderRadius: styled.radius.primary,

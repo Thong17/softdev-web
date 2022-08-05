@@ -37,7 +37,7 @@ export const Stocks = () => {
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
-  const { loadify } = useNotify()
+  const { loadify, notify } = useNotify()
   const [rowData, setRowData] = useState<Data[]>([])
   const navigate = useNavigate()
   const { toggleDisplay, display } = useConfig()
@@ -127,6 +127,23 @@ export const Stocks = () => {
   }, [status])
 
   useEffect(() => {
+    const handleEnableStock = (id) => {
+      confirm({
+        title: 'Are you sure you want to enable stock?',
+        description: 'This product stock is currently not enabled. By confirm this you will enable stock for this product.',
+        variant: 'info'
+      }).then(() => {
+        Axios({
+          method: 'PUT',
+          url: `/organize/product/stock/${id}/enable`
+        }).then((result) => {
+          if (result?.data?.code !== 'SUCCESS') return notify(result?.data?.msg, 'error')
+          dispatch(getListProduct({ query: queryParams }))
+          notify(result?.data?.msg, 'success')
+        }).catch((err) => notify(err?.response?.data?.msg, 'error'))
+      }).catch(() => {})
+    }
+
     const listProducts = products.map((product: any) => {
       return createData(
         product._id,
@@ -144,11 +161,12 @@ export const Stocks = () => {
         product.status,
         user?.privilege,
         device,
-        navigate
+        navigate,
+        handleEnableStock
       )
     })
     setRowData(listProducts)
-  }, [products, lang, user, device, theme, navigate])
+  }, [products, lang, user, device, theme, queryParams, navigate, confirm, notify, dispatch])
 
   return (
     <Container
