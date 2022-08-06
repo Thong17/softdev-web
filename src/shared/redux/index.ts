@@ -14,6 +14,18 @@ export const getListRole = createAsyncThunk(
   }
 )
 
+export const getListProduct = createAsyncThunk(
+  'listProduct/get',
+  async (query?: URLSearchParams) => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/shared/product/list',
+      params: query
+    })
+    return response?.data
+  }
+)
+
 export const getPrivilege = createAsyncThunk(
   'privilege/get',
   async () => {
@@ -65,6 +77,19 @@ export const sharedSlice = createSlice({
         state.listRole.data = action.payload.data
       })
 
+      // Get List Product from API
+      .addCase(getListProduct.pending, (state) => {
+        state.listProduct.status = 'LOADING'
+      })
+      .addCase(getListProduct.rejected, (state) => {
+        state.listProduct.status = 'FAILED'
+      })
+      .addCase(getListProduct.fulfilled, (state, action) => {
+        state.listProduct.status = 'SUCCESS'
+        state.listProduct.data = action.payload.data
+        state.listProduct.hasMore = action.payload.hasMore
+      })
+
       // Get Privilege from API
       .addCase(getPrivilege.pending, (state) => {
         state.privilege.status = 'LOADING'
@@ -104,6 +129,7 @@ export const sharedSlice = createSlice({
 })
 
 export const selectListRole = (state: RootState) => state.shared.listRole
+export const selectListProduct = (state: RootState) => state.shared.listProduct
 export const selectPrivilege = (state: RootState) => state.shared.privilege
 export const selectPreRole = (state: RootState) => state.shared.preRole
 export const selectAdminDashboard = (state: RootState) => state.shared.adminDashboard

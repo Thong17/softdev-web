@@ -421,6 +421,47 @@ export const CustomSearchField = styled('div')(
   })
 )
 
+export const CustomMiniSearchField = styled('div')(
+  ({
+    styled,
+    active,
+    device,
+  }: {
+    styled: IThemeStyle
+    active: string
+    device: DeviceOptions
+  }) => ({
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    transition: '0.2s ease',
+    borderRadius: styled.radius.primary,
+    height: 30,
+    width: active === 'active' ? 170 : 30,
+    '& input': {
+      color: styled.text.secondary,
+      border: 'none',
+      background: 'none',
+      outline: 'none !important',
+      boxShadow: 'none',
+      fontWeight: styled.font.weight,
+      fontFamily: styled.font.family,
+      fontSize: styled.responsive[device].text.primary,
+      padding: '0 10px',
+      width: '100%',
+    },
+    '& button.search-btn': {
+      position: 'absolute',
+      right: 0,
+      color: styled.text.secondary,
+    },
+    '& button': {
+      color: styled.text.secondary,
+    },
+  })
+)
+
 export const CustomFilterButton = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
     position: 'relative',
@@ -433,6 +474,19 @@ export const CustomFilterButton = styled('div')(
     width: 40,
     '& button': {
       color: styled.text.secondary,
+    },
+  })
+)
+
+export const CustomMiniFilterButton = styled('div')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    '& button': {
+      color: styled.text.secondary,
+      padding: 5,
     },
   })
 )

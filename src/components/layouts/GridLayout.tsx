@@ -1,14 +1,15 @@
 import { TextEllipsis } from 'components/shared/TextEllipsis'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
+import { forwardRef } from 'react'
 import { CustomGridContainer } from 'styles'
 
-export const GridItem = (props) => {
+const Item = (props, ref) => {
   const { title, picture, subLeft, subRight, action, status } =
     props
 
   return (
-    <div className='grid-item'>
+    <div className='grid-item' ref={ref}>
       <div className='img'>
         <>
           <div className='action'>
@@ -39,6 +40,10 @@ export const GridItem = (props) => {
     </div>
   )
 }
+
+const GridItem = forwardRef(Item)
+
+export { GridItem }
 
 export const GridLayout = ({
   children

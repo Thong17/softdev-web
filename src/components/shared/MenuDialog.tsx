@@ -4,7 +4,7 @@ import useTheme from 'hooks/useTheme'
 import { FC, ReactElement, useState } from 'react'
 
 interface IMenuDialog extends ButtonProps {
-  label: ReactElement,
+  label?: ReactElement,
 }
 
 export const MenuDialog: FC<IMenuDialog> = ({ label, children, ...props }) => {
@@ -13,13 +13,13 @@ export const MenuDialog: FC<IMenuDialog> = ({ label, children, ...props }) => {
 
   return (
     <>
-      <IconButton
+      {label && <IconButton
         aria-controls='menu'
         onClick={(event) => setAnchorEl(event.currentTarget)}
         {...props}
       >
         {label}
-      </IconButton>
+      </IconButton>}
       <CustomMenu
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}

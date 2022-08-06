@@ -12,6 +12,7 @@ export interface ShareState {
   privilege: IBody<Object>,
   preRole: IBody<Object>,
   adminDashboard: IBody<any>
+  listProduct: IBody<any>
 }
 
 export const initialState: ShareState = {
@@ -30,5 +31,10 @@ export const initialState: ShareState = {
   adminDashboard: {
     data: {},
     status: 'INIT',
+  },
+  listProduct: {
+    data: {},
+    status: 'INIT',
+    hasMore: false,
   },
 }

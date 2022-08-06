@@ -17,6 +17,7 @@ import { currencyOptions } from 'constants/variables'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import useTheme from 'hooks/useTheme'
+import { ProductContainer } from 'components/shared/container/ProductContainer'
 
 const typeOption = [
   ...currencyOptions,
@@ -96,6 +97,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
           display: 'grid',
           gridTemplateColumns: '1fr 1fr 1fr',
           gridColumnGap: 20,
+          height: 'fit-content',
           gridTemplateAreas: `
                               'value value value type'
                               'startAt startAt expireAt expireAt'
@@ -138,7 +140,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
             {...register('expireAt')}
           />
         </div>
-        <div style={{ gridArea: 'description', marginTop: 20, marginBottom: 20 }}>
+        <div style={{ gridArea: 'description', marginTop: 30, marginBottom: 20 }}>
           <LocaleDetail
             onChange={handleChangePromotion}
             err={errors?.description}
@@ -170,7 +172,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
         </div>
       </div>
       <div style={{ display: 'grid' }}>
-        
+        <ProductContainer />
       </div>
     </form>
   )

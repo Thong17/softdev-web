@@ -1,6 +1,6 @@
-import FilterListIcon from '@mui/icons-material/FilterList'
+import FilterListRoundedIcon from '@mui/icons-material/FilterListRounded'
 import { MenuDialog } from '../MenuDialog'
-import { CustomFilterButton } from 'styles'
+import { CustomFilterButton, CustomMiniFilterButton } from 'styles'
 import useTheme from 'hooks/useTheme'
 
 export const FilterButton = ({ children, ...props }) => {
@@ -8,9 +8,22 @@ export const FilterButton = ({ children, ...props }) => {
 
   return <CustomFilterButton styled={theme} {...props}>
     <MenuDialog 
-      label={<FilterListIcon />}
+      label={<FilterListRoundedIcon />}
     >
       {children}
     </MenuDialog> 
   </CustomFilterButton>
 }
+
+export const MiniFilterButton = ({ children, ...props }) => {
+  const { theme } = useTheme()
+
+  return <CustomMiniFilterButton styled={theme} {...props}>
+    <MenuDialog 
+      label={<FilterListRoundedIcon fontSize='small' />}
+    >
+      {children}
+    </MenuDialog> 
+  </CustomMiniFilterButton>
+}
+
