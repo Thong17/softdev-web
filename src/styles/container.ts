@@ -12,10 +12,22 @@ export const CustomTableContainer = styled('div')(
         paddingBottom: 50,
         overflowX: 'initial',
       },
+      '& thead tr': {
+        boxShadow: styled.shadow.bottom,
+        borderRadius: styled.radius.primary,
+        '& th:first-of-type': {
+          borderRadius: `${styled.radius.primary} 0 0 ${styled.radius.primary}`,
+          overflow: 'hidden',
+        },
+        '& th:last-of-type': {
+          borderRadius: `0 ${styled.radius.primary} ${styled.radius.primary} 0`,
+          overflow: 'hidden',
+        }
+      },
       '& th': {
         backgroundColor: styled.background.secondary,
         color: styled.text.primary,
-        borderBottom: styled.border.secondary,
+        borderBottom: 0,
         fontWeight: styled.font.weight,
         fontSize: styled.responsive[device]?.text.tertiary,
         padding: '11px 20px',
