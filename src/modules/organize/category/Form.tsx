@@ -126,6 +126,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
             options={statusOption}
             label='Status'
             value={status}
+            err={errors?.status?.message}
             {...register('status')}
           />
         </div>

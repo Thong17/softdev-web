@@ -17,9 +17,44 @@ const stages = {
     {
       title: 'Stock',
     }
+  ],
+  promotion: [
+    {
+      title: 'Sale',
+      path: '/sale'
+    },
+    {
+      title: 'Promotion',
+    }
+  ],
+  promotionCreate: [
+    {
+      title: 'Sale',
+      path: '/sale'
+    },
+    {
+      title: 'Promotion',
+      path: '/sale/promotion'
+    },
+    {
+      title: 'Create',
+    }
+  ],
+  promotionUpdate: [
+    {
+      title: 'Sale',
+      path: '/sale'
+    },
+    {
+      title: 'Promotion',
+      path: '/sale/promotion'
+    },
+    {
+      title: 'Update',
+    }
   ]
 }
-declare type page = 'sale' | 'stock'
+declare type page = 'sale' | 'stock' | 'promotion' | 'promotionCreate' | 'promotionUpdate'
 
 const SaleBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
   return <Breadcrumb stages={stages[page]} title={<AttachMoneyRoundedIcon />} />

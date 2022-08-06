@@ -23,3 +23,4 @@ export const Sale = () => {
 }
 
 export { Stocks, Stock } from './stock'
+export { Promotions, CreatePromotion, UpdatePromotion, DetailPromotion } from './promotion'

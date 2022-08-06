@@ -128,7 +128,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
             value={status}
             options={statusOption}
             label='Status'
-            err={errors?.status}
+            err={errors?.status?.message}
             {...register('status')}
           />
         </div>

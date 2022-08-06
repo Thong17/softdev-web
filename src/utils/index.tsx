@@ -58,14 +58,38 @@ export const debounce = (cb, delay = 1000) => {
 }
 
 export const currencyFormat = (value, currency) => {
-  const symbol = currency === 'USD' ? <>&#xFF04;</> : <>&#x17DB;</>
-  const decimal = currency === 'USD' ? 2 : 0
+  let symbol
+  let decimal
+
+  switch (true) {
+    case currency === 'USD':
+      symbol = <>&#36;</>
+      decimal = 2
+      break
+
+    case currency === 'KHR':
+      symbol = <>&#6107;</>
+      decimal = 0
+      break
+  
+    default:
+      symbol = <>&#37;</>
+      decimal = 0
+      break
+  }
+
   return (
     <span style={{ marginLeft: 5 }}>
       {value?.toFixed(decimal).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') || 0}
       {symbol}
     </span>
   )
+}
+
+export const compareDate = (date1, date2) => {
+  if (!date1 && !date2) return false
+
+  return date1 > date2
 }
 
 export const dateFormat = (date: any = null) => {
@@ -115,6 +139,33 @@ export const inputDateFormat = (d) => {
     mm = '0' + mm
   }
   return (d = yyyy + '-' + mm + '-' + dd)
+}
+
+export const inputDateTimeFormat = (d) => {
+  if (d === '') return d
+
+  let date = new Date(d)
+  let dd: any = date.getDate()
+  let mm: any = date.getMonth() + 1
+  let yyyy = date.getFullYear()
+  let hour: any = date.getHours()
+  let minute: any = date.getMinutes()
+
+  if (dd < 10) {
+    dd = '0' + dd
+  }
+  if (mm < 10) {
+    mm = '0' + mm
+  }
+  if (hour < 10) {
+    hour = '0' + hour
+  }
+  if (minute < 10) {
+    minute = '0' + minute
+  }
+
+  d = [yyyy, mm, dd].join('-') + 'T' + [hour, minute].join(':')
+  return d
 }
 
 export const capitalizeText = (text) => {
