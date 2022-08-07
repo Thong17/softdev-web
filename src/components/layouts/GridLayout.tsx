@@ -5,11 +5,11 @@ import { forwardRef } from 'react'
 import { CustomGridContainer } from 'styles'
 
 const Item = (props, ref) => {
-  const { title, picture, subLeft, subRight, action, status } =
+  const { title, picture, subLeft, subRight, action, status, display } =
     props
 
   return (
-    <div className='grid-item' ref={ref}>
+    <div className='grid-item' ref={ref} style={{ display: display || 'block' }}>
       <div className='img'>
         <>
           <div className='action'>

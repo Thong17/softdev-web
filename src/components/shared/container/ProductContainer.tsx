@@ -25,6 +25,10 @@ const mappedProduct = (data, lang) => {
     action,
     status: data?.status,
     price: currencyFormat(data?.price, data?.currency),
+    tags: data?.tags,
+    createdAt: data?.createdAt,
+    brand: data?.brand?._id,
+    category: data?.category?._id,
   }
 }
 
@@ -64,13 +68,22 @@ export const ProductContainer = () => {
   })
 
   const handleChangeFilter = ({ filter }) => {
-    setProducts([])
+    if (count && count > offset + limit) {
+      setProducts([])
+      setOffset(0)
+      return
+    }
+    
     setSortObj({ ...sortObj, [filter]: !sortObj[filter] })
     setFilterObj({ filter, asc: sortObj[filter] })
   }
 
   const handleChangeOption = (value, field) => {
-    setProducts([])
+    if (count && count > offset + limit) {
+      setProducts([])
+      setOffset(0)
+      return
+    }
     if (field === 'brand') {
       setBrand(value)
     }
@@ -81,8 +94,11 @@ export const ProductContainer = () => {
 
   const updateQuery = debounce((value) => {
     setSearch(value)
-    setOffset(0)
-    setProducts([])
+    if (count && count > offset + limit) {
+      setProducts([])
+      setOffset(0)
+      return
+    }
   }, 300)
 
   const handleSearch = (e) => {
@@ -117,8 +133,40 @@ export const ProductContainer = () => {
     const mappedOption = listCategory.map(brand => ({ value: brand._id, label: brand.name[lang] || brand.name['English'], tags: brand.tags }))
     setCategoryOption(prevOption => [...prevOption, ...mappedOption])
   }, [listCategory, categoryStatus, lang])
-
+  
   useEffect(() => {
+    // Client Side Filtering if all the products is loaded
+    if (count && count < offset + limit) {
+      const _search = new RegExp(search || '', "i")
+      setProducts(prevData => {
+        return prevData.map(data => {
+          let obj = data
+
+          if (!_search.test(data.tags)) {
+            obj['display'] = 'none'
+          } else {
+            obj['display'] = 'block'
+          }
+
+          if (brand !== 'all' && brand !== data.brand) obj['display'] = 'none'
+          if (category !== 'all' && category !== data.category) obj['display'] = 'none'
+
+          return obj
+        }).sort((a, b) => {
+          if (!filterObj.asc) {
+            if (b[filterObj.filter] < a[filterObj.filter]) return -1
+            if (b[filterObj.filter] > a[filterObj.filter]) return 1
+            return 0
+          } else {
+            if (a[filterObj.filter] < b[filterObj.filter]) return -1
+            if (a[filterObj.filter] > b[filterObj.filter]) return 1
+            return 0
+          }
+        })
+      })
+
+      return
+    }
     setFetching(true)
     const query = new URLSearchParams()
     query.append('search', search)
@@ -129,7 +177,7 @@ export const ProductContainer = () => {
     query.append('category', category)
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     dispatch(getListProduct(query))
-  }, [dispatch, offset, search, filterObj, brand, category])
+  }, [dispatch, offset, search, filterObj, brand, category, count])
 
   useEffect(() => {
     if (status !== 'SUCCESS') return
@@ -192,6 +240,7 @@ export const ProductContainer = () => {
                     subRight={product.price}
                     action={product.action}
                     status={product.status}
+                    display={product.display}
                   />
                 }
                 return (
@@ -203,6 +252,7 @@ export const ProductContainer = () => {
                     subRight={product.price}
                     action={product.action}
                     status={product.status}
+                    display={product.display}
                   />
                 )
               })
