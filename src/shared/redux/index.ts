@@ -14,6 +14,28 @@ export const getListRole = createAsyncThunk(
   }
 )
 
+export const getListBrand = createAsyncThunk(
+  'listBrand/get',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/shared/brand/list'
+    })
+    return response?.data
+  }
+)
+
+export const getListCategory = createAsyncThunk(
+  'listCategory/get',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/shared/category/list'
+    })
+    return response?.data
+  }
+)
+
 export const getListProduct = createAsyncThunk(
   'listProduct/get',
   async (query?: URLSearchParams) => {
@@ -77,6 +99,30 @@ export const sharedSlice = createSlice({
         state.listRole.data = action.payload.data
       })
 
+      // Get List Brand from API
+      .addCase(getListBrand.pending, (state) => {
+        state.listBrand.status = 'LOADING'
+      })
+      .addCase(getListBrand.rejected, (state) => {
+        state.listBrand.status = 'FAILED'
+      })
+      .addCase(getListBrand.fulfilled, (state, action) => {
+        state.listBrand.status = 'SUCCESS'
+        state.listBrand.data = action.payload.data
+      })
+
+      // Get List Category from API
+      .addCase(getListCategory.pending, (state) => {
+        state.listCategory.status = 'LOADING'
+      })
+      .addCase(getListCategory.rejected, (state) => {
+        state.listCategory.status = 'FAILED'
+      })
+      .addCase(getListCategory.fulfilled, (state, action) => {
+        state.listCategory.status = 'SUCCESS'
+        state.listCategory.data = action.payload.data
+      })
+
       // Get List Product from API
       .addCase(getListProduct.pending, (state) => {
         state.listProduct.status = 'LOADING'
@@ -129,6 +175,8 @@ export const sharedSlice = createSlice({
 })
 
 export const selectListRole = (state: RootState) => state.shared.listRole
+export const selectListBrand = (state: RootState) => state.shared.listBrand
+export const selectListCategory = (state: RootState) => state.shared.listCategory
 export const selectListProduct = (state: RootState) => state.shared.listProduct
 export const selectPrivilege = (state: RootState) => state.shared.privilege
 export const selectPreRole = (state: RootState) => state.shared.preRole
