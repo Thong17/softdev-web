@@ -134,6 +134,7 @@ export const sharedSlice = createSlice({
         state.listProduct.status = 'SUCCESS'
         state.listProduct.data = action.payload.data
         state.listProduct.count = action.payload.length
+        state.listProduct.hasMore = action.payload.hasMore
       })
 
       // Get Privilege from API

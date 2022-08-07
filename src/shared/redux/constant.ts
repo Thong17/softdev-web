@@ -46,5 +46,6 @@ export const initialState: ShareState = {
     data: [],
     status: 'INIT',
     count: 0,
+    hasMore: true
   },
 }

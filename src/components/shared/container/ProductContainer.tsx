@@ -18,6 +18,7 @@ import { IOptions } from '../form/SelectField'
 
 const mappedProduct = (data, lang) => {
   const action = <AddRoundedIcon />
+  
   return {
     id: data?._id,
     name: data?.name?.[lang] || data?.name?.['English'],
@@ -34,7 +35,7 @@ const mappedProduct = (data, lang) => {
 
 export const ProductContainer = () => {
   const dispatch = useAppDispatch()
-  const { data, count, status } = useAppSelector(selectListProduct)
+  const { data, count, hasMore, status } = useAppSelector(selectListProduct)
   const { data: listBrand, status: brandStatus } = useAppSelector(selectListBrand)
   const { data: listCategory, status: categoryStatus } = useAppSelector(selectListCategory)
   const { theme } = useTheme()
@@ -68,36 +69,32 @@ export const ProductContainer = () => {
   })
 
   const handleChangeFilter = ({ filter }) => {
-    if (count && count > offset + limit) {
-      setProducts([])
-      setOffset(0)
-      return
-    }
-    
     setSortObj({ ...sortObj, [filter]: !sortObj[filter] })
     setFilterObj({ filter, asc: sortObj[filter] })
+    if (hasMore) {
+      setProducts([])
+      setOffset(0)
+    }
   }
 
   const handleChangeOption = (value, field) => {
-    if (count && count > offset + limit) {
-      setProducts([])
-      setOffset(0)
-      return
-    }
     if (field === 'brand') {
       setBrand(value)
     }
     if (field === 'category') {
       setCategory(value)
     } 
+    if (hasMore) {
+      setProducts([])
+      setOffset(0)
+    }
   }
 
   const updateQuery = debounce((value) => {
     setSearch(value)
-    if (count && count > offset + limit) {
+    if (hasMore) {
       setProducts([])
       setOffset(0)
-      return
     }
   }, 300)
 
@@ -110,7 +107,7 @@ export const ProductContainer = () => {
     if (fetching) return
     if (observer.current) observer.current.disconnect()
     observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && count && count > offset) {
+      if (entries[0].isIntersecting && count && count > offset + limit) {
         setOffset(prevOffset => prevOffset + limit)
       }
     })
@@ -125,18 +122,18 @@ export const ProductContainer = () => {
   useEffect(() => {
     if (brandStatus !== 'SUCCESS') return
     const mappedOption = listBrand.map(brand => ({ value: brand._id, label: brand.name[lang] || brand.name['English'], tags: brand.tags }))
-    setBrandOption(prevOption => [...prevOption, ...mappedOption])
+    setBrandOption([{ label: 'Brand', value: 'all' }, ...mappedOption])
   }, [listBrand, brandStatus, lang])
   
   useEffect(() => {
     if (categoryStatus !== 'SUCCESS') return
     const mappedOption = listCategory.map(brand => ({ value: brand._id, label: brand.name[lang] || brand.name['English'], tags: brand.tags }))
-    setCategoryOption(prevOption => [...prevOption, ...mappedOption])
+    setCategoryOption([{ label: 'Category', value: 'all' }, ...mappedOption])
   }, [listCategory, categoryStatus, lang])
   
   useEffect(() => {
     // Client Side Filtering if all the products is loaded
-    if (count && count < offset + limit) {
+    if (!hasMore) {
       const _search = new RegExp(search || '', "i")
       setProducts(prevData => {
         return prevData.map(data => {
@@ -177,7 +174,7 @@ export const ProductContainer = () => {
     query.append('category', category)
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     dispatch(getListProduct(query))
-  }, [dispatch, offset, search, filterObj, brand, category, count])
+  }, [dispatch, offset, search, filterObj, brand, category, hasMore])
 
   useEffect(() => {
     if (status !== 'SUCCESS') return
