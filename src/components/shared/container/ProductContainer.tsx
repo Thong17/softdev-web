@@ -6,9 +6,9 @@ import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import SellRoundedIcon from '@mui/icons-material/SellRounded'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
-import { MenuItem, Skeleton } from '@mui/material'
+import { CircularProgress, MenuItem, Skeleton } from '@mui/material'
 import useLanguage from 'hooks/useLanguage'
-import { currencyFormat } from 'utils'
+import { currencyFormat, debounce } from 'utils'
 import { MiniSelectField } from '../form'
 import useWeb from 'hooks/useWeb'
 import { MiniSearchField } from '../table/SearchField'
@@ -17,6 +17,7 @@ import { MiniFilterButton } from '../table/FilterButton'
 const mappedProduct = (data, lang) => {
   const action = <AddRoundedIcon />
   return {
+    id: data?._id,
     name: data?.name?.[lang] || data?.name?.['English'],
     profile: data?.profile?.filename,
     action,
@@ -41,44 +42,56 @@ const categoryOption = [
 
 export const ProductContainer = () => {
   const dispatch = useAppDispatch()
-  const { data, hasMore, status } = useAppSelector(selectListProduct)
+  const { data, count, status } = useAppSelector(selectListProduct)
   const { theme } = useTheme()
   const { device } = useWeb()
   const { lang } = useLanguage()
   const [loading, setLoading] = useState(true)
+  const [fetching, setFetching] = useState(false)
   const [products, setProducts] = useState<any[]>([])
+  const [search, setSearch] = useState('')
   const [offset, setOffset] = useState(0)
   const limit = 10
 
-  const handleSearch = (value) => {
-    console.log(value)
+  const updateQuery = debounce((value) => {
+    setSearch(value)
+    setOffset(0)
+    setProducts([])
+  }, 300)
+
+  const handleSearch = (e) => {
+    updateQuery(e.target.value)
   }
 
   const observer: any = useRef()
   const lastProductElement = useCallback((node) => {
+    if (fetching) return
     if (observer.current) observer.current.disconnect()
     observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore) {
+      if (entries[0].isIntersecting && count && count > offset) {
         setOffset(prevOffset => prevOffset + limit)
       }
     })
     if (node) observer.current.observe(node)
-  },[hasMore])
+  },[fetching, count, offset])
 
   useEffect(() => {
+    setFetching(true)
     const query = new URLSearchParams()
+    query.append('search', search)
     query.append('limit', limit.toString())
     query.append('offset', offset.toString())
     dispatch(getListProduct(query))
-  }, [dispatch, offset])
+  }, [dispatch, offset, search])
 
   useEffect(() => {
     if (status !== 'SUCCESS') return
 
-    setProducts(prevData => [...prevData, ...data.map((product) => mappedProduct(product, lang))])
     setTimeout(() => {
+      setProducts(prevData => [...prevData, ...data.map((product) => mappedProduct(product, lang))])
       setLoading(false)
-    }, 300)
+      setFetching(false)
+    }, 500)
   }, [status, data, lang])
 
   return (
@@ -92,7 +105,7 @@ export const ProductContainer = () => {
             alignItems: 'center',
           }}
         >
-          <ArrowRightRoundedIcon fontSize='large' /><span style={{ fontSize: theme.responsive[device]?.text.primary }}>Promotion Product</span>
+          <ArrowRightRoundedIcon fontSize='large' /><span style={{ fontSize: theme.responsive[device]?.text.primary }}>Product</span>
         </div>
         
         <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center', width: 'fit-content' }}>
@@ -175,6 +188,7 @@ export const ProductContainer = () => {
                 )
               })}
         </GridLayout>
+        {fetching && <div style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: 10 }}><CircularProgress style={{ width: 30, height: 30 }} /></div>}
       </div>
     </div>
   )

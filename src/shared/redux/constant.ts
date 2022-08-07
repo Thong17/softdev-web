@@ -33,8 +33,8 @@ export const initialState: ShareState = {
     status: 'INIT',
   },
   listProduct: {
-    data: {},
+    data: [],
     status: 'INIT',
-    hasMore: false,
+    count: 0,
   },
 }

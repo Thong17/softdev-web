@@ -5,7 +5,7 @@ export const productSchema = yup.object().shape({
     English: yup.string().required('English is required'),
   }),
   status: yup.boolean().optional(),
-  profile: yup.string().optional(),
+  profile: yup.mixed().optional(),
   description: yup.string().optional(),
   price: yup.number().required(),
   currency: yup.string().required(),

@@ -87,7 +87,7 @@ export const sharedSlice = createSlice({
       .addCase(getListProduct.fulfilled, (state, action) => {
         state.listProduct.status = 'SUCCESS'
         state.listProduct.data = action.payload.data
-        state.listProduct.hasMore = action.payload.hasMore
+        state.listProduct.count = action.payload.length
       })
 
       // Get Privilege from API
