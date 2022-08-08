@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getListBrand, getListCategory, getListProduct, selectListBrand, selectListCategory, selectListProduct } from 'shared/redux'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
-import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import SellRoundedIcon from '@mui/icons-material/SellRounded'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { CircularProgress, MenuItem, Skeleton } from '@mui/material'
@@ -15,15 +14,14 @@ import { MiniSearchField } from '../table/SearchField'
 import { MiniFilterButton } from '../table/FilterButton'
 import { SortIcon } from 'components/shared/icons/SortIcon'
 import { IOptions } from '../form/SelectField'
+import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
+import { IconButton } from '@mui/material'
 
 const mappedProduct = (data, lang) => {
-  const action = <AddRoundedIcon />
-  
   return {
     id: data?._id,
     name: data?.name?.[lang] || data?.name?.['English'],
     profile: data?.profile?.filename,
-    action,
     status: data?.status,
     price: currencyFormat(data?.price, data?.currency),
     tags: data?.tags,
@@ -33,7 +31,7 @@ const mappedProduct = (data, lang) => {
   }
 }
 
-export const ProductContainer = () => {
+export const ProductContainer = ({ onClickProduct, actions, filterSelected, selectedProducts }: any) => {
   const dispatch = useAppDispatch()
   const { data, count, hasMore, status } = useAppSelector(selectListProduct)
   const { data: listBrand, status: brandStatus } = useAppSelector(selectListBrand)
@@ -44,6 +42,7 @@ export const ProductContainer = () => {
   const [loading, setLoading] = useState(true)
   const [fetching, setFetching] = useState(false)
   const [products, setProducts] = useState<any[]>([])
+  const [selected, setSelected] = useState(false)
   const [brandOption, setBrandOption] = useState<IOptions[]>([
     {
       value: 'all',
@@ -67,6 +66,14 @@ export const ProductContainer = () => {
     name: false,
     createdAt: false,
   })
+
+  const handleToggleSelected = () => {
+    setSelected(!selected)
+  }
+
+  const handleClickProduct = (id) => {
+    onClickProduct && onClickProduct(id)
+  }
 
   const handleChangeFilter = ({ filter }) => {
     setSortObj({ ...sortObj, [filter]: !sortObj[filter] })
@@ -221,6 +228,8 @@ export const ProductContainer = () => {
             search={true}
             onChange={(event) => handleChangeOption(event.target.value, 'category')}
           />
+          {filterSelected && <IconButton onClick={handleToggleSelected} style={{ color: selected ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><DoneAllRoundedIcon fontSize='small' /></IconButton>}
+          {actions}
         </div>
       </div>
       <div style={{ border: theme.border.dashed, borderRadius: theme.radius.primary, borderWidth: 2 }}>
@@ -238,6 +247,8 @@ export const ProductContainer = () => {
                     action={product.action}
                     status={product.status}
                     display={product.display}
+                    onClick={() => handleClickProduct(product.id)}
+                    selected={selectedProducts?.includes(product.id)}
                   />
                 }
                 return (
@@ -250,6 +261,8 @@ export const ProductContainer = () => {
                     action={product.action}
                     status={product.status}
                     display={product.display}
+                    onClick={() => handleClickProduct(product.id)}
+                    selected={selectedProducts?.includes(product.id)}
                   />
                 )
               })

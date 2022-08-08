@@ -45,14 +45,24 @@ const PromotionForm = ({ defaultValues, id }: any) => {
   const [type, setType] = useState(defaultValues?.type || '')
   const typeValue = watch('type')
   const [isFixed, setIsFixed] = useState(defaultValues?.isFixed || false)
+  const [selectedProducts, setSelectedProducts] = useState<any>(defaultValues.products || [])
 
   useEffect(() => {
     const selectedType = typeOption.find((key) => key.value === typeValue)
     setType(selectedType?.value || '')
   }, [typeValue])
 
+  useEffect(() => {
+    setValue('products', selectedProducts)
+  }, [selectedProducts, setValue])
+
   const handleChangePromotion = (promotion) => {
     setValue('description', promotion)
+  }
+
+  const handleClickProduct = (id) => {
+    if (!selectedProducts.includes(id)) return setSelectedProducts(prev => [...prev, id])
+    setSelectedProducts(prev => prev.filter(item => item !== id))
   }
 
   const handleToggleCheck = () => {
@@ -172,7 +182,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
         </div>
       </div>
       <div style={{ display: 'grid' }}>
-        <ProductContainer />
+        <ProductContainer onClickProduct={handleClickProduct} filterSelected={true} selectedProducts={selectedProducts} />
       </div>
     </form>
   )

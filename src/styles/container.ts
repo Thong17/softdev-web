@@ -68,6 +68,17 @@ export const CustomGridContainer = styled('div')(
         width: '100%',
         height: 130,
         boxShadow: styled.shadow.secondary,
+        position: 'relative',
+        '& .selected': {
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: styled.background.primary,
+          opacity: 0.7
+        },
         '& .status': {
           position: 'absolute',
           left: 10,
