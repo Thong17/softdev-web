@@ -60,7 +60,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
   const [search, setSearch] = useState('')
   const [offset, setOffset] = useState(0)
   const [filterObj, setFilterObj] = useState<any>({ filter: 'createdAt', asc: false })
-  const limit = 10
+  const limit = 20
 
   const [sortObj, setSortObj] = useState({
     name: false,
