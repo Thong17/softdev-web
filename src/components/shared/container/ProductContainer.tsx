@@ -120,11 +120,6 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     })
     if (node) observer.current.observe(node)
   },[fetching, count, offset])
-
-  useEffect(() => {
-    dispatch(getListBrand())
-    dispatch(getListCategory())
-  }, [dispatch])
   
   useEffect(() => {
     if (brandStatus !== 'SUCCESS') return
@@ -184,9 +179,13 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
   }, [dispatch, offset, search, filterObj, brand, category, hasMore, count])
 
   useEffect(() => {
+    dispatch(getListBrand())
+    dispatch(getListCategory())
+  }, [dispatch])
+
+  useEffect(() => {
     if (status !== 'SUCCESS') return
     let unmounted = false
-
     setTimeout(() => {
       if (!unmounted) {
         setProducts(prevData => [...prevData, ...data.map((product) => mappedProduct(product, lang))])
