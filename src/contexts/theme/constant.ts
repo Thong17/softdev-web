@@ -1,8 +1,8 @@
 export const themeMode = {
   Blue: {
     background: {
-      primary: 'rgb(14, 25, 40)',
-      secondary: 'rgb(19, 47, 76)',
+      primary: '#0e1928',
+      secondary: '#132f4c',
       tertiary: '#555555',
       quaternary: '#666666'
     },

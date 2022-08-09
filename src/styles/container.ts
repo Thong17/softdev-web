@@ -478,6 +478,26 @@ export const CustomInvoiceContainer = styled('div')(
   })
 )
 
+export const CustomInvoiceForm = styled('div')(
+  ({
+    styled,
+    mode,
+    font,
+  }: {
+    styled: IThemeStyle
+    mode: 'preview' | 'invoice'
+    font: string
+  }) => ({
+    padding: '40px 20px',
+    color: mode === 'preview' ? styled.text.secondary : '#222',
+    fontFamily: font,
+    '& th': {
+      fontFamily: font,
+      fontSize: 18,
+    },
+  })
+)
+
 export const CustomStructureLayout = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
     height: '75vh',

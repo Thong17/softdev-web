@@ -4,7 +4,7 @@ import { Login } from 'modules/auth/Login'
 import { Register } from 'modules/auth/Register'
 import { Admin, Roles, CreateRole, UpdateRole, DetailRole, Users, CreateUser, UpdateUser, DetailUser } from 'modules/admin'
 import { Organize, Brands, Categories, CreateCategory, DetailCategory, UpdateCategory, CreateBrand, DetailBrand, UpdateBrand, Products, CreateProduct, DetailProduct, UpdateProduct, ProductSetup, Store, UpdateStore, LayoutForm } from 'modules/organize'
-import { CreatePromotion, DetailPromotion, Promotions, Sale, Stock, Stocks, UpdatePromotion } from 'modules/sale'
+import { Cashing, CreatePromotion, DetailPromotion, Promotions, Reservation, Sale, Stock, Stocks, UpdatePromotion } from 'modules/sale'
 import { Report } from 'modules/report'
 import { Counter } from 'modules/counter/Counter'
 import Config from 'modules/config/Config'
@@ -230,6 +230,7 @@ const routes: RouteObject[] = [
     path: '/sale',
     element: <Sale />,
     children: [
+      // Stock
       {
         path: 'stock',
         element: <Stocks />,
@@ -237,6 +238,18 @@ const routes: RouteObject[] = [
       {
         path: 'stock/item/:id',
         element: <Stock />,
+      },
+
+      // Cashing
+      {
+        path: 'cashing',
+        element: <Cashing />,
+      },
+
+      // Reservation
+      {
+        path: 'reservation',
+        element: <Reservation />,
       },
 
       // Promotion

@@ -24,7 +24,7 @@ export const DetailStore = ({
         justifyContent: 'start',
         alignItems: 'end',
         boxSizing: 'border-box',
-        marginBottom: 30,
+        marginBottom: 20,
       }}
     >
       <div style={{ padding: 10, boxShadow: theme.shadow.primary, borderRadius: theme.radius.primary }}>

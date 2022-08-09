@@ -8,7 +8,7 @@ import { InvoiceTable } from '../table/InvoiceTable'
 import { TextEllipsis } from '../TextEllipsis'
 import { FlexBetween } from './FlexBetween'
 
-const PreDate = ({ date }) => {
+export const PreDate = ({ date }) => {
   return (
     <TextEllipsis>
       <span>Date: </span>
@@ -17,7 +17,7 @@ const PreDate = ({ date }) => {
   )
 }
 
-const PreTime = ({ date }) => {
+export const PreTime = ({ date }) => {
   return (
     <TextEllipsis style={{ textAlign: 'end' }}>
       <span>{timeFormat(date)}</span>
@@ -25,7 +25,7 @@ const PreTime = ({ date }) => {
   )
 }
 
-const PreBorder = ({ styled }) => {
+export const PreBorder = ({ styled }) => {
   return (
     <div
       style={{
@@ -37,10 +37,9 @@ const PreBorder = ({ styled }) => {
   )
 }
 
-const ThermalBorder = ({ styled, position = 'bottom' }: any) => {
+export const ThermalBorder = ({ styled, position = 'bottom' }: any) => {
   return (
     <StyledThermalBorder styled={styled} position={position}>
-      <span></span>
       <span></span>
       <span></span>
       <span></span>
