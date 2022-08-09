@@ -68,6 +68,10 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
   })
 
   const handleToggleSelected = () => {
+    if (hasMore) {
+      setProducts([])
+      setOffset(0)
+    }
     setSelected(!selected)
   }
 
@@ -150,6 +154,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
           if (brand !== 'all' && brand !== data.brand) obj['display'] = 'none'
           if (category !== 'all' && category !== data.category) obj['display'] = 'none'
 
+          if (selected && !selectedProducts?.includes(data.id)) obj['display'] = 'none'
           return obj
         }).sort((a, b) => {
           if (!filterObj.asc) {
@@ -175,8 +180,9 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     query.append('brand', brand)
     query.append('category', category)
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
+    if (selected) query.append('products', JSON.stringify(selectedProducts))
     dispatch(getListProduct(query))
-  }, [dispatch, offset, search, filterObj, brand, category, hasMore, count])
+  }, [dispatch, offset, search, filterObj, brand, category, hasMore, count, selected, selectedProducts])
 
   useEffect(() => {
     dispatch(getListBrand())
