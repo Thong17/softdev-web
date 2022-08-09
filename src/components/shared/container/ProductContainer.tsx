@@ -140,7 +140,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
   
   useEffect(() => {
     // Client Side Filtering if all the products is loaded
-    if (!hasMore) {
+    if (!hasMore && count && count <= offset + limit) {
       const _search = new RegExp(search || '', "i")
       setProducts(prevData => {
         return prevData.map(data => {
@@ -181,16 +181,22 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     query.append('category', category)
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     dispatch(getListProduct(query))
-  }, [dispatch, offset, search, filterObj, brand, category, hasMore])
+  }, [dispatch, offset, search, filterObj, brand, category, hasMore, count])
 
   useEffect(() => {
     if (status !== 'SUCCESS') return
+    let unmounted = false
 
     setTimeout(() => {
-      setProducts(prevData => [...prevData, ...data.map((product) => mappedProduct(product, lang))])
-      setLoading(false)
-      setFetching(false)
+      if (!unmounted) {
+        setProducts(prevData => [...prevData, ...data.map((product) => mappedProduct(product, lang))])
+        setLoading(false)
+        setFetching(false)
+      }
     }, 300)
+    return () => {
+      unmounted = true
+    }
   }, [status, data, lang])
 
   return (
