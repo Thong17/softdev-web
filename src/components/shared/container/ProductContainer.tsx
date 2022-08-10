@@ -208,7 +208,8 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected && promotionId) query.append('promotion', promotionId)
     dispatch(getListProduct(query))
-  }, [dispatch, offset, search, favorite, filterObj, brand, category, hasMore, selected, selectedProducts, promotionId, user?.favorites])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, offset, search, favorite, filterObj, brand, category, selected])
 
   useEffect(() => {
     dispatch(getListBrand())
