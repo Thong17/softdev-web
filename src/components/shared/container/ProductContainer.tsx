@@ -14,6 +14,7 @@ import { MiniFilterButton } from '../table/FilterButton'
 import { SortIcon } from 'components/shared/icons/SortIcon'
 import { IOptions } from '../form/SelectField'
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
+import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded'
 import { IconButton } from '@mui/material'
 import { StockStatus } from '../StockStatus'
 
@@ -41,7 +42,7 @@ const mappedProduct = (data, lang) => {
   }
 }
 
-export const ProductContainer = ({ onClickProduct, actions, filterSelected, selectedProducts, promotionId }: any) => {
+export const ProductContainer = ({ onClickProduct, actions, filterSelected, selectedProducts, promotionId,  }: any) => {
   const dispatch = useAppDispatch()
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
@@ -69,6 +70,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
   ])
   const [brand, setBrand] = useState<any>('all')
   const [category, setCategory] = useState<any>('all')
+  const [favorite, setFavorite] = useState(false)
   const [search, setSearch] = useState('')
   const [offset, setOffset] = useState(0)
   const [filterObj, setFilterObj] = useState<any>({ filter: 'createdAt', asc: false })
@@ -78,6 +80,14 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     name: false,
     createdAt: false,
   })
+
+  const handleToggleFavorite = () => {
+    if (hasMore) {
+      setProducts([])
+      setOffset(0)
+    }
+    setFavorite(!favorite)
+  }
 
   const handleToggleSelected = () => {
     if (hasMore) {
@@ -191,10 +201,11 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     query.append('filter', filterObj.filter)
     query.append('brand', brand)
     query.append('category', category)
+    query.append('favorite', favorite ? 'on' : 'off')
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected && promotionId) query.append('promotion', promotionId)
     dispatch(getListProduct(query))
-  }, [dispatch, offset, search, filterObj, brand, category, hasMore, selected, selectedProducts, promotionId])
+  }, [dispatch, offset, search, favorite, filterObj, brand, category, hasMore, selected, selectedProducts, promotionId])
 
   useEffect(() => {
     dispatch(getListBrand())
@@ -253,6 +264,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
             search={true}
             onChange={(event) => handleChangeOption(event.target.value, 'category')}
           />
+          <IconButton onClick={handleToggleFavorite} style={{ color: selected ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><BookmarksRoundedIcon fontSize='small' /></IconButton>
           {filterSelected && <IconButton onClick={handleToggleSelected} style={{ color: selected ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><DoneAllRoundedIcon fontSize='small' /></IconButton>}
           {actions}
         </div>
@@ -273,6 +285,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}
                     selected={selectedProducts?.includes(product.id)}
+                    favorite={true}
                     promotion={product.promotion}
                   />
                 }
@@ -287,6 +300,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}
                     selected={selectedProducts?.includes(product.id)}
+                    favorite={true}
                     promotion={product.promotion}
                   />
                 )

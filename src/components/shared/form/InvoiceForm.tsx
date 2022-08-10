@@ -29,7 +29,6 @@ export const InvoiceForm = ({
         padding: '35px 0',
       }}
     >
-      <ThermalBorder styled={theme} position='top' />
       <CustomInvoiceForm
         mode='preview'
         style={{ minWidth: width, maxWidth: width }}

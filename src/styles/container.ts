@@ -79,6 +79,12 @@ export const CustomGridContainer = styled('div')(
           backgroundColor: styled.background.primary,
           opacity: 0.7
         },
+        '& .favorite': {
+          position: 'absolute',
+          top: 5,
+          right: 5,
+          color: styled.color.success,
+        },
         '& .status': {
           position: 'absolute',
           left: 10,
@@ -488,9 +494,10 @@ export const CustomInvoiceForm = styled('div')(
     mode: 'preview' | 'invoice'
     font: string
   }) => ({
-    padding: '40px 20px',
+    padding: '20px 20px 40px 20px',
+    borderRadius: `${styled.radius.secondary} ${styled.radius.secondary} 0 0`,
     color: mode === 'preview' ? styled.text.secondary : '#222',
-    background: `linear-gradient(0deg, ${styled.background.secondary}77, ${styled.background.secondary}33, ${styled.background.secondary}77)`,
+    background: `linear-gradient(0deg, ${styled.background.secondary}77, ${styled.background.secondary}33, ${styled.background.secondary}55)`,
     fontFamily: font,
     '& th': {
       fontFamily: font,
