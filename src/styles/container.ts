@@ -83,7 +83,20 @@ export const CustomGridContainer = styled('div')(
           position: 'absolute',
           top: 5,
           right: 5,
-          color: styled.color.success,
+          width: 25,
+          height: 25,
+          cursor: 'pointer',
+          transition: '0.2s ease',
+          borderRadius: styled.radius.primary,
+          color: styled.text.secondary,
+          display: 'grid',
+          placeItems: 'center',
+          '& svg.active': {
+            color: styled.color.success,
+          },
+          '& svg': {
+            fontSize: 23,
+          }
         },
         '& .status': {
           position: 'absolute',

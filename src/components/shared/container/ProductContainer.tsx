@@ -17,6 +17,7 @@ import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded'
 import { IconButton } from '@mui/material'
 import { StockStatus } from '../StockStatus'
+import useAuth from 'hooks/useAuth'
 
 const mappedProduct = (data, lang) => {
   let stock = 0
@@ -43,6 +44,7 @@ const mappedProduct = (data, lang) => {
 }
 
 export const ProductContainer = ({ onClickProduct, actions, filterSelected, selectedProducts, promotionId,  }: any) => {
+  const { user } = useAuth()
   const dispatch = useAppDispatch()
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
@@ -177,6 +179,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
           if (category !== 'all' && category !== data.category) obj['display'] = 'none'
           
           if (selected && !selectedProducts?.includes(data.id)) obj['display'] = 'none'
+          if (favorite && !user?.favorites?.includes(data.id)) obj['display'] = 'none'
           return obj
         }).sort((a, b) => {
           if (!filterObj.asc) {
@@ -205,7 +208,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected && promotionId) query.append('promotion', promotionId)
     dispatch(getListProduct(query))
-  }, [dispatch, offset, search, favorite, filterObj, brand, category, hasMore, selected, selectedProducts, promotionId])
+  }, [dispatch, offset, search, favorite, filterObj, brand, category, hasMore, selected, selectedProducts, promotionId, user?.favorites])
 
   useEffect(() => {
     dispatch(getListBrand())
@@ -264,7 +267,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
             search={true}
             onChange={(event) => handleChangeOption(event.target.value, 'category')}
           />
-          <IconButton onClick={handleToggleFavorite} style={{ color: selected ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><BookmarksRoundedIcon fontSize='small' /></IconButton>
+          <IconButton onClick={handleToggleFavorite} style={{ color: favorite ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><BookmarksRoundedIcon style={{ fontSize: 17 }} /></IconButton>
           {filterSelected && <IconButton onClick={handleToggleSelected} style={{ color: selected ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><DoneAllRoundedIcon fontSize='small' /></IconButton>}
           {actions}
         </div>
@@ -275,6 +278,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
             ? products?.map((product: any, index) => {
                 if (products.length === index + 1) {
                   return <GridItem
+                    id={product.id}
                     ref={lastProductElement}
                     key={index}
                     title={product.name}
@@ -285,12 +289,13 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}
                     selected={selectedProducts?.includes(product.id)}
-                    favorite={true}
+                    favorite={user?.favorites?.includes(product.id)}
                     promotion={product.promotion}
                   />
                 }
                 return (
                   <GridItem
+                    id={product.id}
                     key={index}
                     title={product.name}
                     picture={product.profile}
@@ -300,7 +305,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}
                     selected={selectedProducts?.includes(product.id)}
-                    favorite={true}
+                    favorite={user?.favorites?.includes(product.id)}
                     promotion={product.promotion}
                   />
                 )

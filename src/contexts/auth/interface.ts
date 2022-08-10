@@ -8,6 +8,7 @@ export interface IUser {
   photo?: string
   theme?: ThemeOptions
   language?: LanguageOptions
+  favorites?: string[]
 }
 
 export interface IAuthInit {

@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer } from 'react'
+import { createContext, useEffect, useReducer, useState } from 'react'
 import { AuthReducer } from './authReducer'
 import Axios from 'constants/functions/Axios'
 import { EnumAuth } from './authReducer'
@@ -15,6 +15,7 @@ const initState: IAuthInit = {
 
 export const AuthContext = createContext({
   ...initState,
+  reload: () => Promise.resolve(),
   login: (data: ILogin) => Promise.resolve(),
   register: (data: IRegister) => Promise.resolve(),
   logout: () => {},
@@ -23,10 +24,15 @@ export const AuthContext = createContext({
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
   const [state, dispatch] = useReducer(AuthReducer, initState)
+  const [toggleReload, setToggleReload] = useState(true)
   
   useEffect(() => {
     getProfile(dispatch)
-  }, [])
+  }, [toggleReload])
+
+  const reload = async () => {
+    setToggleReload(!toggleReload)
+  }
 
   const login = async (data: ILogin) => {
     try {
@@ -59,9 +65,9 @@ const AuthProvider = ({ children }) => {
     navigate('/login')
   }
   
-  if (!state.isInit) return <Loading></Loading>
+  if (!state.isInit) return <Loading />
   return (
-    <AuthContext.Provider value={{ ...state, login, logout, register }}>
+    <AuthContext.Provider value={{ ...state, reload, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   )
