@@ -41,7 +41,7 @@ const mappedProduct = (data, lang) => {
   }
 }
 
-export const ProductContainer = ({ onClickProduct, actions, filterSelected, selectedProducts }: any) => {
+export const ProductContainer = ({ onClickProduct, actions, filterSelected, selectedProducts, promotionId }: any) => {
   const dispatch = useAppDispatch()
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
@@ -165,7 +165,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
 
           if (brand !== 'all' && brand !== data.brand) obj['display'] = 'none'
           if (category !== 'all' && category !== data.category) obj['display'] = 'none'
-
+          
           if (selected && !selectedProducts?.includes(data.id)) obj['display'] = 'none'
           return obj
         }).sort((a, b) => {
@@ -192,9 +192,9 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     query.append('brand', brand)
     query.append('category', category)
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
-    if (selected) query.append('products', JSON.stringify(selectedProducts))
+    if (selected && promotionId) query.append('promotion', promotionId)
     dispatch(getListProduct(query))
-  }, [dispatch, offset, search, filterObj, brand, category, hasMore, selected, selectedProducts])
+  }, [dispatch, offset, search, filterObj, brand, category, hasMore, selected, selectedProducts, promotionId])
 
   useEffect(() => {
     dispatch(getListBrand())

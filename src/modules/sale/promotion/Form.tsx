@@ -182,7 +182,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
         </div>
       </div>
       <div style={{ display: 'grid' }}>
-        <ProductContainer onClickProduct={handleClickProduct} filterSelected={true} selectedProducts={selectedProducts} />
+        <ProductContainer onClickProduct={handleClickProduct} filterSelected={true} selectedProducts={selectedProducts} promotionId={id} />
       </div>
     </form>
   )
