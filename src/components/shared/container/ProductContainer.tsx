@@ -43,7 +43,9 @@ const mappedProduct = (data, lang) => {
 
 export const ProductContainer = ({ onClickProduct, actions, filterSelected, selectedProducts }: any) => {
   const dispatch = useAppDispatch()
-  const { data, count, hasMore, status } = useAppSelector(selectListProduct)
+  const [hasMore, setHasMore] = useState(true)
+  const [count, setCount] = useState(0)
+  const { data, count: countProduct, hasMore: hasMoreProduct, status } = useAppSelector(selectListProduct)
   const { data: listBrand, status: brandStatus } = useAppSelector(selectListBrand)
   const { data: listCategory, status: categoryStatus } = useAppSelector(selectListCategory)
   const { theme } = useTheme()
@@ -149,7 +151,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
   
   useEffect(() => {
     // Client Side Filtering if all the products is loaded
-    if (!hasMore && count && count <= offset + limit) {
+    if (!hasMore) {
       const _search = new RegExp(search || '', "i")
       setProducts(prevData => {
         return prevData.map(data => {
@@ -192,7 +194,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected) query.append('products', JSON.stringify(selectedProducts))
     dispatch(getListProduct(query))
-  }, [dispatch, offset, search, filterObj, brand, category, hasMore, count, selected, selectedProducts])
+  }, [dispatch, offset, search, filterObj, brand, category, hasMore, selected, selectedProducts])
 
   useEffect(() => {
     dispatch(getListBrand())
@@ -202,6 +204,8 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
   useEffect(() => {
     if (status !== 'SUCCESS') return
     let unmounted = false
+    setHasMore(hasMoreProduct || false)
+    setCount(countProduct || 0)
     setTimeout(() => {
       if (!unmounted) {
         setProducts(prevData => [...prevData, ...data.map((product) => mappedProduct(product, lang))])
@@ -212,7 +216,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     return () => {
       unmounted = true
     }
-  }, [status, data, lang])
+  }, [status, data, lang, hasMoreProduct, countProduct])
 
   return (
     <div>
