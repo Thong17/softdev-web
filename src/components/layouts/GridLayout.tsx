@@ -11,8 +11,8 @@ const Item = (props, ref) => {
     props
 
   return (
-    <div className='grid-item' ref={ref} style={{ display: display || 'block' }} {...prop}>
-      <div className='img' style={{ cursor: selected !== undefined ? 'pointer' : 'default' }}>
+    <div className='grid-item' ref={ref} style={{ display: display || 'block' }}>
+      <div className='img' style={{ cursor: selected !== undefined ? 'pointer' : 'default' }} {...prop}>
         {selected && <div className='selected'><DoneAllRoundedIcon /></div>}
         <div className='action'>
           {action}
