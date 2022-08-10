@@ -18,8 +18,13 @@ import { IconButton } from '@mui/material'
 import { StockStatus } from '../StockStatus'
 
 const mappedProduct = (data, lang) => {
-  const stock = 0
-  const alertAt = 0
+  let stock = 0
+  let alertAt = 0
+  data.stocks?.forEach(item => {
+    stock += item.quantity
+    alertAt += item.alertAt
+  })
+  
   return {
     id: data?._id,
     name: data?.name?.[lang] || data?.name?.['English'],
@@ -31,7 +36,8 @@ const mappedProduct = (data, lang) => {
     brand: data?.brand?._id,
     category: data?.category?._id,
     stock,
-    alertAt
+    alertAt,
+    promotion: data?.promotion
   }
 }
 
@@ -263,6 +269,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}
                     selected={selectedProducts?.includes(product.id)}
+                    promotion={product.promotion}
                   />
                 }
                 return (
@@ -276,6 +283,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}
                     selected={selectedProducts?.includes(product.id)}
+                    promotion={product.promotion}
                   />
                 )
               })

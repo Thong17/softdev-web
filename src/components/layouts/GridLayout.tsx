@@ -4,9 +4,10 @@ import useWeb from 'hooks/useWeb'
 import { forwardRef } from 'react'
 import { CustomGridContainer } from 'styles'
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
+import { PromotionTag } from 'components/shared/PromotionTag'
 
 const Item = (props, ref) => {
-  const { title, picture, subLeft, subRight, action, status, display, selected, ...prop } =
+  const { title, picture, subLeft, subRight, action, status, display, selected, promotion, ...prop } =
     props
 
   return (
@@ -16,6 +17,9 @@ const Item = (props, ref) => {
         <div className='action'>
           {action}
         </div>
+        {
+          promotion && <PromotionTag data={promotion} />
+        }
         { status !== undefined && <div className={`status ${status ? 'active' : 'inactive'}`}></div> }
         <img
           src={`${process.env.REACT_APP_API_UPLOADS}${
