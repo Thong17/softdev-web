@@ -2,7 +2,7 @@ import useTheme from "hooks/useTheme"
 import { useEffect, useState } from "react"
 import { TextEllipsis } from "./TextEllipsis"
 
-export const StockStatus = ({ qty, min, size }: any) => {
+export const StockStatus = ({ qty, min, size, label }: any) => {
   const { theme } = useTheme()
   const [status, setStatus] = useState('success')
 
@@ -33,7 +33,7 @@ export const StockStatus = ({ qty, min, size }: any) => {
         fontSize: size || 13
       }}
     >
-      <span style={{ width: 7, height: 7, backgroundColor: theme.color[status], borderRadius: theme.radius.circle, marginRight: 7 }}></span><span>{qty} Left</span>
+      <span style={{ width: 7, height: 7, backgroundColor: theme.color[status], borderRadius: theme.radius.circle, marginRight: 7 }}></span><span>{qty} {label}</span>
     </TextEllipsis>
   )
 }

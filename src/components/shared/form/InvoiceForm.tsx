@@ -32,7 +32,7 @@ export const InvoiceForm = ({
       <ThermalBorder styled={theme} position='top' />
       <CustomInvoiceForm
         mode='preview'
-        style={{ minWidth: width, maxWidth: width, background: `linear-gradient(0deg, ${theme.background.secondary}77, ${theme.background.secondary}33, ${theme.background.secondary}77)` }}
+        style={{ minWidth: width, maxWidth: width }}
         styled={theme}
         font={font}
       >

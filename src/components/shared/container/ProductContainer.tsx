@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getListBrand, getListCategory, getListProduct, selectListBrand, selectListCategory, selectListProduct } from 'shared/redux'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
-import SellRoundedIcon from '@mui/icons-material/SellRounded'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { CircularProgress, MenuItem, Skeleton } from '@mui/material'
 import useLanguage from 'hooks/useLanguage'
@@ -16,8 +15,11 @@ import { SortIcon } from 'components/shared/icons/SortIcon'
 import { IOptions } from '../form/SelectField'
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import { IconButton } from '@mui/material'
+import { StockStatus } from '../StockStatus'
 
 const mappedProduct = (data, lang) => {
+  const stock = 0
+  const alertAt = 0
   return {
     id: data?._id,
     name: data?.name?.[lang] || data?.name?.['English'],
@@ -28,6 +30,8 @@ const mappedProduct = (data, lang) => {
     createdAt: data?.createdAt,
     brand: data?.brand?._id,
     category: data?.category?._id,
+    stock,
+    alertAt
   }
 }
 
@@ -253,10 +257,9 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
                     key={index}
                     title={product.name}
                     picture={product.profile}
-                    subLeft={<SellRoundedIcon fontSize='small' />}
-                    subRight={product.price}
+                    subLeft={product.price}
+                    subRight={<StockStatus qty={product.stock} min={product.alertAt} />}
                     action={product.action}
-                    status={product.status}
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}
                     selected={selectedProducts?.includes(product.id)}
@@ -267,10 +270,9 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
                     key={index}
                     title={product.name}
                     picture={product.profile}
-                    subLeft={<SellRoundedIcon fontSize='small' />}
-                    subRight={product.price}
+                    subLeft={product.price}
+                    subRight={<StockStatus qty={product.stock} min={product.alertAt} />}
                     action={product.action}
-                    status={product.status}
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}
                     selected={selectedProducts?.includes(product.id)}

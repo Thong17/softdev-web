@@ -16,7 +16,7 @@ const Item = (props, ref) => {
         <div className='action'>
           {action}
         </div>
-        <div className={`status ${status ? 'active' : 'inactive'}`}></div>
+        { status !== undefined && <div className={`status ${status ? 'active' : 'inactive'}`}></div> }
         <img
           src={`${process.env.REACT_APP_API_UPLOADS}${
             picture ? picture : 'default.png'

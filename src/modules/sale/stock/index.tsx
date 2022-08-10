@@ -215,7 +215,7 @@ export const Stocks = () => {
                 title={obj.name}
                 picture={obj.profile}
                 subLeft='Qty'
-                subRight={<StockStatus qty={obj.stock} min={obj.alertAt} />}
+                subRight={<StockStatus qty={obj.stock} min={obj.alertAt} label='Left' />}
                 action={obj.action}
                 status={obj.status}
               />

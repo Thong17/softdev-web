@@ -490,6 +490,7 @@ export const CustomInvoiceForm = styled('div')(
   }) => ({
     padding: '40px 20px',
     color: mode === 'preview' ? styled.text.secondary : '#222',
+    background: `linear-gradient(0deg, ${styled.background.secondary}77, ${styled.background.secondary}33, ${styled.background.secondary}77)`,
     fontFamily: font,
     '& th': {
       fontFamily: font,
