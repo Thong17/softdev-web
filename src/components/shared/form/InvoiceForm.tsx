@@ -5,7 +5,7 @@ import useWeb from 'hooks/useWeb'
 import { CustomInvoiceForm } from 'styles'
 import { InvoiceTable } from '../table/InvoiceTable'
 import { FlexBetween } from '../container/FlexBetween'
-import { PreBorder, PreDate, PreTime, ThermalBorder } from '../container/InvoiceContainer'
+import { PreBorder, PreDate, PreTime } from '../container/InvoiceContainer'
 
 export const InvoiceForm = ({
   width = 410,
@@ -92,7 +92,6 @@ export const InvoiceForm = ({
           Thank you for coming
         </p>
       </CustomInvoiceForm>
-      <ThermalBorder styled={theme} position='bottom' />
     </div>
   )
 }

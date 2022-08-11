@@ -514,10 +514,10 @@ export const CustomInvoiceForm = styled('div')(
     mode: 'preview' | 'invoice'
     font: string
   }) => ({
-    padding: '20px 20px 40px 20px',
-    borderRadius: `${styled.radius.secondary} ${styled.radius.secondary} 0 0`,
+    padding: '25px 20px 30px 20px',
     color: mode === 'preview' ? styled.text.secondary : '#222',
-    background: `linear-gradient(0deg, ${styled.background.secondary}77, ${styled.background.secondary}33, ${styled.background.secondary}55)`,
+    backgroundColor: `${styled.background.secondary}77`,
+    borderRadius: styled.radius.quaternary,
     fontFamily: font,
     '& th': {
       fontFamily: font,

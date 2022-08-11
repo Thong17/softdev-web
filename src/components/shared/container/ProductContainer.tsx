@@ -286,7 +286,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
           {actions}
         </div>
       </div>
-      <div style={{ border: theme.border.dashed, borderRadius: theme.radius.primary, borderWidth: 2 }}>
+      <div style={{ border: theme.border.dashed, borderRadius: theme.radius.quaternary, borderWidth: 2 }}>
         <GridLayout>
           {!loading
             ? products?.map((product: any, index) => {
