@@ -44,7 +44,7 @@ const mappedProduct = (data, lang) => {
   }
 }
 
-export const ProductContainer = ({ onClickProduct, actions, filterSelected, filterPromotion, selectedProducts, promotionId,  }: any) => {
+export const ProductContainer = ({ onClickProduct, actions, filterSelected, filterPromotion, selectedProducts, promotionId, activeId }: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
   const [hasMore, setHasMore] = useState(true)
@@ -305,6 +305,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
                     selected={selectedProducts?.includes(product.id)}
                     favorite={user?.favorites?.includes(product.id)}
                     promotion={product.promotion}
+                    active={product.id === activeId}
                   />
                 }
                 return (
@@ -321,6 +322,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
                     selected={selectedProducts?.includes(product.id)}
                     favorite={user?.favorites?.includes(product.id)}
                     promotion={product.promotion}
+                    active={product.id === activeId}
                   />
                 )
               })

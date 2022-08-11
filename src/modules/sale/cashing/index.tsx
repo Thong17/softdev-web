@@ -4,19 +4,20 @@ import { ProductContainer } from 'components/shared/container/ProductContainer'
 import { InvoiceForm } from 'components/shared/form/InvoiceForm'
 import useWeb from 'hooks/useWeb'
 import { getInfoStore, selectInfoStore } from 'modules/organize/store/redux'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export const Cashing = () => {
   const { device } = useWeb()
   const dispatch = useAppDispatch()
   const { data: preview, status } = useAppSelector(selectInfoStore)
+  const [active, setActive] = useState(null)
 
   useEffect(() => {
     dispatch(getInfoStore())
   }, [dispatch])
 
   const handleClickProduct = (id) => {
-    console.log(id)
+    setActive(id)
   }
 
   return (
@@ -30,7 +31,7 @@ export const Cashing = () => {
           height: 'fit-content',
         }}
       >
-        <ProductContainer onClickProduct={handleClickProduct} filterPromotion={true} />
+        <ProductContainer onClickProduct={handleClickProduct} filterPromotion={true} activeId={active} />
         <div
           style={{
             display: 'flex',

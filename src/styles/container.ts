@@ -69,6 +69,13 @@ export const CustomGridContainer = styled('div')(
         height: 130,
         boxShadow: styled.shadow.secondary,
         position: 'relative',
+        '&.active': {
+          cursor: 'pointer'
+        },
+        '&:hover': {
+          backgroundColor: styled.background.primary,
+          opacity: 0.5
+        },
         '& .selected': {
           position: 'absolute',
           width: '100%',

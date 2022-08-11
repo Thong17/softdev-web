@@ -25,6 +25,7 @@ const Item = (props, ref) => {
     selected,
     promotion,
     favorite,
+    active,
     ...prop
   } = props
   const { notify } = useNotify()
@@ -72,11 +73,15 @@ const Item = (props, ref) => {
       style={{ display: display || 'block' }}
     >
       <div
-        className='img'
-        style={{ cursor: selected !== undefined ? 'pointer' : 'default' }}
+        className={ selected !== undefined ? 'img active' : active !== undefined ? 'img active' : 'img'}
         {...prop}
       >
         {selected && (
+          <div className='selected'>
+            <DoneAllRoundedIcon />
+          </div>
+        )}
+        {active && (
           <div className='selected'>
             <DoneAllRoundedIcon />
           </div>
