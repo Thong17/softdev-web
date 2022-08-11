@@ -64,7 +64,7 @@ export const currencyFormat = (value, currency) => {
   switch (true) {
     case currency === 'USD':
       symbol = <>&#36;</>
-      decimal = 2
+      decimal = value % 1 !== 0 ? 2 : 0
       break
 
     case currency === 'KHR':

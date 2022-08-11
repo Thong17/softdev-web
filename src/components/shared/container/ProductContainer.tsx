@@ -15,6 +15,7 @@ import { SortIcon } from 'components/shared/icons/SortIcon'
 import { IOptions } from '../form/SelectField'
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded'
+import DiscountIcon from '@mui/icons-material/Discount'
 import { IconButton } from '@mui/material'
 import { StockStatus } from '../StockStatus'
 import useAuth from 'hooks/useAuth'
@@ -43,7 +44,7 @@ const mappedProduct = (data, lang) => {
   }
 }
 
-export const ProductContainer = ({ onClickProduct, actions, filterSelected, selectedProducts, promotionId,  }: any) => {
+export const ProductContainer = ({ onClickProduct, actions, filterSelected, filterPromotion, selectedProducts, promotionId,  }: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
   const [hasMore, setHasMore] = useState(true)
@@ -58,6 +59,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
   const [fetching, setFetching] = useState(false)
   const [products, setProducts] = useState<any[]>([])
   const [selected, setSelected] = useState(false)
+  const [promotion, setPromotion] = useState(false)
   const [brandOption, setBrandOption] = useState<IOptions[]>([
     {
       value: 'all',
@@ -97,6 +99,14 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
       setOffset(0)
     }
     setSelected(!selected)
+  }
+
+  const handleTogglePromotion = () => {
+    if (hasMore) {
+      setProducts([])
+      setOffset(0)
+    }
+    setPromotion(!promotion)
   }
 
   const handleClickProduct = (id) => {
@@ -180,6 +190,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
           
           if (selected && !selectedProducts?.includes(data.id)) obj['display'] = 'none'
           if (favorite && !user?.favorites?.includes(data.id)) obj['display'] = 'none'
+          if (promotion && !data.promotion) obj['display'] = 'none'
           return obj
         }).sort((a, b) => {
           if (!filterObj.asc) {
@@ -205,11 +216,12 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
     query.append('brand', brand)
     query.append('category', category)
     query.append('favorite', favorite ? 'on' : 'off')
+    query.append('promotions', promotion ? 'on' : 'off')
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected && promotionId) query.append('promotion', promotionId)
     dispatch(getListProduct(query))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, offset, search, favorite, filterObj, brand, category, selected])
+  }, [dispatch, offset, search, favorite, promotion, filterObj, brand, category, selected])
 
   useEffect(() => {
     dispatch(getListBrand())
@@ -270,6 +282,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, sele
           />
           <IconButton onClick={handleToggleFavorite} style={{ color: favorite ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><BookmarksRoundedIcon style={{ fontSize: 17 }} /></IconButton>
           {filterSelected && <IconButton onClick={handleToggleSelected} style={{ color: selected ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><DoneAllRoundedIcon fontSize='small' /></IconButton>}
+          {filterPromotion && <IconButton onClick={handleTogglePromotion} style={{ color: promotion ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><DiscountIcon style={{ fontSize: 17 }} /></IconButton>}
           {actions}
         </div>
       </div>

@@ -30,7 +30,7 @@ export const Cashing = () => {
           height: 'fit-content',
         }}
       >
-        <ProductContainer onClickProduct={handleClickProduct} />
+        <ProductContainer onClickProduct={handleClickProduct} filterPromotion={true} />
         <div
           style={{
             display: 'flex',

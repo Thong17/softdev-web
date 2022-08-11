@@ -18,6 +18,7 @@ import {
 } from 'react'
 import { CustomMiniSelect, CustomSelect } from 'styles'
 import SearchIcon from '@mui/icons-material/Search'
+import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 
 export interface IOptions {
   value: any
@@ -67,6 +68,7 @@ const Input: ForwardRefRenderFunction<
         id={name}
         name={name}
         className={err && 'input-error'}
+        IconComponent={ArrowDropDownRoundedIcon}
         onClose={() => setSearchText('')}
         MenuProps={{
           autoFocus: false,
@@ -165,6 +167,7 @@ const MiniInput: ForwardRefRenderFunction<
         id={name}
         name={name}
         className={err && 'input-error'}
+        IconComponent={ArrowDropDownRoundedIcon}
         onClose={() => setSearchText('')}
         MenuProps={{
           autoFocus: false,

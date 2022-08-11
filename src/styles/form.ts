@@ -44,6 +44,7 @@ export const CustomMiniSelect = styled('div')(
       },
       '& svg': {
         color: styled.text.quaternary,
+        fontSize: 27
       },
     },
   })
@@ -416,6 +417,7 @@ export const CustomSelect = styled('div')(
       },
       '& svg': {
         color: styled.text.quaternary,
+        fontSize: 30
       },
     },
     '& div.input-error': {
