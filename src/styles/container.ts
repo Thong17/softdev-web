@@ -1,3 +1,4 @@
+import { Button } from '@mui/material'
 import { styled } from '@mui/system'
 import { IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
@@ -507,10 +508,12 @@ export const CustomInvoiceContainer = styled('div')(
 export const CustomInvoiceForm = styled('div')(
   ({
     styled,
+    device,
     mode,
     font,
   }: {
     styled: IThemeStyle
+    device: DeviceOptions
     mode: 'compact' | 'expand'
     font: string
   }) => ({
@@ -519,10 +522,14 @@ export const CustomInvoiceForm = styled('div')(
     position: 'sticky',
     top: 0,
     boxSizing: 'border-box',
-    backgroundColor: styled.background.secondary,
+    background: `linear-gradient(0deg, ${styled.background.secondary}aa, ${styled.background.secondary}33)`,
     minWidth: mode === 'expand' ? 410 : 50, 
     maxWidth: 410,
-    borderRadius: styled.radius.primary,
+    minHeight: '80vh',
+    borderRadius: styled.radius.quaternary,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     height: 'fit-content',
     '.toggle': {
       width: 50, 
@@ -536,13 +543,54 @@ export const CustomInvoiceForm = styled('div')(
       }
     },
     '.invoice-form': {
-      minHeight: '30vh',
+      minHeight: '300px',
+      padding: '0 10px',
       '& .form': {
-        display: mode === 'expand' ? 'block' : 'none', 
+        display: mode === 'expand' ? 'block' : 'none',
+        fontSize: styled.responsive[device]?.text.quaternary,
+        color: styled.text.secondary,
+        borderTop: styled.border.dashed,
+        padding: '10px 0',
+        '& .item': {
+          position: 'relative',
+          padding: '10px 13px',
+          display: 'flex',
+          alignItems: 'center',
+          borderRadius: styled.radius.ternary,
+          '&::before': {
+            content: `''`,
+            borderTop: styled.border.dashed,
+            position: 'absolute',
+            bottom: -1,
+            left: 10,
+            display: 'block',
+            width: 'calc(100% - 20px)'
+          },
+          '&:last-child::before': {
+            display: 'none',
+          },
+          '& .description': {
+            display: 'flex',
+            flexDirection: 'column',
+            flex: '0 65%',
+            '& .sub-description': {
+              fontSize: 11,
+              color: styled.text.quaternary
+            }
+          },
+          '& .discount': {
+            flex: '0 15%'
+          },
+          '& .total': {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flex: '0 20%'
+          },
+        }
       }
     },
     '.invoice-total': {
-      height: 170,
       boxSizing: 'border-box',
       display: 'flex',
       alignItems: 'center',
@@ -593,9 +641,9 @@ export const CustomInvoiceForm = styled('div')(
       }
     },
     '.invoice-payment': {
-      height: 47,
+      height: 57,
       display: 'flex',
-      alignItems: 'start',
+      alignItems: 'center',
       '& .total-container': {
         padding: '0 10px',
         width: '100%',
@@ -667,6 +715,21 @@ export const CustomStructureLayout = styled('div')(
           backgroundColor: `${styled.color.info}11`
         }
       }
+    }
+  })
+)
+
+export const CustomCustomerContainer = styled(Button)(
+  ({ styled, device }: { styled: IThemeStyle, device: DeviceOptions }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: '3px 5px 3px 7px',
+    borderRadius: styled.radius.secondary,
+    color: styled.text.secondary,
+    fontSize: styled.responsive[device]?.text.tertiary,
+    textTransform: 'none',
+    '&:hover': {
+      color: styled.text.primary
     }
   })
 )

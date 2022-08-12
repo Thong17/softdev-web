@@ -5,12 +5,17 @@ import { InvoiceForm } from 'components/shared/form/InvoiceForm'
 import useWeb from 'hooks/useWeb'
 import { getInfoStore, selectInfoStore } from 'modules/organize/store/redux'
 import { useEffect, useState } from 'react'
+import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
+import { IconButton } from '@mui/material'
+import useTheme from 'hooks/useTheme'
 
 export const Cashing = () => {
   const { device } = useWeb()
   const dispatch = useAppDispatch()
-  const { data: preview, status } = useAppSelector(selectInfoStore)
+  const { data: preview } = useAppSelector(selectInfoStore)
   const [active, setActive] = useState(null)
+  const [drawer, setDrawer] = useState(false)
+  const { theme } = useTheme()
 
   useEffect(() => {
     dispatch(getInfoStore())
@@ -31,22 +36,37 @@ export const Cashing = () => {
           height: 'fit-content',
         }}
       >
-        <ProductContainer onClickProduct={handleClickProduct} filterPromotion={true} activeId={active} />
+        <ProductContainer
+          onClickProduct={handleClickProduct}
+          filterPromotion={true}
+          activeId={active}
+          actions={
+            <IconButton
+              onClick={() => setDrawer(!drawer)}
+              style={{
+                color: drawer ? theme.color.success : theme.color.error,
+                width: 30,
+                height: 30,
+                marginRight: 10,
+              }}
+            >
+              <PriceChangeRoundedIcon style={{ fontSize: 23 }} />
+            </IconButton>
+          }
+        />
         <div
           style={{
             display: 'flex',
             justifyContent: 'center',
           }}
         >
-          {status === 'SUCCESS' && (
-            <InvoiceForm
-              name={preview?.name}
-              logo={preview?.logo || 'default.png'}
-              tax={preview?.tax}
-              font={preview?.font}
-              footer={preview?.other}
-            />
-          )}
+          <InvoiceForm
+            name={preview?.name}
+            logo={preview?.logo || 'default.png'}
+            tax={preview?.tax}
+            font={preview?.font}
+            footer={preview?.other}
+          />
         </div>
       </div>
     </Container>
