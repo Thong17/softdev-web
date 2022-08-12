@@ -26,7 +26,7 @@ export const Cashing = () => {
         style={{
           display: 'grid',
           gridTemplateColumns:
-            device === 'mobile' || device === 'tablet' ? '1fr' : '1fr 450px',
+            device === 'mobile' || device === 'tablet' ? '1fr' : '1fr auto',
           gridGap: 30,
           height: 'fit-content',
         }}

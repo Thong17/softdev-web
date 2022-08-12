@@ -511,18 +511,101 @@ export const CustomInvoiceForm = styled('div')(
     font,
   }: {
     styled: IThemeStyle
-    mode: 'preview' | 'invoice'
+    mode: 'compact' | 'expand'
     font: string
   }) => ({
-    padding: '25px 20px 30px 20px',
-    color: mode === 'preview' ? styled.text.secondary : '#222',
-    backgroundColor: `${styled.background.secondary}77`,
-    borderRadius: styled.radius.quaternary,
-    fontFamily: font,
-    '& th': {
-      fontFamily: font,
-      fontSize: 18,
+    overflowX: 'hidden',
+    overflowY: 'visible',
+    position: 'sticky',
+    top: 0,
+    boxSizing: 'border-box',
+    backgroundColor: styled.background.secondary,
+    minWidth: mode === 'expand' ? 410 : 50, 
+    maxWidth: 410,
+    borderRadius: styled.radius.primary,
+    height: 'fit-content',
+    '.toggle': {
+      width: 50, 
+      height: 50, 
+      display: 'grid', 
+      placeItems: 'center', 
+      cursor: 'pointer',
+      color: styled.text.secondary,
+      '&:hover': {
+        color: styled.color.info
+      }
     },
+    '.invoice-form': {
+      minHeight: '30vh',
+      '& .form': {
+        display: mode === 'expand' ? 'block' : 'none', 
+      }
+    },
+    '.invoice-total': {
+      height: 170,
+      boxSizing: 'border-box',
+      display: 'flex',
+      alignItems: 'center',
+      '& .total-container': {
+        padding: '0 10px',
+        height: '100%',
+        width: '100%',
+        '& .charge': {
+          display: mode === 'expand' ? 'flex' : 'none', 
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'start',
+          boxSizing: 'border-box',
+          padding: '10px 0',
+          height: 'calc(100% - 60px)',
+          width: '100%',
+          backgroundColor: `${styled.background.primary}77`,
+          borderRadius: `${styled.radius.ternary} ${styled.radius.ternary} 11px 11px`,
+          '& .item': {
+            boxSizing: 'border-box',
+            width: '100%',
+            padding: '5px 20px',
+            display: 'flex',
+            justifyContent: 'space-between'
+          }
+        },
+        '& .total': {
+          display: mode === 'expand' ? 'flex' : 'none', 
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          boxSizing: 'border-box',
+          padding: '0 20px',
+          height: 50,
+          width: '100%',
+          backgroundColor: `${styled.background.primary}77`,
+          borderRadius: `11px 11px ${styled.radius.ternary} ${styled.radius.ternary}`,
+          position: 'relative',
+          '&::before': {
+            content: `''`,
+            borderTop: styled.border.dashed,
+            position: 'absolute',
+            top: -1,
+            left: 10,
+            display: 'block',
+            width: 'calc(100% - 20px)'
+          }
+        }
+      }
+    },
+    '.invoice-payment': {
+      height: 47,
+      display: 'flex',
+      alignItems: 'start',
+      '& .total-container': {
+        padding: '0 10px',
+        width: '100%',
+        '& .total': {
+          display: mode === 'expand' ? 'block' : 'none',
+          boxSizing: 'border-box',
+          width: '100%',
+        }
+      }
+    }
   })
 )
 

@@ -1,97 +1,63 @@
-import { invoiceColumns } from 'constants/variables'
-import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
-import useWeb from 'hooks/useWeb'
-import { CustomInvoiceForm } from 'styles'
-import { InvoiceTable } from '../table/InvoiceTable'
+import { useState } from 'react'
+import { CustomButton, CustomInvoiceForm } from 'styles'
+import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
 import { FlexBetween } from '../container/FlexBetween'
-import { PreBorder, PreDate, PreTime } from '../container/InvoiceContainer'
 
 export const InvoiceForm = ({
-  width = 410,
   name = 'Shop Name',
   tax = 0,
-  font = 'Ariel'
+  font = 'Ariel',
 }: any) => {
-  const { user } = useAuth()
   const { theme } = useTheme()
-  const { device } = useWeb()
+  const [toggle, setToggle] = useState(false)
 
   return (
-    <div
-      style={{
-        overflowX: 'hidden',
-        overflowY: 'visible',
-        height: 'fit-content',
-        position: 'sticky',
-        top: 0,
-        minWidth: width,
-        boxSizing: 'border-box',
-        padding: '35px 0',
-      }}
+    <CustomInvoiceForm
+      mode={toggle ? 'expand' : 'compact'}
+      styled={theme}
+      font={font}
     >
-      <CustomInvoiceForm
-        mode='preview'
-        style={{ minWidth: width, maxWidth: width }}
-        styled={theme}
-        font={font}
-      >
-        <p
-          style={{
-            fontSize: theme.responsive[device]?.text.h1,
-            textAlign: 'center',
-            marginBottom: 20
-          }}
-        >
-          {name}
-        </p>
-        <FlexBetween>
-          <PreDate date={null} />
-          <PreTime date={null} />
-        </FlexBetween>
-        <FlexBetween>
-          <span>Invoice: INV0000000</span>
-          <span>Cashier: {user?.username}</span>
-        </FlexBetween>
-        <PreBorder styled={theme} />
-        <InvoiceTable columns={invoiceColumns} rows={[]} />
-        <PreBorder styled={theme} />
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'start',
-            justifyContent: 'space-between',
-          }}
-        >
-          <span>Total</span>
-          <div style={{ width: '50%' }}>
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'end' }}>
+        <div className='toggle' onClick={() => setToggle(!toggle)}>
+          <ShoppingCartRoundedIcon fontSize='small' />
+        </div>
+      </div>
+      <div className='invoice-form'>
+
+      </div>
+      <div className="invoice-total">
+        <div className="total-container">
+        <div className="charge">
+            <div className='item'>
+              <span>Subtotal</span>
+              <span>20.00$</span>
+            </div>
+            <div className='item'>
+              <span>Discount</span>
+              <span>10%</span>
+            </div>
+            <div className='item'>
+              <span>Tax</span>
+              <span>10%</span>
+            </div>
+          </div>
+          <div className="total">
+            <span>Total</span>
+            <span>20.00$</span>
+          </div>
+        </div>
+      </div>
+      <div className="invoice-payment">
+        <div className="total-container">
+          <div className="total">
             <FlexBetween>
-              <span>USD:</span>
-              <span>$</span>
-            </FlexBetween>
-            <FlexBetween>
-              <span>KHR:</span>
-              <span>$</span>
-            </FlexBetween>
-            <FlexBetween>
-              <span>Disc:</span>
-              <span>%</span>
-            </FlexBetween>
-            <FlexBetween>
-              <span>Tax:</span>
-              <span>{tax}%</span>
+              <CustomButton styled={theme} fullWidth style={{ color: theme.color.error, marginRight: 10 }}>Cancel</CustomButton>
+              <CustomButton styled={theme} fullWidth style={{ backgroundColor: `${theme.color.success}22`, color: theme.color.success }}>Payment</CustomButton>
             </FlexBetween>
           </div>
         </div>
-        <p
-          style={{
-            textAlign: 'center',
-            marginTop: 20
-          }}
-        >
-          Thank you for coming
-        </p>
-      </CustomInvoiceForm>
-    </div>
+      </div>
+    </CustomInvoiceForm>
   )
 }
