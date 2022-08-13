@@ -15,6 +15,7 @@ import {
   ForwardRefRenderFunction,
   useState,
   useMemo,
+  CSSProperties,
 } from 'react'
 import { CustomMiniSelect, CustomSelect } from 'styles'
 import SearchIcon from '@mui/icons-material/Search'
@@ -37,6 +38,7 @@ interface ISelectField extends SelectProps {
   hint?: string
   loading?: boolean
   search?: boolean
+  containerStyle?: CSSProperties
 }
 
 const containsText = (text, searchText) => {
@@ -145,7 +147,7 @@ const Input: ForwardRefRenderFunction<
 const MiniInput: ForwardRefRenderFunction<
   InputHTMLAttributes<HTMLSelectElement>,
   ISelectField
-> = ({ options, name, value, label, err, hint, loading, search = false, ...props }, ref) => {
+> = ({ options, name, value, label, err, hint, loading, search = false, containerStyle, ...props }, ref) => {
   const { theme } = useTheme()
   const { device } = useWeb()
 
@@ -160,6 +162,7 @@ const MiniInput: ForwardRefRenderFunction<
       styled={theme}
       device={device}
       active={value !== '' ? 'active' : undefined}
+      style={containerStyle}
     >
       <Select
         value={value}

@@ -5,7 +5,7 @@ import {
   forwardRef,
   ReactElement,
 } from 'react'
-import { CustomInput } from 'styles'
+import { CustomInput, CustomMiniInput } from 'styles'
 import useWeb from 'hooks/useWeb'
 
 interface ITextInput extends InputHTMLAttributes<HTMLInputElement> {
@@ -45,6 +45,30 @@ export const Input: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
   )
 }
 
+export const MiniInput: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
+  { label, err, hint, icon, ...props },
+  ref
+) => {
+  const { theme } = useTheme()
+  const { device } = useWeb()
+
+  return (
+    <CustomMiniInput styled={theme} device={device} icon={icon}>
+      <input
+        ref={ref}
+        placeholder=' '
+        autoComplete='new-password'
+        className={err && 'input-error'}
+        {...props}
+      />
+      <label>{label}</label>
+      <div className='err'>{err}</div>
+      <div className='hint'>{hint}</div>
+      <div className="icon" style={{ zIndex: 10, cursor: 'pointer' }}>{icon}</div>
+    </CustomMiniInput>
+  )
+}
+
 export const Detail: ForwardRefRenderFunction<HTMLTextAreaElement, IDetailInput> = ({ label, err, hint, ...props }, ref) => {
   const { theme } = useTheme()
   const { device } = useWeb()
@@ -65,7 +89,29 @@ export const Detail: ForwardRefRenderFunction<HTMLTextAreaElement, IDetailInput>
   )
 }
 
-const TextField = forwardRef(Input)
-const DetailField = forwardRef(Detail)
+export const MiniDetail: ForwardRefRenderFunction<HTMLTextAreaElement, IDetailInput> = ({ label, err, hint, ...props }, ref) => {
+  const { theme } = useTheme()
+  const { device } = useWeb()
 
-export { TextField, DetailField }
+  return (
+    <CustomMiniInput styled={theme} device={device} icon={undefined}>
+      <textarea
+        ref={ref}
+        placeholder=' '
+        autoComplete='new-password'
+        className={err && 'input-error'}
+        {...props}
+      ></textarea>
+      <label>{label}</label>
+      <div className='err'>{err}</div>
+      <div className='hint'>{hint}</div>
+    </CustomMiniInput>
+  )
+}
+
+const TextField = forwardRef(Input)
+const MiniTextField = forwardRef(MiniInput)
+const DetailField = forwardRef(Detail)
+const MiniDetailField = forwardRef(MiniDetail)
+
+export { TextField, DetailField, MiniTextField, MiniDetailField }

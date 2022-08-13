@@ -522,9 +522,9 @@ export const CustomInvoiceForm = styled('div')(
     position: 'sticky',
     top: 0,
     boxSizing: 'border-box',
-    background: `linear-gradient(0deg, ${styled.background.secondary}aa, ${styled.background.secondary}33)`,
-    minWidth: mode === 'expand' ? 410 : 50, 
-    maxWidth: 410,
+    background: `linear-gradient(0deg, ${styled.background.secondary}cc, ${styled.background.secondary}77)`,
+    minWidth: mode === 'expand' ? 510 : 50, 
+    maxWidth: 510,
     minHeight: '80vh',
     borderRadius: styled.radius.quaternary,
     display: 'flex',
@@ -549,44 +549,43 @@ export const CustomInvoiceForm = styled('div')(
         display: mode === 'expand' ? 'block' : 'none',
         fontSize: styled.responsive[device]?.text.quaternary,
         color: styled.text.secondary,
-        borderTop: styled.border.dashed,
         padding: '10px 0',
         '& .item': {
           position: 'relative',
-          padding: '10px 13px',
-          display: 'flex',
-          alignItems: 'center',
+          border: styled.border.dashed,
           borderRadius: styled.radius.ternary,
-          '&::before': {
-            content: `''`,
-            borderTop: styled.border.dashed,
-            position: 'absolute',
-            bottom: -1,
-            left: 10,
-            display: 'block',
-            width: 'calc(100% - 20px)'
-          },
-          '&:last-child::before': {
-            display: 'none',
-          },
-          '& .description': {
+          cursor: 'pointer',
+          padding: '7px 11px 7px 9px',
+          marginBottom: 10,
+          '& .item-description': {
             display: 'flex',
-            flexDirection: 'column',
-            flex: '0 65%',
-            '& .sub-description': {
-              fontSize: 11,
-              color: styled.text.quaternary
-            }
-          },
-          '& .discount': {
-            flex: '0 15%'
-          },
-          '& .total': {
-            display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'center',
-            flex: '0 20%'
+            '& .profile': {
+              marginRight: 10
+            },
+            '& .description': {
+              display: 'flex',
+              flexDirection: 'column',
+              flex: '0 65%',
+              '& .sub-description': {
+                fontSize: 11,
+                color: styled.text.quaternary,
+                marginTop: 3
+              }
+            },
+            '& .discount': {
+              flex: '0 15%'
+            },
+            '& .total': {
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flex: '0 20%'
+            },
           },
+          '& .item-form': {
+            padding: '0'
+          }
         }
       }
     },
