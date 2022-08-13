@@ -23,7 +23,7 @@ import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 
 export interface IOptions {
   value: any
-  label: string
+  label: any
   selected?: boolean
   display?: string
   tags?: string

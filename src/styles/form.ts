@@ -225,7 +225,7 @@ export const CustomMiniInput = styled('div')(
     icon: any
   }) => ({
     position: 'relative',
-    padding: '20px 0 10px 0',
+    padding: '20px 0 15px 0',
     overflow: 'hidden',
     '& label': {
       transition: '0.2s ease',

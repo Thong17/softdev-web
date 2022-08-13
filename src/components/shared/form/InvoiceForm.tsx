@@ -10,22 +10,55 @@ import { CircleIcon } from '../table/CustomIcon'
 import { MiniDetailField, MiniTextField } from './InputField'
 import Button from '../Button'
 import { currencyFormat } from 'utils'
-import { MiniSelectField } from './SelectField'
-import { currencyOptions } from 'constants/variables'
+import { IOptions, MiniSelectField } from './SelectField'
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { transactionSchema } from 'shared/schema'
 
-const isValidForm = () => {
-  return true
-}
+const currencyOptions: IOptions[] = [
+  {
+    value: 'USD',
+    label: <>&#36;</>,
+  },
+  {
+    value: 'KHR',
+    label: <>&#6107;</>,
+  },
+]
 
-const discountOptions = [
+const discountOptions: IOptions[] = [
   ...currencyOptions,
   {
     value: 'Percent',
-    label: 'PCT',
+    label: <>&#37;</>,
   },
 ]
+
+export const calculateTotal = (priceObj, discountObj, quantity, exchangeRate) => {
+  const { value: discount, currency: discountCurrency, isFixed } = discountObj
+  const { value: price, currency: priceCurrency } = priceObj
+  if (!discount || discount === 0) return currencyFormat(price * quantity, priceCurrency)
+
+  if (isFixed) {
+    if (discountCurrency !== 'Percent') return currencyFormat(discount * quantity, discountCurrency)
+    return currencyFormat(price * discount / 100 * quantity, priceCurrency)
+  }
+
+  if (discountCurrency === 'Percent') return currencyFormat((price - (price * discount / 100)) * quantity, priceCurrency)
+  if (discountCurrency === priceCurrency) return currencyFormat((price - discount) * quantity, priceCurrency)
+  
+  const { sellRate = 4000, buyRate = 4100 } = exchangeRate
+  let totalExchange = 0
+  if (discountCurrency === 'USD') {
+    totalExchange = discount * sellRate
+    return currencyFormat((price - totalExchange) * quantity, priceCurrency)
+  } else {
+    totalExchange = discount / buyRate
+    return currencyFormat((price - totalExchange) * quantity, priceCurrency)
+  }
+}
 
 export interface ICurrency {
   value: number
@@ -35,15 +68,12 @@ export interface ICurrency {
 
 export interface ITransactionItem {
   id: string | null
-  body: {
-    description: string
-    discount: ICurrency
-    price: ICurrency
-    total: ICurrency
-    quantity: number
-    profile?: string
-    note?: string
-  }
+  description: string
+  discount: ICurrency
+  price: ICurrency
+  quantity: number
+  profile?: string
+  note?: string
 }
 
 export const InvoiceForm = ({
@@ -52,52 +82,66 @@ export const InvoiceForm = ({
   font = 'Ariel',
   transaction,
 }: any) => {
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(transactionSchema), defaultValues: transaction })
   const { theme } = useTheme()
   const { device } = useWeb()
   const [toggle, setToggle] = useState(false)
   const [transactions, setTransactions] = useState<ITransactionItem[]>([
     {
       id: '1',
-      body: {
-        description: 'Macbook Pro 13 inches',
-        discount: { value: 20, currency: 'Percent', isFixed: false },
-        price: { value: 1333, currency: 'USD' },
-        total: { value: 1333, currency: 'USD' },
-        quantity: 1,
-      },
-    },
-  ])
-  const [form, setForm] = useState<ITransactionItem | null>({
-    id: '1',
-    body: {
       description: 'Macbook Pro 13 inches',
-      discount: { value: 20, currency: 'Percent', isFixed: false },
+      discount: { value: 20, currency: 'Percent', isFixed: true },
       price: { value: 1333, currency: 'USD' },
-      total: { value: 1333, currency: 'USD' },
       quantity: 1,
     },
-  })
+  ])
+  const [priceCurrency, setPriceCurrency] = useState('')
+  const [discountCurrency, setDiscountCurrency] = useState('')
+  const [isFixed, setIsFixed] = useState(false)
+  const discountCurrencyValue = watch('discount.currency')
+  const priceCurrencyValue = watch('price.currency')
+  const isFixedValue = watch('discount.isFixed')
 
   useEffect(() => {
-    setForm(transaction)
-  }, [transaction])
+    setIsFixed(isFixedValue)
+  }, [isFixedValue])
 
-  const handleSubmit = () => {
-    if (!isValidForm() || !form) return
-    setTransactions((prevTransactions) => [...prevTransactions, form])
+  useEffect(() => {
+    setPriceCurrency(priceCurrencyValue || 'USD')
+  }, [priceCurrencyValue])
+  
+  useEffect(() => {
+    setDiscountCurrency(discountCurrencyValue || 'Percent')
+  }, [discountCurrencyValue])
+  
+
+  const submit = (data) => {
+    setTransactions((prevTransactions) => prevTransactions.map((transaction) => transaction.id === data.id ? data : transaction))
   }
 
   const handleClickTransaction = (transaction) => {
-    setForm(transaction)
-  }
-
-  const handleChangeForm = (event) => {
-    console.log(event.target)
+    reset(transaction)
   }
 
   const handleCancelForm = (event) => {
-    setForm(null)
+    reset({})
     event.stopPropagation()
+  }
+
+  const toggleDiscountFix = () => {
+    setValue('discount.isFixed', !getValues('discount.isFixed'))
+  }
+
+  const handleChangeSelect = (event) => {
+    setValue(event.target.name, event.target.value)
   }
 
   return (
@@ -128,88 +172,96 @@ export const InvoiceForm = ({
                 <div
                   className='item'
                   key={key}
-                  onClick={() => handleClickTransaction(transaction)}
+                  onClick={() => {
+                    getValues('id') !== transaction.id && handleClickTransaction(transaction)
+                  }}
                 >
                   <div className='item-description'>
                     <div className='profile'>
-                      <CircleIcon icon={transaction.body?.profile} />
+                      <CircleIcon icon={transaction.profile} />
                     </div>
                     <div className='description'>
                       <span className='main-description'>
-                        {transaction.body?.description}
+                        {transaction.description}
                       </span>
                       <span className='sub-description'>
-                        Price:{' '}
+                        Price:
                         {currencyFormat(
-                          transaction.body?.price?.value,
-                          transaction.body?.price?.currency
+                          transaction.price?.value,
+                          transaction.price?.currency
                         )}
-                        ,{' '}
-                        <span style={{ color: theme.text.tertiary }}>
-                          Qty: {transaction.body?.quantity}
+                        {' '}|{' '}
+                        <span>
+                          Qty: {transaction.quantity}
                         </span>
                       </span>
                     </div>
                     <div className='discount'>
-                      {currencyFormat(
-                        transaction.body?.discount?.value,
-                        transaction.body?.discount?.currency
-                      )}
+                      <span className='main-description'>Disc</span>
+                      <span className='sub-description'>
+                        {transaction.discount?.isFixed ? '' : '-'}
+                        {currencyFormat(
+                          transaction.discount?.value,
+                          transaction.discount?.currency
+                        )}
+                      </span>
                     </div>
                     <div className='total'>
-                      {currencyFormat(
-                        transaction.body?.total?.value,
-                        transaction.body?.total?.currency
-                      )}
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className='main-description'>Total</span>
+                        <span className='sub-description'>{calculateTotal(transaction.price, transaction.discount, transaction.quantity, {})}</span>
+                      </div>
                       <CloseRoundedIcon
                         style={{ fontSize: 17, color: theme.color.error }}
                       />
                     </div>
                   </div>
                   <div className='item-form'>
-                    {form?.id === transaction.id && (
+                    {getValues('id') === transaction.id && (
                       <form
-                        onSubmit={handleSubmit}
+                        onSubmit={handleSubmit(submit)}
                         style={{
                           display: 'grid',
                           gridTemplateColumns: '1fr 1fr 1fr',
                           gridTemplateAreas: `'description description price''quantity discount discount''note note note''action action action'`,
                           gridColumnGap: 20,
-                          padding: 10,
+                          padding: '10px 0',
+                          borderTop: theme.border.dashed,
+                          margin: '10px 10px 0 10px'
                         }}
                       >
                         <div style={{ gridArea: 'description' }}>
                           <MiniTextField
                             type='text'
                             label='Description'
-                            name='description'
-                            value={form.body.description}
-                            onChange={handleChangeForm}
+                            err={errors?.description?.message}
+                            {...register('description')}
                           />
                         </div>
                         <div style={{ gridArea: 'price' }}>
                           <MiniTextField
                             type='number'
                             label='Price'
-                            name='price'
-                            value={form.body.price.value}
-                            onChange={handleChangeForm}
+                            err={errors?.price?.value?.message}
+                            {...register('price.value')}
                             icon={
                               <MiniSelectField
                                 options={currencyOptions}
-                                onChange={handleChangeForm}
-                                value={form.body.price.currency || 'USD'}
+                                err={errors?.price?.currency?.message}
+                                name='price.currency'
+                                onChange={handleChangeSelect}
+                                value={priceCurrency}
                                 sx={{
                                   position: 'absolute',
                                   top: -11,
-                                  right: -23,
+                                  right: -38,
                                   height: 23,
                                   '& .MuiSelect-select': {
                                     position: 'absolute',
                                     top: -2,
                                   },
                                   '& .MuiSvgIcon-root': {
-                                    right: 16
+                                    right: 33
                                   }
                                 }}
                               />
@@ -220,39 +272,40 @@ export const InvoiceForm = ({
                           <MiniTextField
                             type='number'
                             label='Quantity'
-                            name='quantity'
-                            value={form.body.quantity}
-                            onChange={handleChangeForm}
+                            err={errors?.quantity?.message}
+                            {...register('quantity')}
+
                           />
                         </div>
                         <div style={{ gridArea: 'discount' }}>
                           <MiniTextField
                             type='number'
                             label='Discount'
-                            name='discount'
-                            value={form.body.discount.value}
-                            onChange={handleChangeForm}
+                            err={errors?.discount?.value?.message}
+                            {...register('discount.value')}
                             icon={
                               <>
                                 <MiniSelectField
                                   options={discountOptions}
-                                  onChange={handleChangeForm}
-                                  value={form.body.discount.currency || 'Percent'}
+                                  err={errors?.discount?.currency?.message}
+                                  name='discount.currency'
+                                  onChange={handleChangeSelect}
+                                  value={discountCurrency}
                                   sx={{
                                     position: 'absolute',
                                     top: -11,
-                                    right: 5,
+                                    right: -10,
                                     height: 23,
                                     '& .MuiSelect-select': {
                                       position: 'absolute',
                                       top: -2,
                                     },
                                     '& .MuiSvgIcon-root': {
-                                      right: 16
+                                      right: 33
                                     }
                                   }}
                                 />
-                                { form.body.discount.isFixed ? <CheckBoxRoundedIcon fontSize='small' style={{ position: 'absolute', top: -10, right: 0, zIndex: 100 }} /> : <CheckBoxOutlineBlankRoundedIcon fontSize='small' style={{ position: 'absolute', top: -10, right: 0, zIndex: 100 }} />}
+                                {isFixed ? <CheckBoxRoundedIcon onClick={toggleDiscountFix} fontSize='small' style={{ position: 'absolute', top: -10, right: 0, zIndex: 100 }} /> : <CheckBoxOutlineBlankRoundedIcon onClick={toggleDiscountFix} fontSize='small' style={{ position: 'absolute', top: -10, right: 0, zIndex: 100 }} />}
                               </>
                             }
                           />
@@ -260,10 +313,8 @@ export const InvoiceForm = ({
                         <div style={{ gridArea: 'note' }}>
                           <MiniDetailField
                             label='Note'
-                            name='note'
-                            value={form.body.note}
                             style={{ height: 70 }}
-                            onChange={handleChangeForm}
+                            {...register('note')}
                           />
                         </div>
                         <div
