@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
 import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
+import { ProductForm } from './ProductForm'
 
 export const Cashing = () => {
   const { device } = useWeb()
@@ -15,6 +16,7 @@ export const Cashing = () => {
   const { data: preview } = useAppSelector(selectInfoStore)
   const [active, setActive] = useState(null)
   const [drawer, setDrawer] = useState(false)
+  const [productDialog, setProductDialog] = useState({ open: false, productId: null })
   const { theme } = useTheme()
 
   useEffect(() => {
@@ -23,10 +25,15 @@ export const Cashing = () => {
 
   const handleClickProduct = (id) => {
     setActive(id)
+    setProductDialog({ productId: id, open: true })
   }
 
   return (
     <Container>
+      <ProductForm
+        dialog={productDialog}
+        setDialog={setProductDialog}
+      />
       <div
         style={{
           display: 'grid',

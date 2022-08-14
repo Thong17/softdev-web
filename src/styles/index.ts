@@ -54,7 +54,7 @@ export const CustomSideNav = styled(Stack)(
     width: '100%',
     backgroundColor: styled.background.secondary,
     boxShadow: styled.shadow.secondary,
-    borderRadius: styled.radius.secondary,
+    borderRadius: styled.radius.ternary,
     '& a': {
       color: styled.text.primary,
       borderRadius: styled.radius.secondary,

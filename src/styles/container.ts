@@ -526,7 +526,7 @@ export const CustomInvoiceForm = styled('div')(
     minWidth: mode === 'expand' ? 460 : 50, 
     maxWidth: 460,
     minHeight: '80vh',
-    borderRadius: styled.radius.quaternary,
+    borderRadius: styled.radius.ternary,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',

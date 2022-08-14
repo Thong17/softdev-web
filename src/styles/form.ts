@@ -405,6 +405,7 @@ export const CustomUpload = styled('div')(
       padding: '0 13px',
       cursor: 'pointer',
       overflow: 'hidden',
+      transition: '0.3s ease',
       '&:hover, &:focus': {
         border: styled.border.tertiary,
       },
@@ -554,6 +555,7 @@ export const CustomSelect = styled('div')(
         display: 'flex',
         alignItems: 'center',
         border: styled.border.quaternary,
+        transition: '0.3s ease',
       },
       '& div:hover, & div:focus': {
         border: styled.border.tertiary,
