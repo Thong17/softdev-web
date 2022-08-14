@@ -22,7 +22,7 @@ import { ProductContainer } from 'components/shared/container/ProductContainer'
 const typeOption = [
   ...currencyOptions,
   {
-    value: 'percent',
+    value: 'PCT',
     label: 'Percent',
   },
 ]

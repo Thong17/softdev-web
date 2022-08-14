@@ -560,6 +560,7 @@ export const CustomInvoiceForm = styled('div')(
           '& .item-description': {
             display: 'flex',
             alignItems: 'center',
+            gap: 10,
             '& .profile': {
               marginRight: 10
             },
@@ -571,15 +572,19 @@ export const CustomInvoiceForm = styled('div')(
             '& .main-description': {
               fontSize: 12,
               color: styled.text.quaternary,
+              wordBreak: 'break-all'
             },
             '& .sub-description': {
-              marginTop: 3
+              height: 20,
+              lineHeight: 1,
+              display: 'flex',
+              alignItems: 'center',
             },
             '& .discount': {
-              flex: '0 15%',
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'start'
+              alignItems: 'start',
+              flex: '0 15%'
             },
             '& .total': {
               display: 'flex',
@@ -590,6 +595,11 @@ export const CustomInvoiceForm = styled('div')(
           },
           '& .item-form': {
             padding: '0'
+          },
+          '&.active': {
+            backgroundColor: `${styled.background.primary}88`,
+            borderColor: `${styled.background.primary}11`,
+            cursor: 'auto'
           }
         }
       }

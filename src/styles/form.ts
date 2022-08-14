@@ -157,6 +157,7 @@ export const CustomInput = styled('div')(
       fontFamily: `${styled.font.family} !important`,
       fontWeight: `${styled.font.weight} !important`,
       fontSize: `${styled.responsive[device].text.primary} !important`,
+      transition: '0.3s ease',
       '&:hover, &:focus': {
         border: styled.border.tertiary,
       },
@@ -301,6 +302,7 @@ export const CustomMiniInput = styled('div')(
       fontFamily: `${styled.font.family} !important`,
       fontWeight: `${styled.font.weight} !important`,
       fontSize: `${styled.responsive[device].text.tertiary} !important`,
+      transition: '0.3s ease',
       '&:hover, &:focus': {
         border: styled.border.tertiary,
       },

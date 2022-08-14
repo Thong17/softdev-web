@@ -16,6 +16,8 @@ import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutline
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { transactionSchema } from 'shared/schema'
+import { IconButton } from '@mui/material'
+import useAlert from 'hooks/useAlert'
 
 const currencyOptions: IOptions[] = [
   {
@@ -31,24 +33,37 @@ const currencyOptions: IOptions[] = [
 const discountOptions: IOptions[] = [
   ...currencyOptions,
   {
-    value: 'Percent',
+    value: 'PCT',
     label: <>&#37;</>,
   },
 ]
 
-export const calculateTotal = (priceObj, discountObj, quantity, exchangeRate) => {
+export const calculateTransactionTotal = (
+  priceObj,
+  discountObj,
+  quantity,
+  exchangeRate
+) => {
   const { value: discount, currency: discountCurrency, isFixed } = discountObj
   const { value: price, currency: priceCurrency } = priceObj
-  if (!discount || discount === 0) return currencyFormat(price * quantity, priceCurrency)
+
+  if (!discount || discount === 0)
+    return currencyFormat(price * quantity, priceCurrency)
 
   if (isFixed) {
-    if (discountCurrency !== 'Percent') return currencyFormat(discount * quantity, discountCurrency)
-    return currencyFormat(price * discount / 100 * quantity, priceCurrency)
+    if (discountCurrency !== 'PCT')
+      return currencyFormat(discount * quantity, discountCurrency)
+    return currencyFormat(((price * discount) / 100) * quantity, priceCurrency)
   }
 
-  if (discountCurrency === 'Percent') return currencyFormat((price - (price * discount / 100)) * quantity, priceCurrency)
-  if (discountCurrency === priceCurrency) return currencyFormat((price - discount) * quantity, priceCurrency)
-  
+  if (discountCurrency === 'PCT')
+    return currencyFormat(
+      (price - (price * discount) / 100) * quantity,
+      priceCurrency
+    )
+  if (discountCurrency === priceCurrency)
+    return currencyFormat((price - discount) * quantity, priceCurrency)
+
   const { sellRate = 4000, buyRate = 4100 } = exchangeRate
   let totalExchange = 0
   if (discountCurrency === 'USD') {
@@ -62,7 +77,7 @@ export const calculateTotal = (priceObj, discountObj, quantity, exchangeRate) =>
 
 export interface ICurrency {
   value: number
-  currency: 'USD' | 'KHR' | 'Percent'
+  currency: 'USD' | 'KHR' | 'PCT'
   isFixed?: boolean
 }
 
@@ -90,15 +105,26 @@ export const InvoiceForm = ({
     reset,
     watch,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(transactionSchema), defaultValues: transaction })
+  } = useForm({
+    resolver: yupResolver(transactionSchema),
+    defaultValues: transaction,
+  })
   const { theme } = useTheme()
   const { device } = useWeb()
+  const confirm = useAlert()
   const [toggle, setToggle] = useState(false)
   const [transactions, setTransactions] = useState<ITransactionItem[]>([
     {
       id: '1',
       description: 'Macbook Pro 13 inches',
-      discount: { value: 20, currency: 'Percent', isFixed: true },
+      discount: { value: 20, currency: 'PCT', isFixed: true },
+      price: { value: 1333, currency: 'USD' },
+      quantity: 1,
+    },
+    {
+      id: '2',
+      description: 'Macbook Pro 13 inches',
+      discount: { value: 20, currency: 'PCT', isFixed: true },
       price: { value: 1333, currency: 'USD' },
       quantity: 1,
     },
@@ -117,14 +143,14 @@ export const InvoiceForm = ({
   useEffect(() => {
     setPriceCurrency(priceCurrencyValue || 'USD')
   }, [priceCurrencyValue])
-  
+
   useEffect(() => {
-    setDiscountCurrency(discountCurrencyValue || 'Percent')
+    setDiscountCurrency(discountCurrencyValue || 'PCT')
   }, [discountCurrencyValue])
-  
 
   const submit = (data) => {
-    setTransactions((prevTransactions) => prevTransactions.map((transaction) => transaction.id === data.id ? data : transaction))
+    setTransactions(prev => prev.map(transaction => transaction.id === data.id ? data : transaction))
+    reset({})
   }
 
   const handleClickTransaction = (transaction) => {
@@ -142,6 +168,17 @@ export const InvoiceForm = ({
 
   const handleChangeSelect = (event) => {
     setValue(event.target.name, event.target.value)
+  }
+
+  const handleRemoveTransaction = (event, id) => {
+    confirm({
+      title: 'Remove Transaction',
+      description: 'Are you sure you want to remove this transaction?',
+      variant: 'error'
+    }).then(() => {
+      setTransactions(prev => prev.filter(transaction => transaction.id !== id))
+    }).catch(() => {})
+    event.stopPropagation()
   }
 
   return (
@@ -168,56 +205,62 @@ export const InvoiceForm = ({
         <div className='invoice-form'>
           <div className='form'>
             {transactions.map((transaction, key) => {
-              return (
-                <div
-                  className='item'
-                  key={key}
-                  onClick={() => {
-                    getValues('id') !== transaction.id && handleClickTransaction(transaction)
-                  }}
-                >
-                  <div className='item-description'>
-                    <div className='profile'>
-                      <CircleIcon icon={transaction.profile} />
-                    </div>
-                    <div className='description'>
-                      <span className='main-description'>
-                        {transaction.description}
-                      </span>
-                      <span className='sub-description'>
-                        Price:
-                        {currencyFormat(
-                          transaction.price?.value,
-                          transaction.price?.currency
-                        )}
-                        {' '}|{' '}
-                        <span>
-                          Qty: {transaction.quantity}
-                        </span>
-                      </span>
-                    </div>
-                    <div className='discount'>
-                      <span className='main-description'>Disc</span>
-                      <span className='sub-description'>
-                        {transaction.discount?.isFixed ? '' : '-'}
-                        {currencyFormat(
-                          transaction.discount?.value,
-                          transaction.discount?.currency
-                        )}
-                      </span>
-                    </div>
-                    <div className='total'>
-                      <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span className='main-description'>Total</span>
-                        <span className='sub-description'>{calculateTotal(transaction.price, transaction.discount, transaction.quantity, {})}</span>
+              if (getValues('id') === transaction.id) {
+                return (
+                  <div
+                    className='item active'
+                    key={key}
+                  >
+                    <div className='item-description'>
+                      <div className='profile'>
+                        <CircleIcon icon={transaction.profile} />
                       </div>
-                      <CloseRoundedIcon
-                        style={{ fontSize: 17, color: theme.color.error }}
-                      />
+                      <div className='description'>
+                        <span className='main-description'>
+                          {transaction.description}
+                        </span>
+                        <span className='sub-description'>
+                          Price:
+                          {currencyFormat(
+                            transaction.price?.value,
+                            transaction.price?.currency
+                          )}
+                          <span style={{ margin: '0 3px', color: theme.text.quaternary }}>|</span>
+                          <span>Qty: {transaction.quantity}</span>
+                        </span>
+                      </div>
+                      <div className='discount'>
+                        <span className='main-description'>Disc</span>
+                        <span className='sub-description'>
+                          {currencyFormat(
+                            transaction.discount?.value,
+                            transaction.discount?.currency
+                          )}
+                          {transaction.discount?.isFixed && <span style={{ marginLeft: 3 }}>Only</span>}
+                        </span>
+                      </div>
+                      <div className='total'>
+                        <div
+                          style={{ display: 'flex', flexDirection: 'column' }}
+                        >
+                          <span className='main-description'>Total</span>
+                          <span className='sub-description'>
+                            {calculateTransactionTotal(
+                              transaction.price,
+                              transaction.discount,
+                              transaction.quantity,
+                              {}
+                            )}
+                          </span>
+                        </div>
+                        <IconButton style={{ marginLeft: 5 }} onClick={(event) => handleRemoveTransaction(event, transaction.id)}>
+                          <CloseRoundedIcon
+                            style={{ fontSize: 17, color: theme.color.error,  }}
+                          />
+                        </IconButton>
+                      </div>
                     </div>
-                  </div>
-                  <div className='item-form'>
-                    {getValues('id') === transaction.id && (
+                    <div className='item-form'>
                       <form
                         onSubmit={handleSubmit(submit)}
                         style={{
@@ -227,7 +270,7 @@ export const InvoiceForm = ({
                           gridColumnGap: 20,
                           padding: '10px 0',
                           borderTop: theme.border.dashed,
-                          margin: '10px 10px 0 10px'
+                          margin: '10px 10px 0 10px',
                         }}
                       >
                         <div style={{ gridArea: 'description' }}>
@@ -261,8 +304,8 @@ export const InvoiceForm = ({
                                     top: -2,
                                   },
                                   '& .MuiSvgIcon-root': {
-                                    right: 33
-                                  }
+                                    right: 33,
+                                  },
                                 }}
                               />
                             }
@@ -274,7 +317,6 @@ export const InvoiceForm = ({
                             label='Quantity'
                             err={errors?.quantity?.message}
                             {...register('quantity')}
-
                           />
                         </div>
                         <div style={{ gridArea: 'discount' }}>
@@ -301,11 +343,33 @@ export const InvoiceForm = ({
                                       top: -2,
                                     },
                                     '& .MuiSvgIcon-root': {
-                                      right: 33
-                                    }
+                                      right: 33,
+                                    },
                                   }}
                                 />
-                                {isFixed ? <CheckBoxRoundedIcon onClick={toggleDiscountFix} fontSize='small' style={{ position: 'absolute', top: -10, right: 0, zIndex: 100 }} /> : <CheckBoxOutlineBlankRoundedIcon onClick={toggleDiscountFix} fontSize='small' style={{ position: 'absolute', top: -10, right: 0, zIndex: 100 }} />}
+                                {isFixed ? (
+                                  <CheckBoxRoundedIcon
+                                    onClick={toggleDiscountFix}
+                                    fontSize='small'
+                                    style={{
+                                      position: 'absolute',
+                                      top: -10,
+                                      right: 0,
+                                      zIndex: 100,
+                                    }}
+                                  />
+                                ) : (
+                                  <CheckBoxOutlineBlankRoundedIcon
+                                    onClick={toggleDiscountFix}
+                                    fontSize='small'
+                                    style={{
+                                      position: 'absolute',
+                                      top: -10,
+                                      right: 0,
+                                      zIndex: 100,
+                                    }}
+                                  />
+                                )}
                               </>
                             }
                           />
@@ -326,26 +390,88 @@ export const InvoiceForm = ({
                           }}
                         >
                           <Button
-                            variant='contained'
-                            color='error'
+                            style={{
+                              color: theme.color.error,
+                              backgroundColor: `${theme.color.error}33`,
+                            }}
                             onClick={handleCancelForm}
+                            fullWidth
                           >
                             Cancel
                           </Button>
                           <Button
                             type='submit'
-                            variant='contained'
-                            color='success'
-                            style={{ marginLeft: 20 }}
+                            style={{
+                              marginLeft: 20,
+                              color: theme.color.success,
+                              backgroundColor: `${theme.color.success}33`,
+                            }}
+                            fullWidth
                           >
                             Save
                           </Button>
                         </div>
                       </form>
-                    )}
+                    </div>
+                  </div>
+                )
+              } else {
+                return <div
+                  className='item'
+                  key={key}
+                  onClick={() => handleClickTransaction(transaction)}
+                >
+                  <div className='item-description'>
+                    <div className='profile'>
+                      <CircleIcon icon={transaction.profile} />
+                    </div>
+                    <div className='description'>
+                      <span className='main-description'>
+                        {transaction.description}
+                      </span>
+                      <span className='sub-description'>
+                        Price:
+                        {currencyFormat(
+                          transaction.price?.value,
+                          transaction.price?.currency
+                        )}
+                        <span style={{ margin: '0 3px', color: theme.text.quaternary }}>|</span>
+                        <span>Qty: {transaction.quantity}</span>
+                      </span>
+                    </div>
+                    <div className='discount'>
+                      <span className='main-description'>Disc</span>
+                      <span className='sub-description'>
+                        {currencyFormat(
+                          transaction.discount?.value,
+                          transaction.discount?.currency
+                        )}
+                        {transaction.discount?.isFixed && <span style={{ marginLeft: 3 }}>Only</span>}
+                      </span>
+                    </div>
+                    <div className='total'>
+                      <div
+                        style={{ display: 'flex', flexDirection: 'column' }}
+                      >
+                        <span className='main-description'>Total</span>
+                        <span className='sub-description'>
+                          {calculateTransactionTotal(
+                            transaction.price,
+                            transaction.discount,
+                            transaction.quantity,
+                            {}
+                          )}
+                        </span>
+                      </div>
+                      <IconButton style={{ marginLeft: 5 }} onClick={(event) => handleRemoveTransaction(event, transaction.id)}>
+                        <CloseRoundedIcon
+                          style={{ fontSize: 17, color: theme.color.error,  }}
+                        />
+                      </IconButton>
+                    </div>
                   </div>
                 </div>
-              )
+              }
             })}
           </div>
         </div>

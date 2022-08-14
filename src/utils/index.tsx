@@ -77,7 +77,7 @@ export const currencyFormat = (value, currency) => {
       decimal = 0
       break
   }
-  if (!value) return <span>0{symbol}</span>
+  if (!value || typeof value !== 'number') return <span>0{symbol}</span>
   return (
     <span>
       {value?.toFixed(decimal).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') || 0}
