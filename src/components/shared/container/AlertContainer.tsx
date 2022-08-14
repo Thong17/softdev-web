@@ -8,6 +8,11 @@ export const AlertContainer = ({ isOpen, handleClose, children, justify }) => {
     <div>
       <Dialog
         sx={{
+          '& div': {
+            color: theme.text.secondary,
+            fontFamily: theme.font.family,
+            fontWeight: theme.font.weight,
+          },
           '& .MuiDialog-container': {
             justifyContent: justify,
           },

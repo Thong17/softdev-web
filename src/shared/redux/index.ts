@@ -3,6 +3,17 @@ import { RootState } from 'app/store'
 import Axios from 'constants/functions/Axios'
 import { initialState } from './constant'
 
+export const getInfoProduct = createAsyncThunk(
+  'infoProduct/get',
+  async (id: string) => {
+    const response = await Axios({
+      method: 'GET',
+      url: `/shared/product/info/${id}`
+    })
+    return response?.data
+  }
+)
+
 export const getListRole = createAsyncThunk(
   'listRole/get',
   async () => {
@@ -87,6 +98,18 @@ export const sharedSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Get List Role from API
+      .addCase(getInfoProduct.pending, (state) => {
+        state.infoProduct.status = 'LOADING'
+      })
+      .addCase(getInfoProduct.rejected, (state) => {
+        state.infoProduct.status = 'FAILED'
+      })
+      .addCase(getInfoProduct.fulfilled, (state, action) => {
+        state.infoProduct.status = 'SUCCESS'
+        state.infoProduct.data = action.payload.data
+      })
+      
       // Get List Role from API
       .addCase(getListRole.pending, (state) => {
         state.listRole.status = 'LOADING'
@@ -175,6 +198,7 @@ export const sharedSlice = createSlice({
   },
 })
 
+export const selectInfoProduct = (state: RootState) => state.shared.infoProduct
 export const selectListRole = (state: RootState) => state.shared.listRole
 export const selectListBrand = (state: RootState) => state.shared.listBrand
 export const selectListCategory = (state: RootState) => state.shared.listCategory

@@ -8,7 +8,7 @@ export const Section = ({ children, describe, boxShadow, ...props }: any) => {
         style={{
           padding: 20,
           border: theme.border.quaternary,
-          borderRadius: theme.radius.secondary,
+          borderRadius: theme.radius.ternary,
           position: 'relative',
           boxShadow: boxShadow || ''
         }}

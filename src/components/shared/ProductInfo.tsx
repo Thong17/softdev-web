@@ -13,7 +13,7 @@ import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import { currencyFormat } from 'utils'
 
-export const ProductInfo = ({ info, loading, ...props }: any) => {
+export const ProductInfo = ({ info, previewColor, loading, ...props }: any) => {
   const [toSlide, setToSlide] = useState(0)
   const { theme } = useTheme()
   const { device } = useWeb()
@@ -99,14 +99,14 @@ export const ProductInfo = ({ info, loading, ...props }: any) => {
               height={20}
               style={{ marginTop: 10 }}
             />
-            <div style={{ display: 'flex', marginTop: 10 }}>
+            <div style={{ display: 'flex', margin: '10px 0' }}>
               <Skeleton
                 variant='rectangular'
-                height={20}
+                height={29}
                 width='30%'
                 style={{ marginRight: 10 }}
               />
-              <Skeleton variant='rectangular' height={20} width='70%' />
+              <Skeleton variant='rectangular' height={29} width='70%' />
             </div>
           </div>
         ) : (
@@ -165,94 +165,101 @@ export const ProductInfo = ({ info, loading, ...props }: any) => {
                 borderRadius: theme.radius.primary,
               }}
             >
-              <InfoRoundedIcon style={{ marginRight: 5, fontSize: theme.responsive[device]?.text.primary, verticalAlign: 'text-bottom' }} />
+              <InfoRoundedIcon
+                style={{
+                  marginRight: 5,
+                  fontSize: theme.responsive[device]?.text.primary,
+                  verticalAlign: 'text-bottom',
+                }}
+              />
               {info?.description}
             </p>
           </div>
         )}
       </div>
-      {isLoading ? (
-        <div>
-          <Skeleton
-            variant='rectangular'
-            height={30}
-            style={{ marginTop: 20 }}
-          />
-          <Skeleton
-            variant='rectangular'
-            height={30}
-            style={{ marginTop: 10 }}
-          />
-          <Skeleton
-            variant='rectangular'
-            height={30}
-            style={{ marginTop: 10 }}
-          />
-          <Skeleton
-            variant='rectangular'
-            height={30}
-            style={{ marginTop: 10 }}
-          />
-        </div>
-      ) : (
-        <div className='color-container'>
-          <div
-            style={{
-              fontSize: theme.responsive[device]?.text.h4,
-              marginBottom: 0,
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <ArrowRightRoundedIcon fontSize='large' /> Color
+      {previewColor &&
+        (isLoading ? (
+          <div>
+            <Skeleton
+              variant='rectangular'
+              height={30}
+              style={{ marginTop: 20 }}
+            />
+            <Skeleton
+              variant='rectangular'
+              height={30}
+              style={{ marginTop: 10 }}
+            />
+            <Skeleton
+              variant='rectangular'
+              height={30}
+              style={{ marginTop: 10 }}
+            />
+            <Skeleton
+              variant='rectangular'
+              height={30}
+              style={{ marginTop: 10 }}
+            />
           </div>
-          {info?.colors?.map((color, index) => {
-            return (
-              <div className='color' key={index}>
-                <div
-                  style={{
-                    position: 'relative',
-                    boxSizing: 'border-box',
-                    height: 40,
-                    width: '70%',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <div
-                    className='code'
-                    style={{
-                      backgroundColor: color.code,
-                      marginRight: 10,
-                      minWidth: 7,
-                    }}
-                  ></div>
+        ) : (
+          <div className='color-container'>
+            <div
+              style={{
+                fontSize: theme.responsive[device]?.text.h4,
+                marginBottom: 0,
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <ArrowRightRoundedIcon fontSize='large' /> Color
+            </div>
+            {info?.colors?.map((color, index) => {
+              return (
+                <div className='color' key={index}>
                   <div
                     style={{
+                      position: 'relative',
+                      boxSizing: 'border-box',
+                      height: 40,
+                      width: '70%',
                       display: 'flex',
-                      flexDirection: 'column',
-                      width: '100%',
+                      alignItems: 'center',
                     }}
                   >
-                    <TextEllipsis>
-                      {color?.name?.[lang] || color?.name?.['English']}
-                    </TextEllipsis>
-                    <TextEllipsis
+                    <div
+                      className='code'
                       style={{
-                        color: theme.text.tertiary,
-                        fontSize: theme.responsive[device]?.text.quaternary,
+                        backgroundColor: color.code,
+                        marginRight: 10,
+                        minWidth: 7,
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: '100%',
                       }}
                     >
-                      {color?.description}
-                    </TextEllipsis>
+                      <TextEllipsis>
+                        {color?.name?.[lang] || color?.name?.['English']}
+                      </TextEllipsis>
+                      <TextEllipsis
+                        style={{
+                          color: theme.text.tertiary,
+                          fontSize: theme.responsive[device]?.text.quaternary,
+                        }}
+                      >
+                        {color?.description}
+                      </TextEllipsis>
+                    </div>
                   </div>
+                  <span>+{currencyFormat(color.price, color.currency)}</span>
                 </div>
-                <span>+{currencyFormat(color.price, color.currency)}</span>
-              </div>
-            )
-          })}
-        </div>
-      )}
+              )
+            })}
+          </div>
+        ))}
     </CustomProductInfo>
   )
 }
