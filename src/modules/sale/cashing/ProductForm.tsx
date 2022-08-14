@@ -10,6 +10,9 @@ import { useEffect, useState } from 'react'
 import { getInfoProduct, selectInfoProduct } from 'shared/redux'
 import { CustomButton } from 'styles'
 import { CustomColorContainer, CustomOptionContainer } from 'styles/container'
+import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
+import AddRoundedIcon from '@mui/icons-material/AddRounded'
+import { IconButton } from '@mui/material'
 
 export const ProductForm = ({ dialog, setDialog }: any) => {
   const { theme } = useTheme()
@@ -42,7 +45,10 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
     >
       <div
         style={{
-          width: device === 'mobile' || device === 'tablet' ? 'calc(100vw - 62px)' : 'calc(100vw - 552px)',
+          width:
+            device === 'mobile' || device === 'tablet'
+              ? 'calc(100vw - 62px)'
+              : 'calc(100vw - 552px)',
           height: '100vh',
           padding: 20,
           overflowY: 'auto',
@@ -184,11 +190,35 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
               borderRadius: theme.radius.secondary,
               justifyContent: 'space-between',
               backgroundColor: `${theme.background.primary}99`,
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
             }}
           >
-            <span>Available: 90Qty</span>
-            <span>Total: 1,599$</span>
+            <span>90 available</span>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton>
+                <RemoveRoundedIcon style={{ fontSize: 16, color: theme.text.secondary }} />
+              </IconButton>
+              <input
+                placeholder='Qty'
+                type='number'
+                name='qty'
+                id='qty'
+                style={{
+                  width: 37,
+                  padding: '2px 5px',
+                  height: 22,
+                  outline: 'none',
+                  border: theme.border.quaternary,
+                  background: 'none',
+                  borderRadius: theme.radius.primary,
+                  color: theme.text.secondary,
+                }}
+              />
+              <IconButton>
+                <AddRoundedIcon style={{ fontSize: 16, color: theme.text.secondary }} />
+              </IconButton>
+            </div>
+            <span>Total 1,599$</span>
           </div>
           <div style={{ width: '50%', display: 'flex' }}>
             <CustomButton
@@ -202,7 +232,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
               onClick={handleCloseDialog}
               fullWidth
             >
-              Close
+              Cancel
             </CustomButton>
             <CustomButton
               styled={theme}
