@@ -39,32 +39,36 @@ export const Cashing = () => {
           display: 'grid',
           gridTemplateColumns:
             device === 'mobile' || device === 'tablet' ? '1fr' : '1fr auto',
+          gridTemplateAreas: device === 'mobile' || device === 'tablet' ? `'invoice invoice''product product'` : `'product invoice'`,
           gridGap: 30,
           height: 'fit-content',
         }}
       >
-        <ProductContainer
-          onClickProduct={handleClickProduct}
-          filterPromotion={true}
-          activeId={active}
-          actions={
-            <IconButton
-              onClick={() => setDrawer(!drawer)}
-              style={{
-                color: drawer ? theme.color.success : theme.color.error,
-                width: 30,
-                height: 30,
-                marginRight: 10,
-              }}
-            >
-              <PriceChangeRoundedIcon style={{ fontSize: 23 }} />
-            </IconButton>
-          }
-        />
+        <div style={{ gridArea: 'product' }}>
+          <ProductContainer
+            onClickProduct={handleClickProduct}
+            filterPromotion={true}
+            activeId={active}
+            actions={
+              <IconButton
+                onClick={() => setDrawer(!drawer)}
+                style={{
+                  color: drawer ? theme.color.success : theme.color.error,
+                  width: 30,
+                  height: 30,
+                  marginRight: 10,
+                }}
+              >
+                <PriceChangeRoundedIcon style={{ fontSize: 23 }} />
+              </IconButton>
+            }
+          />
+        </div>
         <div
           style={{
             display: 'flex',
             justifyContent: 'center',
+            gridArea: 'invoice'
           }}
         >
           <InvoiceForm

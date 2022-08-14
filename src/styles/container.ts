@@ -523,9 +523,9 @@ export const CustomInvoiceForm = styled('div')(
     top: 0,
     boxSizing: 'border-box',
     background: `linear-gradient(0deg, ${styled.background.secondary}cc, ${styled.background.secondary}77)`,
-    minWidth: mode === 'expand' ? 460 : 50, 
-    maxWidth: 460,
-    minHeight: '80vh',
+    minWidth: device === 'laptop' || device === 'desktop' ? (mode === 'expand' ? 460 : 50) : '100%', 
+    maxWidth: device === 'laptop' || device === 'desktop' ? 460 : '100%',
+    minHeight: device === 'laptop' || device === 'desktop' ? '80vh' : (mode === 'expand' ? '80vh' : 50),
     borderRadius: styled.radius.ternary,
     display: 'flex',
     flexDirection: 'column',
@@ -543,7 +543,7 @@ export const CustomInvoiceForm = styled('div')(
       }
     },
     '.invoice-form': {
-      minHeight: '300px',
+      minHeight: device === 'laptop' || device === 'desktop' ? 300 : (mode === 'expand' ? 300 : 0),
       padding: '0 10px',
       '& .form': {
         display: mode === 'expand' ? 'block' : 'none',
@@ -655,7 +655,7 @@ export const CustomInvoiceForm = styled('div')(
       }
     },
     '.invoice-payment': {
-      height: 57,
+      height: device === 'laptop' || device === 'desktop' ? 57 : (mode === 'expand' ? 57 : 0),
       display: 'flex',
       alignItems: 'center',
       '& .total-container': {

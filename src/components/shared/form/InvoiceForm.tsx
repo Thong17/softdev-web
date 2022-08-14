@@ -197,7 +197,7 @@ export const InvoiceForm = ({
             alignItems: 'center',
           }}
         >
-          {toggle && <CustomerContainer style={{ marginLeft: 10 }} />}
+          { device === 'laptop' || device === 'desktop' ? (toggle && <CustomerContainer style={{ marginLeft: 10 }} />) : <CustomerContainer style={{ marginLeft: 10 }} /> }
           <div className='toggle' onClick={() => setToggle(!toggle)}>
             <ShoppingCartRoundedIcon fontSize='small' />
           </div>
@@ -392,7 +392,7 @@ export const InvoiceForm = ({
                           <Button
                             style={{
                               color: theme.color.error,
-                              backgroundColor: `${theme.color.error}33`,
+                              backgroundColor: `${theme.color.error}22`,
                             }}
                             onClick={handleCancelForm}
                             fullWidth
@@ -403,8 +403,8 @@ export const InvoiceForm = ({
                             type='submit'
                             style={{
                               marginLeft: 20,
-                              color: theme.color.success,
-                              backgroundColor: `${theme.color.success}33`,
+                              color: theme.color.info,
+                              backgroundColor: `${theme.color.info}22`,
                             }}
                             fullWidth
                           >
@@ -540,8 +540,8 @@ export const InvoiceForm = ({
                   styled={theme}
                   fullWidth
                   style={{
-                    backgroundColor: `${theme.color.info}22`,
-                    color: theme.color.info,
+                    backgroundColor: `${theme.color.success}22`,
+                    color: theme.color.success,
                     borderRadius: theme.radius.secondary,
                   }}
                 >
