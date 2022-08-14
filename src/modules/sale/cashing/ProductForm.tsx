@@ -21,6 +21,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
   const dispatch = useAppDispatch()
   const { data, status } = useAppSelector(selectInfoProduct)
   const [product, setProduct] = useState<any>(null)
+  const [quantity, setQuantity] = useState<number>(0)
 
   useEffect(() => {
     if (!dialog.productId) return
@@ -35,6 +36,11 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false, productId: null })
     setProduct(null)
+  }
+
+  const handleChangeQuantity = (event) => {
+    let value = event.target.value
+    setQuantity(value)
   }
 
   return (
@@ -195,14 +201,17 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
           >
             <span>90 available</span>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <IconButton>
+              <IconButton onClick={() => setQuantity(prev => prev > 0 ? prev - 1 : prev)}>
                 <RemoveRoundedIcon style={{ fontSize: 16, color: theme.text.secondary }} />
               </IconButton>
               <input
+                value={quantity}
+                onChange={handleChangeQuantity}
                 placeholder='Qty'
                 type='number'
                 name='qty'
                 id='qty'
+                min='0'
                 style={{
                   width: 37,
                   padding: '2px 5px',
@@ -214,7 +223,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                   color: theme.text.secondary,
                 }}
               />
-              <IconButton>
+              <IconButton onClick={() => setQuantity(prev => typeof prev === 'string' ? parseInt(prev || 0) + 1 : prev + 1)}>
                 <AddRoundedIcon style={{ fontSize: 16, color: theme.text.secondary }} />
               </IconButton>
             </div>
