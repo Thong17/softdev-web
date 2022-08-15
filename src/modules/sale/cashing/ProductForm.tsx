@@ -21,7 +21,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
   const dispatch = useAppDispatch()
   const { data, status } = useAppSelector(selectInfoProduct)
   const [product, setProduct] = useState<any>(null)
-  const [quantity, setQuantity] = useState<number>(0)
+  const [quantity, setQuantity] = useState<number>(1)
 
   useEffect(() => {
     if (!dialog.productId) return
@@ -201,7 +201,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
           >
             <span>90 available</span>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <IconButton onClick={() => setQuantity(prev => prev > 0 ? prev - 1 : prev)}>
+              <IconButton onClick={() => setQuantity(prev => prev > 1 ? prev - 1 : prev)}>
                 <RemoveRoundedIcon style={{ fontSize: 16, color: theme.text.secondary }} />
               </IconButton>
               <input
@@ -211,7 +211,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                 type='number'
                 name='qty'
                 id='qty'
-                min='0'
+                min='1'
                 style={{
                   width: 37,
                   padding: '2px 5px',
@@ -223,7 +223,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                   color: theme.text.secondary,
                 }}
               />
-              <IconButton onClick={() => setQuantity(prev => typeof prev === 'string' ? parseInt(prev || 0) + 1 : prev + 1)}>
+              <IconButton onClick={() => setQuantity(prev => typeof prev === 'string' ? parseInt(prev || 1) + 1 : prev + 1)}>
                 <AddRoundedIcon style={{ fontSize: 16, color: theme.text.secondary }} />
               </IconButton>
             </div>

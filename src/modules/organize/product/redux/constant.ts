@@ -21,6 +21,8 @@ export interface IOptionBody {
   description: string,
   profile?: any,
   imagePath?: IImage
+  isRequire: boolean
+  choice: string
 }
 
 export interface IColorBody {
@@ -56,6 +58,8 @@ export const initOption: IOptionBody = {
   currency: 'USD',
   price: 0,
   description: '',
+  isRequire: false,
+  choice: 'SINGLE'
 }
 
 export const initColor: IColorBody = {
@@ -81,7 +85,9 @@ export const mapOptionBody = (body) => {
     imagePath: body.profile && {
       _id: body.profile?._id,
       filename: body.profile?.filename
-    }
+    },
+    isRequire: body?.isRequire,
+    choice: body?.choice
   }
 }
 

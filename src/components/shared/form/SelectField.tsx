@@ -42,7 +42,7 @@ interface ISelectField extends SelectProps {
 }
 
 const containsText = (text, searchText) => {
-  return text.toLowerCase().indexOf(searchText.toLowerCase()) > -1
+  return text?.toLowerCase().indexOf(searchText?.toLowerCase()) > -1
 }
 
 const Input: ForwardRefRenderFunction<
