@@ -30,12 +30,12 @@ export const choiceOptions: IOptions[] = [
 
 export const requireOptions: IOptions[] = [
   {
-    value: true,
-    label: 'Require',
+    value: false,
+    label: 'Optional',
   },
   {
-    value: false,
-    label: 'Not require',
+    value: true,
+    label: 'Require',
   },
 ]
 

@@ -13,6 +13,7 @@ import { CustomColorContainer, CustomOptionContainer } from 'styles/container'
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { IconButton } from '@mui/material'
+import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
 
 export const ProductForm = ({ dialog, setDialog }: any) => {
   const { theme } = useTheme()
@@ -22,6 +23,11 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
   const { data, status } = useAppSelector(selectInfoProduct)
   const [product, setProduct] = useState<any>(null)
   const [quantity, setQuantity] = useState<number>(1)
+  const [productOptions, setProductOptions] = useState<any[]>([])
+
+  useEffect(() => {
+    console.log(productOptions)
+  }, [productOptions])
 
   useEffect(() => {
     if (!dialog.productId) return
@@ -31,6 +37,31 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
 
   useEffect(() => {
     setProduct(data)
+    let propertyOption: any[] = []
+
+    data?.properties?.forEach((property) => {
+      let optionValue = null
+      let optionValues: any[] = []
+
+      data?.options?.forEach((option) => {
+        if (option.isDefault && option.property === property._id) {
+          if (property.choice !== 'SINGLE') {
+            optionValues = [...optionValues, option._id]
+          } else {
+            optionValue = option._id
+          }
+        }
+      })
+
+      propertyOption.push({
+        id: property._id,
+        isRequire: property.isRequire,
+        choice: property.choice,
+        [property.choice === 'SINGLE' ? 'option' : 'options']:
+          property.choice === 'SINGLE' ? optionValue : optionValues,
+      })
+    })
+    setProductOptions(propertyOption)
   }, [data])
 
   const handleCloseDialog = () => {
@@ -41,6 +72,16 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
   const handleChangeQuantity = (event) => {
     let value = event.target.value
     setQuantity(value)
+  }
+
+  const handleClickOption = (optionId, propId, choice) => {
+    setProductOptions(prev => {
+      const prop = prev.find(prop => prop.id === propId)
+      let key = choice !== 'SINGLE' ? 'options' : 'option'
+      let value = choice !== 'SINGLE' ? [...prop.options, optionId] : optionId
+
+      return prev.map(prop => prop.id !== propId ? prop : ({ ...prop, [key]: value }))
+    })
   }
 
   return (
@@ -134,10 +175,16 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
             </Section>
           )}
           {product?.properties?.map((property, key) => {
+            if (property.options?.length < 1)
+              return <div key={key} style={{ display: 'none' }}></div>
+            const propertyOption = productOptions.find(prop => prop.id === property._id)
+
             return (
               <Section
                 key={key}
-                describe={property.name[lang] || property.name['English']}
+                describe={`${
+                  property.name[lang] || property.name['English']
+                } (${property.isRequire ? '1 Required' : 'Optional'})`}
                 style={{
                   boxShadow: theme.shadow.secondary,
                   borderRadius: theme.radius.ternary,
@@ -150,9 +197,18 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                   loading={'false'}
                 >
                   {product?.options?.map((option, index) => {
+                    const selected = property.choice === 'SINGLE' ? propertyOption?.option === option._id : propertyOption?.options?.includes(option._id)
                     return (
                       option.property === property._id && (
-                        <div key={index} className='option-container'>
+                        <div
+                          onClick={() => handleClickOption(option._id, property._id, property.choice)}
+                          key={index}
+                          className='option-container'
+                          style={{ border: selected ? `1px solid ${theme.color.info}` : theme.border.quaternary, cursor: 'pointer' }}
+                        >
+                          <div className='select'>
+                            {selected && <DoneAllRoundedIcon fontSize='small' style={{ color: theme.color.info }} />}
+                          </div>
                           <div className='option-detail'>
                             <TextEllipsis className='title'>
                               {option.name?.[lang] || option.name?.['English']}
@@ -201,8 +257,14 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
           >
             <span>90 available</span>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <IconButton onClick={() => setQuantity(prev => prev > 1 ? prev - 1 : prev)}>
-                <RemoveRoundedIcon style={{ fontSize: 16, color: theme.text.secondary }} />
+              <IconButton
+                onClick={() =>
+                  setQuantity((prev) => (prev > 1 ? prev - 1 : prev))
+                }
+              >
+                <RemoveRoundedIcon
+                  style={{ fontSize: 16, color: theme.text.secondary }}
+                />
               </IconButton>
               <input
                 value={quantity}
@@ -223,8 +285,18 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                   color: theme.text.secondary,
                 }}
               />
-              <IconButton onClick={() => setQuantity(prev => typeof prev === 'string' ? parseInt(prev || 1) + 1 : prev + 1)}>
-                <AddRoundedIcon style={{ fontSize: 16, color: theme.text.secondary }} />
+              <IconButton
+                onClick={() =>
+                  setQuantity((prev) =>
+                    typeof prev === 'string'
+                      ? parseInt(prev || 1) + 1
+                      : prev + 1
+                  )
+                }
+              >
+                <AddRoundedIcon
+                  style={{ fontSize: 16, color: theme.text.secondary }}
+                />
               </IconButton>
             </div>
             <span>Total 1,599$</span>

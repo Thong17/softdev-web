@@ -358,6 +358,12 @@ export const CustomOptionContainer = styled('div')(
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
+      '& .select': {
+        position: 'absolute',
+        top: 8,
+        right: 10,
+        zIndex: 10,
+      },
       '& .action': {
         position: 'absolute',
         padding: '5px 5px 5px 0',
