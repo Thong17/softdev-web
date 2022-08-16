@@ -32,7 +32,7 @@ export interface IOptions {
 interface ISelectField extends SelectProps {
   options: Array<IOptions>
   name?: string
-  value?: string | Array<string>
+  value?: any
   label?: string
   err?: string
   hint?: string

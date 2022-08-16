@@ -21,8 +21,6 @@ export interface IOptionBody {
   description: string,
   profile?: any,
   imagePath?: IImage
-  isRequire: boolean
-  choice: string
 }
 
 export interface IColorBody {
@@ -38,6 +36,8 @@ export interface IColorBody {
 export interface IPropertyBody {
   name: Object,
   description: string,
+  isRequire: boolean
+  choice: string
 }
 
 export const initState: IProductBody = {
@@ -58,8 +58,6 @@ export const initOption: IOptionBody = {
   currency: 'USD',
   price: 0,
   description: '',
-  isRequire: false,
-  choice: 'SINGLE'
 }
 
 export const initColor: IColorBody = {
@@ -73,6 +71,8 @@ export const initColor: IColorBody = {
 export const initProperty: IPropertyBody = {
   name: {},
   description: '',
+  isRequire: false,
+  choice: 'SINGLE'
 }
 
 export const mapOptionBody = (body) => {
@@ -86,8 +86,6 @@ export const mapOptionBody = (body) => {
       _id: body.profile?._id,
       filename: body.profile?.filename
     },
-    isRequire: body?.isRequire,
-    choice: body?.choice
   }
 }
 
@@ -107,6 +105,8 @@ export const mapPropertyBody = (body) => {
   return {
     name: body.name,
     description: body.description,
+    isRequire: body?.isRequire,
+    choice: body?.choice
   }
 }
 

@@ -20,20 +20,6 @@ import useWeb from 'hooks/useWeb'
 import { updateOption, createOption } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import { TextTitle } from 'components/shared/TextTitle'
-import { IOptions, MiniSelectField } from 'components/shared/form/SelectField'
-import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
-import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
-
-export const choiceOptions: IOptions[] = [
-  {
-    value: 'SINGLE',
-    label: 'Single',
-  },
-  {
-    value: 'MULTIPLE',
-    label: 'Multiple',
-  },
-]
 
 export const OptionForm = ({
   dialog,
@@ -59,21 +45,6 @@ export const OptionForm = ({
   )
   const [currency, setCurrency] = useState(defaultValues?.currency)
   const currencyValue = watch('currency')
-  const [choice, setChoice] = useState('SINGLE')
-  const choiceValue = watch('choice')
-  const [isRequire, setIsRequire] = useState(false)
-
-  useEffect(() => {
-    setIsRequire(defaultValues?.isRequire || false)
-  }, [defaultValues?.isRequire])
-
-  useEffect(() => {
-    const selectedChoice = choiceOptions.find(
-      (key) => key.value === choiceValue
-    )
-
-    setChoice(selectedChoice?.value || 'SINGLE')
-  }, [choiceValue])
 
   useEffect(() => {
     const selectedCurrency = currencyOptions.find(
@@ -159,11 +130,6 @@ export const OptionForm = ({
       })
   }
 
-  const onToggleRequire = () => {
-    setIsRequire(!isRequire)
-    setValue('isRequire', !isRequire)
-  }
-
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
       <TextTitle title='Option Form' />
@@ -177,9 +143,8 @@ export const OptionForm = ({
           gridColumnGap: 20,
           gridTemplateAreas: `
                             'option option option'
-                            'price price choice'
+                            'price price currency'
                             'profile profile profile'
-                            'isRequire isRequire isRequire'
                             'description description description'
                             'action action action'
                           `,
@@ -200,36 +165,15 @@ export const OptionForm = ({
             label='Price'
             err={errors?.price?.message}
             {...register('price')}
-            icon={
-              <MiniSelectField
-                value={currency}
-                options={currencyOptions}
-                err={errors?.currency?.message}
-                {...register('currency')}
-                sx={{
-                  position: 'absolute',
-                  top: -2,
-                  right: -18,
-                  height: 23,
-                  '& .MuiSelect-select': {
-                    position: 'absolute',
-                    top: -2,
-                  },
-                  '& .MuiSvgIcon-root': {
-                    right: 13,
-                  },
-                }}
-              />
-            }
           />
         </div>
-        <div style={{ gridArea: 'choice' }}>
+        <div style={{ gridArea: 'currency' }}>
           <SelectField
-            value={choice}
-            options={choiceOptions}
-            label='Choice'
-            err={errors?.choice?.message}
-            {...register('choice')}
+            value={currency}
+            options={currencyOptions}
+            label='Currency'
+            err={errors?.currency?.message}
+            {...register('currency')}
           />
         </div>
         <div style={{ gridArea: 'profile' }}>
@@ -244,30 +188,6 @@ export const OptionForm = ({
             onChange={handleChangeImages}
             handleDelete={handleDeleteImage}
           />
-        </div>
-        <div
-          onClick={onToggleRequire}
-          style={{
-            gridArea: 'isRequire',
-            display: 'flex',
-            color: theme.text.secondary,
-            alignItems: 'end',
-            height: 30,
-            width: 'fit-content',
-            cursor: 'pointer',
-          }}
-        >
-          {isRequire ? (
-            <CheckBoxRoundedIcon style={{ color: theme.color.info }} fontSize='small' />
-          ) : (
-            <CheckBoxOutlineBlankRoundedIcon
-              style={{ color: theme.text.quaternary }}
-              fontSize='small'
-            />
-          )}
-          <span style={{ marginLeft: 7 }}>
-            Tick this box to require the option
-          </span>
         </div>
         <div style={{ gridArea: 'description' }}>
           <DetailField

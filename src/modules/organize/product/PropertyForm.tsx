@@ -13,8 +13,31 @@ import { propertySchema } from './schema'
 import useWeb from 'hooks/useWeb'
 import { updateProperty, createProperty } from './redux'
 import { useAppDispatch } from 'app/hooks'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { TextTitle } from 'components/shared/TextTitle'
+import { IOptions, SelectField } from 'components/shared/form/SelectField'
+
+export const choiceOptions: IOptions[] = [
+  {
+    value: 'SINGLE',
+    label: 'Single',
+  },
+  {
+    value: 'MULTIPLE',
+    label: 'Multiple',
+  },
+]
+
+export const requireOptions: IOptions[] = [
+  {
+    value: true,
+    label: 'Require',
+  },
+  {
+    value: false,
+    label: 'Not require',
+  },
+]
 
 export const PropertyForm = ({
   dialog,
@@ -23,6 +46,7 @@ export const PropertyForm = ({
   theme,
 }: any) => {
   const {
+    watch,
     reset,
     register,
     handleSubmit,
@@ -35,6 +59,26 @@ export const PropertyForm = ({
   const dispatch = useAppDispatch()
   const { notify } = useNotify()
   const { width } = useWeb()
+  const [choice, setChoice] = useState('SINGLE')
+  const [isRequire, setIsRequire] = useState(false)
+  const choiceValue = watch('choice')
+  const isRequireValue = watch('isRequire')
+
+  useEffect(() => {
+    const selectedOption = requireOptions.find(
+      (key) => key.value === isRequireValue
+    )
+
+    setIsRequire(selectedOption?.value || false)
+  }, [isRequireValue])
+
+  useEffect(() => {
+    const selectedChoice = choiceOptions.find(
+      (key) => key.value === choiceValue
+    )
+
+    setChoice(selectedChoice?.value || 'SINGLE')
+  }, [choiceValue])
 
   useEffect(() => {
     reset(defaultValues)
@@ -93,6 +137,7 @@ export const PropertyForm = ({
           gridColumnGap: 20,
           gridTemplateAreas: `
                             'property property property'
+                            'choice choice isRequire'
                             'description description description'
                             'action action action'
                         `,
@@ -105,6 +150,24 @@ export const PropertyForm = ({
             describe='Property'
             defaultValue={getValues('name')}
             onChange={handleLocaleChange}
+          />
+        </div>
+        <div style={{ gridArea: 'choice' }}>
+          <SelectField
+            value={choice}
+            options={choiceOptions}
+            label='Choice'
+            err={errors?.choice?.message}
+            {...register('choice')}
+          />
+        </div>
+        <div style={{ gridArea: 'isRequire' }}>
+          <SelectField
+            value={isRequire}
+            options={requireOptions}
+            label='Option'
+            err={errors?.isRequire?.message}
+            {...register('isRequire')}
           />
         </div>
         <div style={{ gridArea: 'description' }}>
