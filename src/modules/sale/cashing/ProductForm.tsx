@@ -84,6 +84,16 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
     })
   }
 
+  const handleCancelOption = (optionId, propId, choice) => {
+    setProductOptions(prev => {
+      const prop = prev.find(prop => prop.id === propId)
+      let key = choice !== 'SINGLE' ? 'options' : 'option'
+      let value = choice !== 'SINGLE' ? prop.options.filter(option => option !== optionId) : null
+
+      return prev.map(prop => prop.id !== propId ? prop : ({ ...prop, [key]: value }))
+    })
+  }
+
   return (
     <AlertContainer
       justify='start'
@@ -201,7 +211,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                     return (
                       option.property === property._id && (
                         <div
-                          onClick={() => handleClickOption(option._id, property._id, property.choice)}
+                          onClick={() => selected ? handleCancelOption(option._id, property._id, property.choice) : handleClickOption(option._id, property._id, property.choice)}
                           key={index}
                           className='option-container'
                           style={{ border: selected ? `1px solid ${theme.color.info}` : theme.border.quaternary, cursor: 'pointer' }}

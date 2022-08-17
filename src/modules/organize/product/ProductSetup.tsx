@@ -43,6 +43,8 @@ import { ProductInfo } from 'components/shared/ProductInfo'
 import { Draggable, Droppable, DragDropContext } from 'react-beautiful-dnd'
 import Button from 'components/shared/Button'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
+import RadioButtonCheckedRoundedIcon from '@mui/icons-material/RadioButtonCheckedRounded'
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded'
 
 const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
@@ -276,6 +278,20 @@ export const ProductSetup = () => {
       })
   }
 
+  const handleToggleDefault = (optionId) => {
+    Axios({
+      method: 'PUT',
+      url: `/organize/product/option/toggle/${optionId}`,
+    })
+      .then((data) => {
+        id && dispatch(getProduct({ id }))
+        notify(data?.data?.msg, data?.data?.code?.toLowerCase())
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
+  }
+
   return (
     <Container header={<Header stages={propertyBreadcrumb} />}>
       <OptionForm
@@ -305,7 +321,10 @@ export const ProductSetup = () => {
       >
         {device !== 'mobile' && (
           <div className='preview' style={{ paddingTop: 20 }}>
-            <ProductInfo info={product} loading={status !== 'SUCCESS' ? true : false} />
+            <ProductInfo
+              info={product}
+              loading={status !== 'SUCCESS' ? true : false}
+            />
           </div>
         )}
         <div>
@@ -346,7 +365,13 @@ export const ProductSetup = () => {
                         onClick={() => handleDeleteColor(color._id)}
                       />
                     </div>
-                    <div style={{ display: 'flex', height: '100%', justifyContent: 'space-between' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        height: '100%',
+                        justifyContent: 'space-between',
+                      }}
+                    >
                       <div
                         style={{
                           display: 'flex',
@@ -355,7 +380,7 @@ export const ProductSetup = () => {
                           height: '100%',
                           width: 'calc(100% - 7px)',
                           paddingRight: 10,
-                          boxSizing: 'border-box'
+                          boxSizing: 'border-box',
                         }}
                       >
                         <div className='option-detail'>
@@ -369,7 +394,6 @@ export const ProductSetup = () => {
                         <TextEllipsis className='option-price'>
                           {color?.price} {color?.currency}
                         </TextEllipsis>
-                        
                       </div>
                       <span
                         style={{
@@ -377,7 +401,7 @@ export const ProductSetup = () => {
                           height: '100%',
                           backgroundColor: color?.code,
                           boxShadow: theme.shadow.inset,
-                          borderRadius: 3
+                          borderRadius: 3,
                         }}
                       ></span>
                     </div>
@@ -388,7 +412,12 @@ export const ProductSetup = () => {
           </Section>
           <Button
             fullWidth
-            style={{ marginTop: 20, backgroundColor: theme.background.secondary, color: theme.text.secondary, boxShadow: theme.shadow.secondary }}
+            style={{
+              marginTop: 20,
+              backgroundColor: theme.background.secondary,
+              color: theme.text.secondary,
+              boxShadow: theme.shadow.secondary,
+            }}
             onClick={() => {
               setPropertyValue(initProperty)
               setPropertyDialog({
@@ -420,7 +449,7 @@ export const ProductSetup = () => {
                               style={{
                                 position: 'relative',
                                 boxSizing: 'border-box',
-                                paddingTop: 20
+                                paddingTop: 20,
                               }}
                               boxShadow={theme.shadow.secondary}
                               describe={
@@ -488,6 +517,29 @@ export const ProductSetup = () => {
                                         key={index}
                                         className='option-container'
                                       >
+                                        <div
+                                          style={{
+                                            position: 'absolute',
+                                            bottom: 6,
+                                            left: 10,
+                                            color: theme.text.quaternary,
+                                            zIndex: 10,
+                                          }}
+                                        >
+                                          {option.isDefault ? (
+                                            <RadioButtonCheckedRoundedIcon
+                                              onClick={() => handleToggleDefault(option._id)}
+                                              style={{ cursor: 'pointer' }}
+                                              fontSize='small'
+                                            />
+                                          ) : (
+                                            <RadioButtonUncheckedRoundedIcon
+                                              onClick={() => handleToggleDefault(option._id)}
+                                              style={{ cursor: 'pointer' }}
+                                              fontSize='small'
+                                            />
+                                          )}
+                                        </div>
                                         <div className='action'>
                                           <UpdateButton
                                             style={{ margin: 0 }}
@@ -505,9 +557,13 @@ export const ProductSetup = () => {
                                           />
                                         </div>
                                         <div className='option-detail'>
-                                          <TextEllipsis className='title'>{option.name?.[lang] ||
-                                            option.name?.['English']}</TextEllipsis>
-                                          <TextEllipsis className='description'>{option.description}</TextEllipsis>
+                                          <TextEllipsis className='title'>
+                                            {option.name?.[lang] ||
+                                              option.name?.['English']}
+                                          </TextEllipsis>
+                                          <TextEllipsis className='description'>
+                                            {option.description}
+                                          </TextEllipsis>
                                         </div>
                                         <TextEllipsis className='option-price'>
                                           {option.price} {option.currency}
