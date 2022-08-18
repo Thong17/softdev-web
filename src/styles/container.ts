@@ -277,6 +277,12 @@ export const CustomColorContainer = styled('div')(
       borderRadius: styled.radius.ternary,
       padding: 10,
       boxSizing: 'border-box',
+      '& .select': {
+        position: 'absolute',
+        top: 8,
+        right: 10,
+        zIndex: 10,
+      },
       '& .action': {
         position: 'absolute',
         padding: '5px 5px 5px 0',

@@ -13,7 +13,8 @@ import { CustomColorContainer, CustomOptionContainer } from 'styles/container'
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { IconButton } from '@mui/material'
-import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
+import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
+import { currencyFormat } from 'utils'
 
 export const ProductForm = ({ dialog, setDialog }: any) => {
   const { theme } = useTheme()
@@ -24,10 +25,43 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
   const [product, setProduct] = useState<any>(null)
   const [quantity, setQuantity] = useState<number>(1)
   const [productOptions, setProductOptions] = useState<any[]>([])
+  const [productColor, setProductColor] = useState<any>(null)
+  const [totalOptions, setTotalOptions] = useState(0)
+  const [totalColor, setTotalColor] = useState(0)
 
   useEffect(() => {
-    console.log(productOptions)
-  }, [productOptions])
+    if (!product) return
+    let addedOnPrices: any[] = []
+
+    Object.keys(productOptions).forEach((key) => {
+      const property = productOptions[key]
+
+      if (property.choice === 'MULTIPLE') {
+        const options = product.options.filter((opt) =>
+          property.options.includes(opt._id)
+        )
+
+        if (options.length > 0) addedOnPrices.push(...options)
+      } else {
+        const option = product.options.find(
+          (opt) => property.option === opt._id
+        )
+
+        if (option) addedOnPrices.push(option)
+      }
+    })
+
+    let total = product.price
+    addedOnPrices.forEach((opt) => {
+      let price = opt.price
+      if (opt.currency !== product.currency) {
+        if (product.currency === 'KHR') price *= 4000
+        else price /= 4000
+      }
+      total += price
+    })
+    setTotalOptions(total)
+  }, [productOptions, product])
 
   useEffect(() => {
     if (!dialog.productId) return
@@ -74,23 +108,43 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
     setQuantity(value)
   }
 
+  const handleClickColor = (id) => {
+    const color = product?.colors.find(color => color._id === id)
+
+    if (!id) return
+    let price = color.price
+    if (color.currency !== product.currency) {
+      if (product.currency === 'KHR') price *= 4000
+      else price /= 4000
+    }
+    setTotalColor(price)
+    setProductColor(color)
+  }
+
   const handleClickOption = (optionId, propId, choice) => {
-    setProductOptions(prev => {
-      const prop = prev.find(prop => prop.id === propId)
+    setProductOptions((prev) => {
+      const prop = prev.find((prop) => prop.id === propId)
       let key = choice !== 'SINGLE' ? 'options' : 'option'
       let value = choice !== 'SINGLE' ? [...prop.options, optionId] : optionId
 
-      return prev.map(prop => prop.id !== propId ? prop : ({ ...prop, [key]: value }))
+      return prev.map((prop) =>
+        prop.id !== propId ? prop : { ...prop, [key]: value }
+      )
     })
   }
 
   const handleCancelOption = (optionId, propId, choice) => {
-    setProductOptions(prev => {
-      const prop = prev.find(prop => prop.id === propId)
+    setProductOptions((prev) => {
+      const prop = prev.find((prop) => prop.id === propId)
       let key = choice !== 'SINGLE' ? 'options' : 'option'
-      let value = choice !== 'SINGLE' ? prop.options.filter(option => option !== optionId) : null
+      let value =
+        choice !== 'SINGLE'
+          ? prop.options.filter((option) => option !== optionId)
+          : null
 
-      return prev.map(prop => prop.id !== propId ? prop : ({ ...prop, [key]: value }))
+      return prev.map((prop) =>
+        prop.id !== propId ? prop : { ...prop, [key]: value }
+      )
     })
   }
 
@@ -137,7 +191,26 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
               >
                 {product?.colors?.map((color, index) => {
                   return (
-                    <div className='color-container' key={index}>
+                    <div
+                      className='color-container'
+                      key={index}
+                      onClick={() => handleClickColor(color._id)}
+                      style={{
+                        border:
+                          color._id === productColor?._id
+                            ? `1px solid ${theme.color.info}`
+                            : theme.border.quaternary,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <div className='select'>
+                        {color._id === productColor?._id && (
+                          <DoneAllRoundedIcon
+                            fontSize='small'
+                            style={{ color: theme.color.info }}
+                          />
+                        )}
+                      </div>
                       <div
                         style={{
                           display: 'flex',
@@ -145,6 +218,15 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                           justifyContent: 'space-between',
                         }}
                       >
+                        <span
+                          style={{
+                            width: 7,
+                            height: '100%',
+                            backgroundColor: color?.code,
+                            boxShadow: theme.shadow.inset,
+                            borderRadius: 3,
+                          }}
+                        />
                         <div
                           style={{
                             display: 'flex',
@@ -152,7 +234,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                             justifyContent: 'space-between',
                             height: '100%',
                             width: 'calc(100% - 7px)',
-                            paddingRight: 10,
+                            paddingLeft: 10,
                             boxSizing: 'border-box',
                           }}
                         >
@@ -168,15 +250,6 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                             {color?.price} {color?.currency}
                           </TextEllipsis>
                         </div>
-                        <span
-                          style={{
-                            width: 7,
-                            height: '100%',
-                            backgroundColor: color?.code,
-                            boxShadow: theme.shadow.inset,
-                            borderRadius: 3,
-                          }}
-                        ></span>
                       </div>
                     </div>
                   )
@@ -187,7 +260,9 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
           {product?.properties?.map((property, key) => {
             if (property.options?.length < 1)
               return <div key={key} style={{ display: 'none' }}></div>
-            const propertyOption = productOptions.find(prop => prop.id === property._id)
+            const propertyOption = productOptions.find(
+              (prop) => prop.id === property._id
+            )
 
             return (
               <Section
@@ -207,17 +282,42 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                   loading={'false'}
                 >
                   {product?.options?.map((option, index) => {
-                    const selected = property.choice === 'SINGLE' ? propertyOption?.option === option._id : propertyOption?.options?.includes(option._id)
+                    const selected =
+                      property.choice === 'SINGLE'
+                        ? propertyOption?.option === option._id
+                        : propertyOption?.options?.includes(option._id)
                     return (
                       option.property === property._id && (
                         <div
-                          onClick={() => selected ? handleCancelOption(option._id, property._id, property.choice) : handleClickOption(option._id, property._id, property.choice)}
+                          onClick={() =>
+                            selected
+                              ? handleCancelOption(
+                                  option._id,
+                                  property._id,
+                                  property.choice
+                                )
+                              : handleClickOption(
+                                  option._id,
+                                  property._id,
+                                  property.choice
+                                )
+                          }
                           key={index}
                           className='option-container'
-                          style={{ border: selected ? `1px solid ${theme.color.info}` : theme.border.quaternary, cursor: 'pointer' }}
+                          style={{
+                            border: selected
+                              ? `1px solid ${theme.color.info}`
+                              : theme.border.quaternary,
+                            cursor: 'pointer',
+                          }}
                         >
                           <div className='select'>
-                            {selected && <DoneAllRoundedIcon fontSize='small' style={{ color: theme.color.info }} />}
+                            {selected && (
+                              <DoneAllRoundedIcon
+                                fontSize='small'
+                                style={{ color: theme.color.info }}
+                              />
+                            )}
                           </div>
                           <div className='option-detail'>
                             <TextEllipsis className='title'>
@@ -309,7 +409,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                 />
               </IconButton>
             </div>
-            <span>Total 1,599$</span>
+            <span>Total {currencyFormat(totalOptions + totalColor, product?.currency)}</span>
           </div>
           <div style={{ width: '50%', display: 'flex' }}>
             <CustomButton
