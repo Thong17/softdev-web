@@ -50,7 +50,8 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
 
     product?.stocks?.forEach(stock => {
       const options = [...stock.options]
-      if (productColor !== stock.color || selectedOptions.sort().join(',') !== options.sort().join(',')) return
+      
+      if (productColor?._id !== stock.color || selectedOptions.sort().join(',') !== options.sort().join(',')) return
       total += stock.quantity
     })
     setProductOptions(selectedOptions)
@@ -158,6 +159,11 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
     setProductColor(color)
   }
 
+  const handleCancelColor = () => {
+    setProductColor(undefined)
+    setTotalColor(0)
+  }
+
   const handleClickOption = (optionId, propId, choice) => {
     setProductProperties((prev) => {
       const prop = prev.find((prop) => prop.id === propId)
@@ -241,11 +247,23 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                 loading={'false'}
               >
                 {product?.colors?.map((color, index) => {
+                  let totalStock = 0
+                  product?.stocks?.forEach(stock => {
+                    if (stock.color !== color._id) return
+                    let selectedOptions = [...productOptions]
+                    let stockOptions = [...stock.options]
+
+                    const matchedOptions = stockOptions.filter((opt => selectedOptions.includes(opt)))
+                    if (selectedOptions.length > 0 && matchedOptions.sort().join(',') !== selectedOptions.sort().join(',')) return
+                    if (productColor && stock.color !== productColor?._id) return
+
+                    totalStock += stock.quantity
+                  })
                   return (
                     <div
                       className='color-container'
                       key={index}
-                      onClick={() => handleClickColor(color._id)}
+                      onClick={() => productColor?._id === color._id ? handleCancelColor() : handleClickColor(color._id)}
                       style={{
                         border:
                           color._id === productColor?._id
@@ -297,9 +315,12 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                               {color?.description}
                             </TextEllipsis>
                           </div>
-                          <TextEllipsis className='option-price'>
-                            {currencyFormat(color.price, color.currency)}
-                          </TextEllipsis>
+                          <FlexBetween>
+                            <TextEllipsis><StockStatus qty={totalStock} min={1} /></TextEllipsis>
+                            <TextEllipsis className='option-price'>
+                              {currencyFormat(color.price, color.currency)}
+                            </TextEllipsis>
+                          </FlexBetween>
                         </div>
                       </div>
                     </div>
@@ -342,7 +363,11 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                     product?.stocks?.forEach(stock => {
                       if (!stock.options.includes(option._id)) return
                       let selectedOptions = [...productOptions]
-                      console.log(selectedOptions)
+                      let stockOptions = [...stock.options]
+
+                      const matchedOptions = stockOptions.filter((opt => selectedOptions.includes(opt)))
+                      if (selectedOptions.length > 0 && matchedOptions.sort().join(',') !== selectedOptions.sort().join(',')) return
+                      if (productColor && stock.color !== productColor?._id) return
 
                       totalStock += stock.quantity
                     })
