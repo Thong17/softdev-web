@@ -15,37 +15,73 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { IconButton } from '@mui/material'
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import { currencyFormat } from 'utils'
+import { FlexBetween } from 'components/shared/container/FlexBetween'
+import { StockStatus } from 'components/shared/StockStatus'
+import useNotify from 'hooks/useNotify'
 
 export const ProductForm = ({ dialog, setDialog }: any) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { notify } = useNotify()
   const { lang } = useLanguage()
   const dispatch = useAppDispatch()
   const { data, status } = useAppSelector(selectInfoProduct)
   const [product, setProduct] = useState<any>(null)
   const [quantity, setQuantity] = useState<number>(1)
+  const [productProperties, setProductProperties] = useState<any[]>([])
   const [productOptions, setProductOptions] = useState<any[]>([])
-  const [productColor, setProductColor] = useState<any>(null)
+  const [productColor, setProductColor] = useState<any>(undefined)
   const [totalOptions, setTotalOptions] = useState(0)
   const [totalColor, setTotalColor] = useState(0)
+  const [totalStock, setTotalStock] = useState(0)
+  const [totalDescription, setTotalDescription] = useState('')
 
+  useEffect(() => {
+    let total = 0
+    let selectedOptions: any[] = []
+    productProperties.forEach(property => {
+      if (property.choice === 'MULTIPLE') {
+        return selectedOptions = [...selectedOptions, ...property.options]
+      } 
+
+      if (!property.option) return
+      return selectedOptions = [...selectedOptions, property.option]
+    })
+
+    product?.stocks?.forEach(stock => {
+      const options = [...stock.options]
+      if (productColor !== stock.color || selectedOptions.sort().join(',') !== options.sort().join(',')) return
+      total += stock.quantity
+    })
+    setProductOptions(selectedOptions)
+    setTotalStock(total)
+  }, [productProperties, productColor, product?.stocks])
+  
   useEffect(() => {
     if (!product) return
     let addedOnPrices: any[] = []
+    let description = ''
 
-    Object.keys(productOptions).forEach((key) => {
-      const property = productOptions[key]
+    Object.keys(productProperties).forEach((key) => {
+      const property = productProperties[key]
 
       if (property.choice === 'MULTIPLE') {
-        const options = product.options.filter((opt) =>
-          property.options.includes(opt._id)
-        )
+        const options = product.options.filter((opt) => {
+          if (!property.options.includes(opt._id)) return false
+
+          description += `${opt.name?.[lang] || opt.name?.['English']} `
+          return true
+        })
 
         if (options.length > 0) addedOnPrices.push(...options)
+        
       } else {
-        const option = product.options.find(
-          (opt) => property.option === opt._id
-        )
+        const option = product.options.find((opt) => {
+          if (property.option !== opt._id) return false
+
+          description += `${opt.name?.[lang] || opt.name?.['English']} `
+          return true
+        })
 
         if (option) addedOnPrices.push(option)
       }
@@ -61,7 +97,8 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
       total += price
     })
     setTotalOptions(total)
-  }, [productOptions, product])
+    setTotalDescription(description)
+  }, [productProperties, product, lang])
 
   useEffect(() => {
     if (!dialog.productId) return
@@ -71,7 +108,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
 
   useEffect(() => {
     setProduct(data)
-    let propertyOption: any[] = []
+    let selectedProperty: any[] = []
 
     data?.properties?.forEach((property) => {
       let optionValue = null
@@ -87,7 +124,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
         }
       })
 
-      propertyOption.push({
+      selectedProperty.push({
         id: property._id,
         isRequire: property.isRequire,
         choice: property.choice,
@@ -95,7 +132,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
           property.choice === 'SINGLE' ? optionValue : optionValues,
       })
     })
-    setProductOptions(propertyOption)
+    setProductProperties(selectedProperty)
   }, [data])
 
   const handleCloseDialog = () => {
@@ -122,7 +159,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
   }
 
   const handleClickOption = (optionId, propId, choice) => {
-    setProductOptions((prev) => {
+    setProductProperties((prev) => {
       const prop = prev.find((prop) => prop.id === propId)
       let key = choice !== 'SINGLE' ? 'options' : 'option'
       let value = choice !== 'SINGLE' ? [...prop.options, optionId] : optionId
@@ -134,7 +171,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
   }
 
   const handleCancelOption = (optionId, propId, choice) => {
-    setProductOptions((prev) => {
+    setProductProperties((prev) => {
       const prop = prev.find((prop) => prop.id === propId)
       let key = choice !== 'SINGLE' ? 'options' : 'option'
       let value =
@@ -146,6 +183,20 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
         prop.id !== propId ? prop : { ...prop, [key]: value }
       )
     })
+  }
+
+  const handleAddToCart = () => {
+    if (quantity < 1) return notify('Please select at least 1 quantity', 'error')
+    if (quantity > totalStock) return notify(`Order quantity ${quantity} has exceed our current stock ${totalStock}`, 'error')
+    
+    console.log({ 
+      productId: product._id,
+      description: `${product.name[lang] || product.name['English']} ${totalDescription}`,
+      color: productColor,
+      options: productProperties,
+      price: totalOptions + totalColor
+    });
+    
   }
 
   return (
@@ -247,7 +298,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                             </TextEllipsis>
                           </div>
                           <TextEllipsis className='option-price'>
-                            {color?.price} {color?.currency}
+                            {currencyFormat(color.price, color.currency)}
                           </TextEllipsis>
                         </div>
                       </div>
@@ -260,7 +311,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
           {product?.properties?.map((property, key) => {
             if (property.options?.length < 1)
               return <div key={key} style={{ display: 'none' }}></div>
-            const propertyOption = productOptions.find(
+            const selectedProperty = productProperties.find(
               (prop) => prop.id === property._id
             )
 
@@ -284,8 +335,18 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                   {product?.options?.map((option, index) => {
                     const selected =
                       property.choice === 'SINGLE'
-                        ? propertyOption?.option === option._id
-                        : propertyOption?.options?.includes(option._id)
+                        ? selectedProperty?.option === option._id
+                        : selectedProperty?.options?.includes(option._id)
+
+                    let totalStock = 0
+                    product?.stocks?.forEach(stock => {
+                      if (!stock.options.includes(option._id)) return
+                      let selectedOptions = [...productOptions]
+                      console.log(selectedOptions)
+
+                      totalStock += stock.quantity
+                    })
+
                     return (
                       option.property === property._id && (
                         <div
@@ -327,9 +388,12 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                               {option.description}
                             </TextEllipsis>
                           </div>
-                          <TextEllipsis className='option-price'>
-                            {option.price} {option.currency}
-                          </TextEllipsis>
+                          <FlexBetween>
+                            <TextEllipsis><StockStatus qty={totalStock} min={1} /></TextEllipsis>
+                            <TextEllipsis className='option-price'>
+                              {currencyFormat(option.price, option.currency)}
+                            </TextEllipsis>
+                          </FlexBetween>
                         </div>
                       )
                     )
@@ -365,7 +429,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
               boxSizing: 'border-box',
             }}
           >
-            <span>90 available</span>
+            <span>{totalStock} available</span>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <IconButton
                 onClick={() =>
@@ -426,6 +490,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
               Cancel
             </CustomButton>
             <CustomButton
+              onClick={handleAddToCart}
               styled={theme}
               style={{
                 backgroundColor: `${theme.color.info}22`,
