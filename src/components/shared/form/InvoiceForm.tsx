@@ -18,6 +18,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { transactionSchema } from 'shared/schema'
 import { IconButton } from '@mui/material'
 import useAlert from 'hooks/useAlert'
+import useConfig from 'hooks/useConfig'
 
 const currencyOptions: IOptions[] = [
   {
@@ -109,10 +110,10 @@ export const InvoiceForm = ({
     resolver: yupResolver(transactionSchema),
     defaultValues: transaction,
   })
+  const { invoiceBar, toggleInvoiceBar } = useConfig()
   const { theme } = useTheme()
   const { device } = useWeb()
   const confirm = useAlert()
-  const [toggle, setToggle] = useState(false)
   const [transactions, setTransactions] = useState<ITransactionItem[]>([
     {
       id: '1',
@@ -183,7 +184,7 @@ export const InvoiceForm = ({
 
   return (
     <CustomInvoiceForm
-      mode={toggle ? 'expand' : 'compact'}
+      mode={invoiceBar ? 'expand' : 'compact'}
       styled={theme}
       device={device}
       font={font}
@@ -197,8 +198,8 @@ export const InvoiceForm = ({
             alignItems: 'center',
           }}
         >
-          { device === 'laptop' || device === 'desktop' ? (toggle && <CustomerContainer style={{ marginLeft: 10 }} />) : <CustomerContainer style={{ marginLeft: 10 }} /> }
-          <div className='toggle' onClick={() => setToggle(!toggle)}>
+          { device === 'laptop' || device === 'desktop' ? (invoiceBar && <CustomerContainer style={{ marginLeft: 10 }} />) : <CustomerContainer style={{ marginLeft: 10 }} /> }
+          <div className='toggle' onClick={() => toggleInvoiceBar()}>
             <ShoppingCartRoundedIcon fontSize='small' />
           </div>
         </div>
