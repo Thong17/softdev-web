@@ -73,10 +73,6 @@ export const CustomGridContainer = styled('div')(
         '&.active': {
           cursor: 'pointer'
         },
-        '&:hover': {
-          backgroundColor: styled.background.primary,
-          opacity: 0.5
-        },
         '& .selected': {
           position: 'absolute',
           width: '100%',
@@ -124,7 +120,6 @@ export const CustomGridContainer = styled('div')(
         '& .action': {
           transition: '0.3s ease',
           opacity: 0,
-          backgroundColor: `${styled.background.primary}99`,
           position: 'absolute',
           right: 7,
           top: 7,

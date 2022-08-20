@@ -14,7 +14,6 @@ export const Cashing = () => {
   const { device } = useWeb()
   const dispatch = useAppDispatch()
   const { data: preview } = useAppSelector(selectInfoStore)
-  const [active, setActive] = useState(null)
   const [drawer, setDrawer] = useState(false)
   const [productDialog, setProductDialog] = useState({ open: false, productId: null })
   const { theme } = useTheme()
@@ -24,7 +23,6 @@ export const Cashing = () => {
   }, [dispatch])
 
   const handleClickProduct = (id) => {
-    setActive(id)
     setProductDialog({ productId: id, open: true })
   }
 
@@ -48,7 +46,6 @@ export const Cashing = () => {
           <ProductContainer
             onClickProduct={handleClickProduct}
             filterPromotion={true}
-            activeId={active}
             actions={
               <IconButton
                 onClick={() => setDrawer(!drawer)}
