@@ -35,6 +35,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
   const [totalColor, setTotalColor] = useState(0)
   const [totalStock, setTotalStock] = useState(0)
   const [totalDescription, setTotalDescription] = useState('')
+  const [requireFields, setRequireFields] = useState<any[]>([])
 
   useEffect(() => {
     let total = 0
@@ -170,6 +171,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
       let key = choice !== 'SINGLE' ? 'options' : 'option'
       let value = choice !== 'SINGLE' ? [...prop.options, optionId] : optionId
 
+      setRequireFields(fields => fields.filter(field => field !== prop.id))
       return prev.map((prop) =>
         prop.id !== propId ? prop : { ...prop, [key]: value }
       )
@@ -192,14 +194,29 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
   }
 
   const handleAddToCart = () => {
+    let isError = false
+    productProperties?.forEach(property => {
+      if (property.isRequire) {
+        if (property.choice === 'MULTIPLE' && property.options.length < 1) {
+          setRequireFields(prev => [...prev, property.id])
+          return isError = true
+        }
+        if (property.choice === 'SINGLE' && !property.option) {
+          setRequireFields(prev => [...prev, property.id])
+          return isError = true
+        }
+      }
+    })
+    if (isError) return notify(`Option is required`, 'error')
+    if (product.colors.length > 0 && !productColor) return notify('Please select at least 1 color', 'error')
     if (quantity < 1) return notify('Please select at least 1 quantity', 'error')
     if (quantity > totalStock) return notify(`Order quantity ${quantity} has exceed our current stock ${totalStock}`, 'error')
-    
+
     console.log({ 
       productId: product._id,
       description: `${product.name[lang] || product.name['English']} ${totalDescription}`,
       color: productColor,
-      options: productProperties,
+      properties: productProperties,
       price: totalOptions + totalColor
     });
     
@@ -339,6 +356,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
             return (
               <Section
                 key={key}
+                err={requireFields.includes(property._id)}
                 describe={`${
                   property.name[lang] || property.name['English']
                 } (${property.isRequire ? '1 Required' : 'Optional'})`}
