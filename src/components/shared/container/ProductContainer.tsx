@@ -44,7 +44,7 @@ const mappedProduct = (data, lang) => {
   }
 }
 
-export const ProductContainer = ({ onClickProduct, actions, filterSelected, filterPromotion, selectedProducts, promotionId, activeId }: any) => {
+export const ProductContainer = ({ onClickProduct, actions, filterSelected, filterPromotion, selectedProducts, promotionId, activeId, toggleReload }: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
   const [hasMore, setHasMore] = useState(true)
@@ -158,6 +158,25 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
     })
     if (node) observer.current.observe(node)
   },[fetching, count, offset])
+
+  useEffect(() => {
+    if (products.length < 1) return
+    setFetching(true)
+    const query = new URLSearchParams()
+    query.append('search', search)
+    query.append('limit', limit.toString())
+    query.append('offset', offset.toString())
+    query.append('filter', filterObj.filter)
+    query.append('brand', brand)
+    query.append('category', category)
+    query.append('favorite', favorite ? 'on' : 'off')
+    query.append('promotions', promotion ? 'on' : 'off')
+    query.append('sort', filterObj.asc ? 'asc' : 'desc')
+    if (selected && promotionId) query.append('promotion', promotionId)
+    setProducts([])
+    dispatch(getListProduct(query))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toggleReload])
   
   useEffect(() => {
     if (brandStatus !== 'SUCCESS') return

@@ -6,6 +6,7 @@ import useWeb from 'hooks/useWeb'
 import { getInfoStore, selectInfoStore } from 'modules/organize/store/redux'
 import { useEffect, useState } from 'react'
 import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
+import ReplayRoundedIcon from '@mui/icons-material/ReplayRounded'
 import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
 import { ProductForm } from './ProductForm'
@@ -18,6 +19,7 @@ export const Cashing = () => {
   const [productDialog, setProductDialog] = useState({ open: false, productId: null })
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
+  const [reload, setReload] = useState(false)
 
   useEffect(() => {
     dispatch(getInfoStore())
@@ -28,6 +30,7 @@ export const Cashing = () => {
   }
 
   const handleAddTransaction = (data) => {
+    setReload(!reload)
     setTransaction({
       id: data._id,
       description: data.description,
@@ -58,18 +61,32 @@ export const Cashing = () => {
           <ProductContainer
             onClickProduct={handleClickProduct}
             filterPromotion={true}
+            toggleReload={reload}
             actions={
-              <IconButton
-                onClick={() => setDrawer(!drawer)}
-                style={{
-                  color: drawer ? theme.color.success : theme.color.error,
-                  width: 30,
-                  height: 30,
-                  marginRight: 10,
-                }}
-              >
-                <PriceChangeRoundedIcon style={{ fontSize: 23 }} />
-              </IconButton>
+              <>
+                <IconButton
+                  onClick={() => setDrawer(!drawer)}
+                  style={{
+                    color: drawer ? theme.color.success : theme.color.error,
+                    width: 30,
+                    height: 30,
+                    marginRight: 10,
+                  }}
+                >
+                  <PriceChangeRoundedIcon style={{ fontSize: 23 }} />
+                </IconButton>
+                <IconButton
+                  onClick={() => setReload(!reload)}
+                  style={{
+                    color: theme.text.secondary,
+                    width: 30,
+                    height: 30,
+                    marginRight: 10,
+                  }}
+                >
+                  <ReplayRoundedIcon style={{ fontSize: 23 }} />
+                </IconButton>
+              </>
             }
           />
         </div>
