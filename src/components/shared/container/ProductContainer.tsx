@@ -19,6 +19,8 @@ import DiscountIcon from '@mui/icons-material/Discount'
 import { IconButton } from '@mui/material'
 import { StockStatus } from '../StockStatus'
 import useAuth from 'hooks/useAuth'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 const mappedProduct = (data, lang) => {
   let stock = 0
@@ -54,6 +56,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
   const { data: listCategory, status: categoryStatus } = useAppSelector(selectListCategory)
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { notify } = useNotify()
   const { lang } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [fetching, setFetching] = useState(false)
@@ -161,7 +164,6 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
 
   useEffect(() => {
     if (products.length < 1) return
-    setFetching(true)
     const query = new URLSearchParams()
     query.append('search', search)
     query.append('limit', limit.toString())
@@ -173,8 +175,15 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
     query.append('promotions', promotion ? 'on' : 'off')
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected && promotionId) query.append('promotion', promotionId)
-    setProducts([])
-    dispatch(getListProduct(query))
+    Axios({
+      method: 'GET',
+      url: '/shared/product/list',
+      params: query
+    }).then(data => {
+      setProducts(data?.data?.data.map((product) => mappedProduct(product, lang)))
+    }).catch(err => {
+      notify(err?.response?.data?.msg, 'error')
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleReload])
   

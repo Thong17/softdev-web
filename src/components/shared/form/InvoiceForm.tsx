@@ -50,30 +50,30 @@ export const calculateTransactionTotal = (
   const { value: price, currency: priceCurrency } = priceObj
 
   if (!discount || discount === 0)
-    return currencyFormat(price * quantity, priceCurrency)
+    return { total: price * quantity, currency: priceCurrency }
 
   if (isFixed) {
     if (discountCurrency !== 'PCT')
-      return currencyFormat(discount * quantity, discountCurrency)
-    return currencyFormat(((price * discount) / 100) * quantity, priceCurrency)
+      return { total: discount * quantity, currency: discountCurrency }
+    return { total: ((price * discount) / 100) * quantity, currency: priceCurrency }
   }
 
   if (discountCurrency === 'PCT')
-    return currencyFormat(
-      (price - (price * discount) / 100) * quantity,
-      priceCurrency
-    )
+    return {
+      total: (price - (price * discount) / 100) * quantity,
+      currency: priceCurrency
+    }
   if (discountCurrency === priceCurrency)
-    return currencyFormat((price - discount) * quantity, priceCurrency)
+    return { total: (price - discount) * quantity, currency: priceCurrency }
 
   const { sellRate = 4000, buyRate = 4100 } = exchangeRate
   let totalExchange = 0
   if (discountCurrency === 'USD') {
     totalExchange = discount * sellRate
-    return currencyFormat((price - totalExchange) * quantity, priceCurrency)
+    return { total: (price - totalExchange) * quantity, currency: priceCurrency }
   } else {
     totalExchange = discount / buyRate
-    return currencyFormat((price - totalExchange) * quantity, priceCurrency)
+    return { total: (price - totalExchange) * quantity, currency: priceCurrency }
   }
 }
 
@@ -118,15 +118,21 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
   const discountCurrencyValue = watch('discount.currency')
   const priceCurrencyValue = watch('price.currency')
   const isFixedValue = watch('discount.isFixed')
+  const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
 
   useEffect(() => {
     let totalQuantity = 0
+    let subtotalUSD = 0
+    let subtotalKHR = 0
     transactions.forEach(transaction => {
       totalQuantity += transaction.quantity
+      const { total, currency } = calculateTransactionTotal(transaction.price, transaction.discount, transaction.quantity, {})
+      if (currency === 'KHR') subtotalKHR += total
+      else subtotalUSD += total
     })
+    setSubtotal({ USD: subtotalUSD, KHR: subtotalKHR })
     setTotalQuantity(totalQuantity)
   }, [transactions])
-  
 
   useEffect(() => {
     if (!transaction) return
@@ -220,6 +226,12 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
         <div className='invoice-form'>
           <div className='form'>
             {transactions.map((transaction, key) => {
+              const { total, currency } = calculateTransactionTotal(
+                transaction.price,
+                transaction.discount,
+                transaction.quantity,
+                {}
+              )
               if (getValues('id') === transaction.id) {
                 return (
                   <div className='item active' key={key}>
@@ -266,12 +278,7 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
                         >
                           <span className='main-description'>Total</span>
                           <span className='sub-description'>
-                            {calculateTransactionTotal(
-                              transaction.price,
-                              transaction.discount,
-                              transaction.quantity,
-                              {}
-                            )}
+                            {currencyFormat(total, currency)}
                           </span>
                         </div>
                         <IconButton
@@ -491,12 +498,7 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
                         >
                           <span className='main-description'>Total</span>
                           <span className='sub-description'>
-                            {calculateTransactionTotal(
-                              transaction.price,
-                              transaction.discount,
-                              transaction.quantity,
-                              {}
-                            )}
+                            {currencyFormat(total, currency)}
                           </span>
                         </div>
                         <IconButton
@@ -524,7 +526,10 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
             <div className='charge'>
               <div className='item'>
                 <span>Subtotal</span>
-                <span>20.00$</span>
+                <div style={{ display: 'flex', lineHeight: 1 }}>
+                  <span>{currencyFormat(subtotal.USD, 'USD')}</span>
+                  <span>{currencyFormat(subtotal.KHR, 'KHR')}</span>
+                </div>
               </div>
               <div
                 className='item'

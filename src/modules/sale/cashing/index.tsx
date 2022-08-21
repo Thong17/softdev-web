@@ -84,7 +84,7 @@ export const Cashing = () => {
                     marginRight: 10,
                   }}
                 >
-                  <ReplayRoundedIcon style={{ fontSize: 23 }} />
+                  <ReplayRoundedIcon style={{ fontSize: 21 }} />
                 </IconButton>
               </>
             }
