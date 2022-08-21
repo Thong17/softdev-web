@@ -108,7 +108,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
 
     dispatch(getInfoProduct(dialog.productId))
   }, [dispatch, dialog.productId])
-
+  
   useEffect(() => {
     setProduct(data)
     let selectedProperty: any[] = []
@@ -220,7 +220,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
         product: product._id,
         description: `${product.name[lang] || product.name['English']} ${totalDescription}`,
         color: productColor?._id,
-        price: totalOptions + totalColor,
+        total: (totalOptions + totalColor) * quantity,
         currency: product?.currency,
         quantity,
         options: productOptions,
@@ -527,7 +527,7 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
                 />
               </IconButton>
             </div>
-            <span>Total {currencyFormat(totalOptions + totalColor, product?.currency)}</span>
+            <span>Total {currencyFormat((totalOptions + totalColor) * quantity, product?.currency)}</span>
           </div>
           <div style={{ width: '50%', display: 'flex' }}>
             <CustomButton
