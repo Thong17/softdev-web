@@ -231,6 +231,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
       addTransaction(data?.data?.data)
       notify(data?.data?.msg, 'success')
       handleCloseDialog()
+      setProductColor(undefined)
     }).catch(err => {
       notify(err?.response?.data?.msg, 'error')
     })

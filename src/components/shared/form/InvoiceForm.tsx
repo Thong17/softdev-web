@@ -19,6 +19,7 @@ import { transactionSchema } from 'shared/schema'
 import { IconButton } from '@mui/material'
 import useAlert from 'hooks/useAlert'
 import useConfig from 'hooks/useConfig'
+import { NotificationLabel } from '../NotificationLabel'
 
 const currencyOptions: IOptions[] = [
   {
@@ -92,12 +93,7 @@ export interface ITransactionItem {
   note?: string
 }
 
-export const InvoiceForm = ({
-  name = 'Shop Name',
-  tax = 0,
-  font = 'Ariel',
-  transaction,
-}: any) => {
+export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
   const {
     register,
     handleSubmit,
@@ -114,28 +110,29 @@ export const InvoiceForm = ({
   const { theme } = useTheme()
   const { device } = useWeb()
   const confirm = useAlert()
-  const [transactions, setTransactions] = useState<ITransactionItem[]>([
-    {
-      id: '1',
-      description: 'Macbook Pro 13 inches',
-      discount: { value: 20, currency: 'PCT', isFixed: true },
-      price: { value: 1333, currency: 'USD' },
-      quantity: 1,
-    },
-    {
-      id: '2',
-      description: 'Macbook Pro 13 inches',
-      discount: { value: 20, currency: 'PCT', isFixed: true },
-      price: { value: 1333, currency: 'USD' },
-      quantity: 1,
-    },
-  ])
+  const [transactions, setTransactions] = useState<ITransactionItem[]>([])
   const [priceCurrency, setPriceCurrency] = useState('')
   const [discountCurrency, setDiscountCurrency] = useState('')
+  const [totalQuantity, setTotalQuantity] = useState(0)
   const [isFixed, setIsFixed] = useState(false)
   const discountCurrencyValue = watch('discount.currency')
   const priceCurrencyValue = watch('price.currency')
   const isFixedValue = watch('discount.isFixed')
+
+  useEffect(() => {
+    let totalQuantity = 0
+    transactions.forEach(transaction => {
+      totalQuantity += transaction.quantity
+    })
+    setTotalQuantity(totalQuantity)
+  }, [transactions])
+  
+
+  useEffect(() => {
+    if (!transaction) return
+    setTransactions((prev) => [...prev, transaction])
+    reset(transaction)
+  }, [transaction, reset])
 
   useEffect(() => {
     setIsFixed(isFixedValue)
@@ -150,7 +147,11 @@ export const InvoiceForm = ({
   }, [discountCurrencyValue])
 
   const submit = (data) => {
-    setTransactions(prev => prev.map(transaction => transaction.id === data.id ? data : transaction))
+    setTransactions((prev) =>
+      prev.map((transaction) =>
+        transaction.id === data.id ? data : transaction
+      )
+    )
     reset({})
   }
 
@@ -175,10 +176,14 @@ export const InvoiceForm = ({
     confirm({
       title: 'Remove Transaction',
       description: 'Are you sure you want to remove this transaction?',
-      variant: 'error'
-    }).then(() => {
-      setTransactions(prev => prev.filter(transaction => transaction.id !== id))
-    }).catch(() => {})
+      variant: 'error',
+    })
+      .then(() => {
+        setTransactions((prev) =>
+          prev.filter((transaction) => transaction.id !== id)
+        )
+      })
+      .catch(() => {})
     event.stopPropagation()
   }
 
@@ -198,9 +203,18 @@ export const InvoiceForm = ({
             alignItems: 'center',
           }}
         >
-          { device === 'laptop' || device === 'desktop' ? (invoiceBar && <CustomerContainer style={{ marginLeft: 10 }} />) : <CustomerContainer style={{ marginLeft: 10 }} /> }
-          <div className='toggle' onClick={() => toggleInvoiceBar()}>
+          {device === 'laptop' || device === 'desktop' ? (
+            invoiceBar && <CustomerContainer style={{ marginLeft: 10 }} />
+          ) : (
+            <CustomerContainer style={{ marginLeft: 10 }} />
+          )}
+          <div
+            className='toggle'
+            style={{ position: 'relative' }}
+            onClick={() => toggleInvoiceBar()}
+          >
             <ShoppingCartRoundedIcon fontSize='small' />
+            {totalQuantity > 0 && <NotificationLabel value={totalQuantity} />}
           </div>
         </div>
         <div className='invoice-form'>
@@ -208,10 +222,7 @@ export const InvoiceForm = ({
             {transactions.map((transaction, key) => {
               if (getValues('id') === transaction.id) {
                 return (
-                  <div
-                    className='item active'
-                    key={key}
-                  >
+                  <div className='item active' key={key}>
                     <div className='item-description'>
                       <div className='profile'>
                         <CircleIcon icon={transaction.profile} />
@@ -226,7 +237,14 @@ export const InvoiceForm = ({
                             transaction.price?.value,
                             transaction.price?.currency
                           )}
-                          <span style={{ margin: '0 3px', color: theme.text.quaternary }}>|</span>
+                          <span
+                            style={{
+                              margin: '0 3px',
+                              color: theme.text.quaternary,
+                            }}
+                          >
+                            |
+                          </span>
                           <span>Qty: {transaction.quantity}</span>
                         </span>
                       </div>
@@ -237,7 +255,9 @@ export const InvoiceForm = ({
                             transaction.discount?.value,
                             transaction.discount?.currency
                           )}
-                          {transaction.discount?.isFixed && <span style={{ marginLeft: 3 }}>Only</span>}
+                          {transaction.discount?.isFixed && (
+                            <span style={{ marginLeft: 3 }}>Only</span>
+                          )}
                         </span>
                       </div>
                       <div className='total'>
@@ -254,9 +274,14 @@ export const InvoiceForm = ({
                             )}
                           </span>
                         </div>
-                        <IconButton style={{ marginLeft: 5 }} onClick={(event) => handleRemoveTransaction(event, transaction.id)}>
+                        <IconButton
+                          style={{ marginLeft: 5 }}
+                          onClick={(event) =>
+                            handleRemoveTransaction(event, transaction.id)
+                          }
+                        >
                           <CloseRoundedIcon
-                            style={{ fontSize: 17, color: theme.color.error,  }}
+                            style={{ fontSize: 17, color: theme.color.error }}
                           />
                         </IconButton>
                       </div>
@@ -417,61 +442,77 @@ export const InvoiceForm = ({
                   </div>
                 )
               } else {
-                return <div
-                  className='item'
-                  key={key}
-                  onClick={() => handleClickTransaction(transaction)}
-                >
-                  <div className='item-description'>
-                    <div className='profile'>
-                      <CircleIcon icon={transaction.profile} />
-                    </div>
-                    <div className='description'>
-                      <span className='main-description'>
-                        {transaction.description}
-                      </span>
-                      <span className='sub-description'>
-                        Price:
-                        {currencyFormat(
-                          transaction.price?.value,
-                          transaction.price?.currency
-                        )}
-                        <span style={{ margin: '0 3px', color: theme.text.quaternary }}>|</span>
-                        <span>Qty: {transaction.quantity}</span>
-                      </span>
-                    </div>
-                    <div className='discount'>
-                      <span className='main-description'>Disc</span>
-                      <span className='sub-description'>
-                        {currencyFormat(
-                          transaction.discount?.value,
-                          transaction.discount?.currency
-                        )}
-                        {transaction.discount?.isFixed && <span style={{ marginLeft: 3 }}>Only</span>}
-                      </span>
-                    </div>
-                    <div className='total'>
-                      <div
-                        style={{ display: 'flex', flexDirection: 'column' }}
-                      >
-                        <span className='main-description'>Total</span>
+                return (
+                  <div
+                    className='item'
+                    key={key}
+                    onClick={() => handleClickTransaction(transaction)}
+                  >
+                    <div className='item-description'>
+                      <div className='profile'>
+                        <CircleIcon icon={transaction.profile} />
+                      </div>
+                      <div className='description'>
+                        <span className='main-description'>
+                          {transaction.description}
+                        </span>
                         <span className='sub-description'>
-                          {calculateTransactionTotal(
-                            transaction.price,
-                            transaction.discount,
-                            transaction.quantity,
-                            {}
+                          Price:
+                          {currencyFormat(
+                            transaction.price?.value,
+                            transaction.price?.currency
+                          )}
+                          <span
+                            style={{
+                              margin: '0 3px',
+                              color: theme.text.quaternary,
+                            }}
+                          >
+                            |
+                          </span>
+                          <span>Qty: {transaction.quantity}</span>
+                        </span>
+                      </div>
+                      <div className='discount'>
+                        <span className='main-description'>Disc</span>
+                        <span className='sub-description'>
+                          {currencyFormat(
+                            transaction.discount?.value,
+                            transaction.discount?.currency
+                          )}
+                          {transaction.discount?.isFixed && (
+                            <span style={{ marginLeft: 3 }}>Only</span>
                           )}
                         </span>
                       </div>
-                      <IconButton style={{ marginLeft: 5 }} onClick={(event) => handleRemoveTransaction(event, transaction.id)}>
-                        <CloseRoundedIcon
-                          style={{ fontSize: 17, color: theme.color.error,  }}
-                        />
-                      </IconButton>
+                      <div className='total'>
+                        <div
+                          style={{ display: 'flex', flexDirection: 'column' }}
+                        >
+                          <span className='main-description'>Total</span>
+                          <span className='sub-description'>
+                            {calculateTransactionTotal(
+                              transaction.price,
+                              transaction.discount,
+                              transaction.quantity,
+                              {}
+                            )}
+                          </span>
+                        </div>
+                        <IconButton
+                          style={{ marginLeft: 5 }}
+                          onClick={(event) =>
+                            handleRemoveTransaction(event, transaction.id)
+                          }
+                        >
+                          <CloseRoundedIcon
+                            style={{ fontSize: 17, color: theme.color.error }}
+                          />
+                        </IconButton>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )
               }
             })}
           </div>
@@ -503,7 +544,7 @@ export const InvoiceForm = ({
                 }}
               >
                 <span>Tax</span>
-                <span>+10%</span>
+                <span>+{tax}%</span>
               </div>
               <div
                 className='item'

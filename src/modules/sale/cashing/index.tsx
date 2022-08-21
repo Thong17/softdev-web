@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Container from 'components/shared/Container'
 import { ProductContainer } from 'components/shared/container/ProductContainer'
-import { InvoiceForm } from 'components/shared/form/InvoiceForm'
+import { InvoiceForm, ITransactionItem } from 'components/shared/form/InvoiceForm'
 import useWeb from 'hooks/useWeb'
 import { getInfoStore, selectInfoStore } from 'modules/organize/store/redux'
 import { useEffect, useState } from 'react'
@@ -17,6 +17,7 @@ export const Cashing = () => {
   const [drawer, setDrawer] = useState(false)
   const [productDialog, setProductDialog] = useState({ open: false, productId: null })
   const { theme } = useTheme()
+  const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
 
   useEffect(() => {
     dispatch(getInfoStore())
@@ -27,7 +28,13 @@ export const Cashing = () => {
   }
 
   const handleAddTransaction = (data) => {
-    console.log(data)
+    setTransaction({
+      id: data._id,
+      description: data.description,
+      discount: { value: data.discount?.value || 0, currency: data.discount?.type || 'PCT', isFixed: data.discount?.isFixed || false },
+      price: { value: data.price, currency: data.currency },
+      quantity: data.quantity,
+    })
   }
 
   return (
@@ -74,11 +81,8 @@ export const Cashing = () => {
           }}
         >
           <InvoiceForm
-            name={preview?.name}
-            logo={preview?.logo || 'default.png'}
             tax={preview?.tax}
-            font={preview?.font}
-            footer={preview?.other}
+            transaction={transaction}
           />
         </div>
       </div>
