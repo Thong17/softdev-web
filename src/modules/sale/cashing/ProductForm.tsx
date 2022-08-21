@@ -18,6 +18,7 @@ import { currencyFormat } from 'utils'
 import { FlexBetween } from 'components/shared/container/FlexBetween'
 import { StockStatus } from 'components/shared/StockStatus'
 import useNotify from 'hooks/useNotify'
+import Axios from 'constants/functions/Axios'
 
 export const ProductForm = ({ dialog, setDialog }: any) => {
   const { theme } = useTheme()
@@ -212,14 +213,24 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
     if (quantity < 1) return notify('Please select at least 1 quantity', 'error')
     if (quantity > totalStock) return notify(`Order quantity ${quantity} has exceed our current stock ${totalStock}`, 'error')
 
-    console.log({ 
-      productId: product._id,
-      description: `${product.name[lang] || product.name['English']} ${totalDescription}`,
-      color: productColor,
-      properties: productProperties,
-      price: totalOptions + totalColor
-    });
-    
+    Axios({
+      method: 'POST',
+      url: '/sale/transaction/add',
+      body: {
+        product: product._id,
+        description: `${product.name[lang] || product.name['English']} ${totalDescription}`,
+        color: productColor?._id,
+        price: totalOptions + totalColor,
+        currency: product?.currency,
+        quantity,
+        options: productOptions,
+        promotion: product.promotion
+      }
+    }).then(data => {
+      notify(data?.data?.msg, 'success')
+    }).catch(err => {
+      notify(err?.response?.data?.msg, 'error')
+    })
   }
 
   return (
