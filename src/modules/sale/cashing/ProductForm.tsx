@@ -20,7 +20,7 @@ import { StockStatus } from 'components/shared/StockStatus'
 import useNotify from 'hooks/useNotify'
 import Axios from 'constants/functions/Axios'
 
-export const ProductForm = ({ dialog, setDialog }: any) => {
+export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   const { notify } = useNotify()
@@ -220,14 +220,17 @@ export const ProductForm = ({ dialog, setDialog }: any) => {
         product: product._id,
         description: `${product.name[lang] || product.name['English']} ${totalDescription}`,
         color: productColor?._id,
-        total: (totalOptions + totalColor) * quantity,
+        price: totalOptions + totalColor,
         currency: product?.currency,
+        total: (totalOptions + totalColor) * quantity,
         quantity,
         options: productOptions,
         promotion: product.promotion
       }
     }).then(data => {
+      addTransaction(data?.data?.data)
       notify(data?.data?.msg, 'success')
+      handleCloseDialog()
     }).catch(err => {
       notify(err?.response?.data?.msg, 'error')
     })

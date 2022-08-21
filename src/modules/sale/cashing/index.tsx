@@ -26,11 +26,16 @@ export const Cashing = () => {
     setProductDialog({ productId: id, open: true })
   }
 
+  const handleAddTransaction = (data) => {
+    console.log(data)
+  }
+
   return (
     <Container>
       <ProductForm
         dialog={productDialog}
         setDialog={setProductDialog}
+        addTransaction={handleAddTransaction}
       />
       <div
         style={{
