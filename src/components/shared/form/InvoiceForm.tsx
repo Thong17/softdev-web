@@ -20,6 +20,8 @@ import { IconButton } from '@mui/material'
 import useAlert from 'hooks/useAlert'
 import useConfig from 'hooks/useConfig'
 import { NotificationLabel } from '../NotificationLabel'
+import ComboField from './ComboField'
+import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRounded'
 
 const currencyOptions: IOptions[] = [
   {
@@ -55,13 +57,16 @@ export const calculateTransactionTotal = (
   if (isFixed) {
     if (discountCurrency !== 'PCT')
       return { total: discount * quantity, currency: discountCurrency }
-    return { total: ((price * discount) / 100) * quantity, currency: priceCurrency }
+    return {
+      total: ((price * discount) / 100) * quantity,
+      currency: priceCurrency,
+    }
   }
 
   if (discountCurrency === 'PCT')
     return {
       total: (price - (price * discount) / 100) * quantity,
-      currency: priceCurrency
+      currency: priceCurrency,
     }
   if (discountCurrency === priceCurrency)
     return { total: (price - discount) * quantity, currency: priceCurrency }
@@ -70,10 +75,16 @@ export const calculateTransactionTotal = (
   let totalExchange = 0
   if (discountCurrency === 'USD') {
     totalExchange = discount * sellRate
-    return { total: (price - totalExchange) * quantity, currency: priceCurrency }
+    return {
+      total: (price - totalExchange) * quantity,
+      currency: priceCurrency,
+    }
   } else {
     totalExchange = discount / buyRate
-    return { total: (price - totalExchange) * quantity, currency: priceCurrency }
+    return {
+      total: (price - totalExchange) * quantity,
+      currency: priceCurrency,
+    }
   }
 }
 
@@ -93,7 +104,11 @@ export interface ITransactionItem {
   note?: string
 }
 
-export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
+export const InvoiceForm = ({
+  defaultTax = 0,
+  font = 'Ariel',
+  transaction,
+}: any) => {
   const {
     register,
     handleSubmit,
@@ -119,14 +134,36 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
   const priceCurrencyValue = watch('price.currency')
   const isFixedValue = watch('discount.isFixed')
   const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
+  const [discount, setDiscount] = useState({
+    value: 0,
+    type: 'PCT',
+    isFixed: false,
+    isEditing: false,
+  })
+  const [voucher, setVoucher] = useState({
+    value: 0,
+    type: 'PCT',
+    isFixed: false,
+    isEditing: false,
+  })
+  const [tax, setTax] = useState({
+    value: defaultTax,
+    type: 'PCT',
+    isEditing: false,
+  })
 
   useEffect(() => {
     let totalQuantity = 0
     let subtotalUSD = 0
     let subtotalKHR = 0
-    transactions.forEach(transaction => {
+    transactions.forEach((transaction) => {
       totalQuantity += transaction.quantity
-      const { total, currency } = calculateTransactionTotal(transaction.price, transaction.discount, transaction.quantity, {})
+      const { total, currency } = calculateTransactionTotal(
+        transaction.price,
+        transaction.discount,
+        transaction.quantity,
+        {}
+      )
       if (currency === 'KHR') subtotalKHR += total
       else subtotalUSD += total
     })
@@ -191,6 +228,23 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
       })
       .catch(() => {})
     event.stopPropagation()
+  }
+
+  const handleChangeDiscount = ({ input, select, check }) => {
+    setDiscount({
+      value: parseInt(input),
+      type: select,
+      isFixed: check,
+      isEditing: false,
+    })
+  }
+
+  const handleChangeTax = ({ input, select }) => {
+    setTax({ value: parseInt(input), type: select, isEditing: false })
+  }
+
+  const handleChangeVoucher = ({ input, select, check }) => {
+    setVoucher({ value: parseInt(input), type: select, isFixed: check, isEditing: false })
   }
 
   return (
@@ -527,8 +581,9 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
               <div className='item'>
                 <span>Subtotal</span>
                 <div style={{ display: 'flex', lineHeight: 1 }}>
-                  <span>{currencyFormat(subtotal.USD, 'USD')}</span>
-                  <span>{currencyFormat(subtotal.KHR, 'KHR')}</span>
+                  <span>
+                    {currencyFormat(subtotal.USD + subtotal.KHR / 4000, 'USD')}
+                  </span>
                 </div>
               </div>
               <div
@@ -538,8 +593,31 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
                   fontSize: theme.responsive[device]?.text.quaternary,
                 }}
               >
-                <span>Discount</span>
-                <span>-20%</span>
+                <span
+                  onClick={() =>
+                    setDiscount((prev) => ({
+                      ...prev,
+                      isEditing: !prev.isEditing,
+                    }))
+                  }
+                >
+                  Discount{' '}
+                  <ModeEditOutlineRoundedIcon
+                    sx={{
+                      fontSize: 13,
+                      cursor: 'pointer',
+                      '&:hover': { color: theme.text.primary },
+                    }}
+                  />
+                </span>
+                {discount.isEditing ? (
+                  <ComboField
+                    selectOption={discountOptions}
+                    onChange={handleChangeDiscount}
+                  />
+                ) : (
+                  <span>-{currencyFormat(discount.value, discount.type)}</span>
+                )}
               </div>
               <div
                 className='item'
@@ -548,8 +626,28 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
                   fontSize: theme.responsive[device]?.text.quaternary,
                 }}
               >
-                <span>Tax</span>
-                <span>+{tax}%</span>
+                <span
+                  onClick={() =>
+                    setTax((prev) => ({ ...prev, isEditing: !prev.isEditing }))
+                  }
+                >
+                  Tax{' '}
+                  <ModeEditOutlineRoundedIcon
+                    sx={{
+                      fontSize: 13,
+                      cursor: 'pointer',
+                      '&:hover': { color: theme.text.primary },
+                    }}
+                  />
+                </span>
+                {tax.isEditing ? (
+                  <ComboField
+                    selectOption={discountOptions}
+                    onChange={handleChangeTax}
+                  />
+                ) : (
+                  <span>+{currencyFormat(tax.value, tax.type)}</span>
+                )}
               </div>
               <div
                 className='item'
@@ -558,8 +656,31 @@ export const InvoiceForm = ({ tax = 0, font = 'Ariel', transaction }: any) => {
                   fontSize: theme.responsive[device]?.text.quaternary,
                 }}
               >
-                <span>Voucher</span>
-                <span>-10%</span>
+                <span
+                  onClick={() =>
+                    setVoucher((prev) => ({
+                      ...prev,
+                      isEditing: !prev.isEditing,
+                    }))
+                  }
+                >
+                  Voucher{' '}
+                  <ModeEditOutlineRoundedIcon
+                    sx={{
+                      fontSize: 13,
+                      cursor: 'pointer',
+                      '&:hover': { color: theme.text.primary },
+                    }}
+                  />
+                </span>
+                {voucher.isEditing ? (
+                  <ComboField
+                    selectOption={discountOptions}
+                    onChange={handleChangeVoucher}
+                  />
+                ) : (
+                  <span>-{currencyFormat(voucher.value, voucher.type)}</span>
+                )}
               </div>
             </div>
             <div className='total'>

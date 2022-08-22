@@ -635,7 +635,9 @@ export const CustomInvoiceForm = styled('div')(
             width: '100%',
             padding: '5px 20px',
             display: 'flex',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            height: 31
           }
         },
         '& .total': {

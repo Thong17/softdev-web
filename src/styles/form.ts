@@ -13,7 +13,7 @@ export const CustomMiniSelect = styled('div')(
     device: DeviceOptions
     active: any
   }) => ({
-    minWidth: 70,
+    minWidth: 33,
     padding: 0,
     position: 'relative',
     '& .MuiSelect-select, & .MuiList-root li': {
