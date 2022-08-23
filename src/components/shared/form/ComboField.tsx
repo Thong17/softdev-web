@@ -52,6 +52,7 @@ const ComboField = ({ onChange, selectOption, name = '', checkbox = true }) => {
         }}
       />
       <MiniSelectField
+        width={33}
         value={select}
         options={selectOption}
         onChange={handleChangeSelect}
@@ -59,7 +60,7 @@ const ComboField = ({ onChange, selectOption, name = '', checkbox = true }) => {
           position: 'absolute',
           top: 0,
           right: 0,
-          height: 23,
+          height: 19,
           minWidth: 0,
           '& .MuiSvgIcon-root': {
             right: 0,

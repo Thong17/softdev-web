@@ -247,6 +247,10 @@ export const InvoiceForm = ({
     setVoucher({ value: parseInt(input), type: select, isFixed: check, isEditing: false })
   }
 
+  const handleClickPayment = () => {
+    console.log({transactions}, {discount}, {tax}, {voucher})
+  }
+
   return (
     <CustomInvoiceForm
       mode={invoiceBar ? 'expand' : 'compact'}
@@ -383,7 +387,7 @@ export const InvoiceForm = ({
                                 value={priceCurrency}
                                 sx={{
                                   position: 'absolute',
-                                  top: -11,
+                                  top: -13,
                                   right: -38,
                                   height: 23,
                                   '& .MuiSelect-select': {
@@ -422,7 +426,7 @@ export const InvoiceForm = ({
                                   value={discountCurrency}
                                   sx={{
                                     position: 'absolute',
-                                    top: -11,
+                                    top: -13,
                                     right: -10,
                                     height: 23,
                                     '& .MuiSelect-select': {
@@ -644,6 +648,7 @@ export const InvoiceForm = ({
                   <ComboField
                     selectOption={discountOptions}
                     onChange={handleChangeTax}
+                    checkbox={false}
                   />
                 ) : (
                   <span>+{currencyFormat(tax.value, tax.type)}</span>
@@ -707,6 +712,7 @@ export const InvoiceForm = ({
                 <CustomButton
                   styled={theme}
                   fullWidth
+                  onClick={handleClickPayment}
                   style={{
                     backgroundColor: `${theme.color.success}22`,
                     color: theme.color.success,

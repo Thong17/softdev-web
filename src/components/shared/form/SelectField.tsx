@@ -39,6 +39,7 @@ interface ISelectField extends SelectProps {
   loading?: boolean
   search?: boolean
   containerStyle?: CSSProperties
+  width?: number
 }
 
 const containsText = (text, searchText) => {
@@ -147,7 +148,7 @@ const Input: ForwardRefRenderFunction<
 const MiniInput: ForwardRefRenderFunction<
   InputHTMLAttributes<HTMLSelectElement>,
   ISelectField
-> = ({ options, name, value, label, err, hint, loading, search = false, containerStyle, ...props }, ref) => {
+> = ({ options, name, value, label, err, hint, loading, search = false, width = 68, containerStyle, ...props }, ref) => {
   const { theme } = useTheme()
   const { device } = useWeb()
 
@@ -163,6 +164,7 @@ const MiniInput: ForwardRefRenderFunction<
       device={device}
       active={value !== '' ? 'active' : undefined}
       style={containerStyle}
+      width={width}
     >
       <Select
         value={value}
