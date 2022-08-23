@@ -23,6 +23,7 @@ import { NotificationLabel } from '../NotificationLabel'
 import ComboField from './ComboField'
 import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRounded'
 import EditOffRoundedIcon from '@mui/icons-material/EditOffRounded'
+import { CustomerForm } from 'components/shared/dialog/CustomerForm'
 
 const currencyOptions: IOptions[] = [
   {
@@ -196,6 +197,7 @@ export const InvoiceForm = ({
     type: 'PCT',
     isEditing: false,
   })
+  const [customerDialog, setCustomerDialog] = useState({ open: false})
 
   useEffect(() => {
     let totalQuantity = 0
@@ -301,6 +303,10 @@ export const InvoiceForm = ({
     console.log({ transactions }, { discount }, { tax }, { voucher })
   }
 
+  const handleClickCustomer = () => {
+    setCustomerDialog({ ...customerDialog, open: true })
+  }
+
   return (
     <CustomInvoiceForm
       mode={invoiceBar ? 'expand' : 'compact'}
@@ -309,6 +315,10 @@ export const InvoiceForm = ({
       font={font}
     >
       <div>
+        <CustomerForm
+          dialog={customerDialog}
+          setDialog={setCustomerDialog}
+        />
         <div
           style={{
             width: '100%',
@@ -318,9 +328,9 @@ export const InvoiceForm = ({
           }}
         >
           {device === 'laptop' || device === 'desktop' ? (
-            invoiceBar && <CustomerContainer style={{ marginLeft: 10 }} />
+            invoiceBar && <CustomerContainer onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
           ) : (
-            <CustomerContainer style={{ marginLeft: 10 }} />
+            <CustomerContainer onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
           )}
           <div
             className='toggle'

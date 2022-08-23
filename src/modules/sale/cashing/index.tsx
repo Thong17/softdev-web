@@ -10,13 +10,14 @@ import ReplayRoundedIcon from '@mui/icons-material/ReplayRounded'
 import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
 import { ProductForm } from './ProductForm'
+import { DrawerForm } from './DrawerForm'
 
 export const Cashing = () => {
   const { device } = useWeb()
   const dispatch = useAppDispatch()
   const { data: preview } = useAppSelector(selectInfoStore)
-  const [drawer, setDrawer] = useState(false)
   const [productDialog, setProductDialog] = useState({ open: false, productId: null })
+  const [drawerDialog, setDrawerDialog] = useState({ open: false })
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
@@ -47,6 +48,10 @@ export const Cashing = () => {
         setDialog={setProductDialog}
         addTransaction={handleAddTransaction}
       />
+      <DrawerForm
+        dialog={drawerDialog}
+        setDialog={setDrawerDialog}
+      />
       <div
         style={{
           display: 'grid',
@@ -65,9 +70,9 @@ export const Cashing = () => {
             actions={
               <>
                 <IconButton
-                  onClick={() => setDrawer(!drawer)}
+                  onClick={() => setDrawerDialog({ ...drawerDialog, open: true })}
                   style={{
-                    color: drawer ? theme.color.success : theme.color.error,
+                    color: theme.color.success,
                     width: 30,
                     height: 30,
                     marginRight: 10,
