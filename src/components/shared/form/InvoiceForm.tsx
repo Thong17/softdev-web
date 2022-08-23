@@ -124,7 +124,7 @@ export const calculatePaymentTotal = (
     {}
   )
   const { total: voucheredTotal } = calculateTransactionTotal(
-    { value: taxedTotal, currency: 'USD' },
+    { value: discountedTotal + discountedTotal - taxedTotal, currency: 'USD' },
     { value: voucherValue, currency: voucherType, isFixed: voucherFixed },
     1,
     {}
@@ -277,7 +277,7 @@ export const InvoiceForm = ({
 
   const handleChangeDiscount = ({ input, select, check }) => {
     setDiscount({
-      value: parseInt(input),
+      value: parseFloat(input),
       type: select,
       isFixed: check,
       isEditing: false,
@@ -285,12 +285,12 @@ export const InvoiceForm = ({
   }
 
   const handleChangeTax = ({ input, select }) => {
-    setTax({ value: parseInt(input), type: select, isEditing: false })
+    setTax({ value: parseFloat(input), type: select, isEditing: false })
   }
 
   const handleChangeVoucher = ({ input, select, check }) => {
     setVoucher({
-      value: parseInt(input),
+      value: parseFloat(input),
       type: select,
       isFixed: check,
       isEditing: false,
@@ -664,6 +664,7 @@ export const InvoiceForm = ({
                 </span>
                 {discount.isEditing ? (
                   <ComboField
+                    defaultValue={{ input: discount.value, select: discount.type, check: discount.isFixed }}
                     selectOption={discountOptions}
                     onChange={handleChangeDiscount}
                   />
@@ -701,6 +702,7 @@ export const InvoiceForm = ({
                 </span>
                 {tax.isEditing ? (
                   <ComboField
+                    defaultValue={{ input: tax.value, select: tax.type, check: false }}
                     selectOption={discountOptions}
                     onChange={handleChangeTax}
                     checkbox={false}
@@ -742,6 +744,7 @@ export const InvoiceForm = ({
                 </span>
                 {voucher.isEditing ? (
                   <ComboField
+                    defaultValue={{ input: voucher.value, select: voucher.type, check: voucher.isFixed }}
                     selectOption={discountOptions}
                     onChange={handleChangeVoucher}
                   />

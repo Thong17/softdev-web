@@ -5,11 +5,11 @@ import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 
-const ComboField = ({ onChange, selectOption, name = '', checkbox = true }) => {
+const ComboField = ({ onChange, defaultValue, selectOption, name = '', checkbox = true }) => {
   const { theme } = useTheme()
-  const [input, setInput] = useState('0')
-  const [select, setSelect] = useState('USD')
-  const [check, setCheck] = useState(false)
+  const [input, setInput] = useState(defaultValue.input)
+  const [select, setSelect] = useState(defaultValue.select || 'PCT')
+  const [check, setCheck] = useState(defaultValue.check || false)
 
   const handleChangeInput = (event) => {
     setInput(event.target.value)
@@ -39,7 +39,6 @@ const ComboField = ({ onChange, selectOption, name = '', checkbox = true }) => {
         value={input}
         placeholder={name}
         type='number'
-        maxLength={3}
         onChange={handleChangeInput}
         style={{
           width: 37,
