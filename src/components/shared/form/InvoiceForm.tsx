@@ -22,6 +22,7 @@ import useConfig from 'hooks/useConfig'
 import { NotificationLabel } from '../NotificationLabel'
 import ComboField from './ComboField'
 import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRounded'
+import EditOffRoundedIcon from '@mui/icons-material/EditOffRounded'
 
 const currencyOptions: IOptions[] = [
   {
@@ -86,6 +87,50 @@ export const calculateTransactionTotal = (
       currency: priceCurrency,
     }
   }
+}
+
+export const calculatePaymentTotal = (
+  subtotal,
+  discount,
+  tax,
+  voucher,
+  exchangeRate
+) => {
+  const {
+    value: discountValue,
+    type: discountType,
+    isFixed: discountFixed,
+  } = discount
+  const { value: taxValue, type: taxType } = tax
+  const {
+    value: voucherValue,
+    type: voucherType,
+    isFixed: voucherFixed,
+  } = voucher
+  const { buyRate = 4100 } = exchangeRate
+
+  let total = subtotal.USD + subtotal.KHR / buyRate
+
+  const { total: discountedTotal } = calculateTransactionTotal(
+    { value: total, currency: 'USD' },
+    { value: discountValue, currency: discountType, isFixed: discountFixed },
+    1,
+    {}
+  )
+  const { total: taxedTotal } = calculateTransactionTotal(
+    { value: discountedTotal, currency: 'USD' },
+    { value: taxValue, currency: taxType, isFixed: false },
+    1,
+    {}
+  )
+  const { total: voucheredTotal } = calculateTransactionTotal(
+    { value: taxedTotal, currency: 'USD' },
+    { value: voucherValue, currency: voucherType, isFixed: voucherFixed },
+    1,
+    {}
+  )
+
+  return voucheredTotal
 }
 
 export interface ICurrency {
@@ -244,11 +289,16 @@ export const InvoiceForm = ({
   }
 
   const handleChangeVoucher = ({ input, select, check }) => {
-    setVoucher({ value: parseInt(input), type: select, isFixed: check, isEditing: false })
+    setVoucher({
+      value: parseInt(input),
+      type: select,
+      isFixed: check,
+      isEditing: false,
+    })
   }
 
   const handleClickPayment = () => {
-    console.log({transactions}, {discount}, {tax}, {voucher})
+    console.log({ transactions }, { discount }, { tax }, { voucher })
   }
 
   return (
@@ -606,13 +656,11 @@ export const InvoiceForm = ({
                   }
                 >
                   Discount{' '}
-                  <ModeEditOutlineRoundedIcon
-                    sx={{
-                      fontSize: 13,
-                      cursor: 'pointer',
-                      '&:hover': { color: theme.text.primary },
-                    }}
-                  />
+                  {discount.isEditing ? (
+                    <EditOffRoundedIcon />
+                  ) : (
+                    <ModeEditOutlineRoundedIcon />
+                  )}
                 </span>
                 {discount.isEditing ? (
                   <ComboField
@@ -620,7 +668,16 @@ export const InvoiceForm = ({
                     onChange={handleChangeDiscount}
                   />
                 ) : (
-                  <span>-{currencyFormat(discount.value, discount.type)}</span>
+                  <span
+                    onClick={() =>
+                      setDiscount((prev) => ({
+                        ...prev,
+                        isEditing: !prev.isEditing,
+                      }))
+                    }
+                  >
+                    -{currencyFormat(discount.value, discount.type)}
+                  </span>
                 )}
               </div>
               <div
@@ -636,13 +693,11 @@ export const InvoiceForm = ({
                   }
                 >
                   Tax{' '}
-                  <ModeEditOutlineRoundedIcon
-                    sx={{
-                      fontSize: 13,
-                      cursor: 'pointer',
-                      '&:hover': { color: theme.text.primary },
-                    }}
-                  />
+                  {tax.isEditing ? (
+                    <EditOffRoundedIcon />
+                  ) : (
+                    <ModeEditOutlineRoundedIcon />
+                  )}
                 </span>
                 {tax.isEditing ? (
                   <ComboField
@@ -651,7 +706,16 @@ export const InvoiceForm = ({
                     checkbox={false}
                   />
                 ) : (
-                  <span>+{currencyFormat(tax.value, tax.type)}</span>
+                  <span
+                    onClick={() =>
+                      setTax((prev) => ({
+                        ...prev,
+                        isEditing: !prev.isEditing,
+                      }))
+                    }
+                  >
+                    +{currencyFormat(tax.value, tax.type)}
+                  </span>
                 )}
               </div>
               <div
@@ -670,13 +734,11 @@ export const InvoiceForm = ({
                   }
                 >
                   Voucher{' '}
-                  <ModeEditOutlineRoundedIcon
-                    sx={{
-                      fontSize: 13,
-                      cursor: 'pointer',
-                      '&:hover': { color: theme.text.primary },
-                    }}
-                  />
+                  {voucher.isEditing ? (
+                    <EditOffRoundedIcon />
+                  ) : (
+                    <ModeEditOutlineRoundedIcon />
+                  )}
                 </span>
                 {voucher.isEditing ? (
                   <ComboField
@@ -684,13 +746,27 @@ export const InvoiceForm = ({
                     onChange={handleChangeVoucher}
                   />
                 ) : (
-                  <span>-{currencyFormat(voucher.value, voucher.type)}</span>
+                  <span
+                    onClick={() =>
+                      setVoucher((prev) => ({
+                        ...prev,
+                        isEditing: !prev.isEditing,
+                      }))
+                    }
+                  >
+                    -{currencyFormat(voucher.value, voucher.type)}
+                  </span>
                 )}
               </div>
             </div>
             <div className='total'>
               <span>Total</span>
-              <span>20.00$</span>
+              <span>
+                {currencyFormat(
+                  calculatePaymentTotal(subtotal, discount, tax, voucher, {}),
+                  'USD'
+                )}
+              </span>
             </div>
           </div>
         </div>

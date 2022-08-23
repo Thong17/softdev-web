@@ -637,7 +637,14 @@ export const CustomInvoiceForm = styled('div')(
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            height: 31
+            height: 31,
+            '& span:hover': {
+              color: styled.text.primary,
+              cursor: 'pointer'
+            },
+            '& span svg': {
+              fontSize: 12
+            }
           }
         },
         '& .total': {
