@@ -16,6 +16,7 @@ export interface ShareState {
   preRole: IBody<Object>,
   adminDashboard: IBody<any>
   listProduct: IBody<any>
+  listCustomer: IBody<any>
 }
 
 export const initialState: ShareState = {
@@ -48,6 +49,12 @@ export const initialState: ShareState = {
     status: 'INIT',
   },
   listProduct: {
+    data: [],
+    status: 'INIT',
+    count: 0,
+    hasMore: true
+  },
+  listCustomer: {
     data: [],
     status: 'INIT',
     count: 0,

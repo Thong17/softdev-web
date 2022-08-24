@@ -7,6 +7,8 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { customerSchema } from 'shared/schema'
 import { useState } from 'react'
 import { CustomerContainer } from '../container/CustomerContainer'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 const CustomerForm = ({ onClose, defaultValues, theme }) => {
   const {
@@ -17,9 +19,18 @@ const CustomerForm = ({ onClose, defaultValues, theme }) => {
     resolver: yupResolver(customerSchema),
     defaultValues,
   })
+  const { notify } = useNotify()
 
   const submit = (data) => {
-    console.log(data)
+    Axios({
+      method: 'POST',
+      url: '/organize/customer/create',
+      body: data
+    }).then((data) => {
+      notify(data?.data?.msg, 'success')
+    }).catch((err) => {
+      notify(err?.response?.data?.msg, 'error')
+    })
   }
 
   return (

@@ -244,6 +244,10 @@ export const CustomListContainer = styled('div')(
       '& .subject': {
         color: `${styled.text.tertiary} !important`,
       },
+      '& .detail': {
+        color: `${styled.text.quaternary} !important`,
+        fontSize: styled.responsive?.[device]?.text.quaternary,
+      },
       '& .price': {
         color: `${styled.color.info} !important`,
         fontSize: styled.responsive?.[device]?.text.h3,

@@ -5,11 +5,11 @@ import { CustomCustomerContainer } from 'styles'
 import { RankStatus } from '../RankStatus'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { getListBrand, getListCategory, getListProduct, selectListProduct } from 'shared/redux'
+import { getListBrand, getListCategory, getListCustomer, selectListCustomer } from 'shared/redux'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { CircularProgress, MenuItem, Skeleton } from '@mui/material'
 import useLanguage from 'hooks/useLanguage'
-import { currencyFormat, debounce } from 'utils'
+import { debounce } from 'utils'
 import { MiniSearchField } from '../table/SearchField'
 import { MiniFilterButton } from '../table/FilterButton'
 import { SortIcon } from 'components/shared/icons/SortIcon'
@@ -17,11 +17,10 @@ import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded'
 import DiscountIcon from '@mui/icons-material/Discount'
 import { IconButton } from '@mui/material'
-import { StockStatus } from '../StockStatus'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { ListLayout, ListItem } from 'components/layouts/ListLayout'
+import { CustomerLayout, CustomerItem } from 'components/layouts/CustomerLayout'
 
 export const CustomerStatistic = ({ ...props }) => {
   const { theme } = useTheme()
@@ -37,43 +36,25 @@ export const CustomerStatistic = ({ ...props }) => {
   )
 }
 
-const mappedProduct = (data, lang) => {
-  let stock = 0
-  let alertAt = 0
-  data.stocks?.forEach(item => {
-    stock += item.quantity
-    alertAt += item.alertAt
-  })
-  
+const mappedCustomer = (data, lang) => {  
   return {
-    id: data?._id,
-    name: data?.name?.[lang] || data?.name?.['English'],
-    profile: data?.profile?.filename,
-    status: data?.status,
-    price: currencyFormat(data?.price, data?.currency),
-    tags: data?.tags,
-    createdAt: data?.createdAt,
-    brand: data?.brand?._id,
-    category: data?.category?._id,
-    stock,
-    alertAt,
-    promotion: data?.promotion
+    ...data
   }
 }
 
-export const CustomerContainer = ({ onClickProduct, actions, filterSelected, filterPromotion, selectedProducts, promotionId, activeId, toggleReload }: any) => {
+export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, filterPromotion, selectedCustomers, promotionId, activeId, toggleReload }: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
-  const { data, count: countProduct, hasMore: hasMoreProduct, status } = useAppSelector(selectListProduct)
+  const { data, count: countCustomer, hasMore: hasMoreCustomer, status } = useAppSelector(selectListCustomer)
   const { theme } = useTheme()
   const { device } = useWeb()
   const { notify } = useNotify()
   const { lang } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [fetching, setFetching] = useState(false)
-  const [products, setProducts] = useState<any[]>([])
+  const [customers, setCustomers] = useState<any[]>([])
   const [selected, setSelected] = useState(false)
   const [promotion, setPromotion] = useState(false)
   const [favorite, setFavorite] = useState(false)
@@ -89,7 +70,7 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
 
   const handleToggleFavorite = () => {
     if (hasMore) {
-      setProducts([])
+      setCustomers([])
       setOffset(0)
     }
     setFavorite(!favorite)
@@ -97,7 +78,7 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
 
   const handleToggleSelected = () => {
     if (hasMore) {
-      setProducts([])
+      setCustomers([])
       setOffset(0)
     }
     setSelected(!selected)
@@ -105,21 +86,21 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
 
   const handleTogglePromotion = () => {
     if (hasMore) {
-      setProducts([])
+      setCustomers([])
       setOffset(0)
     }
     setPromotion(!promotion)
   }
 
-  const handleClickProduct = (id) => {
-    onClickProduct && onClickProduct(id)
+  const handleClickCustomer = (id) => {
+    onClickCustomer && onClickCustomer(id)
   }
 
   const handleChangeFilter = ({ filter }) => {
     setSortObj({ ...sortObj, [filter]: !sortObj[filter] })
     setFilterObj({ filter, asc: sortObj[filter] })
     if (hasMore) {
-      setProducts([])
+      setCustomers([])
       setOffset(0)
     }
   }
@@ -127,7 +108,7 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
   const updateQuery = debounce((value) => {
     setSearch(value)
     if (hasMore) {
-      setProducts([])
+      setCustomers([])
       setOffset(0)
     }
   }, 300)
@@ -137,7 +118,7 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
   }
 
   const observer: any = useRef()
-  const lastProductElement = useCallback((node) => {
+  const lastCustomerElement = useCallback((node) => {
     if (fetching) return
     if (observer.current) observer.current.disconnect()
     observer.current = new IntersectionObserver(entries => {
@@ -149,7 +130,7 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
   },[fetching, count, offset])
 
   useEffect(() => {
-    if (products.length < 1) return
+    if (customers.length < 1) return
     const query = new URLSearchParams()
     query.append('search', search)
     query.append('limit', limit.toString())
@@ -160,10 +141,10 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
     if (selected && promotionId) query.append('promotion', promotionId)
     Axios({
       method: 'GET',
-      url: '/shared/product/list',
+      url: '/shared/customer/list',
       params: query
     }).then(data => {
-      setProducts(data?.data?.data.map((product) => mappedProduct(product, lang)))
+      setCustomers(data?.data?.data.map((customer) => mappedCustomer(customer, lang)))
     }).catch(err => {
       notify(err?.response?.data?.msg, 'error')
     })
@@ -171,10 +152,10 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
   }, [toggleReload])
   
   useEffect(() => {
-    // Client Side Filtering if all the products is loaded
+    // Client Side Filtering if all the customers is loaded
     if (!hasMore) {
       const _search = new RegExp(search || '', "i")
-      setProducts(prevData => {
+      setCustomers(prevData => {
         return prevData.map(data => {
           let obj = data
 
@@ -184,7 +165,7 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
             obj['display'] = 'block'
           }
           
-          if (selected && !selectedProducts?.includes(data.id)) obj['display'] = 'none'
+          if (selected && !selectedCustomers?.includes(data.id)) obj['display'] = 'none'
           if (favorite && !user?.favorites?.includes(data.id)) obj['display'] = 'none'
           if (promotion && !data.promotion) obj['display'] = 'none'
           return obj
@@ -212,7 +193,7 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
     query.append('favorite', favorite ? 'on' : 'off')
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected && promotionId) query.append('promotion', promotionId)
-    dispatch(getListProduct(query))
+    dispatch(getListCustomer(query))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, offset, search, favorite, promotion, filterObj, selected])
 
@@ -224,11 +205,11 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
   useEffect(() => {
     if (status !== 'SUCCESS') return
     let unmounted = false
-    setHasMore(hasMoreProduct || false)
-    setCount(countProduct || 0)
+    setHasMore(hasMoreCustomer || false)
+    setCount(countCustomer || 0)
     setTimeout(() => {
       if (!unmounted) {
-        setProducts(prevData => [...prevData, ...data.map((product) => mappedProduct(product, lang))])
+        setCustomers(prevData => [...prevData, ...data.map((customer) => mappedCustomer(customer, lang))])
         setLoading(false)
         setFetching(false)
       }
@@ -236,7 +217,10 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
     return () => {
       unmounted = true
     }
-  }, [status, data, lang, hasMoreProduct, countProduct])
+  }, [status, data, lang, hasMoreCustomer, countCustomer])
+
+  console.log(customers);
+  
 
   return (
     <div>
@@ -264,43 +248,41 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
           {actions}
         </div>
       </div>
-      <div style={{ border: theme.border.dashed, borderRadius: theme.radius.quaternary, borderWidth: 2 }}>
-        <ListLayout>
+      <div style={{ border: theme.border.dashed, borderRadius: theme.radius.quaternary, borderWidth: 2, padding: '0 10px' }}>
+        <CustomerLayout>
           {!loading
-            ? products?.map((product: any, index) => {
-                if (products.length === index + 1) {
-                  return <ListItem
-                    id={product.id}
-                    ref={lastProductElement}
+            ? customers?.map((customer: any, index) => {
+                if (customers.length === index + 1) {
+                  return <CustomerItem
+                    id={customer._id}
+                    ref={lastCustomerElement}
                     key={index}
-                    title={product.name}
-                    picture={product.profile}
-                    subLeft={product.price}
-                    subRight={<StockStatus qty={product.stock} min={product.alertAt} />}
-                    action={product.action}
-                    display={product.display}
-                    onClick={() => handleClickProduct(product.id)}
-                    selected={selectedProducts?.includes(product.id)}
-                    favorite={user?.favorites?.includes(product.id)}
-                    promotion={product.promotion}
-                    active={product.id === activeId}
+                    name={`${customer.lastName}\u00a0${customer.firstName}`}
+                    phone={customer.phone}
+                    address={customer.address}
+                    action={customer.action}
+                    display={customer.dateOfBirth}
+                    onClick={() => handleClickCustomer(customer.id)}
+                    selected={selectedCustomers?.includes(customer.id)}
+                    favorite={user?.favorites?.includes(customer.id)}
+                    promotion={customer.promotion}
+                    active={customer.id === activeId}
                   />
                 }
                 return (
-                  <ListItem
-                    id={product.id}
+                  <CustomerItem
+                    id={customer.id}
                     key={index}
-                    title={product.name}
-                    picture={product.profile}
-                    subLeft={product.price}
-                    subRight={<StockStatus qty={product.stock} min={product.alertAt} />}
-                    action={product.action}
-                    display={product.display}
-                    onClick={() => handleClickProduct(product.id)}
-                    selected={selectedProducts?.includes(product.id)}
-                    favorite={user?.favorites?.includes(product.id)}
-                    promotion={product.promotion}
-                    active={product.id === activeId}
+                    name={`${customer.lastName}\u00a0${customer.firstName}`}
+                    phone={customer.phone}
+                    address={customer.address}
+                    action={customer.action}
+                    display={customer.dateOfBirth}
+                    onClick={() => handleClickCustomer(customer.id)}
+                    selected={selectedCustomers?.includes(customer.id)}
+                    favorite={user?.favorites?.includes(customer.id)}
+                    promotion={customer.promotion}
+                    active={customer.id === activeId}
                   />
                 )
               })
@@ -333,7 +315,7 @@ export const CustomerContainer = ({ onClickProduct, actions, filterSelected, fil
                   </div>
                 )
               })}
-        </ListLayout>
+        </CustomerLayout>
         {fetching && <div style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: 10 }}><CircularProgress style={{ width: 30, height: 30 }} /></div>}
       </div>
     </div>
