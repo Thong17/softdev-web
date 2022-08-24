@@ -4,7 +4,7 @@ import { CustomButton, CustomInvoiceForm } from 'styles'
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
 import { FlexBetween } from '../container/FlexBetween'
 import useWeb from 'hooks/useWeb'
-import { CustomerContainer } from '../container/CustomerContainer'
+import { CustomerStatistic } from '../container/CustomerContainer'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CircleIcon } from '../table/CustomIcon'
 import { MiniDetailField, MiniTextField } from './InputField'
@@ -23,7 +23,7 @@ import { NotificationLabel } from '../NotificationLabel'
 import ComboField from './ComboField'
 import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRounded'
 import EditOffRoundedIcon from '@mui/icons-material/EditOffRounded'
-import { CustomerForm } from 'components/shared/dialog/CustomerForm'
+import { CustomerDialog } from 'components/shared/dialog/CustomerDialog'
 
 const currencyOptions: IOptions[] = [
   {
@@ -315,7 +315,7 @@ export const InvoiceForm = ({
       font={font}
     >
       <div>
-        <CustomerForm
+        <CustomerDialog
           dialog={customerDialog}
           setDialog={setCustomerDialog}
         />
@@ -328,9 +328,9 @@ export const InvoiceForm = ({
           }}
         >
           {device === 'laptop' || device === 'desktop' ? (
-            invoiceBar && <CustomerContainer onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
+            invoiceBar && <CustomerStatistic onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
           ) : (
-            <CustomerContainer onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
+            <CustomerStatistic onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
           )}
           <div
             className='toggle'

@@ -1,12 +1,13 @@
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
+import { forwardRef } from 'react'
 import { CustomListContainer } from 'styles'
 
-export const ListItem = (props) => {
+const Item = (props, ref) => {
   const { picture, title, first, second, third, fourth, action, status } =
     props
   return (
-    <div className='list-item'>
+    <div className='list-item' ref={ref}>
       <div style={{ flex: '0 50px', display: 'flex', justifyContent: 'center' }}>
         <span className={`status ${status ? 'active' : 'inactive'}`} />
       </div>
@@ -40,8 +41,12 @@ export const ListItem = (props) => {
   )
 }
 
+const ListItem = forwardRef(Item)
+
+export { ListItem }
+
 export const ListLayout = ({
-  isLoading,
+  isLoading = false,
   children
 }) => {
   const { theme } = useTheme()
