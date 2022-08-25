@@ -21,6 +21,8 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { CustomerLayout, CustomerItem } from 'components/layouts/CustomerLayout'
+import { DeleteButton, UpdateButton } from 'components/shared/table/ActionButton'
+import useAlert from 'hooks/useAlert'
 
 export const CustomerStatistic = ({ phone, point, ...props }) => {
   const { theme } = useTheme()
@@ -36,9 +38,20 @@ export const CustomerStatistic = ({ phone, point, ...props }) => {
   )
 }
 
-const mappedCustomer = (data, lang) => {
+const mappedCustomer = (data, onDelete, onEdit) => {
+  const action = <div style={{ display: 'flex' }}>
+    <UpdateButton onClick={(event) => { 
+      onEdit(data._id)
+      event.stopPropagation()
+    }} />
+    <DeleteButton onClick={(event) => { 
+      onDelete(data._id)
+      event.stopPropagation()
+    }} />
+  </div>
   return {
-    ...data
+    ...data,
+    action
   }
 }
 
@@ -52,6 +65,7 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
   const { device } = useWeb()
   const { notify } = useNotify()
   const { lang } = useLanguage()
+  const confirm = useAlert()
   const [loading, setLoading] = useState(true)
   const [fetching, setFetching] = useState(false)
   const [customers, setCustomers] = useState<any[]>([])
@@ -138,12 +152,27 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
     query.append('favorite', favorite ? 'on' : 'off')
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected && promotionId) query.append('promotion', promotionId)
+
+    const handleDelete = (id) => {
+      confirm({
+        title: 'Are you sure you want to delete this customer?',
+        description: 'Delete customer will remove it from the list.',
+        variant: 'error'
+      }).then(() => {
+        console.log(id)
+      }).catch(() => {})
+    }
+    const handleEdit = (id) => {
+      console.log(id);
+      
+    }
+
     Axios({
       method: 'GET',
       url: '/shared/customer/list',
       params: query
     }).then(data => {
-      setCustomers(data?.data?.data.map((customer) => mappedCustomer(customer, lang)))
+      setCustomers(data?.data?.data.map((customer) => mappedCustomer(customer, handleDelete, handleEdit)))
     }).catch(err => {
       notify(err?.response?.data?.msg, 'error')
     })
@@ -206,9 +235,22 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
     let unmounted = false
     setHasMore(hasMoreCustomer || false)
     setCount(countCustomer || 0)
+    const handleDelete = (id) => {
+      confirm({
+        title: 'Are you sure you want to delete this customer?',
+        description: 'Delete customer will remove it from the list.',
+        variant: 'error'
+      }).then(() => {
+        console.log(id)
+      }).catch(() => {})
+    }
+    const handleEdit = (id) => {
+      console.log(id);
+      
+    }
     setTimeout(() => {
       if (!unmounted) {
-        setCustomers(prevData => [...prevData, ...data.map((customer) => mappedCustomer(customer, lang))])
+        setCustomers(prevData => [...prevData, ...data.map((customer) => mappedCustomer(customer, handleDelete, handleEdit))])
         setLoading(false)
         setFetching(false)
       }
@@ -216,7 +258,7 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
     return () => {
       unmounted = true
     }
-  }, [status, data, lang, hasMoreCustomer, countCustomer])
+  }, [status, data, lang, hasMoreCustomer, countCustomer, confirm])
 
   return (
     <div>

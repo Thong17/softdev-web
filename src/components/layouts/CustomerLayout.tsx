@@ -26,7 +26,7 @@ const Item = (props, ref) => {
           <div className="detail" style={{ display: 'flex', alignItems: 'end' }}><CakeRoundedIcon style={{ fontSize: 18, marginRight: 5 }} /><TextEllipsis>{dateFormat(dateOfBirth)}</TextEllipsis></div>
         </div>
       </div>
-      <div className='action' style={{ position: 'absolute', right: 20 }}>
+      <div style={{ marginRight: 15 }}>
         {action}
       </div>
     </div>
