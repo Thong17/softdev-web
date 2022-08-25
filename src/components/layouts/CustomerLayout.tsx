@@ -10,11 +10,11 @@ import { CircleIcon } from 'components/shared/table/CustomIcon'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
 
 const Item = (props, ref) => {
-  const { name, phone, dateOfBirth, address, picture, onClick, action } =
+  const { name, phone, dateOfBirth, address, picture, onClick, display, action } =
     props
   
   return (
-    <div className='list-item' ref={ref} onClick={() => onClick()}>
+    <div className='list-item' ref={ref} onClick={() => onClick()} style={{ display: display || 'flex' }}>
       <div style={{ marginLeft: 10 }}><CircleIcon icon={picture} /></div>
       <div className='content' style={{ display: 'flex', flexDirection: 'column', flex: '0 100%', marginRight: 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>

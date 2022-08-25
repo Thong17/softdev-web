@@ -198,6 +198,7 @@ export const InvoiceForm = ({
     isEditing: false,
   })
   const [customerDialog, setCustomerDialog] = useState({ open: false})
+  const [customer, setCustomer] = useState({ phone: null, id: null, point: 0 })
 
   useEffect(() => {
     let totalQuantity = 0
@@ -300,7 +301,7 @@ export const InvoiceForm = ({
   }
 
   const handleClickPayment = () => {
-    console.log({ transactions }, { discount }, { tax }, { voucher })
+    console.log({ transactions }, { discount }, { tax }, { voucher }, { customer })
   }
 
   const handleClickCustomer = () => {
@@ -318,6 +319,7 @@ export const InvoiceForm = ({
         <CustomerDialog
           dialog={customerDialog}
           setDialog={setCustomerDialog}
+          onClickCustomer={(data) => setCustomer(data)}
         />
         <div
           style={{
@@ -328,9 +330,9 @@ export const InvoiceForm = ({
           }}
         >
           {device === 'laptop' || device === 'desktop' ? (
-            invoiceBar && <CustomerStatistic onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
+            invoiceBar && <CustomerStatistic point={customer.point} phone={customer.phone} onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
           ) : (
-            <CustomerStatistic onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
+            <CustomerStatistic point={customer.point} phone={customer.phone} onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
           )}
           <div
             className='toggle'

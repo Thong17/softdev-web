@@ -11,8 +11,9 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { FileField, IImage } from '../form/UploadField'
 
-const CustomerForm = ({ onClose, defaultValues, theme }) => {
+const CustomerForm = ({ onClose, onChange, defaultValues, theme }) => {
   const {
+    reset,
     register,
     handleSubmit,
     getValues,
@@ -33,6 +34,8 @@ const CustomerForm = ({ onClose, defaultValues, theme }) => {
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
+        reset()
+        onChange()
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
@@ -152,16 +155,18 @@ const CustomerForm = ({ onClose, defaultValues, theme }) => {
   )
 }
 
-export const CustomerDialog = ({ dialog, setDialog }: any) => {
+export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
   const { theme } = useTheme()
   const [showForm, setShowForm] = useState(false)
+  const [reload, setReload] = useState(false)
 
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false })
   }
 
   const handleClickCustomer = (data) => {
-    console.log(data)
+    onClickCustomer(data)
+    handleCloseDialog()
   }
 
   return (
@@ -183,6 +188,7 @@ export const CustomerDialog = ({ dialog, setDialog }: any) => {
             onClose={() => setShowForm(false)}
             theme={theme}
             defaultValues={{}}
+            onChange={() => setReload(!reload)}
           />
         ) : (
           <Button
@@ -197,7 +203,7 @@ export const CustomerDialog = ({ dialog, setDialog }: any) => {
           </Button>
         )}
         <div style={{ marginTop: 20 }}>
-          <CustomerContainer onClickCustomer={handleClickCustomer} />
+          <CustomerContainer onClickCustomer={handleClickCustomer} toggleReload={reload} />
         </div>
       </div>
     </AlertContainer>

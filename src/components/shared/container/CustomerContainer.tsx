@@ -22,16 +22,16 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { CustomerLayout, CustomerItem } from 'components/layouts/CustomerLayout'
 
-export const CustomerStatistic = ({ ...props }) => {
+export const CustomerStatistic = ({ phone, point, ...props }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   return (
     <CustomCustomerContainer device={device} styled={theme} {...props}>
       <LocalPhoneRoundedIcon style={{ marginRight: 5, fontSize: 15 }} />
       <div style={{ display: 'flex', alignItems: 'start', marginRight: 7 }}>
-        <p style={{ fontSize: 15 }}>+855 12 345 678</p>
+        <p style={{ fontSize: 15 }}>{phone}</p>
       </div>
-      <RankStatus text='250' color={theme.color.info} />
+      <RankStatus text={point} color={theme.color.info} />
     </CustomCustomerContainer>
   )
 }
@@ -130,7 +130,6 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
   },[fetching, count, offset])
 
   useEffect(() => {
-    if (customers.length < 1) return
     const query = new URLSearchParams()
     query.append('search', search)
     query.append('limit', limit.toString())
@@ -162,7 +161,7 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
           if (!_search.test(data.tags)) {
             obj['display'] = 'none'
           } else {
-            obj['display'] = 'block'
+            obj['display'] = 'flex'
           }
           
           if (selected && !selectedCustomers?.includes(data.id)) obj['display'] = 'none'
@@ -258,8 +257,8 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
                     phone={customer.phone}
                     address={customer.address}
                     action={customer.action}
-                    display={customer.dateOfBirth}
-                    onClick={() => handleClickCustomer({ id: customer._id, phone: customer.phone })}
+                    display={customer.display}
+                    onClick={() => handleClickCustomer({ id: customer._id, phone: customer.phone, point: 0 })}
                     selected={selectedCustomers?.includes(customer._id)}
                     favorite={user?.favorites?.includes(customer._id)}
                     promotion={customer.promotion}
@@ -275,8 +274,8 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
                     phone={customer.phone}
                     address={customer.address}
                     action={customer.action}
-                    display={customer.dateOfBirth}
-                    onClick={() => handleClickCustomer({ id: customer._id, phone: customer.phone })}
+                    display={customer.display}
+                    onClick={() => handleClickCustomer({ id: customer._id, phone: customer.phone, point: 0 })}
                     selected={selectedCustomers?.includes(customer._id)}
                     favorite={user?.favorites?.includes(customer._id)}
                     promotion={customer.promotion}
