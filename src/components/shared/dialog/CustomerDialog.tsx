@@ -159,6 +159,11 @@ export const CustomerDialog = ({ dialog, setDialog }: any) => {
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false })
   }
+
+  const handleClickCustomer = (data) => {
+    console.log(data)
+  }
+
   return (
     <AlertContainer
       justify='end'
@@ -192,7 +197,7 @@ export const CustomerDialog = ({ dialog, setDialog }: any) => {
           </Button>
         )}
         <div style={{ marginTop: 20 }}>
-          <CustomerContainer />
+          <CustomerContainer onClickCustomer={handleClickCustomer} />
         </div>
       </div>
     </AlertContainer>

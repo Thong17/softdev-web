@@ -214,6 +214,11 @@ export const CustomListContainer = styled('div')(
       backgroundColor: styled.background.secondary,
       borderRadius: styled.radius.primary,
       marginBottom: 10,
+      cursor: 'pointer',
+      transition: '0.2s ease',
+      '&:hover': {
+        backgroundColor: styled.background.primary
+      }
     },
     '& .status': {
       display: 'block',

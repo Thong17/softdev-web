@@ -36,7 +36,7 @@ export const CustomerStatistic = ({ ...props }) => {
   )
 }
 
-const mappedCustomer = (data, lang) => {  
+const mappedCustomer = (data, lang) => {
   return {
     ...data
   }
@@ -219,9 +219,6 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
     }
   }, [status, data, lang, hasMoreCustomer, countCustomer])
 
-  console.log(customers);
-  
-
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -262,27 +259,29 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
                     address={customer.address}
                     action={customer.action}
                     display={customer.dateOfBirth}
-                    onClick={() => handleClickCustomer(customer.id)}
-                    selected={selectedCustomers?.includes(customer.id)}
-                    favorite={user?.favorites?.includes(customer.id)}
+                    onClick={() => handleClickCustomer({ id: customer._id, phone: customer.phone })}
+                    selected={selectedCustomers?.includes(customer._id)}
+                    favorite={user?.favorites?.includes(customer._id)}
                     promotion={customer.promotion}
-                    active={customer.id === activeId}
+                    active={customer._id === activeId}
+                    picture={customer.picture?.filename}
                   />
                 }
                 return (
                   <CustomerItem
-                    id={customer.id}
+                    id={customer._id}
                     key={index}
                     name={`${customer.lastName}\u00a0${customer.firstName}`}
                     phone={customer.phone}
                     address={customer.address}
                     action={customer.action}
                     display={customer.dateOfBirth}
-                    onClick={() => handleClickCustomer(customer.id)}
-                    selected={selectedCustomers?.includes(customer.id)}
-                    favorite={user?.favorites?.includes(customer.id)}
+                    onClick={() => handleClickCustomer({ id: customer._id, phone: customer.phone })}
+                    selected={selectedCustomers?.includes(customer._id)}
+                    favorite={user?.favorites?.includes(customer._id)}
                     promotion={customer.promotion}
-                    active={customer.id === activeId}
+                    active={customer._id === activeId}
+                    picture={customer.picture?.filename}
                   />
                 )
               })
