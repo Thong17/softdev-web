@@ -9,27 +9,52 @@ import { useState } from 'react'
 import { CustomerContainer } from '../container/CustomerContainer'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
+import { FileField, IImage } from '../form/UploadField'
 
 const CustomerForm = ({ onClose, defaultValues, theme }) => {
   const {
     register,
     handleSubmit,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(customerSchema),
     defaultValues,
   })
   const { notify } = useNotify()
+  const [profilePath, setProfilePath] = useState<IImage>(defaultValues?.picture)
 
   const submit = (data) => {
     Axios({
       method: 'POST',
       url: '/organize/customer/create',
-      body: data
+      body: data,
+    })
+      .then((data) => {
+        notify(data?.data?.msg, 'success')
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
+  }
+
+  const handleChangeFile = (event) => {
+    const image = event.target.files[0]
+    const formData = new FormData()
+    formData.append('picture', image)
+    Axios({
+      method: 'POST',
+      url: `/shared/upload/picture`,
+      body: formData,
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
     }).then((data) => {
-      notify(data?.data?.msg, 'success')
-    }).catch((err) => {
-      notify(err?.response?.data?.msg, 'error')
+      const filename: IImage = data.data.data as IImage
+      const fileId = data.data.data._id
+      setValue('picture', fileId)
+      setProfilePath(filename)
     })
   }
 
@@ -39,7 +64,7 @@ const CustomerForm = ({ onClose, defaultValues, theme }) => {
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
-        gridTemplateAreas: `'lastName firstName firstName''phone phone dateOfBirth''address address address''action action action'`,
+        gridTemplateAreas: `'lastName firstName firstName''phone phone dateOfBirth''profile profile profile''address address address''action action action'`,
         gridColumnGap: 20,
       }}
     >
@@ -73,6 +98,17 @@ const CustomerForm = ({ onClose, defaultValues, theme }) => {
           label='Date Of Birth'
           err={errors?.dateOfBirth?.message}
           {...register('dateOfBirth')}
+        />
+      </div>
+      <div style={{ gridArea: 'profile' }}>
+        <FileField
+          images={profilePath && [profilePath]}
+          selected={getValues('profile')?._id}
+          name='profile'
+          label='Profile'
+          accept='image/png, image/jpeg'
+          onChange={handleChangeFile}
+          height={130}
         />
       </div>
       <div style={{ gridArea: 'address' }}>
@@ -147,7 +183,7 @@ export const CustomerDialog = ({ dialog, setDialog }: any) => {
           <Button
             style={{
               color: theme.color.info,
-              backgroundColor: `${theme.color.info}22`, 
+              backgroundColor: `${theme.color.info}22`,
             }}
             fullWidth
             onClick={() => setShowForm(true)}

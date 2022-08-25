@@ -362,6 +362,32 @@ export const CustomMiniInput = styled('div')(
   })
 )
 
+export const CustomProfileUpload = styled('div')(
+  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
+    padding: '20px 0 20px 0',
+    position: 'relative',
+    '& label.input, & .container': {
+      color: styled.text.tertiary,
+      backgroundColor: 'transparent',
+      display: 'grid',
+      placeItems: 'center',
+      borderRadius: styled.radius.primary,
+      border: styled.border.quaternary,
+      borderStyle: 'dashed !important',
+      padding: '0 13px',
+      cursor: 'pointer',
+      overflow: 'hidden',
+      transition: '0.3s ease',
+      '&:hover, &:focus': {
+        border: styled.border.tertiary,
+      },
+    },
+    '& input': {
+      display: 'none',
+    },
+  })
+)
+
 export const CustomUpload = styled('div')(
   ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
     padding: '30px 0 20px 0',
