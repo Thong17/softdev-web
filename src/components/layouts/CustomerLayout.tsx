@@ -2,15 +2,13 @@ import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { forwardRef } from 'react'
 import { CustomListContainer } from 'styles'
-import { dateFormat } from 'utils'
 import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded'
-import CakeRoundedIcon from '@mui/icons-material/CakeRounded'
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
 
 const Item = (props, ref) => {
-  const { name, contact, dateOfBirth, address, picture, onClick, display } =
+  const { name, contact, address, picture, onClick, display } =
     props
   
   return (
@@ -23,7 +21,6 @@ const Item = (props, ref) => {
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="detail" style={{ display: 'flex', alignItems: 'end' }}><LocationOnRoundedIcon style={{ fontSize: 16, marginRight: 5 }} /><TextEllipsis>{address}</TextEllipsis></div>
-          <div className="detail" style={{ display: 'flex', alignItems: 'end' }}><CakeRoundedIcon style={{ fontSize: 18, marginRight: 5 }} /><TextEllipsis>{dateFormat(dateOfBirth)}</TextEllipsis></div>
         </div>
       </div>
     </div>

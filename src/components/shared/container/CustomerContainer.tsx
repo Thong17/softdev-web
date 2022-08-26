@@ -318,7 +318,7 @@ export const CustomerContainer = ({
                       onClick={() =>
                         handleClickCustomer({
                           id: customer._id,
-                          phone: customer.phone,
+                          displayName: customer.displayName,
                           point: 0,
                         })
                       }
@@ -342,7 +342,7 @@ export const CustomerContainer = ({
                     onClick={() =>
                       handleClickCustomer({
                         id: customer._id,
-                        phone: customer.phone,
+                        displayName: customer.displayName,
                         point: 0,
                       })
                     }
