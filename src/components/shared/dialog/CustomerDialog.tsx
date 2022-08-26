@@ -5,7 +5,7 @@ import { MiniDetailField, MiniTextField } from '../form/InputField'
 import Button from '../Button'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { customerSchema } from 'shared/schema'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CustomerContainer } from '../container/CustomerContainer'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
@@ -18,6 +18,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme }) => {
     handleSubmit,
     getValues,
     setValue,
+    setFocus,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(customerSchema),
@@ -26,6 +27,10 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme }) => {
   const { notify } = useNotify()
   const [profilePath, setProfilePath] = useState<IImage>(defaultValues?.picture)
 
+  useEffect(() => {
+    setFocus('displayName')
+  }, [setFocus])
+  
   const submit = (data) => {
     Axios({
       method: 'POST',
