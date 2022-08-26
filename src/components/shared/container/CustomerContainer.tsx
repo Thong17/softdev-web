@@ -165,7 +165,7 @@ export const CustomerContainer = ({
   useEffect(() => {
     if (status !== 'SUCCESS') return
     let unmounted = false
-    setHasMore(hasMoreCustomer || true)
+    setHasMore(hasMoreCustomer || false)
     setCount(countCustomer || 0)
     setTimeout(() => {
       if (!unmounted) {
