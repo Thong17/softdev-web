@@ -19,6 +19,7 @@ import { FlexBetween } from 'components/shared/container/FlexBetween'
 import { StockStatus } from 'components/shared/StockStatus'
 import useNotify from 'hooks/useNotify'
 import Axios from 'constants/functions/Axios'
+import { NanoInput } from 'components/shared/form/InputField'
 
 export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   const { theme } = useTheme()
@@ -497,7 +498,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                   style={{ fontSize: 16, color: theme.text.secondary }}
                 />
               </IconButton>
-              <input
+              <NanoInput
                 value={quantity}
                 onChange={handleChangeQuantity}
                 placeholder='Qty'
@@ -505,16 +506,6 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                 name='qty'
                 id='qty'
                 min='1'
-                style={{
-                  width: 37,
-                  padding: '2px 5px',
-                  height: 22,
-                  outline: 'none',
-                  border: theme.border.quaternary,
-                  background: 'none',
-                  borderRadius: theme.radius.primary,
-                  color: theme.text.secondary,
-                }}
               />
               <IconButton
                 onClick={() =>

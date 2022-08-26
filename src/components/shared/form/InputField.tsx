@@ -69,6 +69,31 @@ export const MiniInput: ForwardRefRenderFunction<HTMLInputElement, ITextInput> =
   )
 }
 
+export const NanoInput: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
+  { width = 37, icon, ...props }) => {
+  const { theme } = useTheme()
+
+  return (
+    <>
+      <input
+        {...props}
+        style={{
+          width: width,
+          padding: icon ? '5px 35px 5px 5px' :  5,
+          height: 27,
+          outline: 'none',
+          border: theme.border.quaternary,
+          background: 'none',
+          borderRadius: theme.radius.primary,
+          color: theme.text.secondary,
+          boxSizing: 'border-box'
+        }}
+      />
+      {icon}
+    </>
+  )
+}
+
 export const Detail: ForwardRefRenderFunction<HTMLTextAreaElement, IDetailInput> = ({ label, err, hint, ...props }, ref) => {
   const { theme } = useTheme()
   const { device } = useWeb()

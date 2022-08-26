@@ -25,7 +25,7 @@ import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRound
 import EditOffRoundedIcon from '@mui/icons-material/EditOffRounded'
 import { CustomerDialog } from 'components/shared/dialog/CustomerDialog'
 
-const currencyOptions: IOptions[] = [
+export const currencyOptions: IOptions[] = [
   {
     value: 'USD',
     label: <>&#36;</>,
