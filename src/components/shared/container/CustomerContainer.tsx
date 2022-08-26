@@ -5,7 +5,12 @@ import { CustomCustomerContainer } from 'styles'
 import { RankStatus } from '../RankStatus'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { getListBrand, getListCategory, getListCustomer, selectListCustomer } from 'shared/redux'
+import {
+  getListBrand,
+  getListCategory,
+  getListCustomer,
+  selectListCustomer,
+} from 'shared/redux'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { CircularProgress, MenuItem, Skeleton } from '@mui/material'
 import useLanguage from 'hooks/useLanguage'
@@ -21,8 +26,6 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { CustomerLayout, CustomerItem } from 'components/layouts/CustomerLayout'
-import { DeleteButton, UpdateButton } from 'components/shared/table/ActionButton'
-import useAlert from 'hooks/useAlert'
 
 export const CustomerStatistic = ({ phone, point, ...props }) => {
   const { theme } = useTheme()
@@ -38,34 +41,35 @@ export const CustomerStatistic = ({ phone, point, ...props }) => {
   )
 }
 
-const mappedCustomer = (data, onDelete, onEdit) => {
-  const action = <div style={{ display: 'flex' }}>
-    <UpdateButton onClick={(event) => { 
-      onEdit(data._id)
-      event.stopPropagation()
-    }} />
-    <DeleteButton onClick={(event) => { 
-      onDelete(data._id)
-      event.stopPropagation()
-    }} />
-  </div>
+const mappedCustomer = (data) => {
   return {
     ...data,
-    action
   }
 }
 
-export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, filterPromotion, selectedCustomers, promotionId, activeId, toggleReload }: any) => {
+export const CustomerContainer = ({
+  onClickCustomer,
+  actions,
+  filterSelected,
+  filterPromotion,
+  selectedCustomers,
+  promotionId,
+  activeId,
+  toggleReload,
+}: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
-  const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
-  const { data, count: countCustomer, hasMore: hasMoreCustomer, status } = useAppSelector(selectListCustomer)
+  const {
+    data,
+    count: countCustomer,
+    hasMore,
+    status,
+  } = useAppSelector(selectListCustomer)
   const { theme } = useTheme()
   const { device } = useWeb()
   const { notify } = useNotify()
   const { lang } = useLanguage()
-  const confirm = useAlert()
   const [loading, setLoading] = useState(true)
   const [fetching, setFetching] = useState(false)
   const [customers, setCustomers] = useState<any[]>([])
@@ -74,7 +78,10 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
   const [favorite, setFavorite] = useState(false)
   const [search, setSearch] = useState('')
   const [offset, setOffset] = useState(0)
-  const [filterObj, setFilterObj] = useState<any>({ filter: 'createdAt', asc: false })
+  const [filterObj, setFilterObj] = useState<any>({
+    filter: 'createdAt',
+    asc: false,
+  })
   const limit = 20
 
   const [sortObj, setSortObj] = useState({
@@ -83,26 +90,20 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
   })
 
   const handleToggleFavorite = () => {
-    if (hasMore) {
-      setCustomers([])
-      setOffset(0)
-    }
+    setCustomers([])
+    setOffset(0)
     setFavorite(!favorite)
   }
 
   const handleToggleSelected = () => {
-    if (hasMore) {
-      setCustomers([])
-      setOffset(0)
-    }
+    setCustomers([])
+    setOffset(0)
     setSelected(!selected)
   }
 
   const handleTogglePromotion = () => {
-    if (hasMore) {
-      setCustomers([])
-      setOffset(0)
-    }
+    setCustomers([])
+    setOffset(0)
     setPromotion(!promotion)
   }
 
@@ -113,18 +114,14 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
   const handleChangeFilter = ({ filter }) => {
     setSortObj({ ...sortObj, [filter]: !sortObj[filter] })
     setFilterObj({ filter, asc: sortObj[filter] })
-    if (hasMore) {
-      setCustomers([])
-      setOffset(0)
-    }
+    setCustomers([])
+    setOffset(0)
   }
 
   const updateQuery = debounce((value) => {
     setSearch(value)
-    if (hasMore) {
-      setCustomers([])
-      setOffset(0)
-    }
+    setCustomers([])
+    setOffset(0)
   }, 300)
 
   const handleSearch = (e) => {
@@ -132,86 +129,21 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
   }
 
   const observer: any = useRef()
-  const lastCustomerElement = useCallback((node) => {
-    if (fetching) return
-    if (observer.current) observer.current.disconnect()
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && count && count > offset + limit) {
-        setOffset(prevOffset => prevOffset + limit)
-      }
-    })
-    if (node) observer.current.observe(node)
-  },[fetching, count, offset])
-
-  useEffect(() => {
-    const query = new URLSearchParams()
-    query.append('search', search)
-    query.append('limit', limit.toString())
-    query.append('offset', offset.toString())
-    query.append('filter', filterObj.filter)
-    query.append('favorite', favorite ? 'on' : 'off')
-    query.append('sort', filterObj.asc ? 'asc' : 'desc')
-    if (selected && promotionId) query.append('promotion', promotionId)
-
-    const handleDelete = (id) => {
-      confirm({
-        title: 'Are you sure you want to delete this customer?',
-        description: 'Delete customer will remove it from the list.',
-        variant: 'error'
-      }).then(() => {
-        console.log(id)
-      }).catch(() => {})
-    }
-    const handleEdit = (id) => {
-      console.log(id);
-      
-    }
-
-    Axios({
-      method: 'GET',
-      url: '/shared/customer/list',
-      params: query
-    }).then(data => {
-      setCustomers(data?.data?.data.map((customer) => mappedCustomer(customer, handleDelete, handleEdit)))
-    }).catch(err => {
-      notify(err?.response?.data?.msg, 'error')
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggleReload])
-  
-  useEffect(() => {
-    // Client Side Filtering if all the customers is loaded
-    if (!hasMore) {
-      const _search = new RegExp(search || '', "i")
-      setCustomers(prevData => {
-        return prevData.map(data => {
-          let obj = data
-
-          if (!_search.test(data.tags)) {
-            obj['display'] = 'none'
-          } else {
-            obj['display'] = 'flex'
-          }
-          
-          if (selected && !selectedCustomers?.includes(data.id)) obj['display'] = 'none'
-          if (favorite && !user?.favorites?.includes(data.id)) obj['display'] = 'none'
-          if (promotion && !data.promotion) obj['display'] = 'none'
-          return obj
-        }).sort((a, b) => {
-          if (!filterObj.asc) {
-            if (b[filterObj.filter] < a[filterObj.filter]) return -1
-            if (b[filterObj.filter] > a[filterObj.filter]) return 1
-            return 0
-          } else {
-            if (a[filterObj.filter] < b[filterObj.filter]) return -1
-            if (a[filterObj.filter] > b[filterObj.filter]) return 1
-            return 0
-          }
-        })
+  const lastCustomerElement = useCallback(
+    (node) => {
+      if (fetching) return
+      if (observer.current) observer.current.disconnect()
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && count && count > offset + limit) {
+          setOffset((prevOffset) => prevOffset + limit)
+        }
       })
+      if (node) observer.current.observe(node)
+    },
+    [fetching, count, offset]
+  )
 
-      return
-    }
+  useEffect(() => {
     setFetching(true)
     const query = new URLSearchParams()
     query.append('search', search)
@@ -222,8 +154,7 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected && promotionId) query.append('promotion', promotionId)
     dispatch(getListCustomer(query))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, offset, search, favorite, promotion, filterObj, selected])
+  }, [dispatch, offset, search, favorite, promotionId, filterObj, selected])
 
   useEffect(() => {
     dispatch(getListBrand())
@@ -233,24 +164,13 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
   useEffect(() => {
     if (status !== 'SUCCESS') return
     let unmounted = false
-    setHasMore(hasMoreCustomer || false)
     setCount(countCustomer || 0)
-    const handleDelete = (id) => {
-      confirm({
-        title: 'Are you sure you want to delete this customer?',
-        description: 'Delete customer will remove it from the list.',
-        variant: 'error'
-      }).then(() => {
-        console.log(id)
-      }).catch(() => {})
-    }
-    const handleEdit = (id) => {
-      console.log(id);
-      
-    }
     setTimeout(() => {
       if (!unmounted) {
-        setCustomers(prevData => [...prevData, ...data.map((customer) => mappedCustomer(customer, handleDelete, handleEdit))])
+        setCustomers((prevData) => [
+          ...prevData,
+          ...data.map((customer) => mappedCustomer(customer)),
+        ])
         setLoading(false)
         setFetching(false)
       }
@@ -258,11 +178,44 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
     return () => {
       unmounted = true
     }
-  }, [status, data, lang, hasMoreCustomer, countCustomer, confirm])
+  }, [status, data, lang, countCustomer])
+
+  useEffect(() => {
+    if (customers.length < 1 && hasMore) return
+    const query = new URLSearchParams()
+    query.append('search', search)
+    query.append('limit', limit.toString())
+    query.append('offset', '0')
+    query.append('filter', filterObj.filter)
+    query.append('favorite', favorite ? 'on' : 'off')
+    query.append('sort', filterObj.asc ? 'asc' : 'desc')
+    if (selected && promotionId) query.append('promotion', promotionId)
+
+    Axios({
+      method: 'GET',
+      url: '/shared/customer/list',
+      params: query,
+    })
+      .then((data) => {
+        setCustomers(
+          data?.data?.data.map((customer) => mappedCustomer(customer))
+        )
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toggleReload])
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <div
           style={{
             fontSize: theme.responsive[device]?.text.h4,
@@ -271,42 +224,109 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
             alignItems: 'center',
           }}
         >
-          <ArrowRightRoundedIcon fontSize='large' /><span style={{ fontSize: theme.responsive[device]?.text.primary }}>Customer</span>
+          <ArrowRightRoundedIcon fontSize='large' />
+          <span style={{ fontSize: theme.responsive[device]?.text.primary }}>
+            Customer
+          </span>
         </div>
-        
-        <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center', width: 'fit-content' }}>
+
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'end',
+            alignItems: 'center',
+            width: 'fit-content',
+          }}
+        >
           <MiniSearchField onChange={handleSearch} />
           <MiniFilterButton>
-            <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}><SortIcon asc={sortObj.name} /> By Name</MenuItem>
-            <MenuItem onClick={() => handleChangeFilter({ filter: 'createdAt' })}><SortIcon asc={sortObj.createdAt} /> By Date</MenuItem>
+            <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}>
+              <SortIcon asc={sortObj.name} /> By Name
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleChangeFilter({ filter: 'createdAt' })}
+            >
+              <SortIcon asc={sortObj.createdAt} /> By Date
+            </MenuItem>
           </MiniFilterButton>
-          <IconButton onClick={handleToggleFavorite} style={{ color: favorite ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><BookmarksRoundedIcon style={{ fontSize: 17 }} /></IconButton>
-          {filterSelected && <IconButton onClick={handleToggleSelected} style={{ color: selected ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><DoneAllRoundedIcon fontSize='small' /></IconButton>}
-          {filterPromotion && <IconButton onClick={handleTogglePromotion} style={{ color: promotion ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><DiscountIcon style={{ fontSize: 17 }} /></IconButton>}
+          <IconButton
+            onClick={handleToggleFavorite}
+            style={{
+              color: favorite ? theme.color.info : theme.text.secondary,
+              width: 30,
+              height: 30,
+              marginRight: 10,
+            }}
+          >
+            <BookmarksRoundedIcon style={{ fontSize: 17 }} />
+          </IconButton>
+          {filterSelected && (
+            <IconButton
+              onClick={handleToggleSelected}
+              style={{
+                color: selected ? theme.color.info : theme.text.secondary,
+                width: 30,
+                height: 30,
+                marginRight: 10,
+              }}
+            >
+              <DoneAllRoundedIcon fontSize='small' />
+            </IconButton>
+          )}
+          {filterPromotion && (
+            <IconButton
+              onClick={handleTogglePromotion}
+              style={{
+                color: promotion ? theme.color.info : theme.text.secondary,
+                width: 30,
+                height: 30,
+                marginRight: 10,
+              }}
+            >
+              <DiscountIcon style={{ fontSize: 17 }} />
+            </IconButton>
+          )}
           {actions}
         </div>
       </div>
-      <div style={{ border: theme.border.dashed, borderRadius: theme.radius.quaternary, borderWidth: 2, padding: '0 10px' }}>
+      <div
+        style={{
+          border: theme.border.dashed,
+          borderRadius: theme.radius.quaternary,
+          borderWidth: 2,
+          padding: '0 10px',
+          overflowY: 'auto',
+          height: '77vh',
+        }}
+      >
         <CustomerLayout>
           {!loading
             ? customers?.map((customer: any, index) => {
                 if (customers.length === index + 1) {
-                  return <CustomerItem
-                    id={customer._id}
-                    ref={lastCustomerElement}
-                    key={index}
-                    name={`${customer.lastName}\u00a0${customer.firstName}`}
-                    phone={customer.phone}
-                    address={customer.address}
-                    action={customer.action}
-                    display={customer.display}
-                    onClick={() => handleClickCustomer({ id: customer._id, phone: customer.phone, point: 0 })}
-                    selected={selectedCustomers?.includes(customer._id)}
-                    favorite={user?.favorites?.includes(customer._id)}
-                    promotion={customer.promotion}
-                    active={customer._id === activeId}
-                    picture={customer.picture?.filename}
-                  />
+                  return (
+                    <CustomerItem
+                      id={customer._id}
+                      ref={lastCustomerElement}
+                      key={index}
+                      name={`${customer.lastName}\u00a0${customer.firstName}`}
+                      phone={customer.phone}
+                      address={customer.address}
+                      action={customer.action}
+                      display={customer.display}
+                      onClick={() =>
+                        handleClickCustomer({
+                          id: customer._id,
+                          phone: customer.phone,
+                          point: 0,
+                        })
+                      }
+                      selected={selectedCustomers?.includes(customer._id)}
+                      favorite={user?.favorites?.includes(customer._id)}
+                      promotion={customer.promotion}
+                      active={customer._id === activeId}
+                      picture={customer.picture?.filename}
+                    />
+                  )
                 }
                 return (
                   <CustomerItem
@@ -317,7 +337,13 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
                     address={customer.address}
                     action={customer.action}
                     display={customer.display}
-                    onClick={() => handleClickCustomer({ id: customer._id, phone: customer.phone, point: 0 })}
+                    onClick={() =>
+                      handleClickCustomer({
+                        id: customer._id,
+                        phone: customer.phone,
+                        point: 0,
+                      })
+                    }
                     selected={selectedCustomers?.includes(customer._id)}
                     favorite={user?.favorites?.includes(customer._id)}
                     promotion={customer.promotion}
@@ -356,7 +382,18 @@ export const CustomerContainer = ({ onClickCustomer, actions, filterSelected, fi
                 )
               })}
         </CustomerLayout>
-        {fetching && <div style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: 10 }}><CircularProgress style={{ width: 30, height: 30 }} /></div>}
+        {fetching && (
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              padding: 10,
+            }}
+          >
+            <CircularProgress style={{ width: 30, height: 30 }} />
+          </div>
+        )}
       </div>
     </div>
   )

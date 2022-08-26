@@ -10,7 +10,7 @@ import { CircleIcon } from 'components/shared/table/CustomIcon'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
 
 const Item = (props, ref) => {
-  const { name, phone, dateOfBirth, address, picture, onClick, display, action } =
+  const { name, phone, dateOfBirth, address, picture, onClick, display } =
     props
   
   return (
@@ -25,9 +25,6 @@ const Item = (props, ref) => {
           <div className="detail" style={{ display: 'flex', alignItems: 'end' }}><LocationOnRoundedIcon style={{ fontSize: 16, marginRight: 5 }} /><TextEllipsis>{address}</TextEllipsis></div>
           <div className="detail" style={{ display: 'flex', alignItems: 'end' }}><CakeRoundedIcon style={{ fontSize: 18, marginRight: 5 }} /><TextEllipsis>{dateFormat(dateOfBirth)}</TextEllipsis></div>
         </div>
-      </div>
-      <div style={{ marginRight: 15 }}>
-        {action}
       </div>
     </div>
   )
