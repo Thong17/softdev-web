@@ -63,7 +63,7 @@ export const CustomerContainer = ({
   const {
     data,
     count: countCustomer,
-    hasMore,
+    hasMore: hasMoreCustomer,
     status,
   } = useAppSelector(selectListCustomer)
   const { theme } = useTheme()
@@ -71,6 +71,7 @@ export const CustomerContainer = ({
   const { notify } = useNotify()
   const { lang } = useLanguage()
   const [loading, setLoading] = useState(true)
+  const [hasMore, setHasMore] = useState(true)
   const [fetching, setFetching] = useState(false)
   const [customers, setCustomers] = useState<any[]>([])
   const [selected, setSelected] = useState(false)
@@ -164,6 +165,7 @@ export const CustomerContainer = ({
   useEffect(() => {
     if (status !== 'SUCCESS') return
     let unmounted = false
+    setHasMore(hasMoreCustomer || true)
     setCount(countCustomer || 0)
     setTimeout(() => {
       if (!unmounted) {
@@ -178,7 +180,7 @@ export const CustomerContainer = ({
     return () => {
       unmounted = true
     }
-  }, [status, data, lang, countCustomer])
+  }, [status, data, lang, countCustomer, hasMoreCustomer])
 
   useEffect(() => {
     if (customers.length < 1 && hasMore) return
@@ -308,8 +310,8 @@ export const CustomerContainer = ({
                       id={customer._id}
                       ref={lastCustomerElement}
                       key={index}
-                      name={`${customer.lastName}\u00a0${customer.firstName}`}
-                      phone={customer.phone}
+                      name={customer.displayName}
+                      contact={customer.contact}
                       address={customer.address}
                       action={customer.action}
                       display={customer.display}
@@ -332,8 +334,8 @@ export const CustomerContainer = ({
                   <CustomerItem
                     id={customer._id}
                     key={index}
-                    name={`${customer.lastName}\u00a0${customer.firstName}`}
-                    phone={customer.phone}
+                    name={customer.displayName}
+                    contact={customer.contact}
                     address={customer.address}
                     action={customer.action}
                     display={customer.display}

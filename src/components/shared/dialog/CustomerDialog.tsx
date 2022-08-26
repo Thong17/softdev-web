@@ -67,32 +67,32 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme }) => {
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
-        gridTemplateAreas: `'lastName firstName firstName''phone phone dateOfBirth''profile profile profile''address address address''action action action'`,
+        gridTemplateAreas: `'displayName fullName fullName''contact contact dateOfBirth''profile profile profile''address address address''action action action'`,
         gridColumnGap: 20,
       }}
     >
-      <div style={{ gridArea: 'lastName' }}>
+      <div style={{ gridArea: 'displayName' }}>
         <MiniTextField
           type='text'
-          label='Last Name'
-          err={errors?.lastName?.message}
-          {...register('lastName')}
+          label='Display Name'
+          err={errors?.displayName?.message}
+          {...register('displayName')}
         />
       </div>
-      <div style={{ gridArea: 'firstName' }}>
+      <div style={{ gridArea: 'fullName' }}>
         <MiniTextField
           type='text'
-          label='First Name'
-          err={errors?.firstName?.message}
-          {...register('firstName')}
+          label='Full Name'
+          err={errors?.fullName?.message}
+          {...register('fullName')}
         />
       </div>
-      <div style={{ gridArea: 'phone' }}>
+      <div style={{ gridArea: 'contact' }}>
         <MiniTextField
           type='text'
-          label='Phone'
-          err={errors?.phone?.message}
-          {...register('phone')}
+          label='Contact'
+          err={errors?.contact?.message}
+          {...register('contact')}
         />
       </div>
       <div style={{ gridArea: 'dateOfBirth' }}>

@@ -10,7 +10,7 @@ import { CircleIcon } from 'components/shared/table/CustomIcon'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
 
 const Item = (props, ref) => {
-  const { name, phone, dateOfBirth, address, picture, onClick, display } =
+  const { name, contact, dateOfBirth, address, picture, onClick, display } =
     props
   
   return (
@@ -19,7 +19,7 @@ const Item = (props, ref) => {
       <div className='content' style={{ display: 'flex', flexDirection: 'column', flex: '0 100%', marginRight: 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <TextEllipsis>{name}</TextEllipsis>
-          <span className="detail" style={{ display: 'flex', alignItems: 'center' }}><LocalPhoneRoundedIcon style={{ fontSize: 15, marginRight: 5 }} /><TextEllipsis>{phone}</TextEllipsis></span>
+          <span className="detail" style={{ display: 'flex', alignItems: 'center' }}><LocalPhoneRoundedIcon style={{ fontSize: 15, marginRight: 5 }} /><TextEllipsis>{contact}</TextEllipsis></span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="detail" style={{ display: 'flex', alignItems: 'end' }}><LocationOnRoundedIcon style={{ fontSize: 16, marginRight: 5 }} /><TextEllipsis>{address}</TextEllipsis></div>

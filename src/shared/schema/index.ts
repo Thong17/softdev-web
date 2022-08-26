@@ -18,9 +18,9 @@ export const transactionSchema = yup.object().shape({
 })
 
 export const customerSchema = yup.object().shape({
-  lastName: yup.string().required(),
-  firstName: yup.string().required(),
-  phone: yup.string().required(),
-  dateOfBirth: yup.date().required(),
+  displayName: yup.string().required(),
+  fullName: yup.string().optional(),
+  contact: yup.string().optional(),
+  dateOfBirth: yup.mixed().optional(),
   address: yup.string().optional(),
 })
