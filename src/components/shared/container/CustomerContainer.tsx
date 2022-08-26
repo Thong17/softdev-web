@@ -56,6 +56,7 @@ export const CustomerContainer = ({
   promotionId,
   activeId,
   toggleReload,
+  height
 }: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
@@ -298,7 +299,7 @@ export const CustomerContainer = ({
           borderWidth: 2,
           padding: '0 10px',
           overflowY: 'auto',
-          height: '77vh',
+          height: height,
         }}
       >
         <CustomerLayout>

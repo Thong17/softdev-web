@@ -10,6 +10,7 @@ import { CustomerContainer } from '../container/CustomerContainer'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { FileField, IImage } from '../form/UploadField'
+import { DialogTitle } from 'components/shared/DialogTitle'
 
 const CustomerForm = ({ onClose, onChange, defaultValues, theme }) => {
   const {
@@ -30,7 +31,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme }) => {
   useEffect(() => {
     setFocus('displayName')
   }, [setFocus])
-  
+
   const submit = (data) => {
     Axios({
       method: 'POST',
@@ -184,31 +185,37 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
         style={{
           height: '100vh',
           width: '50vw',
-          padding: 20,
           boxSizing: 'border-box',
         }}
       >
-        {showForm ? (
-          <CustomerForm
-            onClose={() => setShowForm(false)}
-            theme={theme}
-            defaultValues={{}}
-            onChange={() => setReload(!reload)}
-          />
-        ) : (
-          <Button
-            style={{
-              color: theme.color.info,
-              backgroundColor: `${theme.color.info}22`,
-            }}
-            fullWidth
-            onClick={() => setShowForm(true)}
-          >
-            Add Customer
-          </Button>
-        )}
-        <div style={{ marginTop: 20 }}>
-          <CustomerContainer onClickCustomer={handleClickCustomer} toggleReload={reload} />
+        <DialogTitle title='Customer' onClose={handleCloseDialog} />
+        <div style={{ padding: '10px 20px 20px 20px' }}>
+          <div style={{ marginBottom: 20 }}>
+            <CustomerContainer
+              onClickCustomer={handleClickCustomer}
+              toggleReload={reload}
+              height={showForm ? '19.3vh' : '70vh'}
+            />
+          </div>
+          {showForm ? (
+            <CustomerForm
+              onClose={() => setShowForm(false)}
+              theme={theme}
+              defaultValues={{}}
+              onChange={() => setReload(!reload)}
+            />
+          ) : (
+            <Button
+              style={{
+                color: theme.color.info,
+                backgroundColor: `${theme.color.info}22`,
+              }}
+              fullWidth
+              onClick={() => setShowForm(true)}
+            >
+              Add Customer
+            </Button>
+          )}
         </div>
       </div>
     </AlertContainer>

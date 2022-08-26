@@ -1,13 +1,14 @@
 import useTheme from 'hooks/useTheme'
 import { FlexBetween } from 'components/shared/container/FlexBetween'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import { IconButton } from '@mui/material'
 
 export const DialogTitle = ({ title, onClose }) => {
   const { theme } = useTheme()
   return (
     <div
       style={{
-        padding: '10px 15px',
+        padding: '5px 5px 5px 15px',
         backgroundColor: theme.background.secondary,
         borderRadius: theme.radius.ternary,
         color: theme.text.primary,
@@ -23,7 +24,7 @@ export const DialogTitle = ({ title, onClose }) => {
         >
           {title}
         </h2>
-        <CloseRoundedIcon style={{ cursor: 'pointer' }} onClick={() => onClose()} />
+        <IconButton onClick={() => onClose()}><CloseRoundedIcon style={{ color: theme.text.primary }} /></IconButton>
       </FlexBetween>
     </div>
   )
