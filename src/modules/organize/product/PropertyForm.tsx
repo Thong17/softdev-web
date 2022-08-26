@@ -14,7 +14,7 @@ import useWeb from 'hooks/useWeb'
 import { updateProperty, createProperty } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import { useEffect, useState } from 'react'
-import { TextTitle } from 'components/shared/TextTitle'
+import { DialogTitle } from 'components/shared/DialogTitle'
 import { IOptions, SelectField } from 'components/shared/form/SelectField'
 
 export const choiceOptions: IOptions[] = [
@@ -126,7 +126,7 @@ export const PropertyForm = ({
       isOpen={dialog.open}
       handleClose={handleCloseDialog}
     >
-      <TextTitle title='Property Form' />
+      <DialogTitle title='Property Form' onClose={handleCloseDialog} />
       <form
         style={{
           fontFamily: theme.font.family,

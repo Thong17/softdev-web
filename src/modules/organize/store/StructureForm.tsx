@@ -1,7 +1,7 @@
 import { CustomButton } from 'styles'
 import { Button } from '@mui/material'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
-import { TextTitle } from 'components/shared/TextTitle'
+import { DialogTitle } from 'components/shared/DialogTitle'
 import { SelectField } from 'components/shared/form/SelectField'
 import { useEffect, useState } from 'react'
 import { positionOptions, sizeOptions, directionOptions, typeOptions } from './constant'
@@ -93,7 +93,7 @@ export const StructureForm = ({
       isOpen={dialog.open}
       handleClose={handleCloseDialog}
     >
-      <TextTitle title='Structure Form' />
+      <DialogTitle title='Structure Form' onClose={handleCloseDialog} />
       <form
         style={{
           fontFamily: theme.font.family,

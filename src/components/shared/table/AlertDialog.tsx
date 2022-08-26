@@ -9,6 +9,7 @@ export const AlertDialog = ({ isOpen, handleClose, children }) => {
       <Dialog
         sx={{
           '& .MuiDialog-paper': {
+            borderRadius: theme.radius.quaternary,
             backgroundColor: theme.background.primary,
             minWidth: 'fit-content'
           }

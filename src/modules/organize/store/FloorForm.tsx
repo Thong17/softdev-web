@@ -1,7 +1,7 @@
 import { CustomButton } from 'styles'
 import { Button } from '@mui/material'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
-import { TextTitle } from 'components/shared/TextTitle'
+import { DialogTitle } from 'components/shared/DialogTitle'
 import { DetailField, TextField } from 'components/shared/form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { floorSchema } from './schema'
@@ -85,7 +85,7 @@ export const FloorForm = ({
 
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
-      <TextTitle title='Floor Form' />
+      <DialogTitle title='Floor Form' onClose={handleCloseDialog} />
       <div style={{ padding: 20, boxSizing: 'border-box' }}>
         <div
           style={{

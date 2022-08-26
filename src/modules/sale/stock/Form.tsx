@@ -17,7 +17,7 @@ import { updateStock, createStock } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import { Section } from 'components/shared/Section'
 import useLanguage from 'hooks/useLanguage'
-import { TextTitle } from 'components/shared/TextTitle'
+import { DialogTitle } from 'components/shared/DialogTitle'
 import { getListProduct } from 'modules/organize/product/redux'
 
 export const Form = ({
@@ -127,7 +127,7 @@ export const Form = ({
       isOpen={dialog.open}
       handleClose={handleCloseDialog}
     >
-      <TextTitle title='Stock Form' />
+      <DialogTitle title='Stock Form' onClose={handleCloseDialog} />
       <form
         style={{
           fontFamily: theme.font.family,
