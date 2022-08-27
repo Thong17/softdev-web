@@ -2,7 +2,7 @@ import useTheme from "hooks/useTheme"
 import { useEffect, useState } from "react"
 import { TextEllipsis } from "./TextEllipsis"
 
-export const StockStatus = ({ qty, min, size, label }: any) => {
+export const QuantityStatus = ({ qty, min, size, label, padding }: any) => {
   const { theme } = useTheme()
   const [status, setStatus] = useState('success')
 
@@ -23,7 +23,7 @@ export const StockStatus = ({ qty, min, size, label }: any) => {
   return (
     <TextEllipsis
       style={{
-        padding: '3px 11px 3px 7px',
+        padding: padding ? padding : '3px 11px 3px 7px',
         color: theme.color[status],
         backgroundColor: `${theme.color[status]}22`,
         display: 'flex',

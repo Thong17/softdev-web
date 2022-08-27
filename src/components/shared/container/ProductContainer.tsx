@@ -17,7 +17,7 @@ import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded'
 import DiscountIcon from '@mui/icons-material/Discount'
 import { IconButton } from '@mui/material'
-import { StockStatus } from '../StockStatus'
+import { QuantityStatus } from '../QuantityStatus'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
@@ -326,7 +326,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
                     title={product.name}
                     picture={product.profile}
                     subLeft={product.price}
-                    subRight={<StockStatus qty={product.stock} min={product.alertAt} />}
+                    subRight={<QuantityStatus qty={product.stock} min={product.alertAt} />}
                     action={product.action}
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}
@@ -343,7 +343,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
                     title={product.name}
                     picture={product.profile}
                     subLeft={product.price}
-                    subRight={<StockStatus qty={product.stock} min={product.alertAt} />}
+                    subRight={<QuantityStatus qty={product.stock} min={product.alertAt} />}
                     action={product.action}
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}

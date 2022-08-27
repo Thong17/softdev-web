@@ -16,7 +16,7 @@ import { IconButton } from '@mui/material'
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import { currencyFormat } from 'utils'
 import { FlexBetween } from 'components/shared/container/FlexBetween'
-import { StockStatus } from 'components/shared/StockStatus'
+import { QuantityStatus } from 'components/shared/QuantityStatus'
 import useNotify from 'hooks/useNotify'
 import Axios from 'constants/functions/Axios'
 import { NanoInput } from 'components/shared/form/InputField'
@@ -348,7 +348,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                             </TextEllipsis>
                           </div>
                           <FlexBetween>
-                            <TextEllipsis><StockStatus qty={totalStock} min={1} /></TextEllipsis>
+                            <TextEllipsis><QuantityStatus qty={totalStock} min={1} /></TextEllipsis>
                             <TextEllipsis className='option-price'>
                               {currencyFormat(color.price, color.currency)}
                             </TextEllipsis>
@@ -447,7 +447,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                             </TextEllipsis>
                           </div>
                           <FlexBetween>
-                            <TextEllipsis><StockStatus qty={totalStock} min={1} /></TextEllipsis>
+                            <TextEllipsis><QuantityStatus qty={totalStock} min={1} /></TextEllipsis>
                             <TextEllipsis className='option-price'>
                               {currencyFormat(option.price, option.currency)}
                             </TextEllipsis>

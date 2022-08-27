@@ -28,7 +28,7 @@ import { CustomButton } from 'styles'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import { ListItem, ListLayout } from 'components/layouts/ListLayout'
 import useConfig from 'hooks/useConfig'
-import { StockStatus } from 'components/shared/StockStatus'
+import { QuantityStatus } from 'components/shared/QuantityStatus'
 
 export const Stocks = () => {
   const dispatch = useAppDispatch()
@@ -215,7 +215,7 @@ export const Stocks = () => {
                 title={obj.name}
                 picture={obj.profile}
                 subLeft='Qty'
-                subRight={<StockStatus qty={obj.stock} min={obj.alertAt} label='Left' />}
+                subRight={<QuantityStatus qty={obj.stock} min={obj.alertAt} label='Left' />}
                 action={obj.action}
                 status={obj.status}
               />
