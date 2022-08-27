@@ -47,6 +47,17 @@ export const getListCategory = createAsyncThunk(
   }
 )
 
+export const getListPresetCash = createAsyncThunk(
+  'listPresetCash/get',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/shared/preset/cash/list'
+    })
+    return response?.data
+  }
+)
+
 export const getListProduct = createAsyncThunk(
   'listProduct/get',
   async (query?: URLSearchParams) => {
@@ -158,6 +169,18 @@ export const sharedSlice = createSlice({
         state.listCategory.data = action.payload.data
       })
 
+      // Get List Category from API
+      .addCase(getListPresetCash.pending, (state) => {
+        state.listPresetCash.status = 'LOADING'
+      })
+      .addCase(getListPresetCash.rejected, (state) => {
+        state.listPresetCash.status = 'FAILED'
+      })
+      .addCase(getListPresetCash.fulfilled, (state, action) => {
+        state.listPresetCash.status = 'SUCCESS'
+        state.listPresetCash.data = action.payload.data
+      })
+
       // Get List Product from API
       .addCase(getListProduct.pending, (state) => {
         state.listProduct.status = 'LOADING'
@@ -228,6 +251,7 @@ export const selectInfoProduct = (state: RootState) => state.shared.infoProduct
 export const selectListRole = (state: RootState) => state.shared.listRole
 export const selectListBrand = (state: RootState) => state.shared.listBrand
 export const selectListCategory = (state: RootState) => state.shared.listCategory
+export const selectListPresetCash = (state: RootState) => state.shared.listPresetCash
 export const selectListProduct = (state: RootState) => state.shared.listProduct
 export const selectListCustomer = (state: RootState) => state.shared.listCustomer
 export const selectPrivilege = (state: RootState) => state.shared.privilege

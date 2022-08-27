@@ -24,3 +24,8 @@ export const customerSchema = yup.object().shape({
   dateOfBirth: yup.mixed().optional(),
   address: yup.string().optional(),
 })
+
+export const drawerSchema = yup.object().shape({
+  buyRate: yup.number().required(),
+  sellRate: yup.number().optional(),
+})
