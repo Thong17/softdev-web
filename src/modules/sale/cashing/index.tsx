@@ -40,6 +40,7 @@ export const Cashing = () => {
       discount: { value: data.discount?.value || 0, currency: data.discount?.type || 'PCT', isFixed: data.discount?.isFixed || false },
       price: { value: data.price, currency: data.currency },
       quantity: data.quantity,
+      total: data.total
     })
   }
 
@@ -107,6 +108,7 @@ export const Cashing = () => {
           <InvoiceForm
             tax={preview?.tax}
             transaction={transaction}
+            onUpdate={() => setReload(!reload)}
           />
         </div>
       </div>

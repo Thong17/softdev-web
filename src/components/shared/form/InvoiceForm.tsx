@@ -25,6 +25,8 @@ import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRound
 import EditOffRoundedIcon from '@mui/icons-material/EditOffRounded'
 import { CustomerDialog } from 'components/shared/dialog/CustomerDialog'
 import useAuth from 'hooks/useAuth'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 export const currencyOptions: IOptions[] = [
   {
@@ -149,12 +151,14 @@ export interface ITransactionItem {
   quantity: number
   profile?: string
   note?: string
+  total: ICurrency
 }
 
 export const InvoiceForm = ({
   defaultTax = 0,
   font = 'Ariel',
   transaction,
+  onUpdate,
 }: any) => {
   const {
     register,
@@ -202,6 +206,7 @@ export const InvoiceForm = ({
   const [customer, setCustomer] = useState({ displayName: null, id: null, point: 0 })
   const { user } = useAuth()
   const exchangeRate = useMemo(() => ({ sellRate: user?.drawer?.sellRate, buyRate: user?.drawer?.buyRate }), [user?.drawer])
+  const { notify } = useNotify()
 
   useEffect(() => {
     let totalQuantity = 0
@@ -241,12 +246,50 @@ export const InvoiceForm = ({
   }, [discountCurrencyValue])
 
   const submit = (data) => {
-    setTransactions((prev) =>
-      prev.map((transaction) =>
-        transaction.id === data.id ? data : transaction
-      )
-    )
-    reset({})
+    const id = data.id
+    const body = {
+      description: data.description,
+      discount: data.discount,
+      note: data.note,
+      price: data.price.value,
+      currency: data.price.currency,
+      quantity: data.quantity
+    }
+
+    Axios({
+      method: 'PUT',
+      url: `/sale/transaction/update/${id}`,
+      body
+    }).then((respData) => {
+      setTransactions((prev) => prev.map((transaction) => transaction.id === id ? { ...data, total: respData?.data?.data?.total } : transaction))
+      onUpdate()
+      reset({})
+    }).catch((err) => {
+      notify(err?.response?.data?.msg, 'error')
+    })
+  }
+
+  const handleRemoveTransaction = (event, id) => {
+    confirm({
+      title: 'Remove Transaction',
+      description: 'Are you sure you want to remove this transaction?',
+      variant: 'error',
+    })
+      .then(() => {
+        Axios({
+          method: 'DELETE',
+          url: `/sale/transaction/remove/${id}`,
+        }).then(() => {
+          setTransactions((prev) =>
+            prev.filter((transaction) => transaction.id !== id)
+          )
+          onUpdate()
+        }).catch((err) => {
+          notify(err?.response?.data?.msg, 'error')
+        })
+      })
+      .catch(() => {})
+    event.stopPropagation()
   }
 
   const handleClickTransaction = (transaction) => {
@@ -264,21 +307,6 @@ export const InvoiceForm = ({
 
   const handleChangeSelect = (event) => {
     setValue(event.target.name, event.target.value)
-  }
-
-  const handleRemoveTransaction = (event, id) => {
-    confirm({
-      title: 'Remove Transaction',
-      description: 'Are you sure you want to remove this transaction?',
-      variant: 'error',
-    })
-      .then(() => {
-        setTransactions((prev) =>
-          prev.filter((transaction) => transaction.id !== id)
-        )
-      })
-      .catch(() => {})
-    event.stopPropagation()
   }
 
   const handleChangeDiscount = ({ input, select, check }) => {
@@ -349,12 +377,7 @@ export const InvoiceForm = ({
         <div className='invoice-form'>
           <div className='form'>
             {transactions.map((transaction, key) => {
-              const { total, currency } = calculateTransactionTotal(
-                transaction.price,
-                transaction.discount,
-                transaction.quantity,
-                exchangeRate
-              )
+              const { value: total, currency } = transaction.total
               if (getValues('id') === transaction.id) {
                 return (
                   <div className='item active' key={key}>
