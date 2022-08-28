@@ -527,11 +527,13 @@ export const CustomInvoiceForm = styled('div')(
     device,
     mode,
     font,
+    height = 'fit-content',
   }: {
     styled: IThemeStyle
     device: DeviceOptions
     mode: 'compact' | 'expand'
     font: string
+    height?: string
   }) => ({
     overflowX: 'hidden',
     overflowY: 'visible',
@@ -546,7 +548,7 @@ export const CustomInvoiceForm = styled('div')(
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: 'fit-content',
+    height: height,
     '.toggle': {
       width: 50, 
       height: 50, 

@@ -11,6 +11,7 @@ import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
 import { ProductForm } from './ProductForm'
 import { DrawerForm } from './DrawerForm'
+import { PaymentForm } from './PaymentForm'
 import useAuth from 'hooks/useAuth'
 
 export const Cashing = () => {
@@ -20,6 +21,7 @@ export const Cashing = () => {
   const { data: preview } = useAppSelector(selectInfoStore)
   const [productDialog, setProductDialog] = useState({ open: false, productId: null })
   const [drawerDialog, setDrawerDialog] = useState({ open: false })
+  const [paymentDialog, setPaymentDialog] = useState({ open: false })
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
@@ -44,6 +46,11 @@ export const Cashing = () => {
     })
   }
 
+  const handlePayment = (data) => {
+    console.log(data)
+    setPaymentDialog({ open: true })
+  }
+
   return (
     <Container>
       <ProductForm
@@ -54,6 +61,10 @@ export const Cashing = () => {
       <DrawerForm
         dialog={drawerDialog}
         setDialog={setDrawerDialog}
+      />
+      <PaymentForm
+        dialog={paymentDialog}
+        setDialog={setPaymentDialog}
       />
       <div
         style={{
@@ -109,6 +120,7 @@ export const Cashing = () => {
             tax={preview?.tax}
             transaction={transaction}
             onUpdate={() => setReload(!reload)}
+            onPayment={handlePayment}
           />
         </div>
       </div>

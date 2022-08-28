@@ -159,6 +159,7 @@ export const InvoiceForm = ({
   font = 'Ariel',
   transaction,
   onUpdate,
+  onPayment
 }: any) => {
   const {
     register,
@@ -332,7 +333,7 @@ export const InvoiceForm = ({
   }
 
   const handleClickPayment = () => {
-    console.log({ transactions }, { discount }, { tax }, { voucher }, { customer })
+    onPayment({ transactions, discount, tax, voucher, customer })
   }
 
   const handleClickCustomer = () => {
