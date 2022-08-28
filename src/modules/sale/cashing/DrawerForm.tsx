@@ -66,7 +66,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
     asc: false,
   })
   const [cashObj, setCashObj] = useState(initCash)
-  const [listCash, setListCash] = useState<any[]>(user?.drawer?.cashes || [])
+  const [listCash, setListCash] = useState<any[]>(user?.drawer?.cashes.map(cash => ({ ...cash, origin: true })) || [])
   const [cashForm, setCashForm] = useState(false)
   const [templateInput, setTemplateInput] = useState('')
   const { data: listPresetCash, status: statusListPresetCash } =
@@ -288,6 +288,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
         })
           .then((data) => {
             notify(data?.data?.msg, 'success')
+            setListCash(prev => prev.map(cash => ({ ...cash, origin: true })))
           })
           .catch((err) => {
             notify(err?.reponse?.data?.msg, 'error')
@@ -565,6 +566,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
               padding: 10,
               display: 'flex',
               flexDirection: 'column',
+              overflowY: 'auto',
               gap: 10,
             }}
           >
@@ -769,9 +771,11 @@ const CashItem = ({ data, onRemove }) => {
       style={{
         display: 'flex',
         alignItems: 'center',
+        gap: 10,
         padding: 7,
         borderRadius: theme.radius.ternary,
         border: theme.border.quaternary,
+        backgroundColor: data.origin ? theme.background.primary : theme.background.secondary
       }}
     >
       <span style={{ flex: '38%' }}>

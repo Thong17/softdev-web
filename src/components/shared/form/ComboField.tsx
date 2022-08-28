@@ -1,9 +1,10 @@
 import useTheme from 'hooks/useTheme'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { MiniSelectField } from './SelectField'
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
+import { IconButton } from '@mui/material'
 
 const ComboField = ({ onChange, defaultValue, selectOption, name = '', checkbox = true }) => {
   const { theme } = useTheme()
@@ -23,19 +24,24 @@ const ComboField = ({ onChange, defaultValue, selectOption, name = '', checkbox 
     setCheck(!check)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault()
     onChange({input, select, check})
   }
 
   return (
-    <div
+    <form
+      onSubmit={handleSubmit}
       style={{
         display: 'flex',
+        alignItems: 'center',
         borderBottom: theme.border.quaternary,
         position: 'relative',
       }}
     >
       <input
+        onFocus={(event) => event.target.select()}
+        autoFocus
         value={input}
         placeholder={name}
         type='number'
@@ -57,7 +63,7 @@ const ComboField = ({ onChange, defaultValue, selectOption, name = '', checkbox 
         onChange={handleChangeSelect}
         sx={{
           position: 'absolute',
-          top: 0,
+          top: -10,
           right: 0,
           height: 19,
           minWidth: 0,
@@ -68,8 +74,8 @@ const ComboField = ({ onChange, defaultValue, selectOption, name = '', checkbox 
         }}
       />
       {checkbox && (check ? <CheckBoxRoundedIcon onClick={handleToggleCheck} style={{ fontSize: 17, cursor: 'pointer' }} /> : <CheckBoxOutlineBlankRoundedIcon onClick={handleToggleCheck} style={{ fontSize: 17, cursor: 'pointer' }} />)}
-      <CheckRoundedIcon onClick={handleSubmit} style={{ fontSize: 17, marginLeft: 5, cursor: 'pointer' }} />
-    </div>
+      <IconButton type='submit' style={{ color: theme.text.secondary, width: 30, height: 30 }}><CheckRoundedIcon style={{ fontSize: 17 }} /></IconButton>
+    </form>
   )
 }
 
