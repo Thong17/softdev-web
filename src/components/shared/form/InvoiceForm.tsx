@@ -1,5 +1,5 @@
 import useTheme from 'hooks/useTheme'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { CustomButton, CustomInvoiceForm } from 'styles'
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
 import { FlexBetween } from '../container/FlexBetween'
@@ -24,6 +24,7 @@ import ComboField from './ComboField'
 import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRounded'
 import EditOffRoundedIcon from '@mui/icons-material/EditOffRounded'
 import { CustomerDialog } from 'components/shared/dialog/CustomerDialog'
+import useAuth from 'hooks/useAuth'
 
 export const currencyOptions: IOptions[] = [
   {
@@ -116,19 +117,19 @@ export const calculatePaymentTotal = (
     { value: total, currency: 'USD' },
     { value: discountValue, currency: discountType, isFixed: discountFixed },
     1,
-    {}
+    exchangeRate
   )
   const { total: taxedTotal } = calculateTransactionTotal(
     { value: discountedTotal, currency: 'USD' },
     { value: taxValue, currency: taxType, isFixed: false },
     1,
-    {}
+    exchangeRate
   )
   const { total: voucheredTotal } = calculateTransactionTotal(
     { value: discountedTotal + discountedTotal - taxedTotal, currency: 'USD' },
     { value: voucherValue, currency: voucherType, isFixed: voucherFixed },
     1,
-    {}
+    exchangeRate
   )
 
   return voucheredTotal
@@ -199,6 +200,8 @@ export const InvoiceForm = ({
   })
   const [customerDialog, setCustomerDialog] = useState({ open: false})
   const [customer, setCustomer] = useState({ displayName: null, id: null, point: 0 })
+  const { user } = useAuth()
+  const exchangeRate = useMemo(() => ({ sellRate: user?.drawer?.sellRate, buyRate: user?.drawer?.buyRate }), [user?.drawer])
 
   useEffect(() => {
     let totalQuantity = 0
@@ -210,14 +213,14 @@ export const InvoiceForm = ({
         transaction.price,
         transaction.discount,
         transaction.quantity,
-        {}
+        exchangeRate
       )
       if (currency === 'KHR') subtotalKHR += total
       else subtotalUSD += total
     })
     setSubtotal({ USD: subtotalUSD, KHR: subtotalKHR })
     setTotalQuantity(totalQuantity)
-  }, [transactions])
+  }, [transactions, exchangeRate])
 
   useEffect(() => {
     if (!transaction) return
@@ -350,7 +353,7 @@ export const InvoiceForm = ({
                 transaction.price,
                 transaction.discount,
                 transaction.quantity,
-                {}
+                exchangeRate
               )
               if (getValues('id') === transaction.id) {
                 return (
@@ -778,7 +781,7 @@ export const InvoiceForm = ({
               <span>Total</span>
               <span>
                 {currencyFormat(
-                  calculatePaymentTotal(subtotal, discount, tax, voucher, {}),
+                  calculatePaymentTotal(subtotal, discount, tax, voucher, exchangeRate),
                   'USD'
                 )}
               </span>
