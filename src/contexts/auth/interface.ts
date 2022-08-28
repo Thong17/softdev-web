@@ -9,6 +9,15 @@ export interface IUser {
   theme?: ThemeOptions
   language?: LanguageOptions
   favorites?: string[]
+  drawer?: IDrawer
+}
+
+export interface IDrawer {
+  sellRate: number
+  buyRate: number
+  cashes: any[]
+  status: boolean
+  _id: string
 }
 
 export interface IAuthInit {

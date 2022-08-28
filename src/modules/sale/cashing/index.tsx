@@ -11,8 +11,10 @@ import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
 import { ProductForm } from './ProductForm'
 import { DrawerForm } from './DrawerForm'
+import useAuth from 'hooks/useAuth'
 
 export const Cashing = () => {
+  const { user } = useAuth()
   const { device } = useWeb()
   const dispatch = useAppDispatch()
   const { data: preview } = useAppSelector(selectInfoStore)
@@ -72,7 +74,7 @@ export const Cashing = () => {
                 <IconButton
                   onClick={() => setDrawerDialog({ ...drawerDialog, open: true })}
                   style={{
-                    color: theme.color.success,
+                    color: user?.drawer?.status ? theme.color.success : theme.color.error,
                     width: 30,
                     height: 30,
                     marginRight: 10,

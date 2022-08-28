@@ -31,6 +31,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListPresetCash, selectListPresetCash } from 'shared/redux'
 import { IOptions } from 'components/shared/form/SelectField'
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded'
+import useAuth from 'hooks/useAuth'
 
 const initCash = {
   cash: 0,
@@ -39,19 +40,21 @@ const initCash = {
   quantity: 1,
 }
 
-export const DrawerForm = ({ dialog, setDialog, defaultValues }: any) => {
+export const DrawerForm = ({ dialog, setDialog }: any) => {
   const confirm = useAlert()
+  const { user, reload } = useAuth()
   const { theme } = useTheme()
   const { device } = useWeb()
   const { notify } = useNotify()
   const {
     reset,
     register,
+    setValue,
+    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(drawerSchema),
-    defaultValues,
   })
   const [search, setSearch] = useState('')
   const [sortObj, setSortObj] = useState({
@@ -63,12 +66,18 @@ export const DrawerForm = ({ dialog, setDialog, defaultValues }: any) => {
     asc: false,
   })
   const [cashObj, setCashObj] = useState(initCash)
-  const [listCash, setListCash] = useState<any[]>([])
+  const [listCash, setListCash] = useState<any[]>(user?.drawer?.cashes || [])
   const [cashForm, setCashForm] = useState(false)
   const [templateInput, setTemplateInput] = useState('')
-  const { data: listPresetCash, status: statusListPresetCash } = useAppSelector(selectListPresetCash)
+  const { data: listPresetCash, status: statusListPresetCash } =
+    useAppSelector(selectListPresetCash)
   const dispatch = useAppDispatch()
   const [presetCashOption, setPresetCashOption] = useState<IOptions[]>([])
+
+  useEffect(() => {
+    setValue('sellRate', user?.drawer?.sellRate)
+    setValue('buyRate', user?.drawer?.buyRate)
+  }, [user?.drawer?.sellRate, user?.drawer?.buyRate, setValue])
 
   useEffect(() => {
     dispatch(getListPresetCash())
@@ -76,9 +85,13 @@ export const DrawerForm = ({ dialog, setDialog, defaultValues }: any) => {
 
   useEffect(() => {
     if (statusListPresetCash !== 'SUCCESS') return
-    setPresetCashOption(listPresetCash.map((presetCash: any) => ({ label: presetCash.name, value: presetCash._id })))
+    setPresetCashOption(
+      listPresetCash.map((presetCash: any) => ({
+        label: presetCash.name,
+        value: presetCash._id,
+      }))
+    )
   }, [statusListPresetCash, listPresetCash])
-  
 
   const handleChangeFilter = ({ filter }) => {
     setSortObj({ ...sortObj, [filter]: !sortObj[filter] })
@@ -100,7 +113,7 @@ export const DrawerForm = ({ dialog, setDialog, defaultValues }: any) => {
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
   }, [filterObj.asc, filterObj.filter, search])
 
-  const submit = (data) => {    
+  const submit = (data) => {
     Axios({
       method: 'POST',
       url: '/sale/drawer/open',
@@ -108,7 +121,7 @@ export const DrawerForm = ({ dialog, setDialog, defaultValues }: any) => {
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
-        reset()
+        reload()
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
@@ -191,20 +204,22 @@ export const DrawerForm = ({ dialog, setDialog, defaultValues }: any) => {
       url: '/organize/preset/create',
       method: 'POST',
       body: {
-        name: templateInput
-      }
-    }).then((data) => {
-      notify(data?.data?.msg, 'success')
-      dispatch(getListPresetCash())
-      setTemplateInput('')
-    }).catch(err => {
-      notify(err?.reponse?.data?.msg, 'error')
+        name: templateInput,
+      },
     })
+      .then((data) => {
+        notify(data?.data?.msg, 'success')
+        dispatch(getListPresetCash())
+        setTemplateInput('')
+      })
+      .catch((err) => {
+        notify(err?.reponse?.data?.msg, 'error')
+      })
   }
 
   const handleClickPresetCash = (event) => {
     const id = event.target.id
-    const preset = listPresetCash.find(preset => preset._id === id)
+    const preset = listPresetCash.find((preset) => preset._id === id)
     setListCash(preset?.cashes || [])
   }
 
@@ -212,40 +227,98 @@ export const DrawerForm = ({ dialog, setDialog, defaultValues }: any) => {
     const id = event.target.id
     confirm({
       title: 'Are you sure you want to save to this preset?',
-      description: 'This will override your existing selected preset. Click on confirm to proceed',
+      description:
+        'This will override your existing selected preset. Click on confirm to proceed',
       variant: 'info',
-    }).then(() => {
-      Axios({
-        url: `/organize/preset/save/${id}`,
-        method: 'PUT',
-        body: {
-          cashes: listCash
-        }
-      }).then((data) => {
-        notify(data?.data?.msg, 'success')
-        dispatch(getListPresetCash())
-      }).catch(err => {
-        notify(err?.reponse?.data?.msg, 'error')
+    })
+      .then(() => {
+        Axios({
+          url: `/organize/preset/save/${id}`,
+          method: 'PUT',
+          body: {
+            cashes: listCash,
+          },
+        })
+          .then((data) => {
+            notify(data?.data?.msg, 'success')
+            dispatch(getListPresetCash())
+          })
+          .catch((err) => {
+            notify(err?.reponse?.data?.msg, 'error')
+          })
       })
-    }).catch(() => {})
+      .catch(() => {})
   }
 
   const handleDeletePreset = (id) => {
     confirm({
       title: 'Are you sure you want to delete this preset?',
-      description: 'This will delete the selected preset. Click on confirm to proceed',
+      description:
+        'This will delete the selected preset. Click on confirm to proceed',
       variant: 'error',
-    }).then(() => {
-      Axios({
-        url: `/organize/preset/delete/${id}`,
-        method: 'DELETE',
-      }).then((data) => {
-        notify(data?.data?.msg, 'success')
-        dispatch(getListPresetCash())
-      }).catch(err => {
-        notify(err?.reponse?.data?.msg, 'error')
+    })
+      .then(() => {
+        Axios({
+          url: `/organize/preset/delete/${id}`,
+          method: 'DELETE',
+        })
+          .then((data) => {
+            notify(data?.data?.msg, 'success')
+            dispatch(getListPresetCash())
+          })
+          .catch((err) => {
+            notify(err?.reponse?.data?.msg, 'error')
+          })
       })
-    }).catch(() => {})
+      .catch(() => {})
+  }
+
+  const handleSaveDrawer = () => {
+    confirm({
+      title: 'Are you sure you want to save this drawer?',
+      description:
+        'This will save the drawer. Click on confirm to proceed',
+      variant: 'info',
+    })
+      .then(() => {
+        Axios({
+          url: `/sale/drawer/save/${user?.drawer?._id}`,
+          method: 'PUT',
+          body: { ...getValues(), cashes: listCash }
+        })
+          .then((data) => {
+            notify(data?.data?.msg, 'success')
+          })
+          .catch((err) => {
+            notify(err?.reponse?.data?.msg, 'error')
+          })
+      })
+      .catch(() => {})
+  }
+
+  const handleStopDrawer = () => {
+    confirm({
+      title: 'Are you sure you want to close this drawer?',
+      description:
+        'This will close the drawer. Click on confirm to proceed',
+      variant: 'error',
+    })
+      .then(() => {
+        Axios({
+          url: `/sale/drawer/close/${user?.drawer?._id}`,
+          method: 'PUT',
+        })
+          .then((data) => {
+            notify(data?.data?.msg, 'success')
+            setListCash([])
+            reload()
+            reset()
+          })
+          .catch((err) => {
+            notify(err?.reponse?.data?.msg, 'error')
+          })
+      })
+      .catch(() => {})
   }
 
   return (
@@ -300,28 +373,57 @@ export const DrawerForm = ({ dialog, setDialog, defaultValues }: any) => {
               boxSizing: 'border-box',
             }}
           >
-            <Button
-              style={{
-                color: theme.color.error,
-                backgroundColor: `${theme.color.error}22`,
-                borderRadius: theme.radius.secondary,
-              }}
-              fullWidth
-            >
-              Stop
-            </Button>
-            <Button
-              type='submit'
-              style={{
-                marginLeft: 10,
-                color: theme.color.success,
-                backgroundColor: `${theme.color.success}22`,
-                borderRadius: theme.radius.secondary,
-              }}
-              fullWidth
-            >
-              Start
-            </Button>
+            {user?.drawer ? (
+              <Button
+                onClick={handleStopDrawer}
+                style={{
+                  color: theme.color.error,
+                  backgroundColor: `${theme.color.error}22`,
+                  borderRadius: theme.radius.secondary,
+                }}
+                fullWidth
+              >
+                Stop
+              </Button>
+            ) : (
+              <Button
+                style={{
+                  color: theme.color.error,
+                  backgroundColor: `${theme.color.error}22`,
+                  borderRadius: theme.radius.secondary,
+                }}
+                fullWidth
+              >
+                Cancel
+              </Button>
+            )}
+            {user?.drawer ? (
+              <Button
+                onClick={handleSaveDrawer}
+                style={{
+                  marginLeft: 10,
+                  color: theme.color.info,
+                  backgroundColor: `${theme.color.info}22`,
+                  borderRadius: theme.radius.secondary,
+                }}
+                fullWidth
+              >
+                Save
+              </Button>
+            ) : (
+              <Button
+                type='submit'
+                style={{
+                  marginLeft: 10,
+                  color: theme.color.success,
+                  backgroundColor: `${theme.color.success}22`,
+                  borderRadius: theme.radius.secondary,
+                }}
+                fullWidth
+              >
+                Start
+              </Button>
+            )}
           </div>
         </form>
         <div style={{ margin: '0 20px 0 20px', boxSizing: 'border-box' }}>
@@ -384,15 +486,38 @@ export const DrawerForm = ({ dialog, setDialog, defaultValues }: any) => {
                     width='100%'
                     placeholder='Template'
                   />
-                  <IconButton style={{ width: 30, height: 30, marginLeft: 5, color: theme.color.info }}>
+                  <IconButton
+                    style={{
+                      width: 30,
+                      height: 30,
+                      marginLeft: 5,
+                      color: theme.color.info,
+                    }}
+                  >
                     <AddRoundedIcon style={{ fontSize: 20 }} />
                   </IconButton>
                 </MenuItem>
                 {presetCashOption.map((preset, key) => (
-                  <MenuItem onClick={handleClickPresetCash} key={key} id={preset.value} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 5px 5px 15px' }}>
+                  <MenuItem
+                    onClick={handleClickPresetCash}
+                    key={key}
+                    id={preset.value}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      padding: '5px 5px 5px 15px',
+                    }}
+                  >
                     {preset.label}
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <IconButton onClick={() => handleDeletePreset(preset.value)} style={{ width: 30, height: 30, color: theme.color.error }}>
+                      <IconButton
+                        onClick={() => handleDeletePreset(preset.value)}
+                        style={{
+                          width: 30,
+                          height: 30,
+                          color: theme.color.error,
+                        }}
+                      >
                         <CloseRoundedIcon style={{ fontSize: 18 }} />
                       </IconButton>
                     </div>
@@ -404,7 +529,13 @@ export const DrawerForm = ({ dialog, setDialog, defaultValues }: any) => {
                 label={<SaveRoundedIcon style={{ fontSize: 18 }} />}
               >
                 {presetCashOption.map((preset, key) => (
-                  <MenuItem onClick={handleSavePresetCash} key={key} id={preset.value}>{preset.label}</MenuItem>
+                  <MenuItem
+                    onClick={handleSavePresetCash}
+                    key={key}
+                    id={preset.value}
+                  >
+                    {preset.label}
+                  </MenuItem>
                 ))}
               </MenuDialog>
               <IconButton
@@ -661,7 +792,9 @@ const CashItem = ({ data, onRemove }) => {
               color: theme.text.quaternary,
             }}
           />
-          <span style={{ lineHeight: 1 }}>{currencyFormat(parseFloat(data.cash), data.currency)}</span>
+          <span style={{ lineHeight: 1 }}>
+            {currencyFormat(parseFloat(data.cash), data.currency)}
+          </span>
         </div>
       </span>
       <div style={{ flex: '20%' }}>
@@ -696,7 +829,9 @@ const CashItem = ({ data, onRemove }) => {
           >
             Total
           </span>{' '}
-          <span style={{ lineHeight: 1 }}>{currencyFormat(parseFloat(data.total), data.currency)}</span>
+          <span style={{ lineHeight: 1 }}>
+            {currencyFormat(parseFloat(data.total), data.currency)}
+          </span>
         </div>
         <IconButton
           onClick={() => onRemove(data.id)}
