@@ -35,7 +35,7 @@ const ComboField = ({ onChange, defaultValue, selectOption, name = '', checkbox 
       style={{
         display: 'flex',
         alignItems: 'center',
-        borderBottom: theme.border.quaternary,
+        borderBottom: theme.border.dashed,
         position: 'relative',
       }}
     >

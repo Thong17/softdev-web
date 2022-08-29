@@ -345,6 +345,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
             gridTemplateAreas: `'buyRate sellRate'`,
             gridColumnGap: 20,
             padding: '5px 20px',
+            boxSizing: 'border-box'
           }}
         >
           <div style={{ gridArea: 'buyRate' }}>
@@ -456,7 +457,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                 display: 'flex',
                 justifyContent: 'end',
                 alignItems: 'center',
-                width: 'fit-content',
+                width: 'fit-content'
               }}
             >
               <MiniSearchField onChange={handleSearch} />
@@ -559,7 +560,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
           <div
             className='money-container'
             style={{
-              height: '64vh',
+              height: '60vh',
               border: theme.border.dashed,
               boxSizing: 'border-box',
               borderRadius: theme.radius.quaternary,

@@ -70,7 +70,7 @@ export const MiniInput: ForwardRefRenderFunction<HTMLInputElement, ITextInput> =
 }
 
 export const NanoInput: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
-  { width = 37, icon, ...props }) => {
+  { width = 37, height = 27, icon, ...props }) => {
   const { theme } = useTheme()
 
   return (
@@ -80,7 +80,7 @@ export const NanoInput: ForwardRefRenderFunction<HTMLInputElement, ITextInput> =
         style={{
           width: width,
           padding: icon ? '5px 35px 5px 5px' :  5,
-          height: 27,
+          height: height,
           outline: 'none',
           border: theme.border.quaternary,
           background: 'none',

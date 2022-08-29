@@ -39,7 +39,7 @@ export const InvoicePreview = () => {
           <div className='invoice-form'></div>
         </div>
         <div className='invoice-total'>
-          <div className='total-container'>
+          <div className='total-container' style={{ marginBottom: 10 }}>
             <div className='charge'>
               <div className='item'>
                 <span>Subtotal</span>
