@@ -25,14 +25,20 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
   const { user } = useAuth()
   const [totalReceive, setTotalReceive] = useState({ KHR: 0, USD: 0, total: 0 })
   const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
-  const [payment, setPayment] = useState(null)
-  const [totalPayment, setTotalPayment] = useState({ value: 0, currency: 'USD' })
+  const [payment, setPayment] = useState<any>(null)
+  const [totalPayment, setTotalPayment] = useState({
+    value: 0,
+    currency: 'USD',
+  })
   const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
 
   useEffect(() => {
     setPayment(dialog.payment)
-    const value = dialog.payment?.total.currency === 'KHR' ? dialog.payment?.total.value / dialog.payment?.rate.sellRate : dialog.payment?.total.value
-    setTotalPayment(prev => ({ ...prev, value }))
+    const value =
+      dialog.payment?.total.currency === 'KHR'
+        ? dialog.payment?.total.value / dialog.payment?.rate.sellRate
+        : dialog.payment?.total.value
+    setTotalPayment((prev) => ({ ...prev, value }))
     setExchangeRate(dialog.payment?.rate)
   }, [dialog.payment])
 
@@ -41,7 +47,7 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
     const sellRate = exchangeRate?.sellRate || 4000
     setTotalRemain({ USD: remainUSD, KHR: remainUSD * sellRate })
   }, [totalPayment, exchangeRate, totalReceive.total])
-  
+
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false })
   }
@@ -202,27 +208,42 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
                 <CustomButton
                   styled={theme}
                   style={{
-                    backgroundColor: `${theme.color.info}22`,
-                    color: theme.color.info,
+                    backgroundColor: `${theme.color.error}22`,
+                    color: theme.color.error,
                     width: '100%',
                   }}
                 >
-                  <PrintRoundedIcon style={{ fontSize: 19, marginRight: 5 }} />{' '}
-                  Print
+                  Close
                 </CustomButton>
-                <CustomButton
-                  styled={theme}
-                  style={{
-                    backgroundColor: `${theme.color.success}22`,
-                    color: theme.color.success,
-                    width: '100%',
-                  }}
-                >
-                  <ReceiptRoundedIcon
-                    style={{ fontSize: 17, marginRight: 5 }}
-                  />{' '}
-                  Check out
-                </CustomButton>
+                {payment?.status ? (
+                  <CustomButton
+                    styled={theme}
+                    style={{
+                      backgroundColor: `${theme.color.info}22`,
+                      color: theme.color.info,
+                      width: '100%',
+                    }}
+                  >
+                    <PrintRoundedIcon
+                      style={{ fontSize: 19, marginRight: 5 }}
+                    />{' '}
+                    Print
+                  </CustomButton>
+                ) : (
+                  <CustomButton
+                    styled={theme}
+                    style={{
+                      backgroundColor: `${theme.color.success}22`,
+                      color: theme.color.success,
+                      width: '100%',
+                    }}
+                  >
+                    <ReceiptRoundedIcon
+                      style={{ fontSize: 17, marginRight: 5 }}
+                    />{' '}
+                    Check out
+                  </CustomButton>
+                )}
               </div>
             </div>
           </Box>

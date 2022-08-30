@@ -212,6 +212,38 @@ export const InvoiceForm = ({
   const exchangeRate = useMemo(() => ({ sellRate: user?.drawer?.sellRate, buyRate: user?.drawer?.buyRate }), [user?.drawer])
   const { notify } = useNotify()
 
+  const handleClearPayment = () => {
+    confirm({
+      title: 'Are you sure you want to clear the invoice?',
+      description: 'Clear the invoice will erase all the transaction.',
+      variant: 'error'
+    }).then(() => {
+      setCustomer({ displayName: null, id: null, point: 0 })
+      setTax({
+        title: 'Tax',
+        value: defaultTax,
+        type: 'PCT',
+        isEditing: false,
+      })
+      setVoucher({
+        title: 'Voucher',
+        value: 0,
+        type: 'PCT',
+        isFixed: false,
+        isEditing: false,
+      })
+      setDiscount({
+        title: 'Discount',
+        value: 0,
+        type: 'PCT',
+        isFixed: false,
+        isEditing: false,
+      })
+      setSubtotal({ USD: 0, KHR: 0 })
+      setTransactions([])
+    }).catch(() => {})
+  }
+
   useEffect(() => {
     let totalQuantity = 0
     let subtotalUSD = 0
@@ -824,6 +856,7 @@ export const InvoiceForm = ({
                 <CustomButton
                   styled={theme}
                   fullWidth
+                  onClick={handleClearPayment}
                   style={{
                     color: theme.text.secondary,
                     marginRight: 10,
