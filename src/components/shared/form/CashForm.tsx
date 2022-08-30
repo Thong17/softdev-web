@@ -19,56 +19,79 @@ const presetCashes = [
     value: 1,
     currency: 'USD',
     quantity: 1,
+    color: '#dde1c5'
   },
   {
     value: 10,
     currency: 'USD',
     quantity: 1,
+    color: '#dbcb9f'
   },
   {
     value: 20,
     currency: 'USD',
     quantity: 1,
+    color: '#a7c3a8'
   },
   {
     value: 50,
     currency: 'USD',
     quantity: 1,
+    color: '#a1bebd'
   },
   {
     value: 100,
     currency: 'USD',
     quantity: 1,
+    color: '#b5a072'
   },
   {
     value: 100,
     currency: 'KHR',
     quantity: 1,
+    color: '#d9886d'
+  },
+  {
+    value: 500,
+    currency: 'KHR',
+    quantity: 1,
+    color: '#a37f83'
   },
   {
     value: 1000,
     currency: 'KHR',
     quantity: 1,
+    color: '#c9b9c9'
   },
   {
     value: 5000,
     currency: 'KHR',
     quantity: 1,
+    color: '#a48ca7'
   },
   {
     value: 10000,
     currency: 'KHR',
     quantity: 1,
+    color: '#6f8c8f'
+  },
+  {
+    value: 20000,
+    currency: 'KHR',
+    quantity: 1,
+    color: '#6f8c8f'
   },
   {
     value: 50000,
     currency: 'KHR',
     quantity: 1,
+    color: '#9d8f70'
   },
   {
     value: 100000,
     currency: 'KHR',
     quantity: 1,
+    color: '#738e78'
   },
 ]
 
@@ -94,7 +117,7 @@ const CastPreset = ({ theme, onClick }) => {
       }}
     >
       {presetCashes.map((cash, key) => (
-        <div className='money' onClick={() => onClick(cash)} key={key}>
+        <div className='money' onClick={() => onClick(cash)} key={key} style={{ color: cash.color, backgroundColor: `${cash.color}22` }}>
           {currencyFormat(cash.value, cash.currency)}
         </div>
       ))}
