@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { MiniSelectField } from '.'
 import { NanoInput } from './InputField'
 import { currencyOptions } from './InvoiceForm'
@@ -107,23 +107,31 @@ export const CashForm = ({ onChange }) => {
   const [cashForm, setCashForm] = useState(initCash)
   const [cashes, setCashes] = useState<any[]>([])
 
-  useEffect(() => {
-    onChange(cashes)
-  }, [cashes, onChange])
-
   const handleSubmit = (event) => {
     event.preventDefault()
-    setCashes([...cashes, { ...cashForm, id: generateId() }])
+    const newCashes = [...cashes, { ...cashForm, id: generateId() }]
+    onChange(newCashes)
+    setCashes(newCashes)
   }
 
   const handleRemoveCash = (id) => {
-    setCashes((prev) => prev.filter((cash) => cash.id !== id))
+    const newCashes = cashes.filter((cash) => cash.id !== id)
+    onChange(newCashes)
+    setCashes(newCashes)
   }
 
   const handleChangeQuantity = (id, value) => {
-    setCashes((prev) =>
-      prev.map((cash) => (cash.id === id ? { ...cash, quantity: value } : cash))
+    const newCashes = cashes.map((cash) =>
+      cash.id === id ? { ...cash, quantity: value } : cash
     )
+    onChange(newCashes)
+    setCashes(newCashes)
+  }
+
+  const handleAddPreset = (cash) => {
+    const newCashes = [...cashes, { ...cash, id: generateId() }]
+    onChange(newCashes)
+    setCashes(newCashes)
   }
 
   return (
@@ -208,12 +216,7 @@ export const CashForm = ({ onChange }) => {
             />
           </div>
         </form>
-        <CastPreset
-          theme={theme}
-          onClick={(cash) =>
-            setCashes([...cashes, { ...cash, id: generateId() }])
-          }
-        />
+        <CastPreset theme={theme} onClick={handleAddPreset} />
       </div>
       <div style={{ position: 'relative', height: '100%' }}>
         <div

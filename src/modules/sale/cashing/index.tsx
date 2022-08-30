@@ -1,7 +1,10 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Container from 'components/shared/Container'
 import { ProductContainer } from 'components/shared/container/ProductContainer'
-import { InvoiceForm, ITransactionItem } from 'components/shared/form/InvoiceForm'
+import {
+  InvoiceForm,
+  ITransactionItem,
+} from 'components/shared/form/InvoiceForm'
 import useWeb from 'hooks/useWeb'
 import { getInfoStore, selectInfoStore } from 'modules/organize/store/redux'
 import { useEffect, useState } from 'react'
@@ -13,15 +16,24 @@ import { ProductForm } from './ProductForm'
 import { DrawerForm } from './DrawerForm'
 import { PaymentForm } from './PaymentForm'
 import useAuth from 'hooks/useAuth'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 export const Cashing = () => {
   const { user } = useAuth()
+  const { notify } = useNotify()
   const { device } = useWeb()
   const dispatch = useAppDispatch()
   const { data: preview } = useAppSelector(selectInfoStore)
-  const [productDialog, setProductDialog] = useState({ open: false, productId: null })
+  const [productDialog, setProductDialog] = useState({
+    open: false,
+    productId: null,
+  })
   const [drawerDialog, setDrawerDialog] = useState({ open: false })
-  const [paymentDialog, setPaymentDialog] = useState({ open: false })
+  const [paymentDialog, setPaymentDialog] = useState({
+    open: false,
+    payment: null,
+  })
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
@@ -39,16 +51,40 @@ export const Cashing = () => {
     setTransaction({
       id: data._id,
       description: data.description,
-      discount: { value: data.discount?.value || 0, currency: data.discount?.type || 'PCT', isFixed: data.discount?.isFixed || false },
+      discount: {
+        value: data.discount?.value || 0,
+        currency: data.discount?.type || 'PCT',
+        isFixed: data.discount?.isFixed || false,
+      },
       price: { value: data.price, currency: data.currency },
       quantity: data.quantity,
-      total: data.total
+      total: data.total,
     })
   }
 
   const handlePayment = (data) => {
-    console.log(data)
-    setPaymentDialog({ open: true })
+    if (data.transactions.length < 1) return notify('No transaction added', 'error')
+    if (paymentDialog.payment) {
+      return setPaymentDialog({ ...paymentDialog, open: true })
+    }
+    const body = {
+      transactions: data.transactions.map((transaction) => transaction.id),
+      promotions: [data.discount, data.voucher],
+      services: [data.tax],
+      customer: data.customer?.id,
+    }
+
+    Axios({
+      method: 'POST',
+      url: '/sale/payment/create',
+      body,
+    })
+      .then((data) => {
+        setPaymentDialog({ open: true, payment: data?.data?.data })
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
   }
 
   return (
@@ -58,20 +94,17 @@ export const Cashing = () => {
         setDialog={setProductDialog}
         addTransaction={handleAddTransaction}
       />
-      <DrawerForm
-        dialog={drawerDialog}
-        setDialog={setDrawerDialog}
-      />
-      <PaymentForm
-        dialog={paymentDialog}
-        setDialog={setPaymentDialog}
-      />
+      <DrawerForm dialog={drawerDialog} setDialog={setDrawerDialog} />
+      <PaymentForm dialog={paymentDialog} setDialog={setPaymentDialog} />
       <div
         style={{
           display: 'grid',
           gridTemplateColumns:
             device === 'mobile' || device === 'tablet' ? '1fr' : '1fr auto',
-          gridTemplateAreas: device === 'mobile' || device === 'tablet' ? `'invoice invoice''product product'` : `'product invoice'`,
+          gridTemplateAreas:
+            device === 'mobile' || device === 'tablet'
+              ? `'invoice invoice''product product'`
+              : `'product invoice'`,
           gridGap: 30,
           height: 'fit-content',
         }}
@@ -84,9 +117,13 @@ export const Cashing = () => {
             actions={
               <>
                 <IconButton
-                  onClick={() => setDrawerDialog({ ...drawerDialog, open: true })}
+                  onClick={() =>
+                    setDrawerDialog({ ...drawerDialog, open: true })
+                  }
                   style={{
-                    color: user?.drawer?.status ? theme.color.success : theme.color.error,
+                    color: user?.drawer?.status
+                      ? theme.color.success
+                      : theme.color.error,
                     width: 30,
                     height: 30,
                     marginRight: 10,
@@ -113,7 +150,7 @@ export const Cashing = () => {
           style={{
             display: 'flex',
             justifyContent: 'center',
-            gridArea: 'invoice'
+            gridArea: 'invoice',
           }}
         >
           <InvoiceForm

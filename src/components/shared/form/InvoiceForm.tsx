@@ -187,18 +187,21 @@ export const InvoiceForm = ({
   const isFixedValue = watch('discount.isFixed')
   const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
   const [discount, setDiscount] = useState({
+    title: 'Discount',
     value: 0,
     type: 'PCT',
     isFixed: false,
     isEditing: false,
   })
   const [voucher, setVoucher] = useState({
+    title: 'Voucher',
     value: 0,
     type: 'PCT',
     isFixed: false,
     isEditing: false,
   })
   const [tax, setTax] = useState({
+    title: 'Tax',
     value: defaultTax,
     type: 'PCT',
     isEditing: false,
@@ -312,6 +315,7 @@ export const InvoiceForm = ({
 
   const handleChangeDiscount = ({ input, select, check }) => {
     setDiscount({
+      ...discount,
       value: parseFloat(input),
       type: select,
       isFixed: check,
@@ -320,11 +324,12 @@ export const InvoiceForm = ({
   }
 
   const handleChangeTax = ({ input, select }) => {
-    setTax({ value: parseFloat(input), type: select, isEditing: false })
+    setTax({ ...tax, value: parseFloat(input), type: select, isEditing: false })
   }
 
   const handleChangeVoucher = ({ input, select, check }) => {
     setVoucher({
+      ...voucher,
       value: parseFloat(input),
       type: select,
       isFixed: check,
