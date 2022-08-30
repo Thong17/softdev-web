@@ -40,6 +40,98 @@ const initCash = {
   quantity: 1,
 }
 
+const CashItem = ({ data, onRemove }) => {
+  const { theme } = useTheme()
+  const { device } = useWeb()
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        padding: 7,
+        borderRadius: theme.radius.ternary,
+        border: theme.border.quaternary,
+        backgroundColor: data.origin
+          ? theme.background.primary
+          : theme.background.secondary,
+      }}
+    >
+      <span style={{ flex: '38%' }}>
+        <div
+          style={{
+            backgroundColor: theme.background.primary,
+            width: 'fit-content',
+            padding: '5px 10px 5px 5px',
+            borderRadius: theme.radius.secondary,
+            display: 'flex',
+            alignItems: 'end',
+          }}
+        >
+          <PaymentsRoundedIcon
+            style={{
+              margin: '0 10px 0 5px',
+              fontSize: 15,
+              color: theme.text.quaternary,
+            }}
+          />
+          <span style={{ lineHeight: 1 }}>
+            {currencyFormat(parseFloat(data.cash), data.currency)}
+          </span>
+        </div>
+      </span>
+      <div style={{ flex: '20%' }}>
+        <QuantityStatus
+          qty={data.quantity}
+          min={10}
+          label='Unit'
+          padding='6px 11px 6px 7px'
+        />
+      </div>
+      <div
+        style={{
+          flex: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: theme.background.secondary,
+            width: 'fit-content',
+            padding: '5px 10px',
+            borderRadius: theme.radius.secondary,
+          }}
+        >
+          <span
+            style={{
+              color: theme.text.quaternary,
+              fontSize: theme.responsive[device]?.text.quaternary,
+            }}
+          >
+            Total
+          </span>{' '}
+          <span style={{ lineHeight: 1 }}>
+            {currencyFormat(parseFloat(data.total), data.currency)}
+          </span>
+        </div>
+        <IconButton
+          onClick={() => onRemove(data.id)}
+          style={{
+            color: theme.color.error,
+            width: 30,
+            height: 30,
+            marginLeft: 10,
+          }}
+        >
+          <CloseRoundedIcon style={{ fontSize: 19 }} />
+        </IconButton>
+      </div>
+    </div>
+  )
+}
+
 export const DrawerForm = ({ dialog, setDialog }: any) => {
   const confirm = useAlert()
   const { user, reload } = useAuth()
@@ -66,7 +158,9 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
     asc: false,
   })
   const [cashObj, setCashObj] = useState(initCash)
-  const [listCash, setListCash] = useState<any[]>(user?.drawer?.cashes.map(cash => ({ ...cash, origin: true })) || [])
+  const [listCash, setListCash] = useState<any[]>(
+    user?.drawer?.cashes.map((cash) => ({ ...cash, origin: true })) || []
+  )
   const [cashForm, setCashForm] = useState(false)
   const [templateInput, setTemplateInput] = useState('')
   const { data: listPresetCash, status: statusListPresetCash } =
@@ -276,19 +370,20 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
   const handleSaveDrawer = () => {
     confirm({
       title: 'Are you sure you want to save this drawer?',
-      description:
-        'This will save the drawer. Click on confirm to proceed',
+      description: 'This will save the drawer. Click on confirm to proceed',
       variant: 'info',
     })
       .then(() => {
         Axios({
           url: `/sale/drawer/save/${user?.drawer?._id}`,
           method: 'PUT',
-          body: { ...getValues(), cashes: listCash }
+          body: { ...getValues(), cashes: listCash },
         })
           .then((data) => {
             notify(data?.data?.msg, 'success')
-            setListCash(prev => prev.map(cash => ({ ...cash, origin: true })))
+            setListCash((prev) =>
+              prev.map((cash) => ({ ...cash, origin: true }))
+            )
           })
           .catch((err) => {
             notify(err?.reponse?.data?.msg, 'error')
@@ -300,8 +395,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
   const handleStopDrawer = () => {
     confirm({
       title: 'Are you sure you want to close this drawer?',
-      description:
-        'This will close the drawer. Click on confirm to proceed',
+      description: 'This will close the drawer. Click on confirm to proceed',
       variant: 'error',
     })
       .then(() => {
@@ -334,6 +428,8 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
           width: '50vw',
           boxSizing: 'border-box',
           position: 'relative',
+          display: 'flex',
+          flexDirection: 'column'
         }}
       >
         <DialogTitle title='Drawer' onClose={handleCloseDialog} />
@@ -345,7 +441,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
             gridTemplateAreas: `'buyRate sellRate'`,
             gridColumnGap: 20,
             padding: '5px 20px',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
           }}
         >
           <div style={{ gridArea: 'buyRate' }}>
@@ -428,7 +524,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
             )}
           </div>
         </form>
-        <div style={{ margin: '0 20px 0 20px', boxSizing: 'border-box' }}>
+        <div style={{ margin: '0 20px 0 20px', boxSizing: 'border-box', height: '100%', paddingBottom: 65, position: 'relative', display: 'flex', flexDirection: 'column' }}>
           <div
             style={{
               display: 'flex',
@@ -457,7 +553,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                 display: 'flex',
                 justifyContent: 'end',
                 alignItems: 'center',
-                width: 'fit-content'
+                width: 'fit-content',
               }}
             >
               <MiniSearchField onChange={handleSearch} />
@@ -557,10 +653,10 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
               </IconButton>
             </div>
           </div>
+          <div style={{ position: 'relative', height: '100%' }}>
           <div
             className='money-container'
             style={{
-              height: '60vh',
               border: theme.border.dashed,
               boxSizing: 'border-box',
               borderRadius: theme.radius.quaternary,
@@ -569,6 +665,11 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
               flexDirection: 'column',
               overflowY: 'auto',
               gap: 10,
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              height: '100%',
+              width: '100%'
             }}
           >
             {cashForm && (
@@ -758,98 +859,9 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
               <CashItem data={item} key={key} onRemove={handleRemoveCash} />
             ))}
           </div>
+          </div>
         </div>
       </div>
     </AlertContainer>
-  )
-}
-
-const CashItem = ({ data, onRemove }) => {
-  const { theme } = useTheme()
-  const { device } = useWeb()
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-        padding: 7,
-        borderRadius: theme.radius.ternary,
-        border: theme.border.quaternary,
-        backgroundColor: data.origin ? theme.background.primary : theme.background.secondary
-      }}
-    >
-      <span style={{ flex: '38%' }}>
-        <div
-          style={{
-            backgroundColor: theme.background.primary,
-            width: 'fit-content',
-            padding: '5px 10px 5px 5px',
-            borderRadius: theme.radius.secondary,
-            display: 'flex',
-            alignItems: 'end',
-          }}
-        >
-          <PaymentsRoundedIcon
-            style={{
-              margin: '0 10px 0 5px',
-              fontSize: 15,
-              color: theme.text.quaternary,
-            }}
-          />
-          <span style={{ lineHeight: 1 }}>
-            {currencyFormat(parseFloat(data.cash), data.currency)}
-          </span>
-        </div>
-      </span>
-      <div style={{ flex: '20%' }}>
-        <QuantityStatus
-          qty={data.quantity}
-          min={10}
-          label='Unit'
-          padding='6px 11px 6px 7px'
-        />
-      </div>
-      <div
-        style={{
-          flex: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: theme.background.secondary,
-            width: 'fit-content',
-            padding: '5px 10px',
-            borderRadius: theme.radius.secondary,
-          }}
-        >
-          <span
-            style={{
-              color: theme.text.quaternary,
-              fontSize: theme.responsive[device]?.text.quaternary,
-            }}
-          >
-            Total
-          </span>{' '}
-          <span style={{ lineHeight: 1 }}>
-            {currencyFormat(parseFloat(data.total), data.currency)}
-          </span>
-        </div>
-        <IconButton
-          onClick={() => onRemove(data.id)}
-          style={{
-            color: theme.color.error,
-            width: 30,
-            height: 30,
-            marginLeft: 10,
-          }}
-        >
-          <CloseRoundedIcon style={{ fontSize: 19 }} />
-        </IconButton>
-      </div>
-    </div>
   )
 }

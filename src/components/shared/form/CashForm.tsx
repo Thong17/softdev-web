@@ -10,6 +10,46 @@ import { currencyFormat } from 'utils'
 
 const initCash = { value: '0', currency: 'USD', quantity: 1 }
 
+const CastPreset = ({ theme }) => {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        overflowX: 'auto',
+        alignItems: 'center',
+        gridColumnGap: 10,
+        boxSizing: 'border-box',
+        '& .money': {
+          height: '100%',
+          display: 'grid',
+          placeItems: 'center',
+          padding: '0 10px',
+          backgroundColor: theme.background.secondary,
+          borderRadius: theme.radius.primary,
+          cursor: 'pointer',
+        },
+      }}
+    >
+      <div className='money'>1$</div>
+      <div className='money'>10$</div>
+      <div className='money'>20$</div>
+      <div className='money'>50$</div>
+      <div className='money'>100$</div>
+      <div className='money'>1000$</div>
+      <div className='money'>10000$</div>
+      <div className='money'>50$</div>
+      <div className='money'>1$</div>
+      <div className='money'>10$</div>
+      <div className='money'>20$</div>
+      <div className='money'>50$</div>
+      <div className='money'>100$</div>
+      <div className='money'>1000$</div>
+      <div className='money'>10000$</div>
+      <div className='money'>50$</div>
+    </Box>
+  )
+}
+
 export const CashForm = ({ onChange }) => {
   const { theme } = useTheme()
   const [cashForm, setCashForm] = useState(initCash)
@@ -26,7 +66,14 @@ export const CashForm = ({ onChange }) => {
 
   return (
     <div
-      style={{ position: 'relative', height: '100%', boxSizing: 'border-box' }}
+      style={{
+        height: '100%',
+        boxSizing: 'border-box',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+      }}
     >
       <div style={{ display: 'flex', gap: 10, position: 'relative' }}>
         <form
@@ -99,62 +146,30 @@ export const CashForm = ({ onChange }) => {
             />
           </div>
         </form>
-        <Box
-          sx={{
+        <CastPreset theme={theme} />
+      </div>
+      <div style={{ position: 'relative', height: '100%' }}>
+        <div
+          style={{
             display: 'flex',
-            overflowX: 'auto',
-            alignItems: 'center',
-            gridColumnGap: 10,
+            flexDirection: 'column',
+            gap: 10,
+            overflowY: 'auto',
             boxSizing: 'border-box',
-            '& .money': {
-              height: '100%',
-              display: 'grid',
-              placeItems: 'center',
-              padding: '0 10px',
-              backgroundColor: theme.background.secondary,
-              borderRadius: theme.radius.primary,
-              cursor: 'pointer',
-            },
+            maxHeight: '100%',
+            width: '100%',
+            position: 'absolute',
           }}
         >
-          <div className='money'>1$</div>
-          <div className='money'>10$</div>
-          <div className='money'>20$</div>
-          <div className='money'>50$</div>
-          <div className='money'>100$</div>
-          <div className='money'>1000$</div>
-          <div className='money'>10000$</div>
-          <div className='money'>50$</div>
-          <div className='money'>1$</div>
-          <div className='money'>10$</div>
-          <div className='money'>20$</div>
-          <div className='money'>50$</div>
-          <div className='money'>100$</div>
-          <div className='money'>1000$</div>
-          <div className='money'>10000$</div>
-          <div className='money'>50$</div>
-        </Box>
-      </div>
-      <div
-        style={{
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 10,
-          overflowY: 'auto',
-          boxSizing: 'border-box',
-          height: 'calc(45.3vh)',
-          paddingTop: 10
-        }}
-      >
-        {cashes?.map((cash, key) => (
-          <div
-            style={{ backgroundColor: 'rebeccapurple', padding: 10 }}
-            key={key}
-          >
-            {currencyFormat(parseFloat(cash.value), cash.currency)}
-          </div>
-        ))}
+          {cashes?.map((cash, key) => (
+            <div
+              style={{ backgroundColor: 'rebeccapurple', padding: 10, borderRadius: theme.radius.primary }}
+              key={key}
+            >
+              {currencyFormat(parseFloat(cash.value), cash.currency)}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

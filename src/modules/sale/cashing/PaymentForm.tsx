@@ -40,67 +40,62 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
         <DialogTitle title='Payment' onClose={handleCloseDialog} />
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'calc(100% - 480px) auto',
-            gridTemplateAreas: `'cash invoice'`,
             padding: '10px 20px 20px 20px',
             boxSizing: 'border-box',
             height: 'calc(100% - 69.98px)',
             gridGap: 20,
+            display: 'grid',
+            gridTemplateColumns: 'calc(100% - 480px) auto',
+            gridTemplateRows: '1fr 200px',
+            gridTemplateAreas: `'payment preview''exchange preview'`,
           }}
         >
           <div
             style={{
-              gridArea: 'cash',
+              gridArea: 'payment',
               display: 'flex',
               flexDirection: 'column',
-              gap: 20,
+              height: '100%',
+              position: 'relative',
             }}
           >
             <div
-              className='payment'
-              style={{ borderRadius: theme.radius.ternary, position: 'relative', boxSizing: 'border-box' }}
+              style={{
+                height: 38,
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 5px',
+              }}
             >
-              <div
-                style={{
-                  height: 38,
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '0 5px',
-                }}
-              >
-                <SelectTab
-                  options={paymentMethods}
-                  onChange={handleChangeTab}
-                />
-              </div>
-              <div
-                style={{
-                  border: theme.border.dashed,
-                  borderRadius: theme.radius.ternary,
-                  height: 'calc(100% - 36px)',
-                  position: 'relative',
-                  boxSizing: 'border-box',
-                  padding: 10,
-                }}
-              >
-                <CashForm
-                  onChange={(value) => {
-                    console.log(value)
-                  }}
-                />
-              </div>
+              <SelectTab options={paymentMethods} onChange={handleChangeTab} />
             </div>
             <div
-              className='exchange'
               style={{
-                background: `linear-gradient(0deg, ${theme.background.secondary}cc, ${theme.background.secondary}bb)`,
-                height: 200,
+                border: theme.border.dashed,
                 borderRadius: theme.radius.ternary,
+                position: 'relative',
+                boxSizing: 'border-box',
+                padding: 10,
+                height: '100%'
               }}
-            ></div>
+            >
+              <CashForm
+                onChange={(value) => {
+                  console.log(value)
+                }}
+              />
+            </div>
           </div>
-          <div style={{ gridArea: 'invoice' }}>
+          <div
+            className='exchange'
+            style={{
+              background: `linear-gradient(0deg, ${theme.background.secondary}cc, ${theme.background.secondary}bb)`,
+              height: 200,
+              borderRadius: theme.radius.ternary,
+              gridArea: 'exchange',
+            }}
+          ></div>
+          <div style={{ gridArea: 'preview' }}>
             <InvoicePreview />
           </div>
         </div>
