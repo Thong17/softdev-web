@@ -19,7 +19,6 @@ import { currencyFormat, debounce, generateId } from 'utils'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
-import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
 import { MiniSelectField } from 'components/shared/form'
 import { currencyOptions } from 'components/shared/form/InvoiceForm'
 import useAlert from 'hooks/useAlert'
@@ -32,6 +31,8 @@ import { getListPresetCash, selectListPresetCash } from 'shared/redux'
 import { IOptions } from 'components/shared/form/SelectField'
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded'
 import useAuth from 'hooks/useAuth'
+import { ValueLabel } from 'components/shared/ValueLabel'
+import { QuantityField } from 'components/shared/form/QuantityField'
 
 const initCash = {
   cash: 0,
@@ -42,7 +43,6 @@ const initCash = {
 
 const CashItem = ({ data, onRemove }) => {
   const { theme } = useTheme()
-  const { device } = useWeb()
   return (
     <div
       style={{
@@ -68,16 +68,18 @@ const CashItem = ({ data, onRemove }) => {
             alignItems: 'end',
           }}
         >
-          <PaymentsRoundedIcon
-            style={{
-              margin: '0 10px 0 5px',
-              fontSize: 15,
-              color: theme.text.quaternary,
-            }}
+          <ValueLabel
+            icon={
+              <PaymentsRoundedIcon
+                style={{
+                  margin: '0 10px 0 5px',
+                  fontSize: 15,
+                  color: theme.text.quaternary,
+                }}
+              />
+            }
+            value={currencyFormat(parseFloat(data.cash), data.currency)}
           />
-          <span style={{ lineHeight: 1 }}>
-            {currencyFormat(parseFloat(data.cash), data.currency)}
-          </span>
         </div>
       </span>
       <div style={{ flex: '20%' }}>
@@ -104,17 +106,10 @@ const CashItem = ({ data, onRemove }) => {
             borderRadius: theme.radius.secondary,
           }}
         >
-          <span
-            style={{
-              color: theme.text.quaternary,
-              fontSize: theme.responsive[device]?.text.quaternary,
-            }}
-          >
-            Total
-          </span>{' '}
-          <span style={{ lineHeight: 1 }}>
-            {currencyFormat(parseFloat(data.total), data.currency)}
-          </span>
+          <ValueLabel
+            label='Total'
+            value={currencyFormat(parseFloat(data.total), data.currency)}
+          />
         </div>
         <IconButton
           onClick={() => onRemove(data.id)}
@@ -429,7 +424,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
           boxSizing: 'border-box',
           position: 'relative',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
         }}
       >
         <DialogTitle title='Drawer' onClose={handleCloseDialog} />
@@ -469,7 +464,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
               width: '100%',
               display: 'flex',
               boxSizing: 'border-box',
-              zIndex: 100
+              zIndex: 100,
             }}
           >
             {user?.drawer ? (
@@ -525,7 +520,17 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
             )}
           </div>
         </form>
-        <div style={{ margin: '0 20px 0 20px', boxSizing: 'border-box', height: '100%', paddingBottom: 65, position: 'relative', display: 'flex', flexDirection: 'column' }}>
+        <div
+          style={{
+            margin: '0 20px 0 20px',
+            boxSizing: 'border-box',
+            height: '100%',
+            paddingBottom: 65,
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           <div
             style={{
               display: 'flex',
@@ -655,151 +660,44 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
             </div>
           </div>
           <div style={{ position: 'relative', height: '100%' }}>
-          <div
-            className='money-container'
-            style={{
-              border: theme.border.dashed,
-              boxSizing: 'border-box',
-              borderRadius: theme.radius.quaternary,
-              padding: 10,
-              display: 'flex',
-              flexDirection: 'column',
-              overflowY: 'auto',
-              gap: 10,
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              height: '100%',
-              width: '100%'
-            }}
-          >
-            {cashForm && (
-              <div
-                style={{
-                  width: '100%',
-                  backgroundColor: theme.background.secondary,
-                  borderRadius: theme.radius.ternary,
-                  padding: 8,
-                  boxSizing: 'border-box',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 15,
-                }}
-              >
-                <div style={{ position: 'relative', width: '30%' }}>
-                  <NanoInput
-                    type='number'
-                    name='cash'
-                    placeholder='Cash'
-                    width='100%'
-                    value={cashObj.cash}
-                    onChange={handleChangeCash}
-                    onFocus={handleOnFocus}
-                    icon={
-                      <div style={{ position: 'absolute', right: 0 }}>
-                        <MiniSelectField
-                          value={cashObj.currency}
-                          onChange={handleChangeCash}
-                          options={currencyOptions}
-                          name='currency'
-                          width={33}
-                          sx={{
-                            position: 'absolute',
-                            top: -27,
-                            right: -2,
-                            height: 23,
-                            '& div': {
-                              paddingRight: '0 !important',
-                            },
-                            '& .MuiSelect-select': {
-                              position: 'absolute',
-                              top: -2,
-                            },
-                            '& .MuiSvgIcon-root': {
-                              top: -1,
-                              right: 0,
-                            },
-                          }}
-                        />
-                      </div>
-                    }
-                  />
-                </div>
+            <div
+              className='money-container'
+              style={{
+                border: theme.border.dashed,
+                boxSizing: 'border-box',
+                borderRadius: theme.radius.quaternary,
+                padding: 10,
+                display: 'flex',
+                flexDirection: 'column',
+                overflowY: 'auto',
+                gap: 10,
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                height: '100%',
+                width: '100%',
+              }}
+            >
+              {cashForm && (
                 <div
                   style={{
+                    width: '100%',
+                    backgroundColor: theme.background.secondary,
+                    borderRadius: theme.radius.ternary,
+                    padding: 8,
+                    boxSizing: 'border-box',
                     display: 'flex',
                     alignItems: 'center',
-                    width: '20%',
+                    gap: 15,
                   }}
                 >
-                  <IconButton
-                    onClick={() =>
-                      setCashObj((prev) => {
-                        const quantity =
-                          prev.quantity > 1 ? prev.quantity - 1 : prev.quantity
-                        return {
-                          ...prev,
-                          quantity,
-                          total: prev.cash * quantity,
-                        }
-                      })
-                    }
-                    style={{
-                      width: 30,
-                      height: 30,
-                    }}
-                  >
-                    <RemoveRoundedIcon
-                      style={{ fontSize: 16, color: theme.text.secondary }}
-                    />
-                  </IconButton>
-                  <NanoInput
-                    type='number'
-                    name='quantity'
-                    placeholder='Unit'
-                    width='100%'
-                    value={cashObj.quantity}
-                    onChange={handleChangeCash}
-                    onFocus={handleOnFocus}
-                  />
-                  <IconButton
-                    onClick={() =>
-                      setCashObj((prev) => {
-                        const quantity =
-                          typeof prev.quantity === 'string'
-                            ? parseInt(prev.quantity || 1) + 1
-                            : prev.quantity + 1
-                        return {
-                          ...prev,
-                          quantity,
-                          total: prev.cash * quantity,
-                        }
-                      })
-                    }
-                    style={{
-                      width: 30,
-                      height: 30,
-                    }}
-                  >
-                    <AddRoundedIcon
-                      style={{ fontSize: 16, color: theme.text.secondary }}
-                    />
-                  </IconButton>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    width: '50%',
-                    alignItems: 'center',
-                  }}
-                >
-                  <div style={{ position: 'relative', width: '100%' }}>
+                  <div style={{ position: 'relative', width: '30%' }}>
                     <NanoInput
                       type='number'
-                      name='total'
-                      placeholder='Total'
+                      name='cash'
+                      placeholder='Cash'
                       width='100%'
-                      value={cashObj.total}
+                      value={cashObj.cash}
                       onChange={handleChangeCash}
                       onFocus={handleOnFocus}
                       icon={
@@ -832,34 +730,100 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                       }
                     />
                   </div>
-                  <IconButton
-                    onClick={() => setCashForm(false)}
+                  <div
                     style={{
-                      color: theme.color.error,
-                      width: 30,
-                      height: 30,
-                      marginLeft: 10,
+                      display: 'flex',
+                      alignItems: 'center',
+                      width: '20%',
                     }}
                   >
-                    <CloseRoundedIcon style={{ fontSize: 19 }} />
-                  </IconButton>
-                  <IconButton
-                    onClick={handleAddCash}
+                    <QuantityField
+                      value={cashObj.quantity}
+                      onChange={(value) =>
+                        setCashObj((prev) => {
+                          return {
+                            ...prev,
+                            quantity: value,
+                            total: prev.cash * value,
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                  <div
                     style={{
-                      color: theme.color.info,
-                      width: 30,
-                      height: 30,
+                      display: 'flex',
+                      width: '50%',
+                      alignItems: 'center',
                     }}
                   >
-                    <CheckRoundedIcon style={{ fontSize: 19 }} />
-                  </IconButton>
+                    <div style={{ position: 'relative', width: '100%' }}>
+                      <NanoInput
+                        type='number'
+                        name='total'
+                        placeholder='Total'
+                        width='100%'
+                        value={cashObj.total}
+                        onChange={handleChangeCash}
+                        onFocus={handleOnFocus}
+                        icon={
+                          <div style={{ position: 'absolute', right: 0 }}>
+                            <MiniSelectField
+                              value={cashObj.currency}
+                              onChange={handleChangeCash}
+                              options={currencyOptions}
+                              name='currency'
+                              width={33}
+                              sx={{
+                                position: 'absolute',
+                                top: -27,
+                                right: -2,
+                                height: 23,
+                                '& div': {
+                                  paddingRight: '0 !important',
+                                },
+                                '& .MuiSelect-select': {
+                                  position: 'absolute',
+                                  top: -2,
+                                },
+                                '& .MuiSvgIcon-root': {
+                                  top: -1,
+                                  right: 0,
+                                },
+                              }}
+                            />
+                          </div>
+                        }
+                      />
+                    </div>
+                    <IconButton
+                      onClick={() => setCashForm(false)}
+                      style={{
+                        color: theme.color.error,
+                        width: 30,
+                        height: 30,
+                        marginLeft: 10,
+                      }}
+                    >
+                      <CloseRoundedIcon style={{ fontSize: 19 }} />
+                    </IconButton>
+                    <IconButton
+                      onClick={handleAddCash}
+                      style={{
+                        color: theme.color.info,
+                        width: 30,
+                        height: 30,
+                      }}
+                    >
+                      <CheckRoundedIcon style={{ fontSize: 19 }} />
+                    </IconButton>
+                  </div>
                 </div>
-              </div>
-            )}
-            {listCash.map((item: any, key) => (
-              <CashItem data={item} key={key} onRemove={handleRemoveCash} />
-            ))}
-          </div>
+              )}
+              {listCash.map((item: any, key) => (
+                <CashItem data={item} key={key} onRemove={handleRemoveCash} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
