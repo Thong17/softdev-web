@@ -469,6 +469,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
               width: '100%',
               display: 'flex',
               boxSizing: 'border-box',
+              zIndex: 100
             }}
           >
             {user?.drawer ? (
