@@ -51,7 +51,7 @@ export const getListFloor = createAsyncThunk(
 
 export const getStore = createAsyncThunk(
   'store/detail',
-  async ({id, query, fields}: { id: string, query?: URLSearchParams, fields: Array<string> }) => {
+  async ({id, query, fields}: { id?: string, query?: URLSearchParams, fields: Array<string> }) => {
     const response = await Axios({
       method: 'GET',
       url: `/organize/store/detail/${id}`,

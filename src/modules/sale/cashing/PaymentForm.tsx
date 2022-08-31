@@ -6,7 +6,7 @@ import { CashForm } from 'components/shared/form/CashForm'
 import { SelectTab } from 'components/shared/form/SelectTab'
 import { InvoicePreview } from 'components/shared/preview/InvoicePreview'
 import useTheme from 'hooks/useTheme'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { CustomButton } from 'styles'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import ReceiptRoundedIcon from '@mui/icons-material/ReceiptRounded'
@@ -16,6 +16,8 @@ import { IDrawer } from 'contexts/auth/interface'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useAlert from 'hooks/useAlert'
+import { useReactToPrint } from 'react-to-print'
+import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
 
 const paymentMethods = [
   { label: 'Cash', value: 'cash' },
@@ -128,6 +130,13 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
       onClear()
     }).catch(() => {})
   }
+
+  const invoiceRef = useRef(document.createElement('div'))
+
+  const handlePrintInvoice = useReactToPrint({
+    content: () => invoiceRef?.current,
+    documentTitle: 'Invoice'
+  })
 
   return (
     <AlertContainer
@@ -329,6 +338,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                 )}
                 {payment?.status ? (
                   <CustomButton
+                    onClick={handlePrintInvoice}
                     styled={theme}
                     style={{
                       backgroundColor: `${theme.color.info}22`,
@@ -363,6 +373,11 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
           <div style={{ gridArea: 'preview' }}>
             <InvoicePreview payment={payment} />
           </div>
+        </div>
+      </div>
+      <div style={{ position: 'absolute', top: '-200%' }}>
+        <div ref={invoiceRef}>
+          <PaymentInvoice payment={payment} />
         </div>
       </div>
     </AlertContainer>

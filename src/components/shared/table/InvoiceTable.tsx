@@ -31,6 +31,8 @@ export const InvoiceTable = ({
                     padding: 5,
                     border: 'none',
                     fontWeight: 600,
+                    borderBottom: '2px dashed #777',
+                    borderTop: '2px dashed #777'
                   }}
                   key={column.id}
                   align={column.align}
@@ -60,6 +62,8 @@ export const InvoiceTable = ({
                             style={{
                               minWidth: column.minWidth,
                               maxWidth: column.maxWidth,
+                              padding: 5,
+                              borderBottom: 'none'
                             }}
                           >
                             {column.format && typeof value === 'number'

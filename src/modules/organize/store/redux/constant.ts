@@ -8,7 +8,7 @@ export interface IStoreBody {
 }
 
 export const initState: IStoreBody = {
-  name: {},
+  name: '',
   status: true,
   icon: null,
   description: ''

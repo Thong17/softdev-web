@@ -139,6 +139,23 @@ export const InvoicePreview = ({ payment }) => {
                     </span>
                   </div>
                 </div>
+                {payment?.discounts.map((promotion, key) => {
+                  return (
+                    <div
+                      key={key}
+                      className='item'
+                      style={{
+                        color: theme.text.quaternary,
+                        fontSize: theme.responsive[device]?.text.quaternary,
+                      }}
+                    >
+                      <span>{promotion.title}</span>
+                      <span>
+                        -{currencyFormat(promotion.value, promotion.type)}
+                      </span>
+                    </div>
+                  )
+                })}
                 {payment?.services.map((service, key) => {
                   return (
                     <div
@@ -156,7 +173,7 @@ export const InvoicePreview = ({ payment }) => {
                     </div>
                   )
                 })}
-                {payment?.promotions.map((promotion, key) => {
+                {payment?.vouchers.map((promotion, key) => {
                   return (
                     <div
                       key={key}
