@@ -54,7 +54,7 @@ export const CustomerContainer = ({
   promotionId,
   activeId,
   toggleReload,
-  height
+  height,
 }: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
@@ -209,7 +209,9 @@ export const CustomerContainer = ({
   }, [toggleReload])
 
   return (
-    <div>
+    <div
+      style={{ height: '100%', boxSizing: 'border-box', position: 'relative' }}
+    >
       <div
         style={{
           display: 'flex',
@@ -292,22 +294,57 @@ export const CustomerContainer = ({
       </div>
       <div
         style={{
+          position: 'relative',
+          height: 'calc(100% - 40px)',
           border: theme.border.dashed,
           borderRadius: theme.radius.quaternary,
           borderWidth: 2,
-          padding: '0 10px',
-          overflowY: 'auto',
-          height: height,
         }}
       >
-        <CustomerLayout>
-          {!loading
-            ? customers?.map((customer: any, index) => {
-                if (customers.length === index + 1) {
+        <div
+          style={{
+            overflowY: 'auto',
+            height: height,
+            width: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            padding: '0 10px',
+            boxSizing: 'border-box',
+          }}
+        >
+          <CustomerLayout>
+            {!loading
+              ? customers?.map((customer: any, index) => {
+                  if (customers.length === index + 1) {
+                    return (
+                      <CustomerItem
+                        id={customer._id}
+                        ref={lastCustomerElement}
+                        key={index}
+                        name={customer.displayName}
+                        contact={customer.contact}
+                        address={customer.address}
+                        action={customer.action}
+                        display={customer.display}
+                        onClick={() =>
+                          handleClickCustomer({
+                            id: customer._id,
+                            displayName: customer.displayName,
+                            point: 0,
+                          })
+                        }
+                        selected={selectedCustomers?.includes(customer._id)}
+                        favorite={user?.favorites?.includes(customer._id)}
+                        promotion={customer.promotion}
+                        active={customer._id === activeId}
+                        picture={customer.picture?.filename}
+                      />
+                    )
+                  }
                   return (
                     <CustomerItem
                       id={customer._id}
-                      ref={lastCustomerElement}
                       key={index}
                       name={customer.displayName}
                       contact={customer.contact}
@@ -328,73 +365,50 @@ export const CustomerContainer = ({
                       picture={customer.picture?.filename}
                     />
                   )
-                }
-                return (
-                  <CustomerItem
-                    id={customer._id}
-                    key={index}
-                    name={customer.displayName}
-                    contact={customer.contact}
-                    address={customer.address}
-                    action={customer.action}
-                    display={customer.display}
-                    onClick={() =>
-                      handleClickCustomer({
-                        id: customer._id,
-                        displayName: customer.displayName,
-                        point: 0,
-                      })
-                    }
-                    selected={selectedCustomers?.includes(customer._id)}
-                    favorite={user?.favorites?.includes(customer._id)}
-                    promotion={customer.promotion}
-                    active={customer._id === activeId}
-                    picture={customer.picture?.filename}
-                  />
-                )
-              })
-            : Array.apply(null, Array(25)).map((index, key) => {
-                return (
-                  <div key={key}>
-                    <Skeleton
-                      variant='rectangular'
-                      height={130}
-                      width={150}
-                      style={{ borderRadius: theme.radius.secondary }}
-                    />
-                    <div
-                      className='content'
-                      style={{ padding: '7px 0', boxSizing: 'border-box' }}
-                    >
+                })
+              : Array.apply(null, Array(25)).map((index, key) => {
+                  return (
+                    <div key={key}>
                       <Skeleton
                         variant='rectangular'
-                        height={30}
-                        width='100%'
+                        height={130}
+                        width={150}
                         style={{ borderRadius: theme.radius.secondary }}
                       />
-                      <Skeleton
-                        variant='text'
-                        height={30}
-                        width={70}
-                        style={{ borderRadius: theme.radius.secondary }}
-                      />
+                      <div
+                        className='content'
+                        style={{ padding: '7px 0', boxSizing: 'border-box' }}
+                      >
+                        <Skeleton
+                          variant='rectangular'
+                          height={30}
+                          width='100%'
+                          style={{ borderRadius: theme.radius.secondary }}
+                        />
+                        <Skeleton
+                          variant='text'
+                          height={30}
+                          width={70}
+                          style={{ borderRadius: theme.radius.secondary }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
-        </CustomerLayout>
-        {fetching && (
-          <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              padding: 10,
-            }}
-          >
-            <CircularProgress style={{ width: 30, height: 30 }} />
-          </div>
-        )}
+                  )
+                })}
+          </CustomerLayout>
+          {fetching && (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                padding: 10,
+              }}
+            >
+              <CircularProgress style={{ width: 30, height: 30 }} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

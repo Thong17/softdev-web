@@ -186,15 +186,27 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
           height: '100vh',
           width: '50vw',
           boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <DialogTitle title='Customer' onClose={handleCloseDialog} />
-        <div style={{ padding: '10px 20px 20px 20px' }}>
-          <div style={{ marginBottom: 20 }}>
+        <div
+          style={{
+            padding: '10px 20px 20px 20px',
+            position: 'relative',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div
+            style={{ marginBottom: 20, height: '100%', position: 'relative' }}
+          >
             <CustomerContainer
               onClickCustomer={handleClickCustomer}
               toggleReload={reload}
-              height={showForm ? '19.3vh' : '70vh'}
+              height={showForm ? '19.3vh' : '100%'}
             />
           </div>
           {showForm ? (

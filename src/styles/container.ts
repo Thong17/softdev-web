@@ -204,6 +204,7 @@ export const CustomListContainer = styled('div')(
     loading: string
   }) => ({
     padding: '10px 0',
+    boxSizing: 'border-box',
     '& .list-item': {
       boxSizing: 'border-box',
       padding: '10px 0',
