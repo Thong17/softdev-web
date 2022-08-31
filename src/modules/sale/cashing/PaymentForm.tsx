@@ -15,6 +15,7 @@ import useAuth from 'hooks/useAuth'
 import { IDrawer } from 'contexts/auth/interface'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
+import useAlert from 'hooks/useAlert'
 
 const paymentMethods = [
   { label: 'Cash', value: 'cash' },
@@ -23,9 +24,10 @@ const paymentMethods = [
 ]
 
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
+  const confirm = useAlert()
   const { theme } = useTheme()
   const { notify } = useNotify()
-  const { user } = useAuth()
+  const { user, reload } = useAuth()
   const [totalReceive, setTotalReceive] = useState({ KHR: 0, USD: 0, total: 0 })
   const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
   const [payment, setPayment] = useState<any>(null)
@@ -37,19 +39,29 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
   const [receiveCashes, setReceiveCashes] = useState([])
 
+  const onClearPayment = () => {
+    setTotalReceive({ KHR: 0, USD: 0, total: 0 })
+    setTotalRemain({ KHR: 0, USD: 0 })
+    setPayment(null)
+    setPaymentMethod(null)
+    setTotalPayment({ value: 0, currency: 'USD' })
+    setExchangeRate(null)
+    setReceiveCashes([])
+  }
+
   useEffect(() => {
     setPayment(dialog.payment)
     const value =
       dialog.payment?.total.currency === 'KHR'
         ? dialog.payment?.total.value / dialog.payment?.rate.sellRate
         : dialog.payment?.total.value
-    setTotalPayment((prev) => ({ ...prev, value }))
+    setTotalPayment((prev) => ({ ...prev, value: value || 0 }))
     setExchangeRate(dialog.payment?.rate)
   }, [dialog.payment])
 
   useEffect(() => {
-    const remainUSD = totalPayment.value - totalReceive.total
-    const sellRate = exchangeRate?.sellRate || 4000
+    const remainUSD = totalPayment.value - totalReceive.total    
+    const sellRate = exchangeRate?.sellRate || 4000    
     setTotalRemain({ USD: remainUSD, KHR: remainUSD * sellRate })
   }, [totalPayment, exchangeRate, totalReceive.total])
 
@@ -78,25 +90,43 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   }
 
   const handleCheckout = () => {
-    const body = {
-      receiveCashes,
-      receiveTotal: totalReceive,
-      remainTotal: totalRemain,
-      customer: dialog.customer?.id,
-      paymentMethod,
-    }
-    Axios({
-      method: 'PUT',
-      url: `/sale/payment/checkout/${dialog.payment?._id}`,
-      body,
-    })
-      .then((data) => {
-        setPayment(data?.data?.data)
-        notify(data?.data?.msg, 'success')
+    confirm({
+      title: 'Are you sure you want to check out?',
+      description: 'Checkout the payment will update the status to complete.',
+      variant: 'info'
+    }).then(() => {
+      const body = {
+        receiveCashes,
+        receiveTotal: totalReceive,
+        remainTotal: totalRemain,
+        customer: dialog.customer?.id,
+        paymentMethod,
+      }
+      Axios({
+        method: 'PUT',
+        url: `/sale/payment/checkout/${dialog.payment?._id}`,
+        body,
       })
-      .catch((err) => {
-        notify(err?.response?.data?.msg, 'error')
-      })
+        .then((data) => {
+          setPayment(data?.data?.data)
+          reload()
+          notify(data?.data?.msg, 'success')
+        })
+        .catch((err) => {
+          notify(err?.response?.data?.msg, 'error')
+        })
+    }).catch(() => {})
+  }
+
+  const handleClearPayment = () => {
+    confirm({
+      title: 'Are you sure you want to clear the payment?',
+      description: 'The payment will be clear.',
+      variant: 'error'
+    }).then(() => {
+      onClearPayment()
+      onClear()
+    }).catch(() => {})
   }
 
   return (
@@ -274,7 +304,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
               <div style={{ display: 'flex', gap: 10 }}>
                 {payment?.status ? (
                   <CustomButton
-                    onClick={() => onClear()}
+                    onClick={handleClearPayment}
                     styled={theme}
                     style={{
                       backgroundColor: `${theme.color.error}22`,
@@ -342,6 +372,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
 const CashReturn = ({ cash }) => (
   <div className='cash'>
     <span>{currencyFormat(parseFloat(cash.cash), cash.currency)}</span>
+    {cash.exchange && <span>({currencyFormat(parseFloat(cash.exchange), 'KHR')})</span>}
     <span style={{ marginLeft: 5 }}>x{cash.quantity}</span>
   </div>
 )

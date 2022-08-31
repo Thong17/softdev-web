@@ -1,4 +1,3 @@
-import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { CustomCustomerContainer } from 'styles'
@@ -32,11 +31,10 @@ export const CustomerStatistic = ({ phone, point, ...props }) => {
   const { device } = useWeb()
   return (
     <CustomCustomerContainer device={device} styled={theme} {...props}>
-      <LocalPhoneRoundedIcon style={{ marginRight: 5, fontSize: 15 }} />
-      <div style={{ display: 'flex', alignItems: 'start', marginRight: 7 }}>
+      <RankStatus text={point} color={theme.color.info} />
+      <div style={{ display: 'flex', alignItems: 'start', marginLeft: 7 }}>
         <p style={{ fontSize: 15 }}>{phone}</p>
       </div>
-      <RankStatus text={point} color={theme.color.info} />
     </CustomCustomerContainer>
   )
 }

@@ -60,7 +60,6 @@ const CashItem = ({ data, onRemove }) => {
       <span style={{ flex: '38%' }}>
         <div
           style={{
-            backgroundColor: theme.background.primary,
             width: 'fit-content',
             padding: '5px 10px 5px 5px',
             borderRadius: theme.radius.secondary,
@@ -173,6 +172,10 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
   }, [dispatch])
 
   useEffect(() => {
+    setListCash(user?.drawer?.cashes.map((cash) => ({ ...cash, origin: true })) || [])
+  }, [user?.drawer?.cashes])
+  
+  useEffect(() => {
     if (statusListPresetCash !== 'SUCCESS') return
     setPresetCashOption(
       listPresetCash.map((presetCash: any) => ({
@@ -210,6 +213,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
+        setListCash(prev => prev.map((cash) => ({ ...cash, origin: true })))
         reload()
       })
       .catch((err) => {

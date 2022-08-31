@@ -7,7 +7,7 @@ import {
 } from 'components/shared/form/InvoiceForm'
 import useWeb from 'hooks/useWeb'
 import { getInfoStore, selectInfoStore } from 'modules/organize/store/redux'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
 import ReplayRoundedIcon from '@mui/icons-material/ReplayRounded'
 import { IconButton } from '@mui/material'
@@ -97,7 +97,9 @@ export const Cashing = () => {
     setPaymentDialog({ ...paymentDialog, customer: data })
   }
 
+  const invoiceRef = useRef<any>()
   const handleClearPayment = () => {
+    invoiceRef?.current?.callClearPayment()
     setPaymentDialog({
       open: false,
       payment: null,
@@ -176,6 +178,7 @@ export const Cashing = () => {
           }}
         >
           <InvoiceForm
+            ref={invoiceRef}
             tax={preview?.tax}
             transaction={transaction}
             onUpdate={() => setReload(!reload)}

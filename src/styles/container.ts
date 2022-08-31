@@ -764,7 +764,7 @@ export const CustomCustomerContainer = styled(Button)(
   ({ styled, device }: { styled: IThemeStyle, device: DeviceOptions }) => ({
     display: 'flex',
     alignItems: 'center',
-    padding: '3px 5px 3px 7px',
+    padding: '3px 5px 3px 0px',
     borderRadius: styled.radius.secondary,
     color: styled.text.secondary,
     fontSize: styled.responsive[device]?.text.tertiary,

@@ -1,5 +1,5 @@
 import useTheme from 'hooks/useTheme'
-import { useEffect, useMemo, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react'
 import { CustomButton, CustomInvoiceForm } from 'styles'
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
 import { FlexBetween } from '../container/FlexBetween'
@@ -154,14 +154,14 @@ export interface ITransactionItem {
   total: ICurrency
 }
 
-export const InvoiceForm = ({
+export const InvoiceForm = forwardRef(({
   defaultTax = 0,
   font = 'Ariel',
   transaction,
   onUpdate,
   onPayment,
   onChangeCustomer,
-}: any) => {
+}: any, ref) => {
   const {
     register,
     handleSubmit,
@@ -212,6 +212,12 @@ export const InvoiceForm = ({
   const { user } = useAuth()
   const exchangeRate = useMemo(() => ({ sellRate: user?.drawer?.sellRate, buyRate: user?.drawer?.buyRate }), [user?.drawer])
   const { notify } = useNotify()
+
+  useImperativeHandle(ref, () => ({
+    callClearPayment() {
+      onClearPayment()
+    }
+  }))
 
   const onClearPayment = () => {
     setCustomer({ displayName: null, id: null, point: 0 })
@@ -893,4 +899,4 @@ export const InvoiceForm = ({
       </div>
     </CustomInvoiceForm>
   )
-}
+})
