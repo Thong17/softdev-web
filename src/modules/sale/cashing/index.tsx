@@ -30,9 +30,10 @@ export const Cashing = () => {
     productId: null,
   })
   const [drawerDialog, setDrawerDialog] = useState({ open: false })
-  const [paymentDialog, setPaymentDialog] = useState({
+  const [paymentDialog, setPaymentDialog] = useState<any>({
     open: false,
     payment: null,
+    customer: null
   })
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
@@ -71,7 +72,7 @@ export const Cashing = () => {
       transactions: data.transactions.map((transaction) => transaction.id),
       promotions: [data.discount, data.voucher],
       services: [data.tax],
-      customer: data.customer?.id,
+      customer: paymentDialog.customer?.id,
     }
 
     Axios({
@@ -80,11 +81,15 @@ export const Cashing = () => {
       body,
     })
       .then((data) => {
-        setPaymentDialog({ open: true, payment: data?.data?.data })
+        setPaymentDialog({ ...paymentDialog, open: true, payment: data?.data?.data })
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
       })
+  }
+
+  const handleChangeCustomer = (data) => {
+    setPaymentDialog({ ...paymentDialog, customer: data })
   }
 
   return (
@@ -158,6 +163,7 @@ export const Cashing = () => {
             transaction={transaction}
             onUpdate={() => setReload(!reload)}
             onPayment={handlePayment}
+            onChangeCustomer={handleChangeCustomer}
           />
         </div>
       </div>

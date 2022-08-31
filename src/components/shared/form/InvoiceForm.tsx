@@ -159,7 +159,8 @@ export const InvoiceForm = ({
   font = 'Ariel',
   transaction,
   onUpdate,
-  onPayment
+  onPayment,
+  onChangeCustomer
 }: any) => {
   const {
     register,
@@ -219,6 +220,7 @@ export const InvoiceForm = ({
       variant: 'error'
     }).then(() => {
       setCustomer({ displayName: null, id: null, point: 0 })
+      onChangeCustomer({ displayName: null, id: null, point: 0 })
       setTax({
         title: 'Tax',
         value: defaultTax,
@@ -370,7 +372,7 @@ export const InvoiceForm = ({
   }
 
   const handleClickPayment = () => {
-    onPayment({ transactions, discount, tax, voucher, customer })
+    onPayment({ transactions, discount, tax, voucher })
   }
 
   const handleClickCustomer = () => {
@@ -388,7 +390,10 @@ export const InvoiceForm = ({
         <CustomerDialog
           dialog={customerDialog}
           setDialog={setCustomerDialog}
-          onClickCustomer={(data) => setCustomer(data)}
+          onClickCustomer={(data) => {
+            onChangeCustomer(data)
+            setCustomer(data)
+          }}
         />
         <div
           style={{

@@ -13,6 +13,8 @@ import ReceiptRoundedIcon from '@mui/icons-material/ReceiptRounded'
 import { currencyFormat } from 'utils'
 import useAuth from 'hooks/useAuth'
 import { IDrawer } from 'contexts/auth/interface'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 const paymentMethods = [
   { label: 'Cash', value: 'cash' },
@@ -22,15 +24,18 @@ const paymentMethods = [
 
 export const PaymentForm = ({ dialog, setDialog }: any) => {
   const { theme } = useTheme()
+  const { notify } = useNotify()
   const { user } = useAuth()
   const [totalReceive, setTotalReceive] = useState({ KHR: 0, USD: 0, total: 0 })
   const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
   const [payment, setPayment] = useState<any>(null)
+  const [paymentMethod, setPaymentMethod] = useState(null)
   const [totalPayment, setTotalPayment] = useState({
     value: 0,
     currency: 'USD',
   })
   const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
+  const [receiveCashes, setReceiveCashes] = useState([])
 
   useEffect(() => {
     setPayment(dialog.payment)
@@ -52,14 +57,14 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
     setDialog({ ...dialog, open: false })
   }
 
-  const handleChangeTab = (value) => {
-    console.log(value)
+  const handleChangePaymentMethod = (value) => {
+    setPaymentMethod(value)
   }
 
   const handleChangeCashes = (cashes) => {
     let totalUSD = 0
     let totalKHR = 0
-
+    setReceiveCashes(cashes)
     cashes?.forEach((cash) => {
       if (cash.currency === 'USD') totalUSD += cash.value * cash.quantity
       else totalKHR += cash.value * cash.quantity
@@ -69,6 +74,25 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
       KHR: totalKHR,
       USD: totalUSD,
       total: totalUSD + totalKHR / sellRate,
+    })
+  }
+
+  const handleCheckout = () => {
+    const body = {
+      receiveCashes,
+      receiveTotal: totalReceive,
+      remainTotal: totalRemain,
+      customer: dialog.customer?.id,
+      paymentMethod
+    }
+    Axios({
+      method: 'PUT',
+      url: `/sale/payment/checkout/${dialog.payment?._id}`,
+      body
+    }).then((data) => {
+      notify(data?.data?.msg, 'success')
+    }).catch((err) => {
+      notify(err?.response?.data?.msg, 'error')
     })
   }
 
@@ -117,7 +141,7 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
                 padding: '0 5px',
               }}
             >
-              <SelectTab options={paymentMethods} onChange={handleChangeTab} />
+              <SelectTab options={paymentMethods} onChange={handleChangePaymentMethod} />
               <ExchangeRate />
             </div>
             <div
@@ -231,6 +255,7 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
                   </CustomButton>
                 ) : (
                   <CustomButton
+                    onClick={handleCheckout}
                     styled={theme}
                     style={{
                       backgroundColor: `${theme.color.success}22`,

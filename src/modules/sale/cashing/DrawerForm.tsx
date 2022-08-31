@@ -269,7 +269,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
 
   const handleAddCash = () => {
     if (cashObj.total <= 0) return notify('Please input cash to add', 'error')
-    setListCash([...listCash, { ...cashObj, id: generateId() }])
+    setListCash([...listCash, { ...cashObj, id: generateId(), totalQuantity: cashObj.quantity }])
     setCashObj(initCash)
   }
 
