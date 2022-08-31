@@ -8,14 +8,11 @@ import { MiniTextField, NanoInput } from 'components/shared/form/InputField'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { MenuItem, IconButton } from '@mui/material'
-import { SortIcon } from 'components/shared/icons/SortIcon'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useWeb from 'hooks/useWeb'
-import { MiniSearchField } from 'components/shared/table/SearchField'
-import { MiniFilterButton } from 'components/shared/table/FilterButton'
 import React, { useEffect, useState } from 'react'
-import { currencyFormat, debounce, generateId } from 'utils'
+import { currencyFormat, generateId } from 'utils'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
@@ -142,15 +139,6 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
   } = useForm({
     resolver: yupResolver(drawerSchema),
   })
-  const [search, setSearch] = useState('')
-  const [sortObj, setSortObj] = useState({
-    name: false,
-    createdAt: false,
-  })
-  const [filterObj, setFilterObj] = useState<any>({
-    filter: 'createdAt',
-    asc: false,
-  })
   const [cashObj, setCashObj] = useState(initCash)
   const [listCash, setListCash] = useState<any[]>(
     user?.drawer?.cashes.map((cash) => ({ ...cash, origin: true })) || []
@@ -184,26 +172,6 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
       }))
     )
   }, [statusListPresetCash, listPresetCash])
-
-  const handleChangeFilter = ({ filter }) => {
-    setSortObj({ ...sortObj, [filter]: !sortObj[filter] })
-    setFilterObj({ filter, asc: sortObj[filter] })
-  }
-
-  const updateQuery = debounce((value) => {
-    setSearch(value)
-  }, 300)
-
-  const handleSearch = (e) => {
-    updateQuery(e.target.value)
-  }
-
-  useEffect(() => {
-    const query = new URLSearchParams()
-    query.append('search', search)
-    query.append('filter', filterObj.filter)
-    query.append('sort', filterObj.asc ? 'asc' : 'desc')
-  }, [filterObj.asc, filterObj.filter, search])
 
   const submit = (data) => {
     Axios({
@@ -566,19 +534,6 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                 width: 'fit-content',
               }}
             >
-              <MiniSearchField onChange={handleSearch} />
-              <MiniFilterButton>
-                <MenuItem
-                  onClick={() => handleChangeFilter({ filter: 'name' })}
-                >
-                  <SortIcon asc={sortObj.name} /> By Name
-                </MenuItem>
-                <MenuItem
-                  onClick={() => handleChangeFilter({ filter: 'createdAt' })}
-                >
-                  <SortIcon asc={sortObj.createdAt} /> By Date
-                </MenuItem>
-              </MiniFilterButton>
               <MenuDialog
                 style={{ color: theme.text.secondary, width: 30, height: 30 }}
                 label={<AppRegistrationRoundedIcon style={{ fontSize: 19 }} />}

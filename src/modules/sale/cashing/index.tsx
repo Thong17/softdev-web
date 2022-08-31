@@ -71,7 +71,8 @@ export const Cashing = () => {
     }
     const body = {
       transactions: data.transactions.map((transaction) => transaction.id),
-      promotions: [data.discount, data.voucher],
+      discounts: [data.discount],
+      vouchers: [data.voucher],
       services: [data.tax],
       customer: paymentDialog.customer?.id,
     }
