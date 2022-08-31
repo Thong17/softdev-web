@@ -299,11 +299,11 @@ export const CustomerContainer = ({
           border: theme.border.dashed,
           borderRadius: theme.radius.quaternary,
           borderWidth: 2,
+          overflowY: 'auto',
         }}
       >
         <div
           style={{
-            overflowY: 'auto',
             height: height,
             width: '100%',
             position: 'absolute',
