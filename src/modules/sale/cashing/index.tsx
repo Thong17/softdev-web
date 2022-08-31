@@ -33,7 +33,7 @@ export const Cashing = () => {
   const [paymentDialog, setPaymentDialog] = useState<any>({
     open: false,
     payment: null,
-    customer: null
+    customer: null,
   })
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
@@ -64,7 +64,8 @@ export const Cashing = () => {
   }
 
   const handlePayment = (data) => {
-    if (data.transactions.length < 1) return notify('No transaction added', 'error')
+    if (data.transactions.length < 1)
+      return notify('No transaction added', 'error')
     if (paymentDialog.payment) {
       return setPaymentDialog({ ...paymentDialog, open: true })
     }
@@ -81,7 +82,11 @@ export const Cashing = () => {
       body,
     })
       .then((data) => {
-        setPaymentDialog({ ...paymentDialog, open: true, payment: data?.data?.data })
+        setPaymentDialog({
+          ...paymentDialog,
+          open: true,
+          payment: data?.data?.data,
+        })
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
@@ -92,6 +97,14 @@ export const Cashing = () => {
     setPaymentDialog({ ...paymentDialog, customer: data })
   }
 
+  const handleClearPayment = () => {
+    setPaymentDialog({
+      open: false,
+      payment: null,
+      customer: null,
+    })
+  }
+
   return (
     <Container>
       <ProductForm
@@ -100,7 +113,11 @@ export const Cashing = () => {
         addTransaction={handleAddTransaction}
       />
       <DrawerForm dialog={drawerDialog} setDialog={setDrawerDialog} />
-      <PaymentForm dialog={paymentDialog} setDialog={setPaymentDialog} />
+      <PaymentForm
+        dialog={paymentDialog}
+        setDialog={setPaymentDialog}
+        onClear={handleClearPayment}
+      />
       <div
         style={{
           display: 'grid',

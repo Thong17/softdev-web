@@ -182,6 +182,7 @@ export const CashForm = ({ onChange }) => {
               onChange={(event) =>
                 setCashForm({ ...cashForm, value: event.target.value })
               }
+              onFocus={(event) => event.target.select()}
               type='number'
               label='Price'
               height={33}

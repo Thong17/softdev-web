@@ -22,7 +22,7 @@ const paymentMethods = [
   { label: 'Loan', value: 'loan' },
 ]
 
-export const PaymentForm = ({ dialog, setDialog }: any) => {
+export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const { theme } = useTheme()
   const { notify } = useNotify()
   const { user } = useAuth()
@@ -83,17 +83,20 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
       receiveTotal: totalReceive,
       remainTotal: totalRemain,
       customer: dialog.customer?.id,
-      paymentMethod
+      paymentMethod,
     }
     Axios({
       method: 'PUT',
       url: `/sale/payment/checkout/${dialog.payment?._id}`,
-      body
-    }).then((data) => {
-      notify(data?.data?.msg, 'success')
-    }).catch((err) => {
-      notify(err?.response?.data?.msg, 'error')
+      body,
     })
+      .then((data) => {
+        setPayment(data?.data?.data)
+        notify(data?.data?.msg, 'success')
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
   }
 
   return (
@@ -141,7 +144,10 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
                 padding: '0 5px',
               }}
             >
-              <SelectTab options={paymentMethods} onChange={handleChangePaymentMethod} />
+              <SelectTab
+                options={paymentMethods}
+                onChange={handleChangePaymentMethod}
+              />
               <ExchangeRate />
             </div>
             <div
@@ -189,6 +195,7 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
+                gap: 0.8,
                 '&::before': {
                   content: `''`,
                   borderTop: theme.border.dashed,
@@ -215,30 +222,81 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
               <div
                 style={{
                   display: 'flex',
+                  flexDirection: 'column',
                   justifyContent: 'space-between',
-                  alignItems: 'center',
                   padding: '5px 10px',
+                  boxSizing: 'border-box',
+                  height: '100%',
                 }}
               >
-                <span>Remain Total</span>
-                <div style={{ display: 'flex', lineHeight: 1 }}>
-                  <span>
-                    {currencyFormat(totalRemain.USD, 'USD')} (
-                    {currencyFormat(totalRemain.KHR, 'KHR')})
-                  </span>
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: 10 }}>
-                <CustomButton
-                  styled={theme}
+                <div
                   style={{
-                    backgroundColor: `${theme.color.error}22`,
-                    color: theme.color.error,
-                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                   }}
                 >
-                  Close
-                </CustomButton>
+                  <span>
+                    {payment?.remainTotal?.USD < 0 ? 'Return' : 'Remain'} Total
+                  </span>
+                  <div style={{ display: 'flex', lineHeight: 1 }}>
+                    <span>
+                      {currencyFormat(totalRemain.USD, 'USD')} (
+                      {currencyFormat(totalRemain.KHR, 'KHR')})
+                    </span>
+                  </div>
+                </div>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    height: 27,
+                    alignItems: 'center',
+                    justifyContent: 'end',
+                    gap: 1.5,
+                    overflowX: 'auto',
+                    '& .cash': {
+                      backgroundColor: `${theme.color.info}22`,
+                      height: 27,
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '0 10px',
+                      borderRadius: theme.radius.primary,
+                      color: theme.color.info,
+                      lineHeight: 1,
+                    },
+                  }}
+                >
+                  {payment?.returnCashes.map((cash, key) => (
+                    <CashReturn cash={cash} key={key} />
+                  ))}
+                </Box>
+              </div>
+              <div style={{ display: 'flex', gap: 10 }}>
+                {payment?.status ? (
+                  <CustomButton
+                    onClick={() => onClear()}
+                    styled={theme}
+                    style={{
+                      backgroundColor: `${theme.color.error}22`,
+                      color: theme.color.error,
+                      width: '100%',
+                    }}
+                  >
+                    Close
+                  </CustomButton>
+                ) : (
+                  <CustomButton
+                    onClick={() => handleCloseDialog()}
+                    styled={theme}
+                    style={{
+                      backgroundColor: `${theme.color.error}22`,
+                      color: theme.color.error,
+                      width: '100%',
+                    }}
+                  >
+                    Close
+                  </CustomButton>
+                )}
                 {payment?.status ? (
                   <CustomButton
                     styled={theme}
@@ -280,3 +338,10 @@ export const PaymentForm = ({ dialog, setDialog }: any) => {
     </AlertContainer>
   )
 }
+
+const CashReturn = ({ cash }) => (
+  <div className='cash'>
+    <span>{currencyFormat(parseFloat(cash.cash), cash.currency)}</span>
+    <span style={{ marginLeft: 5 }}>x{cash.quantity}</span>
+  </div>
+)
