@@ -29,6 +29,7 @@ export const Cashing = () => {
     open: false,
     productId: null,
   })
+  
   const [drawerDialog, setDrawerDialog] = useState({ open: false })
   const [paymentDialog, setPaymentDialog] = useState<any>({
     open: false,
@@ -180,7 +181,7 @@ export const Cashing = () => {
         >
           <InvoiceForm
             ref={invoiceRef}
-            tax={preview?.tax}
+            defaultTax={preview?.tax}
             transaction={transaction}
             onUpdate={() => setReload(!reload)}
             onPayment={handlePayment}

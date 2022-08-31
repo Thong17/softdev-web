@@ -213,6 +213,10 @@ export const InvoiceForm = forwardRef(({
   const exchangeRate = useMemo(() => ({ sellRate: user?.drawer?.sellRate, buyRate: user?.drawer?.buyRate }), [user?.drawer])
   const { notify } = useNotify()
 
+  useEffect(() => {
+    setTax(tax => ({ ...tax, value: defaultTax }))
+  }, [defaultTax])
+
   useImperativeHandle(ref, () => ({
     callClearPayment() {
       onClearPayment()
