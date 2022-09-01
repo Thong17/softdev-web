@@ -154,12 +154,28 @@ export interface ITransactionItem {
   total: ICurrency
 }
 
+const recalculatePayment = (paymentId, data) => {
+  return new Promise((resolve, reject) => {
+    Axios({
+      url: `/sale/payment/update/${paymentId}`,
+      method: 'PUT',
+      body: data
+    })
+      .then(data => {
+        resolve(data?.data?.data)
+      })
+      .catch(err => reject(err?.response?.data?.msg))
+  })
+}
+
 export const InvoiceForm = forwardRef(({
+  id = null,
   defaultTax = 0,
   font = 'Ariel',
   transaction,
   onUpdate,
   onPayment,
+  onChangePayment,
   onChangeCustomer,
 }: any, ref) => {
   const {
@@ -187,6 +203,7 @@ export const InvoiceForm = forwardRef(({
   const priceCurrencyValue = watch('price.currency')
   const isFixedValue = watch('discount.isFixed')
   const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
+  const [paymentId, setPaymentId] = useState(id)
   const [discount, setDiscount] = useState({
     title: 'Discount',
     value: 0,
@@ -216,6 +233,10 @@ export const InvoiceForm = forwardRef(({
   useEffect(() => {
     setTax(tax => ({ ...tax, value: defaultTax }))
   }, [defaultTax])
+
+  useEffect(() => {
+    setPaymentId(id)
+  }, [id])
 
   useImperativeHandle(ref, () => ({
     callClearPayment() {
@@ -283,6 +304,14 @@ export const InvoiceForm = forwardRef(({
     if (!transaction) return
     setTransactions((prev) => [...prev, transaction])
     reset(transaction)
+    
+    if (!paymentId) return
+    recalculatePayment(paymentId, { transaction })
+      .then(data => {
+        onChangePayment(data)
+      })
+      .catch(msg => notify(msg, 'error'))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transaction, reset])
 
   useEffect(() => {
@@ -316,6 +345,12 @@ export const InvoiceForm = forwardRef(({
       setTransactions((prev) => prev.map((transaction) => transaction.id === id ? { ...data, total: respData?.data?.data?.total } : transaction))
       onUpdate()
       reset({})
+      if (!paymentId) return
+      recalculatePayment(paymentId, {})
+        .then(data => {
+          onChangePayment(data)
+        })
+        .catch(msg => notify(msg, 'error'))
     }).catch((err) => {
       notify(err?.response?.data?.msg, 'error')
     })
@@ -334,8 +369,14 @@ export const InvoiceForm = forwardRef(({
         }).then(() => {
           setTransactions((prev) =>
             prev.filter((transaction) => transaction.id !== id)
-          )
+          )  
           onUpdate()
+          if (!paymentId) return
+          recalculatePayment(paymentId, {})
+            .then(data => {
+              onChangePayment(data)
+            })
+            .catch(msg => notify(msg, 'error'))
         }).catch((err) => {
           notify(err?.response?.data?.msg, 'error')
         })
@@ -362,27 +403,48 @@ export const InvoiceForm = forwardRef(({
   }
 
   const handleChangeDiscount = ({ input, select, check }) => {
-    setDiscount({
+    const data = {
       ...discount,
       value: parseFloat(input),
       type: select,
       isFixed: check,
       isEditing: false,
-    })
+    }
+    setDiscount(data)
+    if (!paymentId) return
+    recalculatePayment(paymentId, { discounts: [data] })
+      .then(data => {
+        onChangePayment(data)
+      })
+      .catch(msg => notify(msg, 'error'))   
   }
 
   const handleChangeTax = ({ input, select }) => {
-    setTax({ ...tax, value: parseFloat(input), type: select, isEditing: false })
+    const data = { ...tax, value: parseFloat(input), type: select, isEditing: false }
+    setTax(data)
+    if (!paymentId) return
+    recalculatePayment(paymentId, { services: [data] })
+      .then(data => {
+        onChangePayment(data)
+      })
+      .catch(msg => notify(msg, 'error'))   
   }
 
   const handleChangeVoucher = ({ input, select, check }) => {
-    setVoucher({
+    const data = {
       ...voucher,
       value: parseFloat(input),
       type: select,
       isFixed: check,
       isEditing: false,
-    })
+    }
+    setVoucher(data)
+    if (!paymentId) return
+    recalculatePayment(paymentId, { vouchers: [data] })
+      .then(data => {
+        onChangePayment(data)
+      })
+      .catch(msg => notify(msg, 'error'))    
   }
 
   const handleClickPayment = () => {

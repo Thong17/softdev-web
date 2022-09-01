@@ -25,6 +25,7 @@ export const Cashing = () => {
   const { device } = useWeb()
   const dispatch = useAppDispatch()
   const { data: preview } = useAppSelector(selectInfoStore)
+  const [paymentId, setPaymentId] = useState(null)
   const [productDialog, setProductDialog] = useState({
     open: false,
     productId: null,
@@ -89,6 +90,7 @@ export const Cashing = () => {
           open: true,
           payment: data?.data?.data,
         })
+        setPaymentId(data?.data?.data?._id)
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
@@ -106,6 +108,13 @@ export const Cashing = () => {
       open: false,
       payment: null,
       customer: null,
+    })
+  }
+
+  const handleChangePayment = (data) => {
+    setPaymentDialog({
+      ...paymentDialog,
+      payment: data,
     })
   }
 
@@ -181,11 +190,13 @@ export const Cashing = () => {
         >
           <InvoiceForm
             ref={invoiceRef}
+            id={paymentId}
             defaultTax={preview?.tax}
             transaction={transaction}
             onUpdate={() => setReload(!reload)}
             onPayment={handlePayment}
             onChangeCustomer={handleChangeCustomer}
+            onChangePayment={handleChangePayment}
           />
         </div>
       </div>
