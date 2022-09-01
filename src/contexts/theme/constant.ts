@@ -13,8 +13,8 @@ export const themeMode = {
       quaternary: '#999999'
     },
     active: {
-      primary: 'rgb(24, 67, 96)',
-      secondary: 'rgb(29, 77, 106)',
+      primary: 'rgba(24, 67, 96, 0.4)',
+      secondary: 'rgba(29, 77, 106, 0.2)',
       tertiary: '#555555',
       quaternary: '#666666'
     },
@@ -51,8 +51,8 @@ export const themeMode = {
       quaternary: '#666666'
     },
     active: {
-      primary: '#cccccc',
-      secondary: '#999999',
+      primary: '#cccccc55',
+      secondary: '#99999922',
       tertiary: '#555555',
       quaternary: '#666666'
     },
@@ -89,8 +89,8 @@ export const themeMode = {
       quaternary: '#777777'
     },
     active: {
-      primary: '#cccccc',
-      secondary: '#999999',
+      primary: '#cccccc55',
+      secondary: '#99999922',
       tertiary: '#777777',
       quaternary: '#555555'
     },
