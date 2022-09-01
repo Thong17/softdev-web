@@ -211,6 +211,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
     })
     if (isError) return notify(`Option is required`, 'error')
     if (quantity < 1) return notify('Please select at least 1 quantity', 'error')
+    if (quantity > totalStock) return notify('Order quantity has exceed our current stock', 'error')
 
     Axios({
       method: 'POST',
