@@ -9,32 +9,36 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListReservation, selectListReservation } from 'modules/sale/reservation/redux'
 
 export interface ICalendarEvent {
-  title: string
   start: string
   end?: string
-  status?: string
+  structures?: string
 }
 
 const mappedEvent = (data):ICalendarEvent[] => {
   const mappedData: ICalendarEvent[] = []
   data.forEach(reservation => {
-    reservation.structures.forEach(structure => {
-      mappedData.push({
-        title: structure.title,
-        start: reservation.startAt,
-        end: reservation.endAt,
-        status: structure.status
-      })
+    mappedData.push({
+      start: reservation.startAt,
+      end: reservation.endAt,
+      structures: reservation.structures
     })
   })
   return mappedData
 }
 
 const renderEventContent = (eventInfo, theme) => {
-  const { status } = eventInfo.event._def.extendedProps
+  const { structures } = eventInfo.event._def.extendedProps
+  let title = ''
+  let status = ''
+  structures.forEach((structure, index) => {
+    status = structure.status
+    if (index === structures.length - 1) return title += structure.title
+    title += `${structure.title}, `
+  })
+  
   return <div style={{ display: 'flex', alignItems: 'center', padding: '2px 5px' }}>
     <span style={{ width: 7, height: 7, marginRight: 5, boxSizing: 'border-box', borderRadius: theme.radius.circle, backgroundColor: status === 'reserved' ? `${theme.color.warning}` : `${theme.color.error}`, display: 'flex' }}></span>
-    {eventInfo.event.title}
+    {title}
   </div>
 }
 
