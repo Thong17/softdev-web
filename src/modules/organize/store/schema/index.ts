@@ -13,6 +13,10 @@ export const storeSchema = yup.object().shape({
 
 export const structureSchema = yup.object().shape({
   title: yup.string().required(),
+  price: yup.object({
+    value: yup.number().required('Price is required'),
+    currency: yup.string().optional(),
+  }),
   size: yup.string().required(),
   type: yup.string().optional(),
   length: yup.number().required(),

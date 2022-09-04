@@ -26,6 +26,7 @@ import Axios from 'constants/functions/Axios'
 import Loading from 'components/shared/Loading'
 import useAlert from 'hooks/useAlert'
 import { FloorForm } from './FloorForm'
+import { initStructure } from './redux/constant'
 
 const Header = () => {
   return (
@@ -355,6 +356,7 @@ export const LayoutForm = () => {
         setDialog={setStructureDialog}
         theme={theme}
         onSubmit={handleSubmitStructure}
+        defaultValues={initStructure}
       />
       <FloorForm
         dialog={floorDialog}

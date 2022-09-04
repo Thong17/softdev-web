@@ -31,12 +31,13 @@ export const drawerSchema = yup.object().shape({
 })
 
 export const reservationSchema = yup.object().shape({
-  from: yup.mixed().required(),
-  to: yup.mixed().required(),
+  startAt: yup.mixed().required(),
+  endAt: yup.mixed().required(),
   customer: yup.string().required(),
   price: yup.object({
     value: yup.number().required('Price is required'),
     currency: yup.string().optional(),
   }),
   note: yup.string().optional(),
+  structures: yup.array().required(),
 })

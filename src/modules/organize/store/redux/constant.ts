@@ -14,6 +14,14 @@ export const initState: IStoreBody = {
   description: ''
 }
 
+export const initStructure = {
+  price: {
+    value: 0,
+    currency: 'USD',
+    duration: '1h'
+  }
+}
+
 export interface StoreState {
   store: IBody<any>
   structures: IBody<any[]>

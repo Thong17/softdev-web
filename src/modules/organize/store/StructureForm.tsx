@@ -2,13 +2,14 @@ import { CustomButton } from 'styles'
 import { Button } from '@mui/material'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { DialogTitle } from 'components/shared/DialogTitle'
-import { SelectField } from 'components/shared/form/SelectField'
+import { MiniSelectField, SelectField } from 'components/shared/form/SelectField'
 import { useEffect, useState } from 'react'
 import { positionOptions, sizeOptions, directionOptions, typeOptions } from './constant'
 import { DetailField, TextField } from 'components/shared/form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { structureSchema } from './schema'
 import { useForm } from 'react-hook-form'
+import { currencyOptions } from 'components/shared/form/InvoiceForm'
 
 export const StructureForm = ({
   dialog,
@@ -21,6 +22,7 @@ export const StructureForm = ({
     reset,
     watch,
     register,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(structureSchema), defaultValues })
@@ -29,11 +31,17 @@ export const StructureForm = ({
   const [justify, setJustify] = useState('center')
   const [direction, setDirection] = useState('row')
   const [type, setType] = useState('table')
+  const [priceCurrency, setPriceCurrency] = useState('')
   const sizeValue = watch('size')
   const typeValue = watch('type')
   const alignValue = watch('align')
   const justifyValue = watch('justify')
   const directionValue = watch('direction')
+  const priceCurrencyValue = watch('price.currency')
+
+  useEffect(() => {
+    setPriceCurrency(priceCurrencyValue || 'USD')
+  }, [priceCurrencyValue])
 
   useEffect(() => {
     const selectedType = typeOptions.find(
@@ -83,6 +91,10 @@ export const StructureForm = ({
     setDialog({ structureId: null, open: false })
   }
 
+  const handleChangeSelect = (event) => {
+    setValue(event.target.name, event.target.value)
+  }
+
   const submit = (data) => {
     onSubmit({ id: dialog.structureId, ...data })
     handleCloseDialog()
@@ -102,8 +114,8 @@ export const StructureForm = ({
           padding: 20,
           gridColumnGap: 20,
           gridTemplateAreas: `
-                            'title title title length'
-                            'size type type direction'
+                            'title title title price'
+                            'length size type direction'
                             'align align justify justify'
                             'description description description description'
                             'action action action action'
@@ -116,6 +128,36 @@ export const StructureForm = ({
             label='Title'
             err={errors?.title?.message}
             {...register('title')}
+          />
+        </div>
+        <div style={{ gridArea: 'price' }}>
+          <TextField
+            type='number'
+            label='Price'
+            err={errors?.price?.value?.message}
+            {...register('price.value')}
+            icon={
+              <MiniSelectField
+                options={currencyOptions}
+                err={errors?.price?.currency?.message}
+                name='price.currency'
+                onChange={handleChangeSelect}
+                value={priceCurrency}
+                sx={{
+                  position: 'absolute',
+                  top: -1,
+                  right: -38,
+                  height: 23,
+                  '& .MuiSelect-select': {
+                    position: 'absolute',
+                    top: -2,
+                  },
+                  '& .MuiSvgIcon-root': {
+                    right: 33,
+                  },
+                }}
+              />
+            }
           />
         </div>
         <div style={{ gridArea: 'length' }}>

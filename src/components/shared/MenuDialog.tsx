@@ -28,6 +28,7 @@ export const MenuDialog: FC<IMenuDialog> = ({ label, children, ...props }) => {
         anchorEl={anchorEl}
         id='menu'
         styled={theme}
+        style={{ maxHeight: 500 }}
       >
         {children}
       </CustomMenu>
