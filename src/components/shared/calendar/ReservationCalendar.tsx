@@ -21,16 +21,8 @@ export const ReservationCalendar = () => {
         initialView='dayGridMonth'
         headerToolbar={{
           start: 'dayGridMonth,timeGridWeek',
-          end: 'prev,today,next,addReservation',
+          end: 'prev,today,next',
           center: 'title',
-        }}
-        customButtons={{
-          addReservation: {
-            text: 'Reservation',
-            click: () => {
-              alert('hey')
-            }
-          }
         }}
       />
     </CustomCalendar>

@@ -5,7 +5,7 @@ import { styled } from '@mui/system'
 export const CustomCalendar = styled('div')(
   ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
     backgroundColor: styled.background.primary,
-    padding: '20px 0',
+    height: '100%',
     '& #fc-dom-2': {
       fontSize: `${styled.responsive[device]?.text.h3}px !important`,
       fontWeight: `${styled.font.weight} !important`,
@@ -84,7 +84,7 @@ export const CustomCalendar = styled('div')(
         position: 'absolute',
         bottom: 0,
         left: '30%',
-        height: 1,
+        height: 2,
         width: '40%',
         borderRadius: 1
     }

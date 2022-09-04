@@ -18,6 +18,7 @@ export interface ShareState {
   adminDashboard: IBody<any>
   listProduct: IBody<any>
   listCustomer: IBody<any>
+  listStructure: IBody<any>
 }
 
 export const initialState: ShareState = {
@@ -34,6 +35,10 @@ export const initialState: ShareState = {
     status: 'INIT',
   },
   listCategory: {
+    data: [],
+    status: 'INIT',
+  },
+  listStructure: {
     data: [],
     status: 'INIT',
   },

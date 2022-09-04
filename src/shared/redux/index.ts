@@ -70,6 +70,18 @@ export const getListProduct = createAsyncThunk(
   }
 )
 
+export const getListStructure = createAsyncThunk(
+  'listStructure/get',
+  async (query?: URLSearchParams) => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/shared/structure/list',
+      params: query
+    })
+    return response?.data
+  }
+)
+
 export const getListCustomer = createAsyncThunk(
   'listCustomer/get',
   async (query?: URLSearchParams) => {
@@ -181,6 +193,18 @@ export const sharedSlice = createSlice({
         state.listPresetCash.data = action.payload.data
       })
 
+      // Get List Structure from API
+      .addCase(getListStructure.pending, (state) => {
+        state.listStructure.status = 'LOADING'
+      })
+      .addCase(getListStructure.rejected, (state) => {
+        state.listStructure.status = 'FAILED'
+      })
+      .addCase(getListStructure.fulfilled, (state, action) => {
+        state.listStructure.status = 'SUCCESS'
+        state.listStructure.data = action.payload.data
+      })
+
       // Get List Product from API
       .addCase(getListProduct.pending, (state) => {
         state.listProduct.status = 'LOADING'
@@ -251,6 +275,7 @@ export const selectInfoProduct = (state: RootState) => state.shared.infoProduct
 export const selectListRole = (state: RootState) => state.shared.listRole
 export const selectListBrand = (state: RootState) => state.shared.listBrand
 export const selectListCategory = (state: RootState) => state.shared.listCategory
+export const selectListStructure = (state: RootState) => state.shared.listStructure
 export const selectListPresetCash = (state: RootState) => state.shared.listPresetCash
 export const selectListProduct = (state: RootState) => state.shared.listProduct
 export const selectListCustomer = (state: RootState) => state.shared.listCustomer

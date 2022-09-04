@@ -1,7 +1,7 @@
 import useTheme from 'hooks/useTheme'
 import { TextEllipsis } from './TextEllipsis'
 
-export const RankStatus = ({ text, color, size }: any) => {
+export const RankStatus = ({ text, color, size, label, margin }: any) => {
   const { theme } = useTheme()
 
   return (
@@ -17,6 +17,7 @@ export const RankStatus = ({ text, color, size }: any) => {
         fontSize: size || 13,
         boxShadow: theme.shadow.inset,
         zIndex: 100,
+        margin: margin
       }}
     >
       <span
@@ -28,6 +29,7 @@ export const RankStatus = ({ text, color, size }: any) => {
           marginRight: 7,
         }}
       ></span>
+      {label && <span>{label}</span>}
       <span>{text}</span>
     </TextEllipsis>
   )

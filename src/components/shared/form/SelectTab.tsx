@@ -52,9 +52,13 @@ const StyledTab = styled((props: StyledTabProps) => (
   },
 }))
 
-export const SelectTab = ({ options, onChange }) => {
+export const SelectTab = ({ selected, options, onChange }: any) => {
   const { theme } = useTheme()
-  const [value, setValue] = React.useState(options[0].value)
+  const [value, setValue] = React.useState(selected ? selected : options.length > 0 ? options[0]?.value : '')
+
+  React.useEffect(() => {
+    setValue(selected)
+  }, [selected])
 
   const handleChange = (event: React.SyntheticEvent, newValue: any) => {
     setValue(newValue)

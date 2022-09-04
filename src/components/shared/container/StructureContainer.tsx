@@ -13,8 +13,10 @@ import {
 } from 'modules/organize/store/redux'
 import { mapStructures } from 'modules/organize/store/LayoutForm'
 import useTheme from 'hooks/useTheme'
+import { Box } from '@mui/material'
+import { SelectTab } from '../form/SelectTab'
 
-export const StructureContainer = () => {
+export const StructureContainer = ({ onClick, selectFloor = false, actions }: any) => {
   const dispatch = useAppDispatch()
   const { data: storeLayout, status: statusLayout } =
     useAppSelector(selectLayoutStore)
@@ -102,17 +104,31 @@ export const StructureContainer = () => {
     dispatch(getLayoutStore({ query: params }))
   }
 
+  const handleChangeTab = (floor) => {
+    setLoading(true)
+    setFloor(floor)
+    const params = new URLSearchParams()
+    params.append('id', floor)
+    dispatch(getLayoutStore({ query: params }))
+  }
+
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}
     >
-      <MiniSelectField
-        style={{ width: 100 }}
-        options={floorOption}
-        value={floor}
-        onChange={handleChangeFloor}
-        search={true}
-      />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: 5 }}>
+        {floorOption?.length > 0 && <SelectTab options={floorOption} onChange={handleChangeTab} selected={floor} />}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }}>
+          {selectFloor && <MiniSelectField
+            style={{ width: 100 }}
+            options={floorOption}
+            value={floor}
+            onChange={handleChangeFloor}
+            search={true}
+          />}
+          {actions}
+        </div>
+      </div>
       <div
         className='structure-container'
         style={{
@@ -137,17 +153,18 @@ export const StructureContainer = () => {
             return (
               <div
                 key={index}
-                style={{ gridArea: `${structure.id}`, backgroundColor: `${theme.color.info}11`, borderRadius: theme.radius.primary }}
+                style={{ gridArea: `${structure.id}`, backgroundColor: `${theme.background.secondary}33`, borderRadius: theme.radius.primary }}
               ></div>
             )
           } else {
             switch (structure.type) {
               case 'table':
                 return (
-                  <div
+                  <Box
+                    onClick={() => onClick && onClick(structure._id)}
                     key={index}
                     className='structure'
-                    style={{ gridArea: `${structure.id}`, backgroundColor: `${theme.color.info}11`, borderRadius: theme.radius.primary }}
+                    sx={{ gridArea: `${structure.id}`, backgroundColor: `${theme.background.secondary}33`, borderRadius: theme.radius.primary, cursor: onClick ? 'pointer' : 'default', '&:hover': { backgroundColor: theme.active.primary } }}
                   >
                     <TableStructure
                       title={structure.title}
@@ -157,14 +174,15 @@ export const StructureContainer = () => {
                       justify={structure.justify}
                       direction={structure.direction}
                     />
-                  </div>
+                  </Box>
                 )
               default:
                 return (
-                  <div
+                  <Box
+                    onClick={() => onClick && onClick(structure._id)}
                     key={index}
                     className='structure'
-                    style={{ gridArea: `${structure.id}`, backgroundColor: `${theme.color.info}11`, borderRadius: theme.radius.primary }}
+                    sx={{ gridArea: `${structure.id}`, backgroundColor: `${theme.background.secondary}33`, borderRadius: theme.radius.primary, cursor: onClick ? 'pointer' : 'default', '&:hover': { backgroundColor: theme.active.primary } }}
                   >
                     <RoomStructure
                       title={structure.title}
@@ -173,7 +191,7 @@ export const StructureContainer = () => {
                       justify={structure.justify}
                       direction={structure.direction}
                     />
-                  </div>
+                  </Box>
                 )
             }
           }

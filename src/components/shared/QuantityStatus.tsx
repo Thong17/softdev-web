@@ -30,7 +30,7 @@ export const QuantityStatus = ({ qty, min, size, label, padding }: any) => {
         alignItems: 'center',
         width: 'fit-content',
         borderRadius: theme.radius.secondary,
-        fontSize: size || 13
+        fontSize: size || 13,
       }}
     >
       <span style={{ width: 7, height: 7, backgroundColor: theme.color[status], borderRadius: theme.radius.circle, marginRight: 7 }}></span><span>{qty} {label}</span>

@@ -5,7 +5,7 @@ export const transactionSchema = yup.object().shape({
   description: yup.string().required(),
   price: yup.object({
     value: yup.number().required('Price is required'),
-    currency: yup.string().required('Currency is required'),
+    currency: yup.string().optional(),
   }),
   quantity: yup.number().required(),
   discount: yup
@@ -28,4 +28,15 @@ export const customerSchema = yup.object().shape({
 export const drawerSchema = yup.object().shape({
   buyRate: yup.number().required(),
   sellRate: yup.number().optional(),
+})
+
+export const reservationSchema = yup.object().shape({
+  from: yup.mixed().required(),
+  to: yup.mixed().required(),
+  customer: yup.string().required(),
+  price: yup.object({
+    value: yup.number().required('Price is required'),
+    currency: yup.string().optional(),
+  }),
+  note: yup.string().optional(),
 })
