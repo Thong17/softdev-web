@@ -3,7 +3,7 @@ import { AlertContainer } from 'components/shared/container/AlertContainer'
 import { ReservationContainer } from 'components/shared/container/ReservationContainer'
 import { DialogTitle } from 'components/shared/DialogTitle'
 
-export const ReservationForm = ({ dialog, setDialog, structures, onSave }: any) => {
+export const ReservationAlert = ({ dialog, setDialog, structures, onSave }: any) => {
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false })
   }

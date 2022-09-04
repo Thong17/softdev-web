@@ -188,6 +188,7 @@ export const StructureContainer = ({ onClick, onRemove, selected, selectFloor = 
                       align={structure.align}
                       justify={structure.justify}
                       direction={structure.direction}
+                      status={structure.status}
                     />
                   </Box>
                 )
@@ -205,6 +206,7 @@ export const StructureContainer = ({ onClick, onRemove, selected, selectFloor = 
                       align={structure.align}
                       justify={structure.justify}
                       direction={structure.direction}
+                      status={structure.status}
                     />
                   </Box>
                 )

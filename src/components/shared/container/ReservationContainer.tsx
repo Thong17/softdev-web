@@ -19,9 +19,14 @@ import Edit from '@mui/icons-material/Edit'
 import { SelectStructure } from '../form/SelectStructure'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { getListReservation, selectListReservation } from 'modules/sale/reservation/redux'
+import { dateFormat, timeFormat } from 'utils/index'
 
 export const ReservationContainer = ({ selectedStructures, onSave }) => {
   const { theme } = useTheme()
+  const dispatch = useAppDispatch()
+  const { data, status } = useAppSelector(selectListReservation)
   const [customerDialog, setCustomerDialog] = useState({ open: false })
   const [customer, setCustomer] = useState({
     displayName: null,
@@ -30,6 +35,16 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
   })
   const [toggleForm, setToggleForm] = useState(false)
   const [structures, setStructures] = useState<any[]>(selectedStructures)
+  const [reservations, setReservations] = useState<any[]>([])
+
+  useEffect(() => {
+    dispatch(getListReservation())
+  }, [dispatch])
+  
+  useEffect(() => {
+    if (status !== 'SUCCESS') return
+    setReservations(data)
+  }, [data, status])
 
   useEffect(() => {
     setStructures(selectedStructures)
@@ -106,10 +121,15 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
                 padding: '7px 10px 7px 7px',
                 borderRadius: theme.radius.primary,
                 border: theme.border.dashed,
+                marginBottom: 1
               },
             }}
           >
-            <ReservationItem />
+            {
+              reservations.map((reservation, key) => {
+                return <ReservationItem data={reservation} key={key} />
+              })
+            }
           </Box>
         </div>
         {toggleForm ? (
@@ -138,7 +158,7 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
   )
 }
 
-const ReservationItem = () => {
+const ReservationItem = ({ data }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
 
@@ -147,7 +167,7 @@ const ReservationItem = () => {
       <div style={{ marginRight: 10, display: 'flex', gap: 5 }}>
         <span
           style={{
-            backgroundColor: theme.color.error,
+            backgroundColor: data?.status === 'reserved' ? theme.color.warning : theme.color.error,
             height: '100%',
             width: 5,
             display: 'block',
@@ -155,13 +175,13 @@ const ReservationItem = () => {
             boxShadow: theme.shadow.inset,
           }}
         ></span>
-        <CircleIcon icon={null} />
+        <CircleIcon icon={data?.customer.picture?.filename} />
       </div>
       <div style={{ flex: '40%', display: 'flex', flexDirection: 'column' }}>
         <TextEllipsis
           style={{ fontSize: theme.responsive[device]?.text.secondary }}
         >
-          CHHAN Bunthong
+          {data?.customer.displayName}
         </TextEllipsis>
         <div style={{ display: 'flex' }}>
           <PhoneEnabledRoundedIcon
@@ -177,7 +197,7 @@ const ReservationItem = () => {
               fontSize: theme.responsive[device]?.text.quaternary,
             }}
           >
-            017 467 617
+            {data?.customer.contact}
           </TextEllipsis>
         </div>
       </div>
@@ -185,7 +205,7 @@ const ReservationItem = () => {
         <TextEllipsis
           style={{ fontSize: theme.responsive[device]?.text.secondary }}
         >
-          6:30pm - 7:30pm
+          {timeFormat(data?.startAt)} - {timeFormat(data?.endAt)}
         </TextEllipsis>
         <TextEllipsis
           style={{
@@ -193,7 +213,7 @@ const ReservationItem = () => {
             fontSize: theme.responsive[device]?.text.quaternary,
           }}
         >
-          17 Dec 2022
+          {dateFormat(data?.startAt)}
         </TextEllipsis>
       </div>
       <div style={{ display: 'grid', placeItems: 'center' }}>

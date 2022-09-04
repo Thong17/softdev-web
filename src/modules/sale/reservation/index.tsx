@@ -3,7 +3,7 @@ import { StructureContainer } from 'components/shared/container/StructureContain
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded'
 import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
-import { ReservationForm } from './ReservationForm'
+import { ReservationAlert } from './ReservationAlert'
 import { useState } from 'react'
 
 export const Reservation = () => {
@@ -47,7 +47,7 @@ export const Reservation = () => {
           </IconButton>
         }
       />
-      <ReservationForm dialog={dialog} setDialog={setDialog} structures={selectedStructures} onSave={handleSaveReservation} />
+      <ReservationAlert dialog={dialog} setDialog={setDialog} structures={selectedStructures} onSave={handleSaveReservation} />
     </Container>
   )
 }
