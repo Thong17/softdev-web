@@ -371,7 +371,7 @@ export const CustomerContainer = ({
                     <div key={key}>
                       <Skeleton
                         variant='rectangular'
-                        height={130}
+                        height={30}
                         width={150}
                         style={{ borderRadius: theme.radius.secondary }}
                       />

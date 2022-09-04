@@ -3,9 +3,14 @@ import { AlertContainer } from 'components/shared/container/AlertContainer'
 import { ReservationContainer } from 'components/shared/container/ReservationContainer'
 import { DialogTitle } from 'components/shared/DialogTitle'
 
-export const ReservationForm = ({ dialog, setDialog }: any) => {
+export const ReservationForm = ({ dialog, setDialog, structures, onSave }: any) => {
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false })
+  }
+
+  const handleAfterSave = () => {
+    onSave()
+    handleCloseDialog()
   }
 
   return (
@@ -43,7 +48,7 @@ export const ReservationForm = ({ dialog, setDialog }: any) => {
             </div>
           </div>
           <div style={{ gridArea: 'form' }}>
-            <ReservationContainer />
+            <ReservationContainer selectedStructures={structures} onSave={handleAfterSave} />
           </div>
         </div>
       </div>

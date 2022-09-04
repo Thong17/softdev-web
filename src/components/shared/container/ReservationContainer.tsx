@@ -20,7 +20,7 @@ import { SelectStructure } from '../form/SelectStructure'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-export const ReservationContainer = () => {
+export const ReservationContainer = ({ selectedStructures, onSave }) => {
   const { theme } = useTheme()
   const [customerDialog, setCustomerDialog] = useState({ open: false })
   const [customer, setCustomer] = useState({
@@ -29,18 +29,18 @@ export const ReservationContainer = () => {
     point: 0,
   })
   const [toggleForm, setToggleForm] = useState(false)
-  const [structure, setStructure] = useState(null)
+  const [structures, setStructures] = useState<any[]>(selectedStructures)
 
+  useEffect(() => {
+    setStructures(selectedStructures)
+  }, [selectedStructures])
+  
   const handleClickCustomer = () => {
     setCustomerDialog({ ...customerDialog, open: true })
   }
 
-  const handleChangeCustomer = (data) => {
-    console.log(data)
-  }
-
   const handleClickStructure = (data) => {
-    setStructure(data)
+    setStructures(data)
   }
 
   return (
@@ -54,7 +54,6 @@ export const ReservationContainer = () => {
         dialog={customerDialog}
         setDialog={setCustomerDialog}
         onClickCustomer={(data) => {
-          handleChangeCustomer(data)
           setCustomer(data)
         }}
       />
@@ -81,7 +80,7 @@ export const ReservationContainer = () => {
             height: 'fit-content',
           }}
         >
-          <SelectStructure onClick={handleClickStructure} />
+          <SelectStructure onContinue={handleClickStructure} structures={structures} />
           <RankStatus
             text={<p style={{ padding: '5px 0', marginLeft: 5 }}>17</p>}
             label='Available'
@@ -115,10 +114,11 @@ export const ReservationContainer = () => {
         </div>
         {toggleForm ? (
           <ReservationForm
+            onSave={() => onSave()}
             onClose={() => setToggleForm(false)}
             onClickCustomer={handleClickCustomer}
             customer={customer}
-            structure={structure}
+            structures={structures}
           />
         ) : (
           <CustomButton
@@ -221,11 +221,12 @@ const initReservation: any = {
   structures: []
 }
 
-const ReservationForm = ({ onClose, onClickCustomer, customer, structure }) => {
+const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSave }) => {
   const {
     register,
     handleSubmit,
     setValue,
+    getValues,
     watch,
     formState: { errors },
   } = useForm({
@@ -250,9 +251,10 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structure }) => {
   }, [customer, setValue])
 
   useEffect(() => {
-    setValue('structures', [structure?._id])
-    setValue('price', { value: structure?.price.value, currency: structure?.price.currency })
-  }, [structure, setValue])
+    setValue('structures', structures)
+    let price = 0
+    setValue('price', { value: price, currency: 'USD', duration: '1h' })
+  }, [structures, setValue, getValues])
 
   const submit = (data) => {
     Axios({
@@ -260,7 +262,10 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structure }) => {
         url: '/sale/reservation/create',
         body: data
     })
-        .then((data) => console.log(data))
+        .then((data) => {
+            notify(data?.data?.msg, 'success')
+            onSave()
+        })
         .catch((err) => notify(err?.response?.data?.msg, 'error'))
   }
 

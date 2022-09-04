@@ -16,7 +16,7 @@ import useTheme from 'hooks/useTheme'
 import { Box } from '@mui/material'
 import { SelectTab } from '../form/SelectTab'
 
-export const StructureContainer = ({ onClick, selectFloor = false, actions }: any) => {
+export const StructureContainer = ({ onClick, onRemove, selected, selectFloor = false, actions }: any) => {
   const dispatch = useAppDispatch()
   const { data: storeLayout, status: statusLayout } =
     useAppSelector(selectLayoutStore)
@@ -30,6 +30,11 @@ export const StructureContainer = ({ onClick, selectFloor = false, actions }: an
   const [mergedStructures, setMergedStructures] = useState<any>([])
   const [floorOption, setFloorOption] = useState<IOptions[]>([])
   const { theme } = useTheme()
+  const [selectedStructure, setSelectedStructure] = useState(selected || [])
+
+  useEffect(() => {
+    setSelectedStructure(selected)
+  }, [selected])
 
   useEffect(() => {
     dispatch(getListFloor())
@@ -112,6 +117,14 @@ export const StructureContainer = ({ onClick, selectFloor = false, actions }: an
     dispatch(getLayoutStore({ query: params }))
   }
 
+  const handleAddStructure = (data) => {
+    onClick && onClick(data)
+  }
+
+  const handleRemoveStructure = (id) => {
+    onRemove && onRemove(id)
+  }
+
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}
@@ -147,6 +160,8 @@ export const StructureContainer = ({ onClick, selectFloor = false, actions }: an
       >
         {loading && <Loading />}
         {structures?.map((structure, index) => {
+          const isSelected = selectedStructure.some(item => item._id === structure._id)
+
           if (structure.merged && structure.isMain === false)
             return <div key={index} style={{ display: 'none' }}></div>
           if (structure.type === 'blank') {
@@ -161,10 +176,10 @@ export const StructureContainer = ({ onClick, selectFloor = false, actions }: an
               case 'table':
                 return (
                   <Box
-                    onClick={() => onClick && onClick(structure._id)}
+                    onClick={() => isSelected ? handleRemoveStructure(structure._id) : handleAddStructure(structure)}
                     key={index}
                     className='structure'
-                    sx={{ gridArea: `${structure.id}`, backgroundColor: `${theme.background.secondary}33`, borderRadius: theme.radius.primary, cursor: onClick ? 'pointer' : 'default', '&:hover': { backgroundColor: theme.active.primary } }}
+                    sx={{ gridArea: `${structure.id}`, backgroundColor: isSelected ? theme.active.primary : `${theme.background.secondary}33`, borderRadius: theme.radius.primary, cursor: onClick ? 'pointer' : 'default', '&:hover': { backgroundColor: theme.active.primary } }}
                   >
                     <TableStructure
                       title={structure.title}

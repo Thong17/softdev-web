@@ -9,19 +9,30 @@ import { useState } from 'react'
 export const Reservation = () => {
   const { theme } = useTheme()
   const [dialog, setDialog] = useState({ open: false })
+  const [selectedStructures, setSelectedStructures] = useState<any[]>([])
 
-  const handleClickStructure = (id) => {
-    console.log(id)
+  const handleClickStructure = (data) => {
+    setSelectedStructures([...selectedStructures, data])
   }
  
   const handleClickReservation = () => {
     setDialog({ ...dialog, open: true })
   }
 
+  const handleSaveReservation = () => {
+    setSelectedStructures([])
+  }
+
+  const handleRemoveStructure = (id) => {
+    setSelectedStructures(prev => prev.filter(item => item._id !== id))
+  }
+
   return (
     <Container>
       <StructureContainer
+        selected={selectedStructures}
         onClick={handleClickStructure}
+        onRemove={handleRemoveStructure}
         actions={
           <IconButton
             onClick={handleClickReservation}
@@ -36,7 +47,7 @@ export const Reservation = () => {
           </IconButton>
         }
       />
-      <ReservationForm dialog={dialog} setDialog={setDialog} />
+      <ReservationForm dialog={dialog} setDialog={setDialog} structures={selectedStructures} onSave={handleSaveReservation} />
     </Container>
   )
 }
