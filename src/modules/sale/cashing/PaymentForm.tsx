@@ -184,6 +184,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
               }}
             >
               <SelectTab
+                selected={paymentMethods[0]?.value}
                 options={paymentMethods}
                 onChange={handleChangePaymentMethod}
               />

@@ -37,7 +37,7 @@ const renderEventContent = (eventInfo, theme) => {
   })
   
   return <div style={{ display: 'flex', alignItems: 'center', padding: '2px 5px' }}>
-    <span style={{ width: 7, height: 7, marginRight: 5, boxSizing: 'border-box', borderRadius: theme.radius.circle, backgroundColor: status === 'reserved' ? `${theme.color.warning}` : `${theme.color.error}`, display: 'flex' }}></span>
+    <span style={{ minWidth: 7, minHeight: 7, marginRight: 5, boxSizing: 'border-box', borderRadius: theme.radius.circle, backgroundColor: status === 'reserved' ? `${theme.color.warning}` : `${theme.color.error}`, display: 'flex' }}></span>
     {title}
   </div>
 }
@@ -62,7 +62,7 @@ export const ReservationCalendar = () => {
     <CustomCalendar styled={theme} device={device}>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin]}
-        initialView='dayGridMonth'
+        initialView='timeGridWeek'
         events={mappedEvent(reservations)}
         eventContent={(event) => renderEventContent(event, theme)}
         headerToolbar={{

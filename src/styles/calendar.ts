@@ -87,6 +87,21 @@ export const CustomCalendar = styled('div')(
         height: 2,
         width: '40%',
         borderRadius: 1
+    },
+
+    // Timegrid
+    '& .fc-timegrid-event-harness': {
+      border: 'none !important'
+    },
+    '& .fc-timegrid-event': {
+      backgroundColor: `${styled.color.info}77`,
+      color: `${styled.color.info} !important`
+    },
+    '& .fc-timegrid-col': {
+      border: 'none !important',
+      '& *': {
+        border: 'none !important',
+      }
     }
   })
 )

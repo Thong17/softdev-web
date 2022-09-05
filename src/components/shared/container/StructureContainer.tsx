@@ -16,7 +16,7 @@ import useTheme from 'hooks/useTheme'
 import { Box } from '@mui/material'
 import { SelectTab } from '../form/SelectTab'
 
-export const StructureContainer = ({ onClick, onRemove, selected, selectFloor = false, actions }: any) => {
+export const StructureContainer = ({ onClick, onRemove, selected, reload, selectFloor = false, actions }: any) => {
   const dispatch = useAppDispatch()
   const { data: storeLayout, status: statusLayout } =
     useAppSelector(selectLayoutStore)
@@ -32,6 +32,15 @@ export const StructureContainer = ({ onClick, onRemove, selected, selectFloor = 
   const { theme } = useTheme()
   const [selectedStructure, setSelectedStructure] = useState(selected || [])
 
+  useEffect(() => {
+    if (!floor) return
+    setLoading(true)
+    const params = new URLSearchParams()
+    params.append('id', floor)
+    dispatch(getLayoutStore({ query: params }))
+    // eslint-disable-next-line
+  }, [reload])
+  
   useEffect(() => {
     setSelectedStructure(selected)
   }, [selected])

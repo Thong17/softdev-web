@@ -41,9 +41,9 @@ const StyledTab = styled((props: StyledTabProps) => (
 ))(({ styled }: { styled: IThemeStyle }) => ({
   textTransform: 'none',
   color: styled.text.tertiary,
-  padding: 0,
+  padding: '0 20px',
   minHeight: 30,
-  minWidth: 70,
+  minWidth: 50,
   '&.Mui-selected': {
     color: styled.text.primary,
   },

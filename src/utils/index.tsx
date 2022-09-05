@@ -2,6 +2,7 @@ import { sha256 } from 'js-sha256'
 import { IToken } from 'contexts/auth/interface'
 import jwtDecode from 'jwt-decode'
 import { StructureStatusType } from 'shared/interface'
+import moment from 'moment'
 
 export const generateHash = async (
   ts: string,
@@ -99,10 +100,10 @@ export const dateFormat = (date: any = null) => {
   return localDate
 }
 
-export const timeFormat = (date) => {
+export const timeFormat = (date, format = 'HH:mm:ss') => {
   if (!date) return new Date().toLocaleTimeString()
 
-  const localDate = new Date(date).toLocaleTimeString()
+  const localDate = moment(date).format(format)
   return localDate
 }
 

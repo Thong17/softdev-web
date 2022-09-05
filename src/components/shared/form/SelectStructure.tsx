@@ -4,10 +4,10 @@ import useTheme from 'hooks/useTheme'
 import React, { useEffect, useRef, useState } from 'react'
 import { getListStructure, selectListStructure } from 'shared/redux'
 import { MenuDialog } from '../MenuDialog'
-import GpsNotFixedRoundedIcon from '@mui/icons-material/GpsNotFixedRounded'
 import { TextEllipsis } from '../TextEllipsis'
 import useWeb from 'hooks/useWeb'
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
+import TableBarRoundedIcon from '@mui/icons-material/TableBarRounded'
 
 const SelectLabel = ({ structures }) => {
   const { theme } = useTheme()
@@ -22,7 +22,7 @@ const SelectLabel = ({ structures }) => {
         lineHeight: 1,
       }}
     >
-      <GpsNotFixedRoundedIcon style={{ fontSize: 17 }} />
+      <TableBarRoundedIcon style={{ fontSize: 18 }} />
       {structures.length > 0 ? (
         <div style={{ display: 'flex', maxWidth: '100%', overflowX: 'auto' }}>
           {structures.map((structure, key) => (
@@ -63,7 +63,7 @@ const SelectLabel = ({ structures }) => {
           ))}
         </div>
       ) : (
-        <span style={{ marginLeft: 5 }}>Type</span>
+        <span style={{ marginLeft: 5 }}>Structure</span>
       )}
     </div>
   )
