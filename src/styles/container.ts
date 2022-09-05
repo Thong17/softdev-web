@@ -207,7 +207,7 @@ export const CustomListContainer = styled('div')(
     boxSizing: 'border-box',
     '& .list-item': {
       boxSizing: 'border-box',
-      padding: '10px 0',
+      padding: '5px 5px 5px 0',
       position: 'relative',
       display: 'flex',
       alignItems: 'center',

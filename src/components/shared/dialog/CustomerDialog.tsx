@@ -12,7 +12,7 @@ import useNotify from 'hooks/useNotify'
 import { FileField, IImage } from '../form/UploadField'
 import { DialogTitle } from 'components/shared/DialogTitle'
 
-const CustomerForm = ({ onClose, onChange, defaultValues, theme }) => {
+const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
   const {
     reset,
     register,
@@ -34,8 +34,8 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme }) => {
 
   const submit = (data) => {
     Axios({
-      method: 'POST',
-      url: '/organize/customer/create',
+      method: id ? 'PUT' : 'POST',
+      url: id ? `/organize/customer/update/${id}` : '/organize/customer/create',
       body: data,
     })
       .then((data) => {
@@ -112,8 +112,8 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme }) => {
       <div style={{ gridArea: 'profile' }}>
         <FileField
           images={profilePath && [profilePath]}
-          selected={getValues('profile')?._id}
-          name='profile'
+          selected={getValues('picture')?._id}
+          name='picture'
           label='Profile'
           accept='image/png, image/jpeg'
           onChange={handleChangeFile}
@@ -154,7 +154,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme }) => {
           }}
           fullWidth
         >
-          Add
+          {id ? 'Save' : 'Create'}
         </Button>
       </div>
     </form>
@@ -165,6 +165,8 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
   const { theme } = useTheme()
   const [showForm, setShowForm] = useState(false)
   const [reload, setReload] = useState(false)
+  const [customerForm, setCustomerForm] = useState({})
+  const [customerId, setCustomerId] = useState(null)
 
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false })
@@ -173,6 +175,19 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
   const handleClickCustomer = (data) => {
     onClickCustomer(data)
     handleCloseDialog()
+  }
+
+  const handleEditCustomer = (customer) => {
+    setCustomerForm({
+      displayName: customer?.displayName,
+      fullName: customer?.fullName,
+      dateOfBirth: customer?.dateOfBirth,
+      contact: customer?.contact,
+      address: customer?.address,
+      picture: customer?.picture
+    })
+    setCustomerId(customer?._id)
+    setShowForm(true)
   }
 
   return (
@@ -204,6 +219,7 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
             style={{ marginBottom: 20, height: '100%', position: 'relative' }}
           >
             <CustomerContainer
+              onEditCustomer={handleEditCustomer}
               onClickCustomer={handleClickCustomer}
               toggleReload={reload}
               height={showForm ? '19.3vh' : '100%'}
@@ -213,7 +229,8 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
             <CustomerForm
               onClose={() => setShowForm(false)}
               theme={theme}
-              defaultValues={{}}
+              defaultValues={customerForm}
+              id={customerId}
               onChange={() => setReload(!reload)}
             />
           ) : (

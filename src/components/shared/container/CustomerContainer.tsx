@@ -21,7 +21,6 @@ import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded'
 import DiscountIcon from '@mui/icons-material/Discount'
 import { IconButton } from '@mui/material'
-import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { CustomerLayout, CustomerItem } from 'components/layouts/CustomerLayout'
@@ -47,16 +46,14 @@ const mappedCustomer = (data) => {
 
 export const CustomerContainer = ({
   onClickCustomer,
+  onEditCustomer,
   actions,
   filterSelected,
   filterPromotion,
-  selectedCustomers,
   promotionId,
-  activeId,
   toggleReload,
   height,
 }: any) => {
-  const { user } = useAuth()
   const dispatch = useAppDispatch()
   const [count, setCount] = useState(0)
   const {
@@ -208,6 +205,11 @@ export const CustomerContainer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleReload])
 
+  const handleEditCustomer = (id) => {
+    const customer = customers.find(item => item._id === id)
+    onEditCustomer(customer)
+  }
+
   return (
     <div
       style={{ height: '100%', boxSizing: 'border-box', position: 'relative' }}
@@ -325,7 +327,6 @@ export const CustomerContainer = ({
                         name={customer.displayName}
                         contact={customer.contact}
                         address={customer.address}
-                        action={customer.action}
                         display={customer.display}
                         onClick={() =>
                           handleClickCustomer({
@@ -334,10 +335,7 @@ export const CustomerContainer = ({
                             point: 0,
                           })
                         }
-                        selected={selectedCustomers?.includes(customer._id)}
-                        favorite={user?.favorites?.includes(customer._id)}
-                        promotion={customer.promotion}
-                        active={customer._id === activeId}
+                        onEdit={handleEditCustomer}
                         picture={customer.picture?.filename}
                       />
                     )
@@ -349,7 +347,6 @@ export const CustomerContainer = ({
                       name={customer.displayName}
                       contact={customer.contact}
                       address={customer.address}
-                      action={customer.action}
                       display={customer.display}
                       onClick={() =>
                         handleClickCustomer({
@@ -358,10 +355,7 @@ export const CustomerContainer = ({
                           point: 0,
                         })
                       }
-                      selected={selectedCustomers?.includes(customer._id)}
-                      favorite={user?.favorites?.includes(customer._id)}
-                      promotion={customer.promotion}
-                      active={customer._id === activeId}
+                      onEdit={handleEditCustomer}
                       picture={customer.picture?.filename}
                     />
                   )

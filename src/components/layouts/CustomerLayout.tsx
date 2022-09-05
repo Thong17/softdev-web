@@ -6,10 +6,16 @@ import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded'
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
+import Edit from '@mui/icons-material/Edit'
+import { IconButton } from '@mui/material'
 
-const Item = (props, ref) => {
-  const { name, contact, address, picture, onClick, display } =
-    props
+const Item = ({ id, name, contact, address, picture, onClick, onEdit, display }, ref) => {
+  const { theme } = useTheme()
+
+  const handleEdit = (event) => {
+    event.stopPropagation()
+    onEdit(id)
+  }
   
   return (
     <div className='list-item' ref={ref} onClick={() => onClick()} style={{ display: display || 'flex' }}>
@@ -22,6 +28,19 @@ const Item = (props, ref) => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="detail" style={{ display: 'flex', alignItems: 'end' }}><LocationOnRoundedIcon style={{ fontSize: 16, marginRight: 5 }} /><TextEllipsis>{address}</TextEllipsis></div>
         </div>
+      </div>
+      <div style={{ display: 'grid', placeItems: 'center' }}>
+        <IconButton
+          onClick={handleEdit}
+          sx={{
+            width: 30,
+            height: 30,
+            color: `${theme.color.info}cc`,
+            '&:hover': { color: theme.color.info },
+          }}
+        >
+          <Edit style={{ fontSize: 17 }} />
+        </IconButton>
       </div>
     </div>
   )

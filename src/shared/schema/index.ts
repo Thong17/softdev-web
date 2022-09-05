@@ -23,6 +23,7 @@ export const customerSchema = yup.object().shape({
   contact: yup.string().optional(),
   dateOfBirth: yup.mixed().optional(),
   address: yup.string().optional(),
+  picture: yup.mixed()
 })
 
 export const drawerSchema = yup.object().shape({
