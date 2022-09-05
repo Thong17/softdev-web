@@ -21,7 +21,16 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListReservation, selectListReservation } from 'modules/sale/reservation/redux'
-import { dateFormat, timeFormat } from 'utils/index'
+import { dateFormat, inputDateTimeFormat, timeFormat } from 'utils/index'
+
+const initReservation: any = {
+  price: { value: 0, currency: 'USD' },
+  startAt: null,
+  endAt: null,
+  customer: null,
+  note: '',
+  structures: []
+}
 
 export const ReservationContainer = ({ selectedStructures, onSave }) => {
   const { theme } = useTheme()
@@ -36,6 +45,8 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
   const [toggleForm, setToggleForm] = useState(false)
   const [structures, setStructures] = useState<any[]>(selectedStructures)
   const [reservations, setReservations] = useState<any[]>([])
+  const [reservationForm, setReservationForm] = useState(initReservation)
+  const [reservationId, setReservationId] = useState(null)
 
   useEffect(() => {
     dispatch(getListReservation())
@@ -62,9 +73,34 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
     console.log(id)
   }
 
+  const handleCloseForm = () => {
+    setToggleForm(false)
+    setReservationId(null)
+    setCustomer({
+      displayName: null,
+      id: null,
+      point: 0
+    })
+    setReservationForm(initReservation)
+  }
+
   const handleEditReservation = (id) => {
-    console.log(id);
-    
+    const reservation = reservations.find(item => item._id === id)
+    setReservationId(id)
+    setCustomer({
+      displayName: reservation?.customer?.displayName,
+      id: reservation?.customer?._id,
+      point: 0
+    })
+    setReservationForm({
+      price: reservation?.price,
+      startAt: inputDateTimeFormat(reservation?.startAt),
+      endAt: inputDateTimeFormat(reservation?.endAt),
+      customer: reservation?.customer?._Id,
+      note: reservation?.note,
+      structures: reservation?.structures
+    })
+    setToggleForm(true)
   }
 
   return (
@@ -149,10 +185,12 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
         {toggleForm ? (
           <ReservationForm
             onSave={() => onSave()}
-            onClose={() => setToggleForm(false)}
+            onClose={handleCloseForm}
             onClickCustomer={handleClickCustomer}
             customer={customer}
             structures={structures}
+            defaultValues={reservationForm}
+            id={reservationId}
           />
         ) : (
           <CustomButton
@@ -252,17 +290,9 @@ const ReservationItem = ({ data, onClick, onEdit }) => {
   )
 }
 
-const initReservation: any = {
-  price: { value: 0, currency: 'USD' },
-  startAt: null,
-  endAt: null,
-  customer: null,
-  note: '',
-  structures: []
-}
-
-const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSave }) => {
+const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSave, defaultValues, id }) => {
   const {
+    reset,
     register,
     handleSubmit,
     setValue,
@@ -271,12 +301,16 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
     formState: { errors },
   } = useForm({
     resolver: yupResolver(reservationSchema),
-    defaultValues: initReservation,
+    defaultValues,
   })
   const { theme } = useTheme()
   const [priceCurrency, setPriceCurrency] = useState('')
   const priceCurrencyValue = watch('price.currency')
   const { notify } = useNotify()
+
+  useEffect(() => {
+    reset(defaultValues)
+  }, [reset, defaultValues])
 
   useEffect(() => {
     setPriceCurrency(priceCurrencyValue || 'USD')
@@ -298,8 +332,8 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
 
   const submit = (data) => {
     Axios({
-        method: 'POST',
-        url: '/sale/reservation/create',
+        method: id ? 'PUT' : 'POST',
+        url: id ? `/sale/reservation/update/${id}` : '/sale/reservation/create',
         body: data
     })
         .then((data) => {
@@ -439,7 +473,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
           }}
           fullWidth
         >
-          Save
+          {id ? 'Save' : 'Create'}
         </Button>
       </div>
     </form>
