@@ -58,6 +58,15 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
     setStructures(data)
   }
 
+  const handleClickReservation = (id) => {
+    console.log(id)
+  }
+
+  const handleEditReservation = (id) => {
+    console.log(id);
+    
+  }
+
   return (
     <div
       style={{
@@ -116,18 +125,23 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
               overflowY: 'auto',
               height: '100%',
               width: '100%',
+              border: theme.border.dashed,
+              borderRadius: theme.radius.secondary,
+              boxSizing: 'border-box',
               '& .item': {
                 display: 'flex',
                 padding: '7px 10px 7px 7px',
-                borderRadius: theme.radius.primary,
-                border: theme.border.dashed,
-                marginBottom: 1
+                marginBottom: 1,
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: theme.active.primary
+                }
               },
             }}
           >
             {
               reservations.map((reservation, key) => {
-                return <ReservationItem data={reservation} key={key} />
+                return <ReservationItem data={reservation} key={key} onClick={handleClickReservation} onEdit={handleEditReservation} />
               })
             }
           </Box>
@@ -158,12 +172,17 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
   )
 }
 
-const ReservationItem = ({ data }) => {
+const ReservationItem = ({ data, onClick, onEdit }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
 
+  const handleEdit = (event) => {
+    event.stopPropagation()
+    onEdit(data._id)
+  }
+
   return (
-    <div className='item'>
+    <div className='item' onClick={() => onClick(data._id)}>
       <div style={{ marginRight: 10, display: 'flex', gap: 5 }}>
         <span
           style={{
@@ -177,7 +196,7 @@ const ReservationItem = ({ data }) => {
         ></span>
         <CircleIcon icon={data?.customer.picture?.filename} />
       </div>
-      <div style={{ flex: '40%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: '30%', display: 'flex', flexDirection: 'column' }}>
         <TextEllipsis
           style={{ fontSize: theme.responsive[device]?.text.secondary }}
         >
@@ -205,7 +224,7 @@ const ReservationItem = ({ data }) => {
         <TextEllipsis
           style={{ fontSize: theme.responsive[device]?.text.secondary }}
         >
-          {timeFormat(data?.startAt)} - {timeFormat(data?.endAt)}
+          {timeFormat(data?.startAt, 'LT')} - {timeFormat(data?.endAt, 'LT')}
         </TextEllipsis>
         <TextEllipsis
           style={{
@@ -218,6 +237,7 @@ const ReservationItem = ({ data }) => {
       </div>
       <div style={{ display: 'grid', placeItems: 'center' }}>
         <IconButton
+          onClick={handleEdit}
           sx={{
             width: 30,
             height: 30,
@@ -297,9 +317,9 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
         gridTemplateColumns: '1fr 1fr 1fr 1fr',
         gridTemplateAreas: `'from from to to''customer customer customer price''note note note note''action action action action'`,
         gridColumnGap: 20,
-        padding: '10px 0',
-        borderTop: theme.border.dashed,
-        margin: '10px 10px 0 10px',
+        padding: 13,
+        backgroundColor: `${theme.background.primary}cc`,
+        borderRadius: theme.radius.secondary
       }}
     >
       <div style={{ gridArea: 'from' }}>
