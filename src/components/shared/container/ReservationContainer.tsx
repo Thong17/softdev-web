@@ -220,7 +220,7 @@ const ReservationItem = ({ data, onClick, onEdit }) => {
   }
 
   return (
-    <div className='item' onClick={() => onClick(data._id)}>
+    <div className='item' onClick={() => onClick(data.payment)}>
       <div style={{ marginRight: 10, display: 'flex', gap: 5 }}>
         <span
           style={{

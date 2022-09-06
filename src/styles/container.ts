@@ -207,18 +207,17 @@ export const CustomListContainer = styled('div')(
     boxSizing: 'border-box',
     '& .list-item': {
       boxSizing: 'border-box',
-      padding: '5px 5px 5px 0',
+      padding: '7px 7px 7px 0',
       position: 'relative',
       display: 'flex',
       alignItems: 'center',
       width: '100%',
-      backgroundColor: styled.background.secondary,
       borderRadius: styled.radius.primary,
       marginBottom: 10,
       cursor: 'pointer',
       transition: '0.2s ease',
       '&:hover': {
-        backgroundColor: styled.background.primary
+        backgroundColor: styled.background.secondary
       }
     },
     '& .status': {
