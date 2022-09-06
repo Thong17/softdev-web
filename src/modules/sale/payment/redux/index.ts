@@ -14,6 +14,17 @@ export const getListPayment = createAsyncThunk(
   }
 )
 
+export const getDetailPayment = createAsyncThunk(
+  'payment/detail',
+  async ({ id }: any) => {
+    const response = await Axios({
+      method: 'GET',
+      url: `/sale/payment/detail/${id}`,
+    })
+    return response?.data
+  }
+)
+
 export const paymentSlice = createSlice({
   name: 'payment',
   initialState,
@@ -31,9 +42,22 @@ export const paymentSlice = createSlice({
         state.list.status = 'SUCCESS'
         state.list.data = action.payload.data
       })
+
+      // Detail payment
+      .addCase(getDetailPayment.pending, (state) => {
+        state.detail.status = 'LOADING'
+      })
+      .addCase(getDetailPayment.rejected, (state) => {
+        state.detail.status = 'FAILED'
+      })
+      .addCase(getDetailPayment.fulfilled, (state, action) => {
+        state.detail.status = 'SUCCESS'
+        state.detail.data = action.payload.data
+      })
   },
 })
 
 export const selectListPayment = (state: RootState) => state.payment.list
+export const selectDetailPayment = (state: RootState) => state.payment.detail
 
 export default paymentSlice.reducer

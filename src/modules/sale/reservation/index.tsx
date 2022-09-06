@@ -6,12 +6,17 @@ import useTheme from 'hooks/useTheme'
 import { ReservationAlert } from './ReservationAlert'
 import { useState } from 'react'
 import ReplayRoundedIcon from '@mui/icons-material/ReplayRounded'
+import { DrawerForm } from '../cashing/DrawerForm'
+import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
+import useAuth from 'hooks/useAuth'
 
 export const Reservation = () => {
+  const { user } = useAuth()
   const { theme } = useTheme()
   const [dialog, setDialog] = useState({ open: false })
   const [selectedStructures, setSelectedStructures] = useState<any[]>([])
   const [toggleReload, setToggleReload] = useState(false)
+  const [drawerDialog, setDrawerDialog] = useState({ open: false })
 
   const handleClickStructure = (data) => {
     setSelectedStructures([...selectedStructures, data])
@@ -32,6 +37,7 @@ export const Reservation = () => {
 
   return (
     <Container>
+      <DrawerForm dialog={drawerDialog} setDialog={setDrawerDialog} />
       <StructureContainer
         reload={toggleReload}
         selected={selectedStructures}
@@ -45,10 +51,25 @@ export const Reservation = () => {
                 color: theme.text.secondary,
                 width: 30,
                 height: 30,
-                marginRight: 5,
+                marginRight: 10,
               }}
             >
               <ReplayRoundedIcon style={{ fontSize: 19 }} />
+            </IconButton>
+            <IconButton
+              onClick={() =>
+                setDrawerDialog({ ...drawerDialog, open: true })
+              }
+              style={{
+                color: user?.drawer?.status
+                  ? theme.color.success
+                  : theme.color.error,
+                width: 30,
+                height: 30,
+                marginRight: 10,
+              }}
+            >
+              <PriceChangeRoundedIcon style={{ fontSize: 21 }} />
             </IconButton>
             <IconButton
               onClick={handleClickReservation}

@@ -168,6 +168,19 @@ const recalculatePayment = (paymentId, data) => {
   })
 }
 
+const mappedTransaction = (transaction) => {
+  return {
+    description: transaction.description,
+    discount: transaction.discount,
+    id: transaction._id,
+    price: transaction.price,
+    quantity: transaction.quantity,
+    total: transaction.total
+  }
+}
+
+export const initCustomer = { displayName: null, id: null, point: 0 }
+
 export const InvoiceForm = forwardRef(({
   id = null,
   defaultTax = 0,
@@ -177,7 +190,8 @@ export const InvoiceForm = forwardRef(({
   onPayment,
   onChangePayment,
   onChangeCustomer,
-  listTransactions = []
+  listTransactions = [],
+  selectedCustomer = initCustomer
 }: any, ref) => {
   const {
     register,
@@ -226,10 +240,18 @@ export const InvoiceForm = forwardRef(({
     isEditing: false,
   })
   const [customerDialog, setCustomerDialog] = useState({ open: false})
-  const [customer, setCustomer] = useState({ displayName: null, id: null, point: 0 })
+  const [customer, setCustomer] = useState(selectedCustomer)
   const { user } = useAuth()
   const exchangeRate = useMemo(() => ({ sellRate: user?.drawer?.sellRate, buyRate: user?.drawer?.buyRate }), [user?.drawer])
   const { notify } = useNotify()
+
+  useEffect(() => {
+    setTransactions(listTransactions.map(item => mappedTransaction(item)))
+  }, [listTransactions])
+  
+  useEffect(() => {
+    setCustomer(selectedCustomer)
+  }, [selectedCustomer])
 
   useEffect(() => {
     setTax(tax => ({ ...tax, value: defaultTax }))
@@ -246,8 +268,8 @@ export const InvoiceForm = forwardRef(({
   }))
 
   const onClearPayment = () => {
-    setCustomer({ displayName: null, id: null, point: 0 })
-    onChangeCustomer({ displayName: null, id: null, point: 0 })
+    setCustomer(initCustomer)
+    onChangeCustomer(initCustomer)
     setTax({
       title: 'Tax',
       value: defaultTax,
