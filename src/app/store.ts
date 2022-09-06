@@ -9,6 +9,7 @@ import promotionReducer from 'modules/sale/promotion/redux'
 import roleReducer from 'modules/admin/role/redux'
 import userReducer from 'modules/admin/user/redux'
 import reservationReducer from 'modules/sale/reservation/redux'
+import paymentReducer from 'modules/sale/payment/redux'
 import sharedReducer from 'shared/redux'
 
 export const store = configureStore({
@@ -21,6 +22,7 @@ export const store = configureStore({
     stock: stockReducer,
     promotion: promotionReducer,
     reservation: reservationReducer,
+    payment: paymentReducer,
     role: roleReducer,
     user: userReducer,
     shared: sharedReducer,

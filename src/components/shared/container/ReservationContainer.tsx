@@ -22,6 +22,7 @@ import useNotify from 'hooks/useNotify'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListReservation, selectListReservation } from 'modules/sale/reservation/redux'
 import { dateFormat, inputDateTimeFormat, timeFormat } from 'utils/index'
+import { useNavigate } from 'react-router-dom'
 
 const initReservation: any = {
   price: { value: 0, currency: 'USD' },
@@ -35,6 +36,7 @@ const initReservation: any = {
 export const ReservationContainer = ({ selectedStructures, onSave }) => {
   const { theme } = useTheme()
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const { data, status } = useAppSelector(selectListReservation)
   const [customerDialog, setCustomerDialog] = useState({ open: false })
   const [customer, setCustomer] = useState({
@@ -70,7 +72,7 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
   }
 
   const handleClickReservation = (id) => {
-    console.log(id)
+    navigate(`/sale/payment/${id}`)
   }
 
   const handleCloseForm = () => {

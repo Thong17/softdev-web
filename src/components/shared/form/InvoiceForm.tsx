@@ -177,6 +177,7 @@ export const InvoiceForm = forwardRef(({
   onPayment,
   onChangePayment,
   onChangeCustomer,
+  listTransactions = []
 }: any, ref) => {
   const {
     register,
@@ -194,7 +195,7 @@ export const InvoiceForm = forwardRef(({
   const { theme } = useTheme()
   const { device } = useWeb()
   const confirm = useAlert()
-  const [transactions, setTransactions] = useState<ITransactionItem[]>([])
+  const [transactions, setTransactions] = useState<ITransactionItem[]>(listTransactions)
   const [priceCurrency, setPriceCurrency] = useState('')
   const [discountCurrency, setDiscountCurrency] = useState('')
   const [totalQuantity, setTotalQuantity] = useState(0)
@@ -303,7 +304,9 @@ export const InvoiceForm = forwardRef(({
   useEffect(() => {
     if (!transaction) return
     setTransactions((prev) => [...prev, transaction])
-    reset(transaction)
+
+    // Uncomment below line to show form on add
+    // reset(transaction)
     
     if (!paymentId) return
     recalculatePayment(paymentId, { transaction })
