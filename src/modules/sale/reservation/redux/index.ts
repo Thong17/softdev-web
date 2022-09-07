@@ -14,6 +14,17 @@ export const getListReservation = createAsyncThunk(
   }
 )
 
+export const getDetailReservation = createAsyncThunk(
+  'reservation/detail',
+  async ({ id }: any) => {
+    const response = await Axios({
+      method: 'GET',
+      url: `/sale/reservation/detail/${id}`,
+    })
+    return response?.data
+  }
+)
+
 export const reservationSlice = createSlice({
   name: 'reservation',
   initialState,
@@ -31,9 +42,22 @@ export const reservationSlice = createSlice({
         state.list.status = 'SUCCESS'
         state.list.data = action.payload.data
       })
+
+      // Detail reservation
+      .addCase(getDetailReservation.pending, (state) => {
+        state.detail.status = 'LOADING'
+      })
+      .addCase(getDetailReservation.rejected, (state) => {
+        state.detail.status = 'FAILED'
+      })
+      .addCase(getDetailReservation.fulfilled, (state, action) => {
+        state.detail.status = 'SUCCESS'
+        state.detail.data = action.payload.data
+      })
   },
 })
 
 export const selectListReservation = (state: RootState) => state.reservation.list
+export const selectDetailReservation = (state: RootState) => state.reservation.detail
 
 export default reservationSlice.reducer

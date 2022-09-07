@@ -19,7 +19,7 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-export const Cashing = ({ id = null, transactions = [], customer }: any) => {
+export const Cashing = ({ id = null, transactions = [], customer, status = null }: any) => {
   const { user } = useAuth()
   const { notify } = useNotify()
   const { device } = useWeb()
@@ -199,6 +199,7 @@ export const Cashing = ({ id = null, transactions = [], customer }: any) => {
             onChangePayment={handleChangePayment}
             listTransactions={transactions}
             selectedCustomer={customer}
+            status={status}
           />
         </div>
       </div>

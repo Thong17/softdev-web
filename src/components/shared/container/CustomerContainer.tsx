@@ -25,7 +25,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { CustomerLayout, CustomerItem } from 'components/layouts/CustomerLayout'
 
-export const CustomerStatistic = ({ phone, point, ...props }) => {
+export const CustomerStatistic = ({ phone, point = 0, ...props }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   return (
