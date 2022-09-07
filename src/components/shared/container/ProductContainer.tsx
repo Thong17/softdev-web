@@ -46,7 +46,7 @@ const mappedProduct = (data, lang) => {
   }
 }
 
-export const ProductContainer = ({ onClickProduct, actions, filterSelected, filterPromotion, selectedProducts, promotionId, activeId, toggleReload }: any) => {
+export const ProductContainer = ({ onClickProduct, actions, filterSelected, filterPromotion, selectedProducts, promotionId, activeId, toggleReload, isDisabled }: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
   const [hasMore, setHasMore] = useState(true)
@@ -63,6 +63,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
   const [products, setProducts] = useState<any[]>([])
   const [selected, setSelected] = useState(false)
   const [promotion, setPromotion] = useState(false)
+  const [disabled, setDisabled] = useState(isDisabled)
   const [brandOption, setBrandOption] = useState<IOptions[]>([
     {
       value: 'all',
@@ -88,6 +89,10 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
     createdAt: false,
   })
 
+  useEffect(() => {
+    setDisabled(isDisabled)
+  }, [isDisabled])
+  
   const handleToggleFavorite = () => {
     if (hasMore) {
       setProducts([])
@@ -314,7 +319,8 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
           {actions}
         </div>
       </div>
-      <div style={{ border: theme.border.dashed, borderRadius: theme.radius.quaternary, borderWidth: 2, padding: '0 10px' }}>
+      <div style={{ border: theme.border.dashed, borderRadius: theme.radius.quaternary, borderWidth: 2, padding: '0 10px', position: 'relative', overflow: 'hidden' }}>
+        {disabled && <div style={{ backgroundColor: `${theme.background.primary}cc`, zIndex: 100, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}></div>}
         <GridLayout>
           {!loading
             ? products?.map((product: any, index) => {

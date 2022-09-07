@@ -201,6 +201,8 @@ export const InvoiceForm = forwardRef(
       listTransactions = [],
       selectedCustomer = initCustomer,
       reservationData,
+      onCheckIn,
+      onCheckOut
     }: any,
     ref
   ) => {
@@ -269,8 +271,9 @@ export const InvoiceForm = forwardRef(
     }, [reservationData])
 
     useEffect(() => {
+      if (!reservationData) return
       setTransactions(listTransactions.map((item) => mappedTransaction(item)))
-    }, [listTransactions])
+    }, [listTransactions, reservationData])
 
     useEffect(() => {
       setCustomer(selectedCustomer)
@@ -527,6 +530,9 @@ export const InvoiceForm = forwardRef(
       })
         .then((data) => {
           setReservation(data?.data?.data)
+          setCustomer(data?.data?.data?.customer)
+          setPaymentId(data?.data?.data?.payment?._id)
+          onCheckIn(data?.data?.data)
         })
         .catch((err) => notify(err?.response?.data?.msg, 'error'))
     }
@@ -538,6 +544,7 @@ export const InvoiceForm = forwardRef(
       })
         .then((data) => {
           setReservation(data?.data?.data)
+          onCheckOut(data?.data?.data)
         })
         .catch((err) => notify(err?.response?.data?.msg, 'error'))
     }

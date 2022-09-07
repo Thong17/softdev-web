@@ -19,12 +19,12 @@ export const ReservationForm = () => {
 
   useEffect(() => {
     if (!data) return
-    setDefaultValue(prev => ({ ...prev, transactions: data.payment?.transactions, customer: { ...data.payment?.customer, id: data.payment?.customer?._id }, reservation: data, }))
+    setDefaultValue(prev => ({ ...prev, transactions: data.payment?.transactions, customer: { ...data.customer, id: data.customer?._id }, reservation: data, }))
   }, [data])
   
   return (
     <Container>
-      <Cashing customer={defaultValue.customer} id={defaultValue.reservation?.payment?._id} transactions={defaultValue.transactions} reservation={defaultValue.reservation} />
+      <Cashing customer={defaultValue.customer} id={defaultValue.reservation?.payment?._id} transactions={defaultValue.transactions} reservationData={defaultValue.reservation} />
     </Container>
   )
 }

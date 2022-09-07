@@ -19,13 +19,14 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-export const Cashing = ({ id = null, transactions = [], customer, reservation = null }: any) => {
+export const Cashing = ({ id = null, transactions = [], customer, reservationData = null }: any) => {
   const { user } = useAuth()
   const { notify } = useNotify()
   const { device } = useWeb()
   const dispatch = useAppDispatch()
   const { data: preview } = useAppSelector(selectInfoStore)
   const [paymentId, setPaymentId] = useState(id)
+  const [reservation, setReservation] = useState(reservationData)
   const [productDialog, setProductDialog] = useState({
     open: false,
     productId: null,
@@ -45,6 +46,10 @@ export const Cashing = ({ id = null, transactions = [], customer, reservation = 
     dispatch(getInfoStore())
   }, [dispatch])
 
+  useEffect(() => {
+    setReservation(reservationData)
+  }, [reservationData])
+  
   useEffect(() => {
     setPaymentId(id)
   }, [id])
@@ -130,6 +135,14 @@ export const Cashing = ({ id = null, transactions = [], customer, reservation = 
     })
   }
 
+  const handleCheckedIn = (data) => {
+    setReservation(data)
+  }
+
+  const handleCheckedOut = (data) => {
+    setReservation(data)
+  }
+
   return (
     <Container>
       <ProductForm
@@ -161,6 +174,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservation = 
             onClickProduct={handleClickProduct}
             filterPromotion={true}
             toggleReload={reload}
+            isDisabled={reservation && !reservation.payment}
             actions={
               <>
                 <IconButton
@@ -212,6 +226,8 @@ export const Cashing = ({ id = null, transactions = [], customer, reservation = 
             listTransactions={transactions}
             selectedCustomer={customer}
             reservationData={reservation}
+            onCheckIn={handleCheckedIn}
+            onCheckOut={handleCheckedOut}
           />
         </div>
       </div>
