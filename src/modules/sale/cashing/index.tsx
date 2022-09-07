@@ -19,7 +19,7 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-export const Cashing = ({ id = null, transactions = [], customer, status = null }: any) => {
+export const Cashing = ({ id = null, transactions = [], customer, reservation = null }: any) => {
   const { user } = useAuth()
   const { notify } = useNotify()
   const { device } = useWeb()
@@ -45,6 +45,18 @@ export const Cashing = ({ id = null, transactions = [], customer, status = null 
     dispatch(getInfoStore())
   }, [dispatch])
 
+  useEffect(() => {
+    setPaymentId(id)
+  }, [id])
+
+  useEffect(() => {
+    setPaymentDialog(prev => ({ ...prev, customer }))
+  }, [customer])
+
+  useEffect(() => {
+    setPaymentDialog(prev => ({ ...prev, payment: reservation?.payment }))
+  }, [reservation?.payment])
+  
   const handleClickProduct = (id) => {
     setProductDialog({ productId: id, open: true })
   }
@@ -199,7 +211,7 @@ export const Cashing = ({ id = null, transactions = [], customer, status = null 
             onChangePayment={handleChangePayment}
             listTransactions={transactions}
             selectedCustomer={customer}
-            status={status}
+            reservationData={reservation}
           />
         </div>
       </div>

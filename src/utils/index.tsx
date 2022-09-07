@@ -169,6 +169,13 @@ export const inputDateTimeFormat = (d) => {
   return d
 }
 
+export const timeDifferent = (from, to) => {
+  let x = moment(from)
+  let y = moment(to)
+  const duration = moment.duration(x.diff(y))
+  return duration.humanize()
+}
+
 export const capitalizeText = (text) => {
   if (!text) return '...'
   return text?.charAt(0).toUpperCase() + text?.slice(1)

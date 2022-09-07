@@ -15,7 +15,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CircleIcon } from '../table/CustomIcon'
 import { MiniDetailField, MiniTextField } from './InputField'
 import Button from '../Button'
-import { currencyFormat } from 'utils'
+import { currencyFormat, timeDifferent } from 'utils'
 import { IOptions, MiniSelectField } from './SelectField'
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
@@ -200,7 +200,7 @@ export const InvoiceForm = forwardRef(
       onChangeCustomer,
       listTransactions = [],
       selectedCustomer = initCustomer,
-      status,
+      reservationData,
     }: any,
     ref
   ) => {
@@ -231,6 +231,7 @@ export const InvoiceForm = forwardRef(
     const isFixedValue = watch('discount.isFixed')
     const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
     const [paymentId, setPaymentId] = useState(id)
+    const [reservation, setReservation] = useState<any>(null)
     const [discount, setDiscount] = useState({
       title: 'Discount',
       value: 0,
@@ -262,6 +263,10 @@ export const InvoiceForm = forwardRef(
       [user?.drawer]
     )
     const { notify } = useNotify()
+
+    useEffect(() => {
+      setReservation(reservationData)
+    }, [reservationData])
 
     useEffect(() => {
       setTransactions(listTransactions.map((item) => mappedTransaction(item)))
@@ -513,6 +518,108 @@ export const InvoiceForm = forwardRef(
 
     const handleClickCustomer = () => {
       setCustomerDialog({ ...customerDialog, open: true })
+    }
+
+    const handleCheckIn = () => {
+      Axios({
+        method: 'PUT',
+        url: `/sale/reservation/checkIn/${reservation._id}`,
+      })
+        .then((data) => {
+          setReservation(data?.data?.data)
+        })
+        .catch((err) => notify(err?.response?.data?.msg, 'error'))
+    }
+
+    const handleCheckOut = () => {
+      Axios({
+        method: 'PUT',
+        url: `/sale/reservation/checkOut/${reservation._id}`,
+      })
+        .then((data) => {
+          setReservation(data?.data?.data)
+        })
+        .catch((err) => notify(err?.response?.data?.msg, 'error'))
+    }
+
+    const renderActions = () => {
+      if (!reservation) return null
+
+      switch (reservation?.status) {
+        case 'reserved':
+          return (
+            <CustomButton
+              styled={theme}
+              fullWidth
+              onClick={handleCheckIn}
+              style={{
+                backgroundColor: `${theme.color.success}22`,
+                color: theme.color.success,
+                borderRadius: theme.radius.secondary,
+              }}
+            >
+              Start
+            </CustomButton>
+          )
+
+        case 'occupied':
+          return (
+            <>
+              <span
+                style={{ width: '100%', display: 'grid', placeItems: 'center' }}
+              >
+                {timeDifferent(Date.now(), reservation?.startAt)}
+              </span>
+              <CustomButton
+                styled={theme}
+                fullWidth
+                onClick={handleCheckOut}
+                style={{
+                  backgroundColor: `${theme.color.error}22`,
+                  color: theme.color.error,
+                  borderRadius: theme.radius.secondary,
+                }}
+              >
+                Stop
+              </CustomButton>
+            </>
+          )
+
+        default:
+          if (reservation?.payment?.status) {
+            return <span
+              style={{ width: '100%', display: 'grid', placeItems: 'center' }}
+            >
+              Completed
+            </span>
+          }
+          return <>
+            <CustomButton
+              styled={theme}
+              fullWidth
+              onClick={handleClearPayment}
+              style={{
+                color: theme.text.secondary,
+                marginRight: 10,
+                borderRadius: theme.radius.secondary,
+              }}
+            >
+              Clear
+            </CustomButton>
+            <CustomButton
+              styled={theme}
+              fullWidth
+              onClick={handleClickPayment}
+              style={{
+                backgroundColor: `${theme.color.success}22`,
+                color: theme.color.success,
+                borderRadius: theme.radius.secondary,
+              }}
+            >
+              Payment
+            </CustomButton>
+          </>
+      }
     }
 
     return (
@@ -1030,19 +1137,8 @@ export const InvoiceForm = forwardRef(
             <div className='total-container'>
               <div className='total'>
                 <FlexBetween>
-                  {status && status === 'reserved' ? (
-                    <CustomButton
-                      styled={theme}
-                      fullWidth
-                      onClick={handleClearPayment}
-                      style={{
-                        backgroundColor: `${theme.color.success}22`,
-                        color: theme.color.success,
-                        borderRadius: theme.radius.secondary,
-                      }}
-                    >
-                      Start
-                    </CustomButton>
+                  {reservation ? (
+                    renderActions()
                   ) : (
                     <>
                       <CustomButton

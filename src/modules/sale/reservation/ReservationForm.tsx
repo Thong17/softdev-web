@@ -10,7 +10,7 @@ export const ReservationForm = () => {
   const { id } = useParams()
   const dispatch = useAppDispatch()
   const { data } = useAppSelector(selectDetailReservation)
-  const [defaultValue, setDefaultValue] = useState({ id: id, transactions: [], customer: initCustomer, status: null })
+  const [defaultValue, setDefaultValue] = useState({ id: id, transactions: [], customer: initCustomer, reservation: data })
 
   useEffect(() => {
     if (!id) return
@@ -19,12 +19,12 @@ export const ReservationForm = () => {
 
   useEffect(() => {
     if (!data) return
-    setDefaultValue(prev => ({ ...prev, transactions: data.payment?.transactions, customer: { ...data.payment?.customer, id: data.payment?.customer?._id }, status: data.status }))
+    setDefaultValue(prev => ({ ...prev, transactions: data.payment?.transactions, customer: { ...data.payment?.customer, id: data.payment?.customer?._id }, reservation: data, }))
   }, [data])
   
   return (
     <Container>
-      <Cashing customer={defaultValue.customer} id={defaultValue.id} transactions={defaultValue.transactions} status={defaultValue.status} />
+      <Cashing customer={defaultValue.customer} id={defaultValue.reservation?.payment?._id} transactions={defaultValue.transactions} reservation={defaultValue.reservation} />
     </Container>
   )
 }
