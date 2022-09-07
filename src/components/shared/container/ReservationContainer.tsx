@@ -72,7 +72,7 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
   }
 
   const handleClickReservation = (id) => {
-    navigate(`/sale/payment/${id}`)
+    navigate(`/sale/reservation/${id}`)
   }
 
   const handleCloseForm = () => {

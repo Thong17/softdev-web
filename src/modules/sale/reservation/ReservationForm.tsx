@@ -4,13 +4,16 @@ import { initCustomer } from 'components/shared/form/InvoiceForm'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Cashing } from '../cashing'
-import { getDetailPayment, selectDetailPayment } from './redux'
+import { getDetailPayment, selectDetailPayment } from '../payment/redux'
 
-export const Payment = () => {
+export const ReservationForm = () => {
   const { id } = useParams()
   const dispatch = useAppDispatch()
   const { data } = useAppSelector(selectDetailPayment)
   const [defaultValue, setDefaultValue] = useState({ id: id, transactions: [], customer: initCustomer })
+
+  console.log(data);
+  
 
   useEffect(() => {
     if (!id) return

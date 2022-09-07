@@ -22,8 +22,7 @@ export const Sale = () => {
   )
 }
 
-export { Reservation } from './reservation'
-export { Payment } from './payment'
+export { Reservation, ReservationForm } from './reservation'
 export { Cashing } from './cashing'
 export { Stocks, Stock } from './stock'
 export { Promotions, CreatePromotion, UpdatePromotion, DetailPromotion } from './promotion'
