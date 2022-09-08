@@ -2,7 +2,6 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Container from 'components/shared/Container'
 import { ProductContainer } from 'components/shared/container/ProductContainer'
 import {
-  InvoiceForm,
   ITransactionItem,
 } from 'components/shared/form/InvoiceForm'
 import useWeb from 'hooks/useWeb'
@@ -14,10 +13,11 @@ import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
 import { ProductForm } from '../cashing/ProductForm'
 import { DrawerForm } from '../cashing/DrawerForm'
-import { PaymentForm } from '../cashing/PaymentForm'
+import { PaymentForm } from './PaymentForm'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
+import { InvoiceForm } from './InvoiceForm'
 
 export const Cashing = ({ id = null, transactions = [], customer, reservationData = null }: any) => {
   const { user } = useAuth()
