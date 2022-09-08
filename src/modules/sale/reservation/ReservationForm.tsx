@@ -3,7 +3,7 @@ import Container from 'components/shared/Container'
 import { initCustomer } from 'components/shared/form/InvoiceForm'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Cashing } from '../cashing'
+import { Cashing } from './Cashing'
 import { getDetailReservation, selectDetailReservation } from './redux'
 
 export const ReservationForm = () => {
