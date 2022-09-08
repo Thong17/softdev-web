@@ -19,14 +19,13 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-export const Cashing = ({ id = null, transactions = [], customer, reservationData = null }: any) => {
+export const Cashing = () => {
   const { user } = useAuth()
   const { notify } = useNotify()
   const { device } = useWeb()
   const dispatch = useAppDispatch()
   const { data: preview } = useAppSelector(selectInfoStore)
-  const [paymentId, setPaymentId] = useState(id)
-  const [reservation, setReservation] = useState(reservationData)
+  const [paymentId, setPaymentId] = useState(null)
   const [productDialog, setProductDialog] = useState({
     open: false,
     productId: null,
@@ -36,7 +35,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   const [paymentDialog, setPaymentDialog] = useState<any>({
     open: false,
     payment: null,
-    customer: customer,
+    customer: null,
   })
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
@@ -46,22 +45,6 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
     dispatch(getInfoStore())
   }, [dispatch])
 
-  useEffect(() => {
-    setReservation(reservationData)
-  }, [reservationData])
-  
-  useEffect(() => {
-    setPaymentId(id)
-  }, [id])
-
-  useEffect(() => {
-    setPaymentDialog(prev => ({ ...prev, customer }))
-  }, [customer])
-
-  useEffect(() => {
-    setPaymentDialog(prev => ({ ...prev, payment: reservation?.payment }))
-  }, [reservation?.payment])
-  
   const handleClickProduct = (id) => {
     setProductDialog({ productId: id, open: true })
   }
@@ -135,14 +118,6 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
     })
   }
 
-  const handleCheckedIn = (data) => {
-    setReservation(data)
-  }
-
-  const handleCheckedOut = (data) => {
-    setReservation(data)
-  }
-
   return (
     <Container>
       <ProductForm
@@ -174,7 +149,6 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
             onClickProduct={handleClickProduct}
             filterPromotion={true}
             toggleReload={reload}
-            isDisabled={reservation && !reservation.payment}
             actions={
               <>
                 <IconButton
@@ -223,11 +197,6 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
             onPayment={handlePayment}
             onChangeCustomer={handleChangeCustomer}
             onChangePayment={handleChangePayment}
-            listTransactions={transactions}
-            selectedCustomer={customer}
-            reservationData={reservation}
-            onCheckIn={handleCheckedIn}
-            onCheckOut={handleCheckedOut}
           />
         </div>
       </div>

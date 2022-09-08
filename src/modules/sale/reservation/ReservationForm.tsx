@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Container from 'components/shared/Container'
-import { initCustomer } from 'components/shared/form/InvoiceForm'
+import { initCustomer } from './InvoiceForm'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Cashing } from './Cashing'
