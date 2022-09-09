@@ -1,7 +1,14 @@
 import useTheme from 'hooks/useTheme'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { getListBrand, getListCategory, getListProduct, selectListBrand, selectListCategory, selectListProduct } from 'shared/redux'
+import {
+  getListBrand,
+  getListCategory,
+  getListProduct,
+  selectListBrand,
+  selectListCategory,
+  selectListProduct,
+} from 'shared/redux'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { CircularProgress, MenuItem, Skeleton } from '@mui/material'
@@ -21,15 +28,16 @@ import { QuantityStatus } from '../QuantityStatus'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
+import { CircleIcon } from '../table/CustomIcon'
 
 const mappedProduct = (data, lang) => {
   let stock = 0
   let alertAt = 0
-  data.stocks?.forEach(item => {
+  data.stocks?.forEach((item) => {
     stock += item.quantity
     alertAt += item.alertAt
   })
-  
+
   return {
     id: data?._id,
     name: data?.name?.[lang] || data?.name?.['English'],
@@ -42,18 +50,35 @@ const mappedProduct = (data, lang) => {
     category: data?.category?._id,
     stock,
     alertAt,
-    promotion: data?.promotion
+    promotion: data?.promotion,
   }
 }
 
-export const ProductContainer = ({ onClickProduct, actions, filterSelected, filterPromotion, selectedProducts, promotionId, activeId, toggleReload, isDisabled }: any) => {
+export const ProductContainer = ({
+  onClickProduct,
+  actions,
+  filterSelected,
+  filterPromotion,
+  selectedProducts,
+  promotionId,
+  activeId,
+  toggleReload,
+  isDisabled,
+}: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
-  const { data, count: countProduct, hasMore: hasMoreProduct, status } = useAppSelector(selectListProduct)
-  const { data: listBrand, status: brandStatus } = useAppSelector(selectListBrand)
-  const { data: listCategory, status: categoryStatus } = useAppSelector(selectListCategory)
+  const {
+    data,
+    count: countProduct,
+    hasMore: hasMoreProduct,
+    status,
+  } = useAppSelector(selectListProduct)
+  const { data: listBrand, status: brandStatus } =
+    useAppSelector(selectListBrand)
+  const { data: listCategory, status: categoryStatus } =
+    useAppSelector(selectListCategory)
   const { theme } = useTheme()
   const { device } = useWeb()
   const { notify } = useNotify()
@@ -67,21 +92,24 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
   const [brandOption, setBrandOption] = useState<IOptions[]>([
     {
       value: 'all',
-      label: 'Brand'
-    }
+      label: 'Brand',
+    },
   ])
   const [categoryOption, setCategoryOption] = useState<IOptions[]>([
     {
       value: 'all',
       label: 'Category',
-    }
+    },
   ])
   const [brand, setBrand] = useState<any>('all')
   const [category, setCategory] = useState<any>('all')
   const [favorite, setFavorite] = useState(false)
   const [search, setSearch] = useState('')
   const [offset, setOffset] = useState(0)
-  const [filterObj, setFilterObj] = useState<any>({ filter: 'createdAt', asc: false })
+  const [filterObj, setFilterObj] = useState<any>({
+    filter: 'createdAt',
+    asc: false,
+  })
   const limit = 20
 
   const [sortObj, setSortObj] = useState({
@@ -92,7 +120,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
   useEffect(() => {
     setDisabled(isDisabled)
   }, [isDisabled])
-  
+
   const handleToggleFavorite = () => {
     if (hasMore) {
       setProducts([])
@@ -136,7 +164,7 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
     }
     if (field === 'category') {
       setCategory(value)
-    } 
+    }
     if (hasMore) {
       setProducts([])
       setOffset(0)
@@ -156,16 +184,19 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
   }
 
   const observer: any = useRef()
-  const lastProductElement = useCallback((node) => {
-    if (fetching) return
-    if (observer.current) observer.current.disconnect()
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && count && count > offset + limit) {
-        setOffset(prevOffset => prevOffset + limit)
-      }
-    })
-    if (node) observer.current.observe(node)
-  },[fetching, count, offset])
+  const lastProductElement = useCallback(
+    (node) => {
+      if (fetching) return
+      if (observer.current) observer.current.disconnect()
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && count && count > offset + limit) {
+          setOffset((prevOffset) => prevOffset + limit)
+        }
+      })
+      if (node) observer.current.observe(node)
+    },
+    [fetching, count, offset]
+  )
 
   useEffect(() => {
     if (products.length < 1) return
@@ -183,59 +214,90 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
     Axios({
       method: 'GET',
       url: '/shared/product/list',
-      params: query
-    }).then(data => {
-      setProducts(data?.data?.data.map((product) => mappedProduct(product, lang)))
-    }).catch(err => {
-      notify(err?.response?.data?.msg, 'error')
+      params: query,
     })
+      .then((data) => {
+        setProducts(
+          data?.data?.data.map((product) => mappedProduct(product, lang))
+        )
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleReload])
-  
+
   useEffect(() => {
     if (brandStatus !== 'SUCCESS') return
-    const mappedOption = listBrand.map(brand => ({ value: brand._id, label: brand.name[lang] || brand.name['English'], tags: brand.tags }))
+    const mappedOption = listBrand.map((brand) => ({
+      value: brand._id,
+      label: (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <CircleIcon icon={brand.icon?.filename} />
+          <span style={{ marginLeft: 10 }}>
+            {brand.name[lang] || brand.name['English']}
+          </span>
+        </div>
+      ),
+      tags: brand.tags,
+    }))
     setBrandOption([{ label: 'Brand', value: 'all' }, ...mappedOption])
   }, [listBrand, brandStatus, lang])
-  
+
   useEffect(() => {
     if (categoryStatus !== 'SUCCESS') return
-    const mappedOption = listCategory.map(brand => ({ value: brand._id, label: brand.name[lang] || brand.name['English'], tags: brand.tags }))
+    const mappedOption = listCategory.map((brand) => ({
+      value: brand._id,
+      label: (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <CircleIcon icon={brand.icon?.filename} />
+          <span style={{ marginLeft: 10 }}>
+            {brand.name[lang] || brand.name['English']}
+          </span>
+        </div>
+      ),
+      tags: brand.tags,
+    }))
     setCategoryOption([{ label: 'Category', value: 'all' }, ...mappedOption])
   }, [listCategory, categoryStatus, lang])
-  
+
   useEffect(() => {
     // Client Side Filtering if all the products is loaded
     if (!hasMore) {
-      const _search = new RegExp(search || '', "i")
-      setProducts(prevData => {
-        return prevData.map(data => {
-          let obj = data
+      const _search = new RegExp(search || '', 'i')
+      setProducts((prevData) => {
+        return prevData
+          .map((data) => {
+            let obj = data
 
-          if (!_search.test(data.tags)) {
-            obj['display'] = 'none'
-          } else {
-            obj['display'] = 'block'
-          }
+            if (!_search.test(data.tags)) {
+              obj['display'] = 'none'
+            } else {
+              obj['display'] = 'block'
+            }
 
-          if (brand !== 'all' && brand !== data.brand) obj['display'] = 'none'
-          if (category !== 'all' && category !== data.category) obj['display'] = 'none'
-          
-          if (selected && !selectedProducts?.includes(data.id)) obj['display'] = 'none'
-          if (favorite && !user?.favorites?.includes(data.id)) obj['display'] = 'none'
-          if (promotion && !data.promotion) obj['display'] = 'none'
-          return obj
-        }).sort((a, b) => {
-          if (!filterObj.asc) {
-            if (b[filterObj.filter] < a[filterObj.filter]) return -1
-            if (b[filterObj.filter] > a[filterObj.filter]) return 1
-            return 0
-          } else {
-            if (a[filterObj.filter] < b[filterObj.filter]) return -1
-            if (a[filterObj.filter] > b[filterObj.filter]) return 1
-            return 0
-          }
-        })
+            if (brand !== 'all' && brand !== data.brand) obj['display'] = 'none'
+            if (category !== 'all' && category !== data.category)
+              obj['display'] = 'none'
+
+            if (selected && !selectedProducts?.includes(data.id))
+              obj['display'] = 'none'
+            if (favorite && !user?.favorites?.includes(data.id))
+              obj['display'] = 'none'
+            if (promotion && !data.promotion) obj['display'] = 'none'
+            return obj
+          })
+          .sort((a, b) => {
+            if (!filterObj.asc) {
+              if (b[filterObj.filter] < a[filterObj.filter]) return -1
+              if (b[filterObj.filter] > a[filterObj.filter]) return 1
+              return 0
+            } else {
+              if (a[filterObj.filter] < b[filterObj.filter]) return -1
+              if (a[filterObj.filter] > b[filterObj.filter]) return 1
+              return 0
+            }
+          })
       })
 
       return
@@ -254,7 +316,17 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
     if (selected && promotionId) query.append('promotion', promotionId)
     dispatch(getListProduct(query))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, offset, search, favorite, promotion, filterObj, brand, category, selected])
+  }, [
+    dispatch,
+    offset,
+    search,
+    favorite,
+    promotion,
+    filterObj,
+    brand,
+    category,
+    selected,
+  ])
 
   useEffect(() => {
     dispatch(getListBrand())
@@ -268,7 +340,10 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
     setCount(countProduct || 0)
     setTimeout(() => {
       if (!unmounted) {
-        setProducts(prevData => [...prevData, ...data.map((product) => mappedProduct(product, lang))])
+        setProducts((prevData) => [
+          ...prevData,
+          ...data.map((product) => mappedProduct(product, lang)),
+        ])
         setLoading(false)
         setFetching(false)
       }
@@ -280,7 +355,13 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <div
           style={{
             fontSize: theme.responsive[device]?.text.h4,
@@ -289,14 +370,30 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
             alignItems: 'center',
           }}
         >
-          <ArrowRightRoundedIcon fontSize='large' /><span style={{ fontSize: theme.responsive[device]?.text.primary }}>Product</span>
+          <ArrowRightRoundedIcon fontSize='large' />
+          <span style={{ fontSize: theme.responsive[device]?.text.primary }}>
+            Product
+          </span>
         </div>
-        
-        <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center', width: 'fit-content' }}>
+
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'end',
+            alignItems: 'center',
+            width: 'fit-content',
+          }}
+        >
           <MiniSearchField onChange={handleSearch} />
           <MiniFilterButton>
-            <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}><SortIcon asc={sortObj.name} /> By Name</MenuItem>
-            <MenuItem onClick={() => handleChangeFilter({ filter: 'createdAt' })}><SortIcon asc={sortObj.createdAt} /> By Date</MenuItem>
+            <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}>
+              <SortIcon asc={sortObj.name} /> By Name
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleChangeFilter({ filter: 'createdAt' })}
+            >
+              <SortIcon asc={sortObj.createdAt} /> By Date
+            </MenuItem>
           </MiniFilterButton>
           <span style={{ width: 10 }}></span>
           <MiniSelectField
@@ -304,43 +401,109 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
             options={brandOption}
             value={brand}
             search={true}
-            onChange={(event) => handleChangeOption(event.target.value, 'brand')}
+            onChange={(event) =>
+              handleChangeOption(event.target.value, 'brand')
+            }
           />
           <MiniSelectField
             style={{ minWidth: 70 }}
             options={categoryOption}
             value={category}
             search={true}
-            onChange={(event) => handleChangeOption(event.target.value, 'category')}
+            onChange={(event) =>
+              handleChangeOption(event.target.value, 'category')
+            }
           />
-          <IconButton onClick={handleToggleFavorite} style={{ color: favorite ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><BookmarksRoundedIcon style={{ fontSize: 17 }} /></IconButton>
-          {filterSelected && <IconButton onClick={handleToggleSelected} style={{ color: selected ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><DoneAllRoundedIcon fontSize='small' /></IconButton>}
-          {filterPromotion && <IconButton onClick={handleTogglePromotion} style={{ color: promotion ? theme.color.info : theme.text.secondary, width: 30, height: 30, marginRight: 10 }}><DiscountIcon style={{ fontSize: 17 }} /></IconButton>}
+          <IconButton
+            onClick={handleToggleFavorite}
+            style={{
+              color: favorite ? theme.color.info : theme.text.secondary,
+              width: 30,
+              height: 30,
+              marginRight: 10,
+            }}
+          >
+            <BookmarksRoundedIcon style={{ fontSize: 17 }} />
+          </IconButton>
+          {filterSelected && (
+            <IconButton
+              onClick={handleToggleSelected}
+              style={{
+                color: selected ? theme.color.info : theme.text.secondary,
+                width: 30,
+                height: 30,
+                marginRight: 10,
+              }}
+            >
+              <DoneAllRoundedIcon fontSize='small' />
+            </IconButton>
+          )}
+          {filterPromotion && (
+            <IconButton
+              onClick={handleTogglePromotion}
+              style={{
+                color: promotion ? theme.color.info : theme.text.secondary,
+                width: 30,
+                height: 30,
+                marginRight: 10,
+              }}
+            >
+              <DiscountIcon style={{ fontSize: 17 }} />
+            </IconButton>
+          )}
           {actions}
         </div>
       </div>
-      <div style={{ border: theme.border.dashed, borderRadius: theme.radius.quaternary, borderWidth: 2, padding: '0 10px', position: 'relative', overflow: 'hidden' }}>
-        {disabled && <div style={{ backgroundColor: `${theme.background.primary}cc`, zIndex: 100, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}></div>}
+      <div
+        style={{
+          border: theme.border.dashed,
+          borderRadius: theme.radius.quaternary,
+          borderWidth: 2,
+          padding: '0 10px',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {disabled && (
+          <div
+            style={{
+              backgroundColor: `${theme.background.primary}cc`,
+              zIndex: 100,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+            }}
+          ></div>
+        )}
         <GridLayout>
           {!loading
             ? products?.map((product: any, index) => {
                 if (products.length === index + 1) {
-                  return <GridItem
-                    id={product.id}
-                    ref={lastProductElement}
-                    key={index}
-                    title={product.name}
-                    picture={product.profile}
-                    subLeft={product.price}
-                    subRight={<QuantityStatus qty={product.stock} min={product.alertAt} />}
-                    action={product.action}
-                    display={product.display}
-                    onClick={() => handleClickProduct(product.id)}
-                    selected={selectedProducts?.includes(product.id)}
-                    favorite={user?.favorites?.includes(product.id)}
-                    promotion={product.promotion}
-                    active={product.id === activeId}
-                  />
+                  return (
+                    <GridItem
+                      id={product.id}
+                      ref={lastProductElement}
+                      key={index}
+                      title={product.name}
+                      picture={product.profile}
+                      subLeft={product.price}
+                      subRight={
+                        <QuantityStatus
+                          qty={product.stock}
+                          min={product.alertAt}
+                        />
+                      }
+                      action={product.action}
+                      display={product.display}
+                      onClick={() => handleClickProduct(product.id)}
+                      selected={selectedProducts?.includes(product.id)}
+                      favorite={user?.favorites?.includes(product.id)}
+                      promotion={product.promotion}
+                      active={product.id === activeId}
+                    />
+                  )
                 }
                 return (
                   <GridItem
@@ -349,7 +512,12 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
                     title={product.name}
                     picture={product.profile}
                     subLeft={product.price}
-                    subRight={<QuantityStatus qty={product.stock} min={product.alertAt} />}
+                    subRight={
+                      <QuantityStatus
+                        qty={product.stock}
+                        min={product.alertAt}
+                      />
+                    }
                     action={product.action}
                     display={product.display}
                     onClick={() => handleClickProduct(product.id)}
@@ -390,7 +558,18 @@ export const ProductContainer = ({ onClickProduct, actions, filterSelected, filt
                 )
               })}
         </GridLayout>
-        {fetching && <div style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: 10 }}><CircularProgress style={{ width: 30, height: 30 }} /></div>}
+        {fetching && (
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              padding: 10,
+            }}
+          >
+            <CircularProgress style={{ width: 30, height: 30 }} />
+          </div>
+        )}
       </div>
     </div>
   )
