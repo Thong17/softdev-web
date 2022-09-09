@@ -46,6 +46,7 @@ export const CustomCalendar = styled('div')(
     },
     '& .fc-daygrid-event, & .fc-event-main': {
       backgroundColor: `${styled.background.secondary} !important`,
+      cursor: 'pointer'
     },
     '& .fc-event-title-container': {
       boxShadow: styled.shadow.secondary,
@@ -108,11 +109,13 @@ export const CustomCalendar = styled('div')(
     // List
     '& .fc-list-empty': {
       backgroundColor: `${styled.background.primary} !important`,
-      height: '70%',
     },
     '& .fc-list-day *': {
       backgroundColor: `${styled.background.secondary} !important`,
       borderRadius: styled.radius.primary,
+    },
+    '& .fc-list-event': {
+      cursor: 'pointer'
     },
     '& .fc-list-event:hover td': {
       backgroundColor: `${styled.active.secondary} !important`,

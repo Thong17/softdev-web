@@ -103,7 +103,6 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
           setPayment(data?.data?.data)
           reload()
           onClear()
-          notify(data?.data?.msg, 'success')
         })
         .catch((err) => {
           notify(err?.response?.data?.msg, 'error')
