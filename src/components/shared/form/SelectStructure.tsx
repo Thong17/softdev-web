@@ -20,11 +20,12 @@ const SelectLabel = ({ structures }) => {
         alignItems: 'center',
         fontSize: 15,
         lineHeight: 1,
+        width: '100%'
       }}
     >
       <TableBarRoundedIcon style={{ fontSize: 18 }} />
       {structures.length > 0 ? (
-        <div style={{ display: 'flex', maxWidth: '100%', overflowX: 'auto' }}>
+        <div style={{ display: 'flex', width: '100%', overflowX: 'auto' }}>
           {structures.map((structure, key) => (
             <div
               key={key}
@@ -110,6 +111,7 @@ export const SelectStructure = ({ onContinue, structures }) => {
         height: 30,
         color: theme.text.secondary,
         borderRadius: theme.radius.primary,
+        width: '70%'
       }}
       label={<SelectLabel structures={selected} />}
     >
