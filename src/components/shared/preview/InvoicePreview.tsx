@@ -21,7 +21,6 @@ export const InvoicePreview = ({ payment }) => {
         mode='expand'
         styled={theme}
         device={device}
-        font='Ariel'
         height='100%'
       >
         <div

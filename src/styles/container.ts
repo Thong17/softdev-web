@@ -526,13 +526,11 @@ export const CustomInvoiceForm = styled('div')(
     styled,
     device,
     mode,
-    font,
     height = 'fit-content',
   }: {
     styled: IThemeStyle
     device: DeviceOptions
     mode: 'compact' | 'expand'
-    font: string
     height?: string
   }) => ({
     overflowX: 'hidden',

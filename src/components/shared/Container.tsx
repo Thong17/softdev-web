@@ -38,7 +38,8 @@ const Container: FC<IContainer> = ({ children, header }) => {
             ? `${SPACE_TOP}px ${SPACE_SIDE}px 0 ${SPACE_SIDE}px`
             : `0 ${SPACE_SIDE}px 0 ${SPACE_SIDE}px`,
           minHeight: device !== 'mobile' ? CONTAINER_HEIGHT : MOBILE_HEIGHT,
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          position: 'relative'
         }}
       >
         {children}
