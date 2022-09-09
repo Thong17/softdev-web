@@ -119,7 +119,7 @@ export const SelectStructure = ({ onContinue, structures }) => {
             (item) => item._id === structure._id
           )
           return (
-            <MenuItem key={key}>
+            <MenuItem key={key} style={{ backgroundColor: isSelected ? theme.active.primary : theme.background.secondary }}>
               <div
                 onClick={() =>
                   isSelected
@@ -130,7 +130,7 @@ export const SelectStructure = ({ onContinue, structures }) => {
                   display: 'flex',
                   alignItems: 'center',
                   minWidth: 300,
-                  fontSize: theme.responsive[device]?.text.secondary,
+                  fontSize: theme.responsive[device]?.text.secondary
                 }}
               >
                 <div
