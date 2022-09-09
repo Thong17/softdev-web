@@ -128,10 +128,6 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   const invoiceRef = useRef<any>()
   const handleClearPayment = () => {
     onReload()
-    setPaymentDialog({
-      ...paymentDialog,
-      open: false,
-    })
   }
 
   const handleChangePayment = (data) => {

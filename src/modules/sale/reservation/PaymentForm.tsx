@@ -41,16 +41,6 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
   const [receiveCashes, setReceiveCashes] = useState([])
 
-  const onClearPayment = () => {
-    setTotalReceive({ KHR: 0, USD: 0, total: 0 })
-    setTotalRemain({ KHR: 0, USD: 0 })
-    setPayment(null)
-    setPaymentMethod(null)
-    setTotalPayment({ value: 0, currency: 'USD' })
-    setExchangeRate(null)
-    setReceiveCashes([])
-  }
-
   useEffect(() => {
     setPayment(dialog.payment)
     const value =
@@ -112,6 +102,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
         .then((data) => {
           setPayment(data?.data?.data)
           reload()
+          onClear()
           notify(data?.data?.msg, 'success')
         })
         .catch((err) => {
@@ -121,14 +112,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   }
 
   const handleClearPayment = () => {
-    confirm({
-      title: 'Are you sure you want to clear the payment?',
-      description: 'The payment will be clear.',
-      variant: 'error'
-    }).then(() => {
-      onClearPayment()
-      onClear()
-    }).catch(() => {})
+    handleCloseDialog()
   }
 
   const invoiceRef = useRef(document.createElement('div'))

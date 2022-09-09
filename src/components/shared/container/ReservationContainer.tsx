@@ -306,6 +306,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
     defaultValues,
   })
   const { theme } = useTheme()
+  const { device } = useWeb()
   const [priceCurrency, setPriceCurrency] = useState('')
   const priceCurrencyValue = watch('price.currency')
   const { notify } = useNotify()
@@ -385,9 +386,10 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
           <Box
             onClick={() => onClickCustomer()}
             sx={{
+              position: 'relative',
               height: 35,
               width: '100%',
-              border: theme.border.quaternary,
+              border: errors?.customer ? `1px solid ${theme.color.error}` : theme.border.quaternary,
               borderRadius: theme.radius.primary,
               padding: '5px 15px',
               boxSizing: 'border-box',
@@ -401,6 +403,13 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
               '&:hover span': {
                 color: `${theme.text.secondary} !important`,
               },
+              '& .input-error': {
+                color: theme.color.error,
+                position: 'absolute',
+                bottom: -16,
+                left: 7,
+                fontSize: theme.responsive[device]?.text.quaternary
+              }
             }}
           >
             <span
@@ -408,6 +417,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
             >
               {customer.displayName || 'Customer'}
             </span>
+            {errors?.customer && <TextEllipsis className='input-error'>{errors?.customer?.message}</TextEllipsis>}
           </Box>
         </div>
       </div>
