@@ -106,12 +106,23 @@ export const CustomCalendar = styled('div')(
     },
 
     // List
+    '& .fc-list-empty': {
+      backgroundColor: `${styled.background.primary} !important`,
+      height: '70%',
+    },
     '& .fc-list-day *': {
       backgroundColor: `${styled.background.secondary} !important`,
       borderRadius: styled.radius.primary,
     },
     '& .fc-list-event:hover td': {
       backgroundColor: `${styled.active.secondary} !important`,
+    },
+
+    // Indicator
+    '& .fc-timegrid-now-indicator-container': {
+      '& .fc-timegrid-now-indicator-line': {
+        border: `1px solid ${styled.color.info} !important`
+      }
     }
   })
 )
