@@ -44,8 +44,8 @@ export const CustomCalendar = styled('div')(
       fontWeight: `${styled.font.weight} !important`,
       color: `${styled.text.secondary} !important`
     },
-    '& .fc-daygrid-event': {
-      backgroundColor: `${styled.background.primary} !important`,
+    '& .fc-daygrid-event, & .fc-event-main': {
+      backgroundColor: `${styled.background.secondary} !important`,
     },
     '& .fc-event-title-container': {
       boxShadow: styled.shadow.secondary,
@@ -90,18 +90,28 @@ export const CustomCalendar = styled('div')(
     },
 
     // Timegrid
-    '& .fc-timegrid-event-harness': {
-      border: 'none !important'
+    '& .fc-timegrid-event-harness *': {
+      border: 'none !important',
+      boxShadow: 'none !important',
     },
     '& .fc-timegrid-event': {
-      backgroundColor: `${styled.color.info}77`,
-      color: `${styled.color.info} !important`
+      color: `${styled.color.info} !important`,
+      borderRadius: styled.radius.primary
     },
     '& .fc-timegrid-col': {
       border: 'none !important',
       '& *': {
         border: 'none !important',
       }
+    },
+
+    // List
+    '& .fc-list-day *': {
+      backgroundColor: `${styled.background.secondary} !important`,
+      borderRadius: styled.radius.primary,
+    },
+    '& .fc-list-event:hover td': {
+      backgroundColor: `${styled.active.secondary} !important`,
     }
   })
 )

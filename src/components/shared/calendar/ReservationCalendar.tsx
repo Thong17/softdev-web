@@ -1,6 +1,7 @@
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
+import listPlugin from '@fullcalendar/list'
 import useTheme from 'hooks/useTheme'
 import { CustomCalendar } from 'styles'
 import useWeb from 'hooks/useWeb'
@@ -61,12 +62,14 @@ export const ReservationCalendar = () => {
   return (
     <CustomCalendar styled={theme} device={device}>
       <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin]}
+        plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
         initialView='timeGridWeek'
         events={mappedEvent(reservations)}
         eventContent={(event) => renderEventContent(event, theme)}
+        nowIndicator={true}
+        now={Date.now()}
         headerToolbar={{
-          start: 'dayGridMonth,timeGridWeek',
+          start: 'dayGridMonth,timeGridWeek,listWeek',
           end: 'prev,today,next',
           center: 'title',
         }}
