@@ -571,7 +571,6 @@ export const InvoiceForm = forwardRef(
         mode={invoiceBar ? 'expand' : 'compact'}
         styled={theme}
         device={device}
-        font={font}
       >
         <div>
           <CustomerDialog
