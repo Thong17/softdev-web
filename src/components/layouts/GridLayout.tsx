@@ -11,6 +11,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useAuth from 'hooks/useAuth'
 import { CircularProgress } from '@mui/material'
+import { compareDate } from 'utils/index'
 
 const Item = (props, ref) => {
   const {
@@ -87,7 +88,7 @@ const Item = (props, ref) => {
           </div>
         )}
         {action && <div className='action'>{action}</div>}
-        {promotion && <PromotionTag data={promotion} />}
+        {promotion && !compareDate(Date.now(), new Date(promotion.expireAt)) && <PromotionTag data={promotion} />}
         {favorite !== undefined && (
           <>
             {favorite ? (

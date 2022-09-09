@@ -29,10 +29,19 @@ import { MiniSelectField } from 'components/shared/form/SelectField'
 import { CustomerStatistic } from 'components/shared/container/CustomerContainer'
 import { NotificationLabel } from 'components/shared/NotificationLabel'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
-import { MiniDetailField, MiniTextField } from 'components/shared/form/InputField'
+import {
+  MiniDetailField,
+  MiniTextField,
+} from 'components/shared/form/InputField'
 import ComboField from 'components/shared/form/ComboField'
 import { FlexBetween } from 'components/shared/container/FlexBetween'
-import { calculatePaymentTotal, currencyOptions, discountOptions, ITransactionItem, recalculatePayment } from 'components/shared/form/InvoiceForm'
+import {
+  calculatePaymentTotal,
+  currencyOptions,
+  discountOptions,
+  ITransactionItem,
+  recalculatePayment,
+} from 'components/shared/form/InvoiceForm'
 
 const mappedTransaction = (transaction) => {
   return {
@@ -62,7 +71,7 @@ export const InvoiceForm = forwardRef(
       selectedCustomer = initCustomer,
       reservationData,
       onCheckIn,
-      onCheckOut
+      onCheckOut,
     }: any,
     ref
   ) => {
@@ -82,7 +91,7 @@ export const InvoiceForm = forwardRef(
     const { theme } = useTheme()
     const { device } = useWeb()
     const confirm = useAlert()
-    
+
     const [priceCurrency, setPriceCurrency] = useState('')
     const [discountCurrency, setDiscountCurrency] = useState('')
     const [totalQuantity, setTotalQuantity] = useState(0)
@@ -94,8 +103,7 @@ export const InvoiceForm = forwardRef(
     const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
     const [paymentId, setPaymentId] = useState(id)
     const [reservation, setReservation] = useState<any>(null)
-    const [transactions, setTransactions] =
-      useState<ITransactionItem[]>([])
+    const [transactions, setTransactions] = useState<ITransactionItem[]>([])
     const [discount, setDiscount] = useState({
       title: 'Discount',
       value: 0,
@@ -116,7 +124,7 @@ export const InvoiceForm = forwardRef(
       type: 'PCT',
       isEditing: false,
     })
-    
+
     const [customerDialog, setCustomerDialog] = useState({ open: false })
     const [customer, setCustomer] = useState(selectedCustomer)
     const { user } = useAuth()
@@ -129,39 +137,41 @@ export const InvoiceForm = forwardRef(
     )
     const { notify } = useNotify()
 
-
-
-
-
     useEffect(() => {
-      if (!reservation?.payment || reservation?.payment?.discounts?.length === 0) return setDiscount({
-        title: 'Discount',
-        value: 0,
-        type: 'PCT',
-        isFixed: false,
-        isEditing: false,
-      })
+      if (
+        !reservation?.payment ||
+        reservation?.payment?.discounts?.length === 0
+      )
+        return setDiscount({
+          title: 'Discount',
+          value: 0,
+          type: 'PCT',
+          isFixed: false,
+          isEditing: false,
+        })
       setDiscount(reservation?.payment?.discounts[0])
     }, [reservation])
-    
+
     useEffect(() => {
-      if (!reservation?.payment || reservation?.payment?.services?.length === 0) return setTax({
-        title: 'Tax',
-        value: defaultTax,
-        type: 'PCT',
-        isEditing: false,
-      })
+      if (!reservation?.payment || reservation?.payment?.services?.length === 0)
+        return setTax({
+          title: 'Tax',
+          value: defaultTax,
+          type: 'PCT',
+          isEditing: false,
+        })
       setTax(reservation?.payment?.services[0])
     }, [reservation, defaultTax])
 
     useEffect(() => {
-      if (!reservation?.payment || reservation?.payment?.vouchers?.length === 0) return setVoucher({
-        title: 'Voucher',
-        value: 0,
-        type: 'PCT',
-        isFixed: false,
-        isEditing: false,
-      })
+      if (!reservation?.payment || reservation?.payment?.vouchers?.length === 0)
+        return setVoucher({
+          title: 'Voucher',
+          value: 0,
+          type: 'PCT',
+          isFixed: false,
+          isEditing: false,
+        })
       setVoucher(reservation?.payment?.vouchers[0])
     }, [reservation])
 
@@ -170,7 +180,7 @@ export const InvoiceForm = forwardRef(
     }, [reservationData])
 
     useEffect(() => {
-      if (transaction) return 
+      if (transaction) return
       setTransactions(listTransactions.map((item) => mappedTransaction(item)))
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listTransactions])
@@ -207,17 +217,13 @@ export const InvoiceForm = forwardRef(
       transactions.forEach((transaction) => {
         totalQuantity += transaction.quantity
         const { value, currency } = transaction.total
-        
+
         if (currency === 'KHR') subtotalKHR += value
         else subtotalUSD += value
       })
       setSubtotal({ USD: subtotalUSD, KHR: subtotalKHR })
       setTotalQuantity(totalQuantity)
     }, [transactions, exchangeRate])
-
-
-
-
 
     useImperativeHandle(ref, () => ({
       callClearPayment() {
@@ -428,7 +434,7 @@ export const InvoiceForm = forwardRef(
           discounts: [discount],
           vouchers: [voucher],
           services: [tax],
-        }
+        },
       })
         .then((data) => {
           setReservation(data?.data?.data)
@@ -439,15 +445,23 @@ export const InvoiceForm = forwardRef(
     }
 
     const handleCheckOut = () => {
-      Axios({
-        method: 'PUT',
-        url: `/sale/reservation/checkOut/${reservation._id}`,
+      confirm({
+        title: 'Are you sure you want to check out this reservation?',
+        description: 'Check out will update the reservation status.',
+        variant: 'error',
       })
-        .then((data) => {
-          setReservation(data?.data?.data)
-          onCheckOut(data?.data?.data)
+        .then(() => {
+          Axios({
+            method: 'PUT',
+            url: `/sale/reservation/checkOut/${reservation._id}`,
+          })
+            .then((data) => {
+              setReservation(data?.data?.data)
+              onCheckOut(data?.data?.data)
+            })
+            .catch((err) => notify(err?.response?.data?.msg, 'error'))
         })
-        .catch((err) => notify(err?.response?.data?.msg, 'error'))
+        .catch(() => {})
     }
 
     const renderActions = () => {
@@ -495,38 +509,60 @@ export const InvoiceForm = forwardRef(
 
         default:
           if (reservation?.payment?.status) {
-            return <span
-              style={{ width: '100%', display: 'grid', placeItems: 'center' }}
-            >
-              Completed
-            </span>
+            return (
+              <>
+                <span
+                  style={{
+                    width: '100%',
+                    display: 'grid',
+                    placeItems: 'center',
+                  }}
+                >
+                  Completed
+                </span>
+                <CustomButton
+                  styled={theme}
+                  fullWidth
+                  onClick={handleClickPayment}
+                  style={{
+                    backgroundColor: `${theme.color.info}22`,
+                    color: theme.color.info,
+                    borderRadius: theme.radius.secondary,
+                  }}
+                >
+                  Detail
+                </CustomButton>
+              </>
+            )
           }
-          return <>
-            <CustomButton
-              styled={theme}
-              fullWidth
-              onClick={handleClearPayment}
-              style={{
-                color: theme.text.secondary,
-                marginRight: 10,
-                borderRadius: theme.radius.secondary,
-              }}
-            >
-              Clear
-            </CustomButton>
-            <CustomButton
-              styled={theme}
-              fullWidth
-              onClick={handleClickPayment}
-              style={{
-                backgroundColor: `${theme.color.success}22`,
-                color: theme.color.success,
-                borderRadius: theme.radius.secondary,
-              }}
-            >
-              Payment
-            </CustomButton>
-          </>
+          return (
+            <>
+              <CustomButton
+                styled={theme}
+                fullWidth
+                onClick={handleClearPayment}
+                style={{
+                  color: theme.text.secondary,
+                  marginRight: 10,
+                  borderRadius: theme.radius.secondary,
+                }}
+              >
+                Clear
+              </CustomButton>
+              <CustomButton
+                styled={theme}
+                fullWidth
+                onClick={handleClickPayment}
+                style={{
+                  backgroundColor: `${theme.color.success}22`,
+                  color: theme.color.success,
+                  borderRadius: theme.radius.secondary,
+                }}
+              >
+                Payment
+              </CustomButton>
+            </>
+          )
       }
     }
 
@@ -1044,9 +1080,7 @@ export const InvoiceForm = forwardRef(
           <div className='invoice-payment'>
             <div className='total-container'>
               <div className='total'>
-                <FlexBetween>
-                  {renderActions()}
-                </FlexBetween>
+                <FlexBetween>{renderActions()}</FlexBetween>
               </div>
             </div>
           </div>
