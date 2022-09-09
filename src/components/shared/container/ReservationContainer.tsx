@@ -149,6 +149,29 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
             color={theme.color.success}
           />
         </div>
+        {toggleForm ? (
+          <ReservationForm
+            onSave={() => onSave()}
+            onClose={handleCloseForm}
+            onClickCustomer={handleClickCustomer}
+            customer={customer}
+            structures={structures}
+            defaultValues={reservationForm}
+            id={reservationId}
+          />
+        ) : (
+          <CustomButton
+            onClick={() => setToggleForm(true)}
+            styled={theme}
+            style={{
+              borderRadius: theme.radius.secondary,
+              backgroundColor: `${theme.color.info}22`,
+              color: theme.color.info,
+            }}
+          >
+            Add Reservation
+          </CustomButton>
+        )}
         <div
           style={{
             height: '100%',
@@ -184,29 +207,6 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
             }
           </Box>
         </div>
-        {toggleForm ? (
-          <ReservationForm
-            onSave={() => onSave()}
-            onClose={handleCloseForm}
-            onClickCustomer={handleClickCustomer}
-            customer={customer}
-            structures={structures}
-            defaultValues={reservationForm}
-            id={reservationId}
-          />
-        ) : (
-          <CustomButton
-            onClick={() => setToggleForm(true)}
-            styled={theme}
-            style={{
-              borderRadius: theme.radius.secondary,
-              backgroundColor: `${theme.color.info}22`,
-              color: theme.color.info,
-            }}
-          >
-            Add Reservation
-          </CustomButton>
-        )}
       </Box>
     </div>
   )

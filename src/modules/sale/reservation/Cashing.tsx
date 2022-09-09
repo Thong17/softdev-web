@@ -63,7 +63,9 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
     let isDisabled = reservation && !reservation.payment
     let isCompleted = reservation?.isCompleted
 
-    setDisableProduct(isDisabled && isCompleted)
+    if (!isDisabled) setDisableProduct(isCompleted)
+    else setDisableProduct(true)
+    
     setPaymentDialog(prev => ({ ...prev, payment: reservation?.payment }))
   }, [reservation])
   
