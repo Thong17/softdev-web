@@ -39,7 +39,7 @@ export const currencyOptions: IOptions[] = [
   },
 ]
 
-const discountOptions: IOptions[] = [
+export const discountOptions: IOptions[] = [
   ...currencyOptions,
   {
     value: 'PCT',
@@ -154,7 +154,7 @@ export interface ITransactionItem {
   total: ICurrency
 }
 
-const recalculatePayment = (paymentId, data) => {
+export const recalculatePayment = (paymentId, data) => {
   return new Promise((resolve, reject) => {
     Axios({
       url: `/sale/payment/update/${paymentId}`,
@@ -295,6 +295,7 @@ export const InvoiceForm = forwardRef(({
         transaction.quantity,
         exchangeRate
       )
+      
       if (currency === 'KHR') subtotalKHR += total
       else subtotalUSD += total
     })

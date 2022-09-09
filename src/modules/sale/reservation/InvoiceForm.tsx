@@ -25,160 +25,21 @@ import { CustomerDialog } from 'components/shared/dialog/CustomerDialog'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { IOptions, MiniSelectField } from 'components/shared/form/SelectField'
+import { MiniSelectField } from 'components/shared/form/SelectField'
 import { CustomerStatistic } from 'components/shared/container/CustomerContainer'
 import { NotificationLabel } from 'components/shared/NotificationLabel'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
 import { MiniDetailField, MiniTextField } from 'components/shared/form/InputField'
 import ComboField from 'components/shared/form/ComboField'
 import { FlexBetween } from 'components/shared/container/FlexBetween'
-
-export const currencyOptions: IOptions[] = [
-  {
-    value: 'USD',
-    label: <>&#36;</>,
-  },
-  {
-    value: 'KHR',
-    label: <>&#6107;</>,
-  },
-]
-
-const discountOptions: IOptions[] = [
-  ...currencyOptions,
-  {
-    value: 'PCT',
-    label: <>&#37;</>,
-  },
-]
-
-export const calculateTransactionTotal = (
-  priceObj,
-  discountObj,
-  quantity,
-  exchangeRate
-) => {
-  const { value: discount, currency: discountCurrency, isFixed } = discountObj
-  const { value: price, currency: priceCurrency } = priceObj
-
-  if (!discount || discount === 0)
-    return { total: price * quantity, currency: priceCurrency }
-
-  if (isFixed) {
-    if (discountCurrency !== 'PCT')
-      return { total: discount * quantity, currency: discountCurrency }
-    return {
-      total: ((price * discount) / 100) * quantity,
-      currency: priceCurrency,
-    }
-  }
-
-  if (discountCurrency === 'PCT')
-    return {
-      total: (price - (price * discount) / 100) * quantity,
-      currency: priceCurrency,
-    }
-  if (discountCurrency === priceCurrency)
-    return { total: (price - discount) * quantity, currency: priceCurrency }
-
-  const { sellRate = 4000, buyRate = 4100 } = exchangeRate
-  let totalExchange = 0
-  if (discountCurrency === 'USD') {
-    totalExchange = discount * sellRate
-    return {
-      total: (price - totalExchange) * quantity,
-      currency: priceCurrency,
-    }
-  } else {
-    totalExchange = discount / buyRate
-    return {
-      total: (price - totalExchange) * quantity,
-      currency: priceCurrency,
-    }
-  }
-}
-
-export const calculatePaymentTotal = (
-  subtotal,
-  discount,
-  tax,
-  voucher,
-  exchangeRate
-) => {
-  const {
-    value: discountValue,
-    type: discountType,
-    isFixed: discountFixed,
-  } = discount
-  const { value: taxValue, type: taxType } = tax
-  const {
-    value: voucherValue,
-    type: voucherType,
-    isFixed: voucherFixed,
-  } = voucher
-  const { buyRate = 4100 } = exchangeRate
-
-  let total = subtotal.USD + subtotal.KHR / buyRate
-
-  const { total: discountedTotal } = calculateTransactionTotal(
-    { value: total, currency: 'USD' },
-    { value: discountValue, currency: discountType, isFixed: discountFixed },
-    1,
-    exchangeRate
-  )
-  const { total: taxedTotal } = calculateTransactionTotal(
-    { value: discountedTotal, currency: 'USD' },
-    { value: taxValue, currency: taxType, isFixed: false },
-    1,
-    exchangeRate
-  )
-  const { total: voucheredTotal } = calculateTransactionTotal(
-    { value: discountedTotal + discountedTotal - taxedTotal, currency: 'USD' },
-    { value: voucherValue, currency: voucherType, isFixed: voucherFixed },
-    1,
-    exchangeRate
-  )
-
-  return voucheredTotal
-}
-
-export interface ICurrency {
-  value: number
-  currency: 'USD' | 'KHR' | 'PCT'
-  isFixed?: boolean
-}
-
-export interface ITransactionItem {
-  id: string | null
-  description: string
-  discount: ICurrency
-  price: ICurrency
-  quantity: number
-  profile?: string
-  note?: string
-  total: ICurrency
-}
-
-const recalculatePayment = (paymentId, data) => {
-  return new Promise((resolve, reject) => {
-    Axios({
-      url: `/sale/payment/update/${paymentId}`,
-      method: 'PUT',
-      body: data,
-    })
-      .then((data) => {
-        resolve(data?.data?.data)
-      })
-      .catch((err) => reject(err?.response?.data?.msg))
-  })
-}
+import { calculatePaymentTotal, currencyOptions, discountOptions, ITransactionItem, recalculatePayment } from 'components/shared/form/InvoiceForm'
 
 const mappedTransaction = (transaction) => {
   return {
     description: transaction.description,
-    discount: transaction.discount,
+    discount: { ...transaction.discount, currency: transaction.discount.type },
     id: transaction._id,
-    price: transaction.price,
+    price: { value: transaction.price, currency: transaction.currency },
     quantity: transaction.quantity,
     total: transaction.total,
   }
@@ -221,8 +82,7 @@ export const InvoiceForm = forwardRef(
     const { theme } = useTheme()
     const { device } = useWeb()
     const confirm = useAlert()
-    const [transactions, setTransactions] =
-      useState<ITransactionItem[]>(listTransactions)
+    
     const [priceCurrency, setPriceCurrency] = useState('')
     const [discountCurrency, setDiscountCurrency] = useState('')
     const [totalQuantity, setTotalQuantity] = useState(0)
@@ -230,9 +90,12 @@ export const InvoiceForm = forwardRef(
     const discountCurrencyValue = watch('discount.currency')
     const priceCurrencyValue = watch('price.currency')
     const isFixedValue = watch('discount.isFixed')
+
     const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
     const [paymentId, setPaymentId] = useState(id)
     const [reservation, setReservation] = useState<any>(null)
+    const [transactions, setTransactions] =
+      useState<ITransactionItem[]>([])
     const [discount, setDiscount] = useState({
       title: 'Discount',
       value: 0,
@@ -253,6 +116,7 @@ export const InvoiceForm = forwardRef(
       type: 'PCT',
       isEditing: false,
     })
+    
     const [customerDialog, setCustomerDialog] = useState({ open: false })
     const [customer, setCustomer] = useState(selectedCustomer)
     const { user } = useAuth()
@@ -265,14 +129,64 @@ export const InvoiceForm = forwardRef(
     )
     const { notify } = useNotify()
 
+
+
+
+
+    useEffect(() => {
+      if (!reservation?.payment || reservation?.payment?.discounts?.length === 0) return setDiscount({
+        title: 'Discount',
+        value: 0,
+        type: 'PCT',
+        isFixed: false,
+        isEditing: false,
+      })
+      setDiscount(reservation?.payment?.discounts[0])
+    }, [reservation])
+    
+    useEffect(() => {
+      if (!reservation?.payment || reservation?.payment?.services?.length === 0) return setTax({
+        title: 'Tax',
+        value: defaultTax,
+        type: 'PCT',
+        isEditing: false,
+      })
+      setTax(reservation?.payment?.services[0])
+    }, [reservation, defaultTax])
+
+    useEffect(() => {
+      if (!reservation?.payment || reservation?.payment?.vouchers?.length === 0) return setVoucher({
+        title: 'Voucher',
+        value: 0,
+        type: 'PCT',
+        isFixed: false,
+        isEditing: false,
+      })
+      setVoucher(reservation?.payment?.vouchers[0])
+    }, [reservation])
+
     useEffect(() => {
       setReservation(reservationData)
     }, [reservationData])
 
     useEffect(() => {
-      if (!reservationData) return
+      if (transaction) return 
       setTransactions(listTransactions.map((item) => mappedTransaction(item)))
-    }, [listTransactions, reservationData])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [listTransactions])
+
+    useEffect(() => {
+      if (!transaction) return
+      setTransactions((prev) => [...prev, transaction])
+
+      if (!paymentId) return
+      recalculatePayment(paymentId, { transaction })
+        .then((data) => {
+          onChangePayment(data)
+        })
+        .catch((msg) => notify(msg, 'error'))
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [transaction])
 
     useEffect(() => {
       setCustomer(selectedCustomer)
@@ -285,6 +199,25 @@ export const InvoiceForm = forwardRef(
     useEffect(() => {
       setPaymentId(id)
     }, [id])
+
+    useEffect(() => {
+      let totalQuantity = 0
+      let subtotalUSD = 0
+      let subtotalKHR = 0
+      transactions.forEach((transaction) => {
+        totalQuantity += transaction.quantity
+        const { value, currency } = transaction.total
+        
+        if (currency === 'KHR') subtotalKHR += value
+        else subtotalUSD += value
+      })
+      setSubtotal({ USD: subtotalUSD, KHR: subtotalKHR })
+      setTotalQuantity(totalQuantity)
+    }, [transactions, exchangeRate])
+
+
+
+
 
     useImperativeHandle(ref, () => ({
       callClearPayment() {
@@ -330,41 +263,6 @@ export const InvoiceForm = forwardRef(
         })
         .catch(() => {})
     }
-
-    useEffect(() => {
-      let totalQuantity = 0
-      let subtotalUSD = 0
-      let subtotalKHR = 0
-      transactions.forEach((transaction) => {
-        totalQuantity += transaction.quantity
-        const { total, currency } = calculateTransactionTotal(
-          transaction.price,
-          transaction.discount,
-          transaction.quantity,
-          exchangeRate
-        )
-        if (currency === 'KHR') subtotalKHR += total
-        else subtotalUSD += total
-      })
-      setSubtotal({ USD: subtotalUSD, KHR: subtotalKHR })
-      setTotalQuantity(totalQuantity)
-    }, [transactions, exchangeRate])
-
-    useEffect(() => {
-      if (!transaction) return
-      setTransactions((prev) => [...prev, transaction])
-
-      // Uncomment below line to show form on add
-      // reset(transaction)
-
-      if (!paymentId) return
-      recalculatePayment(paymentId, { transaction })
-        .then((data) => {
-          onChangePayment(data)
-        })
-        .catch((msg) => notify(msg, 'error'))
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [transaction, reset])
 
     useEffect(() => {
       setIsFixed(isFixedValue)
@@ -526,11 +424,15 @@ export const InvoiceForm = forwardRef(
       Axios({
         method: 'PUT',
         url: `/sale/reservation/checkIn/${reservation._id}`,
+        body: {
+          discounts: [discount],
+          vouchers: [voucher],
+          services: [tax],
+        }
       })
         .then((data) => {
           setReservation(data?.data?.data)
           setCustomer(data?.data?.data?.customer)
-          setPaymentId(data?.data?.data?.payment?._id)
           onCheckIn(data?.data?.data)
         })
         .catch((err) => notify(err?.response?.data?.msg, 'error'))
@@ -551,7 +453,7 @@ export const InvoiceForm = forwardRef(
     const renderActions = () => {
       if (!reservation) return null
 
-      switch (reservation?.status) {
+      switch (reservation.status) {
         case 'reserved':
           return (
             <CustomButton
@@ -1143,36 +1045,7 @@ export const InvoiceForm = forwardRef(
             <div className='total-container'>
               <div className='total'>
                 <FlexBetween>
-                  {reservation ? (
-                    renderActions()
-                  ) : (
-                    <>
-                      <CustomButton
-                        styled={theme}
-                        fullWidth
-                        onClick={handleClearPayment}
-                        style={{
-                          color: theme.text.secondary,
-                          marginRight: 10,
-                          borderRadius: theme.radius.secondary,
-                        }}
-                      >
-                        Clear
-                      </CustomButton>
-                      <CustomButton
-                        styled={theme}
-                        fullWidth
-                        onClick={handleClickPayment}
-                        style={{
-                          backgroundColor: `${theme.color.success}22`,
-                          color: theme.color.success,
-                          borderRadius: theme.radius.secondary,
-                        }}
-                      >
-                        Payment
-                      </CustomButton>
-                    </>
-                  )}
+                  {renderActions()}
                 </FlexBetween>
               </div>
             </div>

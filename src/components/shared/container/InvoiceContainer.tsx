@@ -138,7 +138,6 @@ export const InvoiceContainer = ({
           <span>Invoice: INV0000000</span>
           <span>Cashier: {user?.username}</span>
         </FlexBetween>
-        <PreBorder styled={theme} />
         <InvoiceTable columns={invoiceColumns} rows={[]} />
         <PreBorder styled={theme} />
         <div

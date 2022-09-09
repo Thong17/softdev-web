@@ -37,7 +37,7 @@ const Breadcrumb: FC<IBreadcrumb> = ({ stages, title }) => {
                 style={{
                   userSelect: 'none',
                   cursor: 'default',
-                  color: theme.active.secondary,
+                  color: theme.text.quaternary,
                 }}
               >
                 {stage.title}

@@ -32,7 +32,8 @@ export const InvoiceTable = ({
                     border: 'none',
                     fontWeight: 600,
                     borderBottom: '2px dashed #777',
-                    borderTop: '2px dashed #777'
+                    borderTop: '2px dashed #777',
+                    backgroundColor: 'none'
                   }}
                   key={column.id}
                   align={column.align}

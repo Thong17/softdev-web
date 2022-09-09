@@ -19,7 +19,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { InvoiceForm } from './InvoiceForm'
 
-export const Cashing = ({ id = null, transactions = [], customer, reservationData = null }: any) => {
+export const Cashing = ({ id = null, transactions = [], customer, reservationData = null, onReload }: any) => {
   const { user } = useAuth()
   const { notify } = useNotify()
   const { device } = useWeb()
@@ -41,6 +41,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
+  const [disableProduct, setDisableProduct] = useState(false)
 
   useEffect(() => {
     dispatch(getInfoStore())
@@ -59,8 +60,12 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   }, [customer])
 
   useEffect(() => {
+    let isDisabled = reservation && !reservation.payment
+    let isCompleted = reservation?.isCompleted
+
+    setDisableProduct(isDisabled && isCompleted)
     setPaymentDialog(prev => ({ ...prev, payment: reservation?.payment }))
-  }, [reservation?.payment])
+  }, [reservation])
   
   const handleClickProduct = (id) => {
     setProductDialog({ productId: id, open: true })
@@ -120,11 +125,10 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
 
   const invoiceRef = useRef<any>()
   const handleClearPayment = () => {
-    invoiceRef?.current?.callClearPayment()
+    onReload()
     setPaymentDialog({
+      ...paymentDialog,
       open: false,
-      payment: null,
-      customer: null,
     })
   }
 
@@ -137,6 +141,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
 
   const handleCheckedIn = (data) => {
     setReservation(data)
+    setPaymentId(data?.payment?._id)
   }
 
   const handleCheckedOut = (data) => {
@@ -174,7 +179,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
             onClickProduct={handleClickProduct}
             filterPromotion={true}
             toggleReload={reload}
-            isDisabled={reservation && !reservation.payment}
+            isDisabled={disableProduct}
             actions={
               <>
                 <IconButton

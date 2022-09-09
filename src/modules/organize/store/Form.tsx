@@ -47,7 +47,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
   const tax = watch('tax')
   const other = watch('other')
 
-  const [font, setFont] = useState(defaultValues?.font || '')
+  const [font, setFont] = useState(defaultValues?.font)
   const fontValue = watch('font')
 
   useEffect(() => {

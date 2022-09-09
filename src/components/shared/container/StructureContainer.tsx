@@ -169,7 +169,7 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
       >
         {loading && <Loading />}
         {structures?.map((structure, index) => {
-          const isSelected = selectedStructure.some(item => item._id === structure._id)
+          const isSelected = selectedStructure?.some(item => item._id === structure._id)
 
           if (structure.merged && structure.isMain === false)
             return <div key={index} style={{ display: 'none' }}></div>

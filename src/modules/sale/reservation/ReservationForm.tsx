@@ -17,6 +17,11 @@ export const ReservationForm = () => {
     dispatch(getDetailReservation({ id }))
   }, [id, dispatch])
 
+  const handleReloadReservation = () => {
+    if (!id) return
+    dispatch(getDetailReservation({ id }))
+  }
+
   useEffect(() => {
     if (!data) return
     setDefaultValue(prev => ({ ...prev, transactions: data.payment?.transactions, customer: { ...data.customer, id: data.customer?._id }, reservation: data, }))
@@ -24,7 +29,7 @@ export const ReservationForm = () => {
   
   return (
     <Container>
-      <Cashing customer={defaultValue.customer} id={defaultValue.reservation?.payment?._id} transactions={defaultValue.transactions} reservationData={defaultValue.reservation} />
+      <Cashing customer={defaultValue.customer} id={defaultValue.reservation?.payment?._id} transactions={defaultValue.transactions} reservationData={defaultValue.reservation} onReload={handleReloadReservation} />
     </Container>
   )
 }
