@@ -56,8 +56,12 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
   
   useEffect(() => {
     if (status !== 'SUCCESS') return
-    setReservations(data)
-  }, [data, status])
+    const selectedStructureIds = structures.map(structure => structure._id)
+    if (selectedStructureIds.length < 1) return setReservations(data)
+    setReservations(data.filter(reservation => {
+      return reservation.structures.some(structure => selectedStructureIds.includes(structure._id))
+    }))
+  }, [data, structures, status])
 
   useEffect(() => {
     setStructures(selectedStructures)
