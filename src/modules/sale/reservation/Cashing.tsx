@@ -17,7 +17,7 @@ import { PaymentForm } from './PaymentForm'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { InvoiceForm } from './InvoiceForm'
+import { InvoiceForm, mappedTransaction } from './InvoiceForm'
 
 export const Cashing = ({ id = null, transactions = [], customer, reservationData = null, onReload }: any) => {
   const { user } = useAuth()
@@ -140,6 +140,8 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   const handleCheckedIn = (data) => {
     setReservation(data)
     setPaymentId(data?.payment?._id)
+    setReload(!reload)
+    setTransaction(mappedTransaction(data?.payment?.transactions[0]))
   }
 
   const handleCheckedOut = (data) => {

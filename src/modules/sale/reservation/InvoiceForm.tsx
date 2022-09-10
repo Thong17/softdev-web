@@ -43,7 +43,7 @@ import {
   recalculatePayment,
 } from 'components/shared/form/InvoiceForm'
 
-const mappedTransaction = (transaction) => {
+export const mappedTransaction = (transaction) => {
   return {
     description: transaction.description,
     discount: { ...transaction.discount, currency: transaction.discount.type },
