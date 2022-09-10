@@ -1,12 +1,12 @@
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts'
 
 const CustomizedDot = (props: any) => {
   const { cx, cy, payload } = props
 
   return (
     <g transform={`translate(${cx},${cy})`}>
-      <text x={30} y={5} dy={16} textAnchor="end" fill="#666">
-        {payload.value}$
+      <text x={30} y={5} dy={16} textAnchor="end" fill="#999">
+        {payload.value.toFixed(2)}$
       </text>
     </g>
   )
@@ -32,7 +32,6 @@ export const CustomAreaChart = ({ width = '100%', height = 300, labels, data }) 
         </defs>
         <XAxis dataKey='name' />
         <YAxis />
-        <Tooltip />
         {labels?.map((item, key) => {
           return (
             <Area key={key} type='monotone' dataKey={item.name} dot={<CustomizedDot data={item} />} stroke='#fff' fill='url(#colorUv)' />

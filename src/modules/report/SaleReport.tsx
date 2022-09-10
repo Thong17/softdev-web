@@ -77,15 +77,6 @@ export const SaleReport = () => {
   const [selectedTotalIncome, setSelectedTotalIncome] = useState('day')
   const [selectedTotalProfit, setSelectedTotalProfit] = useState('day')
   const [queryParams, setQueryParams] = useSearchParams()
-  const [totalIncome, setTotalIncome] = useState(0)
-  const [totalProfit, setTotalProfit] = useState(0)
-  const [listSale, setListSale] = useState<any[]>([])
-  
-  useEffect(() => {
-    setTotalIncome(data.totalIncome)
-    setTotalProfit(data.totalProfit)
-    setListSale(data.listSale.map(item => ({ ...item, name: moment(item.name).format('MMM Do YY, ha') })))
-  }, [data])
   
   const handleChangeGrande = (event) => {
     const { name, value } = event.target
@@ -151,7 +142,7 @@ export const SaleReport = () => {
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>{currencyFormat(totalIncome, 'USD')}</span>}
+            data={<span style={{ fontSize: 23 }}>{currencyFormat(data.totalIncome, 'USD')}</span>}
             icon={<ShowChartRoundedIcon style={{ fontSize: 40 }} />}
           />
           <DetailSection
@@ -166,7 +157,7 @@ export const SaleReport = () => {
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>{currencyFormat(totalProfit, 'USD')}</span>}
+            data={<span style={{ fontSize: 23 }}>{currencyFormat(data.totalProfit, 'USD')}</span>}
             icon={<StackedLineChartRoundedIcon style={{ fontSize: 40 }} />}
           />
         </div>
@@ -186,7 +177,7 @@ export const SaleReport = () => {
           }
           style={{ gridArea: 'charts' }}
         >
-          <CustomAreaChart data={listSale} labels={[{ name: 'value' }]} height={370} />
+          <CustomAreaChart data={data.listSale.map(item => ({ ...item, name: moment(item.name).format(item.format)}))} labels={[{ name: 'value' }]} height={370} />
         </CardContainer>
       </div>
     </Container>
