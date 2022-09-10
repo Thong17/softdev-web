@@ -3,13 +3,15 @@ import ReportBreadcrumbs from './components/Breadcrumbs'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { CardContainer } from 'components/shared/container/CardContainer'
-import { CustomLineChart } from 'components/shared/charts/LineChart'
 import { MiniSelectField } from 'components/shared/form'
 import { DetailSection } from 'components/shared/container/DetailSection'
 import ShowChartRoundedIcon from '@mui/icons-material/ShowChartRounded'
 import StackedLineChartRoundedIcon from '@mui/icons-material/StackedLineChartRounded'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getReportSale, selectReportSale } from './redux'
+import { currencyFormat } from 'utils/index'
+import { CustomAreaChart } from 'components/shared/charts/AreaChart'
+import moment from 'moment'
 
 const Header = () => {
   return (
@@ -22,15 +24,19 @@ const Header = () => {
 const filterOption = [
   {
     label: 'Daily',
-    value: 'daily',
+    value: 'day',
+  },
+  {
+    label: 'Weekly',
+    value: 'week',
   },
   {
     label: 'Monthly',
-    value: 'monthly',
+    value: 'month',
   },
   {
     label: 'Yearly',
-    value: 'yearly',
+    value: 'year',
   },
 ]
 
@@ -67,17 +73,20 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
 export const SaleReport = () => {
   const dispatch = useAppDispatch()
   const { data } = useAppSelector(selectReportSale)
-  const [selectedSaleChart, setSelectedSaleChart] = useState('daily')
+  const [selectedSaleChart, setSelectedSaleChart] = useState('day')
   const [selectedTotalIncome, setSelectedTotalIncome] = useState('day')
   const [selectedTotalProfit, setSelectedTotalProfit] = useState('day')
   const [queryParams, setQueryParams] = useSearchParams()
-
+  const [totalIncome, setTotalIncome] = useState(0)
+  const [totalProfit, setTotalProfit] = useState(0)
+  const [listSale, setListSale] = useState<any[]>([])
   
   useEffect(() => {
-    console.log(data)
+    setTotalIncome(data.totalIncome)
+    setTotalProfit(data.totalProfit)
+    setListSale(data.listSale.map(item => ({ ...item, name: moment(item.name).format('MMM Do YY, ha') })))
   }, [data])
   
-
   const handleChangeGrande = (event) => {
     const { name, value } = event.target
     handleQuery({ [name]: value })
@@ -142,7 +151,7 @@ export const SaleReport = () => {
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>9</span>}
+            data={<span style={{ fontSize: 23 }}>{currencyFormat(totalIncome, 'USD')}</span>}
             icon={<ShowChartRoundedIcon style={{ fontSize: 40 }} />}
           />
           <DetailSection
@@ -157,7 +166,7 @@ export const SaleReport = () => {
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>9</span>}
+            data={<span style={{ fontSize: 23 }}>{currencyFormat(totalProfit, 'USD')}</span>}
             icon={<StackedLineChartRoundedIcon style={{ fontSize: 40 }} />}
           />
         </div>
@@ -177,7 +186,7 @@ export const SaleReport = () => {
           }
           style={{ gridArea: 'charts' }}
         >
-          <CustomLineChart data={[]} labels={[]} height={370} />
+          <CustomAreaChart data={listSale} labels={[{ name: 'value' }]} height={370} />
         </CardContainer>
       </div>
     </Container>

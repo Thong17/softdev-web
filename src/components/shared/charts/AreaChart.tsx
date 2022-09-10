@@ -1,12 +1,14 @@
-import { FC } from 'react'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { generateColor } from 'utils'
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
-const CustomizedDot: FC<any> = (props: any) => {
-  const { cx, cy, icon } = props
+const CustomizedDot = (props: any) => {
+  const { cx, cy, payload } = props
 
   return (
-    <image x={cx + 5} y={cy - 15} width={30} height={30} xlinkHref={`${process.env.REACT_APP_API_UPLOADS}${icon}`} style={{ borderRadius: 50 }} />
+    <g transform={`translate(${cx},${cy})`}>
+      <text x={30} y={5} dy={16} textAnchor="end" fill="#666">
+        {payload.value}$
+      </text>
+    </g>
   )
 }
 
@@ -14,7 +16,7 @@ export const CustomAreaChart = ({ width = '100%', height = 300, labels, data }) 
   return (
     <ResponsiveContainer width={width} height={height}>
       <AreaChart
-        data={labels}
+        data={data}
         margin={{
           top: 25,
           right: 40,
@@ -28,13 +30,12 @@ export const CustomAreaChart = ({ width = '100%', height = 300, labels, data }) 
             <stop offset="95%" stopColor="#ffffff" stopOpacity={0.1}/>
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray='3 3' />
         <XAxis dataKey='name' />
         <YAxis />
         <Tooltip />
-        {data?.map((item, key) => {
+        {labels?.map((item, key) => {
           return (
-            <Area key={key} type='monotone' dataKey={item.name} stroke={generateColor()} dot={<CustomizedDot icon={item.profile} />} fill='url(#colorUv)' />
+            <Area key={key} type='monotone' dataKey={item.name} dot={<CustomizedDot data={item} />} stroke='#fff' fill='url(#colorUv)' />
           )
         })}
         

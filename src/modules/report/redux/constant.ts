@@ -1,12 +1,18 @@
 import { IBody } from 'shared/interface'
 
+interface ISaleReport {
+  totalIncome: number
+  totalProfit: number
+  listSale: any[]
+}
+
 export interface ReportState {
-  sale: IBody<Object>
+  sale: IBody<ISaleReport>
 }
 
 export const initialState: ReportState = {
   sale: {
-    data: {},
+    data: { totalIncome: 0, totalProfit: 0, listSale: [] },
     status: 'INIT',
   },
 }
