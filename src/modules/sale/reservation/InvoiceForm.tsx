@@ -63,6 +63,7 @@ export const InvoiceForm = forwardRef(
       defaultTax = 0,
       font = 'Ariel',
       transaction,
+      reservationTransaction,
       onUpdate,
       onPayment,
       onChangePayment,
@@ -180,7 +181,7 @@ export const InvoiceForm = forwardRef(
     }, [reservationData])
 
     useEffect(() => {
-      if (transaction) return
+      if (transaction || reservationTransaction) return
       setTransactions(listTransactions.map((item) => mappedTransaction(item)))
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listTransactions])
@@ -197,6 +198,19 @@ export const InvoiceForm = forwardRef(
         .catch((msg) => notify(msg, 'error'))
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [transaction])
+
+    useEffect(() => {
+      if (!reservationTransaction) return
+      setTransactions((prev) => [...prev, reservationTransaction])
+
+      if (!paymentId) return
+      recalculatePayment(paymentId, {})
+        .then((data) => {
+          onChangePayment(data)
+        })
+        .catch((msg) => notify(msg, 'error'))
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [reservationTransaction])
 
     useEffect(() => {
       setCustomer(selectedCustomer)
@@ -437,9 +451,10 @@ export const InvoiceForm = forwardRef(
         },
       })
         .then((data) => {
-          setReservation(data?.data?.data)
-          setCustomer(data?.data?.data?.customer)
-          onCheckIn(data?.data?.data)
+          const responseData = data?.data?.data
+          setReservation(responseData)
+          setCustomer(responseData?.customer)
+          onCheckIn(responseData)
         })
         .catch((err) => notify(err?.response?.data?.msg, 'error'))
     }

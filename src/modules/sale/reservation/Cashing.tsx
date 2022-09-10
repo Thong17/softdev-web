@@ -40,6 +40,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   })
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
+  const [reservationTransaction, setReservationTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
   const [disableProduct, setDisableProduct] = useState(false)
 
@@ -140,8 +141,8 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   const handleCheckedIn = (data) => {
     setReservation(data)
     setPaymentId(data?.payment?._id)
-    setReload(!reload)
-    setTransaction(mappedTransaction(data?.payment?.transactions[0]))
+    if (!data.payment?.transactions[0]) return
+    setReservationTransaction(mappedTransaction(data.payment?.transactions[0]))
   }
 
   const handleCheckedOut = (data) => {
@@ -233,6 +234,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
             reservationData={reservation}
             onCheckIn={handleCheckedIn}
             onCheckOut={handleCheckedOut}
+            reservationTransaction={reservationTransaction}
           />
         </div>
       </div>
