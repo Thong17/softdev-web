@@ -51,6 +51,7 @@ const mappedProduct = (data, lang) => {
     stock,
     alertAt,
     promotion: data?.promotion,
+    isStock: data.isStock
   }
 }
 
@@ -490,10 +491,14 @@ export const ProductContainer = ({
                       picture={product.profile}
                       subLeft={product.price}
                       subRight={
-                        <QuantityStatus
-                          qty={product.stock}
-                          min={product.alertAt}
-                        />
+                        product.isStock ? (
+                          <QuantityStatus
+                            qty={product.stock}
+                            min={product.alertAt}
+                          />
+                        ) : (
+                          <span>Available</span>
+                        )
                       }
                       action={product.action}
                       display={product.display}
@@ -513,10 +518,14 @@ export const ProductContainer = ({
                     picture={product.profile}
                     subLeft={product.price}
                     subRight={
-                      <QuantityStatus
-                        qty={product.stock}
-                        min={product.alertAt}
-                      />
+                      product.isStock ? (
+                        <QuantityStatus
+                          qty={product.stock}
+                          min={product.alertAt}
+                        />
+                      ) : (
+                        <span>Available</span>
+                      )
                     }
                     action={product.action}
                     display={product.display}
