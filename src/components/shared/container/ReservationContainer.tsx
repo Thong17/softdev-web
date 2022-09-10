@@ -21,7 +21,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListReservation, selectListReservation } from 'modules/sale/reservation/redux'
-import { dateFormat, inputDateTimeFormat, timeFormat } from 'utils/index'
+import { combineDate, inputDateTimeFormat, timeFormat } from 'utils/index'
 import { useNavigate } from 'react-router-dom'
 
 const initReservation: any = {
@@ -268,7 +268,7 @@ const ReservationItem = ({ data, onClick, onEdit }) => {
         <TextEllipsis
           style={{ fontSize: theme.responsive[device]?.text.secondary }}
         >
-          {timeFormat(data?.startAt, 'LT')} - {timeFormat(data?.endAt, 'LT')}
+          {timeFormat(data?.startAt, 'LT')} - {timeFormat(data?.endAt || data?.startAt, 'LT')}
         </TextEllipsis>
         <TextEllipsis
           style={{
@@ -276,7 +276,7 @@ const ReservationItem = ({ data, onClick, onEdit }) => {
             fontSize: theme.responsive[device]?.text.quaternary,
           }}
         >
-          {dateFormat(data?.startAt)}
+          {combineDate(data?.startAt, data?.endAt || data?.startAt)}
         </TextEllipsis>
       </div>
       <div style={{ display: 'grid', placeItems: 'center' }}>

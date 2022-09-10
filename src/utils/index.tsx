@@ -93,6 +93,12 @@ export const compareDate = (date1, date2) => {
   return date1 > date2
 }
 
+export const combineDate = (date1, date2) => {
+  if (!date1 && !date2) return moment(new Date()).format('L')
+
+  return `${moment(date1).format('L')} - ${moment(date2).format('L')}`
+}
+
 export const dateFormat = (date: any = null) => {
   if (!date) return new Date().toDateString()
 
@@ -100,7 +106,7 @@ export const dateFormat = (date: any = null) => {
   return localDate
 }
 
-export const timeFormat = (date, format = 'HH:mm:ss') => {
+export const timeFormat = (date, format = 'HH:mm') => {
   if (!date) return new Date().toLocaleTimeString()
 
   const localDate = moment(date).format(format)

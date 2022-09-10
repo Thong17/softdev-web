@@ -9,7 +9,7 @@ export const DetailSection = ({ title, data, icon, action, header }: any) => {
   return (
     <div
       style={{
-        backgroundColor: theme.background.secondary,
+        backgroundColor: `${theme.background.secondary}cc`,
         width: 'fit-content',
         minWidth: 200,
         height: 100,
@@ -29,8 +29,8 @@ export const DetailSection = ({ title, data, icon, action, header }: any) => {
         </TextEllipsis>
         {header}
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', backgroundColor: theme.background.primary, borderRadius: theme.radius.secondary, padding: '5px 10px', boxSizing: 'border-box' }}>
-        {icon && <div style={{ marginRight: 10 }}>{icon}</div>}
+      <div style={{ display: 'flex', alignItems: 'center', backgroundColor: theme.background.primary, borderRadius: theme.radius.secondary, height: 55, padding: '5px 10px', boxSizing: 'border-box' }}>
+        {icon && <div style={{ marginRight: 10, display: 'grid', placeItems: 'center' }}>{icon}</div>}
         <TextEllipsis style={{ fontSize: theme.responsive[device]?.text.h1, color: theme.text.primary }}>{data}</TextEllipsis>
       </div>
       {action && <div style={{ position: 'absolute', right: 10, bottom: 10 }}>{action}</div>}

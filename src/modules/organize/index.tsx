@@ -82,8 +82,6 @@ export const Organize = () => {
     setFloors(mappedFloor)
 
     const mappedProduct = dashboard?.products?.map((item) => {
-      console.log(item);
-      
       return {
         name: item.name?.[lang],
         value: item.value,

@@ -9,7 +9,7 @@ export const CardContainer = ({ title, children, ...props }) => {
     <div {...props}>
         <div
             style={{
-                background: theme.background.secondary,
+                background: `${theme.background.secondary}cc`,
                 borderRadius: theme.radius.secondary,
                 position: 'relative',
                 display: 'flex',
