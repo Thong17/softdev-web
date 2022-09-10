@@ -127,6 +127,28 @@ export const getAdminDashboard = createAsyncThunk(
   }
 )
 
+export const getOrganizeDashboard = createAsyncThunk(
+  'dashboard/organize',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/dashboard/organize'
+    })
+    return response?.data
+  }
+)
+
+export const getOperationDashboard = createAsyncThunk(
+  'dashboard/operation',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/dashboard/operation'
+    })
+    return response?.data
+  }
+)
+
 export const sharedSlice = createSlice({
   name: 'shared',
   initialState,
@@ -268,6 +290,30 @@ export const sharedSlice = createSlice({
         state.adminDashboard.status = 'SUCCESS'
         state.adminDashboard.data = action.payload.data
       })
+
+      // Get Organize Dashboard from API
+      .addCase(getOrganizeDashboard.pending, (state) => {
+        state.organizeDashboard.status = 'LOADING'
+      })
+      .addCase(getOrganizeDashboard.rejected, (state) => {
+        state.organizeDashboard.status = 'FAILED'
+      })
+      .addCase(getOrganizeDashboard.fulfilled, (state, action) => {
+        state.organizeDashboard.status = 'SUCCESS'
+        state.organizeDashboard.data = action.payload.data
+      })
+
+      // Get Operation Dashboard from API
+      .addCase(getOperationDashboard.pending, (state) => {
+        state.operationDashboard.status = 'LOADING'
+      })
+      .addCase(getOperationDashboard.rejected, (state) => {
+        state.operationDashboard.status = 'FAILED'
+      })
+      .addCase(getOperationDashboard.fulfilled, (state, action) => {
+        state.operationDashboard.status = 'SUCCESS'
+        state.operationDashboard.data = action.payload.data
+      })
   },
 })
 
@@ -282,5 +328,7 @@ export const selectListCustomer = (state: RootState) => state.shared.listCustome
 export const selectPrivilege = (state: RootState) => state.shared.privilege
 export const selectPreRole = (state: RootState) => state.shared.preRole
 export const selectAdminDashboard = (state: RootState) => state.shared.adminDashboard
+export const selectOrganizeDashboard = (state: RootState) => state.shared.organizeDashboard
+export const selectOperationDashboard = (state: RootState) => state.shared.operationDashboard
 
 export default sharedSlice.reducer
