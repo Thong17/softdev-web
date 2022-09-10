@@ -5,10 +5,10 @@ import { Register } from 'modules/auth/Register'
 import { Admin, Roles, CreateRole, UpdateRole, DetailRole, Users, CreateUser, UpdateUser, DetailUser } from 'modules/admin'
 import { Organize, Brands, Categories, CreateCategory, DetailCategory, UpdateCategory, CreateBrand, DetailBrand, UpdateBrand, Products, CreateProduct, DetailProduct, UpdateProduct, ProductSetup, Store, UpdateStore, LayoutForm } from 'modules/organize'
 import { Cashing, CreatePromotion, DetailPromotion, Promotions, Reservation, ReservationForm, Sale, Stock, Stocks, UpdatePromotion } from 'modules/sale'
-import { Report } from 'modules/report'
 import { Counter } from 'modules/counter/Counter'
 import Config from 'modules/config/Config'
 import NotFound from 'components/shared/NotFound'
+import { SaleReport, Report } from 'modules/report'
 
 const routes: RouteObject[] = [
   {
@@ -290,6 +290,12 @@ const routes: RouteObject[] = [
   {
     path: '/report',
     element: <Report />,
+    children: [
+      {
+        path: 'sale',
+        element: <SaleReport />,
+      },
+    ]
   },
   {
     path: '/config',

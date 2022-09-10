@@ -1,0 +1,185 @@
+import Container from 'components/shared/Container'
+import ReportBreadcrumbs from './components/Breadcrumbs'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { CardContainer } from 'components/shared/container/CardContainer'
+import { CustomLineChart } from 'components/shared/charts/LineChart'
+import { MiniSelectField } from 'components/shared/form'
+import { DetailSection } from 'components/shared/container/DetailSection'
+import ShowChartRoundedIcon from '@mui/icons-material/ShowChartRounded'
+import StackedLineChartRoundedIcon from '@mui/icons-material/StackedLineChartRounded'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { getReportSale, selectReportSale } from './redux'
+
+const Header = () => {
+  return (
+    <>
+      <ReportBreadcrumbs page='saleReport' />
+    </>
+  )
+}
+
+const filterOption = [
+  {
+    label: 'Daily',
+    value: 'daily',
+  },
+  {
+    label: 'Monthly',
+    value: 'monthly',
+  },
+  {
+    label: 'Yearly',
+    value: 'yearly',
+  },
+]
+
+const filterTotal = [
+  {
+    label: 'Today',
+    value: 'day',
+  },
+  {
+    label: 'This Week',
+    value: 'week',
+  },
+  {
+    label: 'This Month',
+    value: 'month',
+  },
+  {
+    label: 'This Year',
+    value: 'year',
+  },
+]
+
+const ListFilter = ({ grades, name, value = '', onChange }) => {
+  return (
+    <MiniSelectField
+      name={name}
+      value={value}
+      options={grades}
+      onChange={(event) => onChange(event)}
+    />
+  )
+}
+
+export const SaleReport = () => {
+  const dispatch = useAppDispatch()
+  const { data } = useAppSelector(selectReportSale)
+  const [selectedSaleChart, setSelectedSaleChart] = useState('daily')
+  const [selectedTotalIncome, setSelectedTotalIncome] = useState('day')
+  const [selectedTotalProfit, setSelectedTotalProfit] = useState('day')
+  const [queryParams, setQueryParams] = useSearchParams()
+
+  
+  useEffect(() => {
+    console.log(data)
+  }, [data])
+  
+
+  const handleChangeGrande = (event) => {
+    const { name, value } = event.target
+    handleQuery({ [name]: value })
+  }
+
+  const handleQuery = (data) => {
+    let query = {}
+    const _totalIncome = queryParams.get('_totalIncome')
+    const _totalProfit = queryParams.get('_totalProfit')
+    const _chartData = queryParams.get('_chartData')
+
+    if (_totalIncome) query = { _totalIncome, ...query }
+    if (_totalProfit) query = { _totalProfit, ...query }
+    if (_chartData) query = { _chartData, ...query }
+
+    setQueryParams({ ...query, ...data })
+  }
+
+  useEffect(() => {
+    const _totalIncome = queryParams.get('_totalIncome')
+    const _totalProfit = queryParams.get('_totalProfit')
+    const _chartData = queryParams.get('_chartData')
+
+    if (_totalIncome) setSelectedTotalIncome(_totalIncome)
+    if (_totalProfit) setSelectedTotalProfit(_totalProfit)
+    if (_chartData) setSelectedSaleChart(_chartData)
+    dispatch(getReportSale({query: queryParams}))
+  }, [queryParams, dispatch])
+  
+  return (
+    <Container header={<Header />}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gridColumnGap: 20,
+          gridTemplateAreas: ` 
+              'header header' 
+              'charts charts'
+            `,
+        }}
+      >
+        <div
+          style={{
+            gridArea: 'header',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 20,
+            overflowX: 'auto',
+            padding: 20,
+          }}
+        >
+          <DetailSection
+            title='Income'
+            header={
+              <div style={{ position: 'absolute', right: 0 }}>
+                <ListFilter
+                  value={selectedTotalIncome}
+                  grades={filterTotal}
+                  name='_totalIncome'
+                  onChange={handleChangeGrande}
+                />
+              </div>
+            }
+            data={<span style={{ fontSize: 23 }}>9</span>}
+            icon={<ShowChartRoundedIcon style={{ fontSize: 40 }} />}
+          />
+          <DetailSection
+            title='Profit'
+            header={
+              <div style={{ position: 'absolute', right: 0 }}>
+                <ListFilter
+                  value={selectedTotalProfit}
+                  grades={filterTotal}
+                  name='_totalProfit'
+                  onChange={handleChangeGrande}
+                />
+              </div>
+            }
+            data={<span style={{ fontSize: 23 }}>9</span>}
+            icon={<StackedLineChartRoundedIcon style={{ fontSize: 40 }} />}
+          />
+        </div>
+        <CardContainer
+          title={
+            <>
+              Charts
+              <div style={{ position: 'absolute', right: 10, top: 7 }}>
+                <ListFilter
+                  value={selectedSaleChart}
+                  grades={filterOption}
+                  name='_chartData'
+                  onChange={handleChangeGrande}
+                />
+              </div>
+            </>
+          }
+          style={{ gridArea: 'charts' }}
+        >
+          <CustomLineChart data={[]} labels={[]} height={370} />
+        </CardContainer>
+      </div>
+    </Container>
+  )
+}

@@ -17,6 +17,8 @@ export const languages = {
     CREATE: 'Create',
     SCHOOL_REPORT: 'School Report',
     ATTENDANCE_REPORT: 'Attendance Report',
+    SALE_REPORT: 'OPERATION_REPORT',
+    SALE: 'Sale',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -36,6 +38,8 @@ export const languages = {
     CREATE: 'បង្កើត',
     SCHOOL_REPORT: 'របាយការណ៍​សិក្សា',
     ATTENDANCE_REPORT: 'របាយការណ៍វត្តមាន',
+    SALE_REPORT: 'OPERATION_REPORT',
+    SALE: 'Sale',
   },
   Chinese: {
     TEST: 'اختبار',
@@ -55,5 +59,7 @@ export const languages = {
     CREATE: 'خلق',
     SCHOOL_REPORT: 'تقرير مدرسي',
     ATTENDANCE_REPORT: 'تقرير الحضور',
+    SALE_REPORT: 'OPERATION_REPORT',
+    SALE: 'Sale',
   }
 }

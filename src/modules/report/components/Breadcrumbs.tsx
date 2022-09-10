@@ -4,14 +4,14 @@ import { IBreadcrumbs } from 'constants/interfaces/Breadcrumbs'
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded'
 import useLanguage from 'hooks/useLanguage'
 
-declare type page = 'report'
+declare type page = 'saleReport'
 
 const ReportBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
   const { language } = useLanguage()
   const stages = {
-    report: [
+    saleReport: [
       {
-        title: language['REPORT'],
+        title: language['SALE_REPORT'],
       },
     ],
   }

@@ -1,23 +1,23 @@
 import { Layout } from 'components/layouts/Layout'
-import { useOutlet } from 'react-router'
-import Container from 'components/shared/Container'
 import ReportNavbar from './components/ReportNavbar'
-import ReportBreadcrumbs from './components/Breadcrumbs'
+import { useOutlet } from 'react-router'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 export const Report = () => {
   const outlet = useOutlet()
-
-  const Header = () => {
-    return (
-      <>
-        <ReportBreadcrumbs page='report' />
-      </>
-    )
-  }
-
+  const location = useLocation()
+  const navigate = useNavigate()
+  
+  useEffect(() => {
+    if (location.pathname === '/report') navigate('/report/sale')
+  }, [location.pathname, navigate])
+  
   return (
     <Layout navbar={<ReportNavbar />}>
-      {outlet || <Container header={<Header />}>Store Updated</Container>}
+      {outlet}
     </Layout>
   )
 }
+
+export { SaleReport } from './SaleReport'
