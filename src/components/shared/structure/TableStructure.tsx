@@ -25,7 +25,7 @@ const tableSize = {
   },
 }
 
-const ChairStructure = ({ column, row, status = 'vacant' }) => {
+const ChairStructure = ({ column, row }) => {
   const { theme } = useTheme()
   return (
     <div
@@ -95,13 +95,11 @@ export const TableStructure = ({
           key={`1${index}`}
           column={direction === 'row' ? `${index}/${index + 1}` : '1/2'}
           row={direction === 'row' ? '1/2' : `${index}/${index + 1}`}
-          status={status}
         />,
         <ChairStructure
           key={`2${index}`}
           column={direction === 'row' ? `${index}/${index + 1}` : '2/3'}
           row={direction === 'row' ? '2/3' : `${index}/${index + 1}`}
-          status={status}
         />,
       ]
     }
@@ -147,7 +145,7 @@ export const TableStructure = ({
                 ? tableSize[size]?.height
                 : tableSize[size]?.height * length,
             borderRadius: theme.radius.quaternary,
-            padding: '10px 20px',
+            padding: '10px 20px 10px 10px',
             boxSizing: 'border-box',
             overflow: 'hidden',
             position: 'absolute',
@@ -167,7 +165,7 @@ export const TableStructure = ({
           >
             <TextEllipsis
               style={{
-                fontSize: theme.responsive[device]?.text.h5,
+                fontSize: theme.responsive[device]?.text.primary,
                 color: theme.text.tertiary,
               }}
             >
@@ -188,7 +186,7 @@ export const TableStructure = ({
               </TextEllipsis>
               <TextEllipsis
                 style={{
-                  fontSize: theme.responsive[device]?.text.tertiary,
+                  fontSize: theme.responsive[device]?.text.quaternary,
                   color: theme.color[statusReservation(status)],
                 }}
               >

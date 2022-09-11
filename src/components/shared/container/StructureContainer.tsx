@@ -188,7 +188,7 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
                     onClick={() => isSelected ? handleRemoveStructure(structure._id) : handleAddStructure(structure)}
                     key={index}
                     className='structure'
-                    sx={{ gridArea: `${structure.id}`, backgroundColor: isSelected ? theme.active.primary : `${theme.background.secondary}33`, borderRadius: theme.radius.primary, cursor: onClick ? 'pointer' : 'default', '&:hover': { backgroundColor: theme.active.primary } }}
+                    sx={{ gridArea: `${structure.id}`, backgroundColor: isSelected ? `${theme.active.primary} !important` : `${theme.background.secondary}33`, borderRadius: theme.radius.primary, cursor: onClick ? 'pointer' : 'default', '&:hover': { backgroundColor: theme.active.secondary } }}
                   >
                     <TableStructure
                       title={structure.title}
@@ -204,10 +204,10 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
               default:
                 return (
                   <Box
-                    onClick={() => onClick && onClick(structure._id)}
+                    onClick={() => isSelected ? handleRemoveStructure(structure._id) : handleAddStructure(structure)}
                     key={index}
                     className='structure'
-                    sx={{ gridArea: `${structure.id}`, backgroundColor: `${theme.background.secondary}33`, borderRadius: theme.radius.primary, cursor: onClick ? 'pointer' : 'default', '&:hover': { backgroundColor: theme.active.primary } }}
+                    sx={{ gridArea: `${structure.id}`, backgroundColor: isSelected ? `${theme.active.primary} !important` : `${theme.background.secondary}33`, borderRadius: theme.radius.primary, cursor: onClick ? 'pointer' : 'default', '&:hover': { backgroundColor: theme.active.secondary } }}
                   >
                     <RoomStructure
                       title={structure.title}
