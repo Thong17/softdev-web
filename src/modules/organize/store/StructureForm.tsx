@@ -11,6 +11,29 @@ import { structureSchema } from './schema'
 import { useForm } from 'react-hook-form'
 import { currencyOptions } from 'components/shared/form/InvoiceForm'
 
+const durationOptions = [
+  {
+    label: 'H',
+    value: '1h'
+  },
+  {
+    label: 'D',
+    value: '1d'
+  },
+  {
+    label: 'W',
+    value: '1w'
+  },
+  {
+    label: 'M',
+    value: '1m'
+  },
+  {
+    label: 'Y',
+    value: '1y'
+  }
+]
+
 export const StructureForm = ({
   dialog,
   setDialog,
@@ -32,16 +55,22 @@ export const StructureForm = ({
   const [direction, setDirection] = useState('row')
   const [type, setType] = useState('table')
   const [priceCurrency, setPriceCurrency] = useState('')
+  const [priceDuration, setPriceDuration] = useState('')
   const sizeValue = watch('size')
   const typeValue = watch('type')
   const alignValue = watch('align')
   const justifyValue = watch('justify')
   const directionValue = watch('direction')
   const priceCurrencyValue = watch('price.currency')
+  const priceDurationValue = watch('price.duration')
 
   useEffect(() => {
     setPriceCurrency(priceCurrencyValue || 'USD')
   }, [priceCurrencyValue])
+
+  useEffect(() => {
+    setPriceDuration(priceDurationValue || '1h')
+  }, [priceDurationValue])
 
   useEffect(() => {
     const selectedType = typeOptions.find(
@@ -137,26 +166,48 @@ export const StructureForm = ({
             err={errors?.price?.value?.message}
             {...register('price.value')}
             icon={
-              <MiniSelectField
-                options={currencyOptions}
-                err={errors?.price?.currency?.message}
-                name='price.currency'
-                onChange={handleChangeSelect}
-                value={priceCurrency}
-                sx={{
-                  position: 'absolute',
-                  top: -1,
-                  right: -38,
-                  height: 23,
-                  '& .MuiSelect-select': {
+              <div>
+                <MiniSelectField
+                  options={currencyOptions}
+                  err={errors?.price?.currency?.message}
+                  name='price.currency'
+                  onChange={handleChangeSelect}
+                  value={priceCurrency}
+                  sx={{
                     position: 'absolute',
-                    top: -2,
-                  },
-                  '& .MuiSvgIcon-root': {
-                    right: 33,
-                  },
-                }}
-              />
+                    top: -1,
+                    right: 0,
+                    height: 23,
+                    '& .MuiSelect-select': {
+                      position: 'absolute',
+                      top: -2,
+                    },
+                    '& .MuiSvgIcon-root': {
+                      right: 33,
+                    },
+                  }}
+                />
+                <MiniSelectField
+                  options={durationOptions}
+                  err={errors?.price?.duration?.message}
+                  name='price.duration'
+                  onChange={handleChangeSelect}
+                  value={priceDuration}
+                  sx={{
+                    position: 'absolute',
+                    top: -1,
+                    right: -38,
+                    height: 23,
+                    '& .MuiSelect-select': {
+                      position: 'absolute',
+                      top: -2,
+                    },
+                    '& .MuiSvgIcon-root': {
+                      right: 33,
+                    },
+                  }}
+                />
+              </div>
             }
           />
         </div>

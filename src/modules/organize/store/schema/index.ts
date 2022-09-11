@@ -16,6 +16,7 @@ export const structureSchema = yup.object().shape({
   price: yup.object({
     value: yup.number().required('Price is required'),
     currency: yup.string().optional(),
+    duration: yup.string().optional(),
   }),
   size: yup.string().required(),
   type: yup.string().optional(),

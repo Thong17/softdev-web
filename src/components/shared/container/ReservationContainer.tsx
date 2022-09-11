@@ -351,21 +351,22 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
     structures.forEach(structure => {
       let structurePrice = structure.price.value
       if (structure.price.currency !== 'USD') structurePrice /= 4000
+      
       switch (structure.price.duration) {
         case '1d':
           price += structurePrice / 24
           break
 
         case '1w':
-          price += structurePrice / 24 * 7
+          price += structurePrice / (24 * 7)
           break
 
         case '1m':
-          price += structurePrice / 24 * 30.4167
+          price += structurePrice / (24 * 30.4167)
           break
 
         case '1y':
-          price += structurePrice / 24 * 365
+          price += structurePrice / (24 * 365)
           break
       
         default:
@@ -373,6 +374,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
           break
       }
     })
+    
     setPriceValue(price)
     setValue('price', { value: price, currency: 'USD', duration: '1h' })
   }, [structures, setValue, getValues])
