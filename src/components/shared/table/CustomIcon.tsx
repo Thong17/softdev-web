@@ -18,8 +18,8 @@ export const CircleIcon = ({ icon, star = false, master = false, color = '#FFD70
       )}
       <div
         style={{
-          minWidth: 30,
-          minHeight: 30,
+          minWidth: width,
+          minHeight: height,
           width: height,
           height: width,
           borderRadius: theme.radius.circle,

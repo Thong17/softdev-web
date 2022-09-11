@@ -234,7 +234,7 @@ export const ProductContainer = ({
       value: brand._id,
       label: (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <CircleIcon icon={brand.icon?.filename} />
+          <CircleIcon width={23} height={23} icon={brand.icon?.filename} />
           <span style={{ marginLeft: 10 }}>
             {brand.name[lang] || brand.name['English']}
           </span>
@@ -251,7 +251,7 @@ export const ProductContainer = ({
       value: brand._id,
       label: (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <CircleIcon icon={brand.icon?.filename} />
+          <CircleIcon width={23} height={23} icon={brand.icon?.filename} />
           <span style={{ marginLeft: 10 }}>
             {brand.name[lang] || brand.name['English']}
           </span>

@@ -29,7 +29,7 @@ export const CustomMiniSelect = styled('div')(
       color: styled.text.secondary,
       width: '100%',
       padding: 0,
-      '& div': {
+      '& .MuiSelect-select': {
         minHeight: '30px !important',
         padding: '0 7px',
         display: 'flex',

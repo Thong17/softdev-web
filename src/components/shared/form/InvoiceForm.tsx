@@ -56,15 +56,15 @@ export const calculateTransactionTotal = (
   const { value: discount, currency: discountCurrency, isFixed } = discountObj
   const { value: price, currency: priceCurrency } = priceObj
 
-  if (!discount || discount === 0)
-    return { total: price * quantity, currency: priceCurrency }
+  if (!discount || discount === 0) return { total: price * quantity, currency: priceCurrency }
 
   if (isFixed) {
-    if (discountCurrency !== 'PCT')
-      return { total: discount * quantity, currency: discountCurrency }
-    return {
-      total: ((price * discount) / 100) * quantity,
-      currency: priceCurrency,
+    if (discountCurrency !== 'PCT') return { total: discount * quantity, currency: discountCurrency }
+    else {
+      return {
+        total: ((price * discount) / 100) * quantity,
+        currency: priceCurrency,
+      }
     }
   }
 
