@@ -527,6 +527,9 @@ export const LayoutForm = () => {
                           direction={structure.direction}
                         />
                         <div className='action object'>
+                          <UpdateButton
+                            onClick={() => handleUpdateStructure(structure)}
+                          />
                           <RejectButton
                             onClick={() => handleRemoveStructure(structure.id)}
                           />

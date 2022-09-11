@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { CustomButton } from 'styles/index'
 import { CustomerDialog } from '../dialog/CustomerDialog'
-import { RankStatus } from '../RankStatus'
 import useTheme from 'hooks/useTheme'
 import { MiniDetailField, MiniTextField } from '../form/InputField'
 import Button from '../Button'
@@ -24,6 +23,7 @@ import { getListReservation, selectListReservation } from 'modules/sale/reservat
 import { combineDate, inputDateTimeFormat, timeFormat } from 'utils/index'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
+import { CapacityStructure } from '../structure/CapacityStructure'
 
 const initReservation: any = {
   price: { value: 0, currency: 'USD', duration: '1h' },
@@ -148,11 +148,7 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
           }}
         >
           <SelectStructure onContinue={handleClickStructure} structures={structures} />
-          <RankStatus
-            text={<p style={{ padding: '5px 0', marginLeft: 5 }}>17</p>}
-            label='Available'
-            color={theme.color.success}
-          />
+          <CapacityStructure />
         </div>
         {toggleForm ? (
           <ReservationForm

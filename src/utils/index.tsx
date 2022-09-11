@@ -95,8 +95,8 @@ export const compareDate = (date1, date2) => {
 
 export const combineDate = (date1, date2) => {
   if (!date1 && !date2) return moment(new Date()).format('L')
-
-  return `${moment(date1).format('L')} - ${moment(date2).format('L')}`
+  if (moment(date1).format('L') === moment(date2).format('L')) return moment(date1).format('L')
+  else return `${moment(date1).format('L')} - ${moment(date2).format('L')}`
 }
 
 export const dateFormat = (date: any = null) => {

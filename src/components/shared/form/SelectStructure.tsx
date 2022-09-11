@@ -120,6 +120,19 @@ export const SelectStructure = ({ onContinue, structures }) => {
           const isSelected = selectedStructures.some(
             (item) => item._id === structure._id
           )
+          let statusColor = ''
+          switch (structure.status) {
+            case 'reserved':
+              statusColor = theme.color.warning
+              break
+            case 'occupied':
+              statusColor = theme.color.error
+              break
+          
+            default:
+              statusColor = theme.color.info
+              break
+          }
           return (
             <MenuItem key={key} style={{ backgroundColor: isSelected ? theme.active.primary : theme.background.secondary }}>
               <div
@@ -132,9 +145,10 @@ export const SelectStructure = ({ onContinue, structures }) => {
                   display: 'flex',
                   alignItems: 'center',
                   minWidth: 300,
-                  fontSize: theme.responsive[device]?.text.secondary
+                  fontSize: theme.responsive[device]?.text.secondary,
                 }}
               >
+                <span style={{ width: 3, borderRadius: 2, height: '50%', backgroundColor: statusColor, position: 'absolute', left: 7 }}></span>
                 <div
                   style={{
                     display: 'flex',
