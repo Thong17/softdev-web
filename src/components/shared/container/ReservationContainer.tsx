@@ -25,6 +25,8 @@ import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import { CapacityStructure } from '../structure/CapacityStructure'
 import useAuth from 'hooks/useAuth'
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
+import useAlert from 'hooks/useAlert'
 
 const initReservation: any = {
   price: { value: 0, currency: 'USD', duration: '1h' },
@@ -37,6 +39,8 @@ const initReservation: any = {
 
 export const ReservationContainer = ({ selectedStructures, onSave }) => {
   const { theme } = useTheme()
+  const confirm = useAlert()
+  const { notify } = useNotify()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const { data, status } = useAppSelector(selectListReservation)
@@ -109,6 +113,22 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
       structures: reservation?.structures
     })
     setToggleForm(true)
+  }
+
+  const handleDeleteReservation = (id) => {
+    confirm({
+      title: 'Are you sure you want to delete this reservation?',
+      description: 'Delete reservation will delete it from the list.',
+      variant: 'error'
+    }).then(() => {
+      Axios({
+        url: `/sale/reservation/delete/${id}`,
+        method: 'DELETE',
+      }).then(data => {
+        notify(data?.data?.msg, 'success')
+        setReservations(prev => prev.filter(item => item._id !== id))
+      }).catch(err => notify(err?.response?.data?.msg, 'error'))
+    }).catch(() => {})
   }
 
   return (
@@ -204,7 +224,7 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
           >
             {
               reservations.map((reservation, key) => {
-                return <ReservationItem data={reservation} key={key} onClick={handleClickReservation} onEdit={handleEditReservation} />
+                return <ReservationItem data={reservation} key={key} onClick={handleClickReservation} onEdit={handleEditReservation} onDelete={handleDeleteReservation} />
               })
             }
           </Box>
@@ -214,13 +234,18 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
   )
 }
 
-const ReservationItem = ({ data, onClick, onEdit }) => {
+const ReservationItem = ({ data, onClick, onEdit, onDelete }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
 
   const handleEdit = (event) => {
     event.stopPropagation()
     onEdit(data._id)
+  }
+
+  const handleDelete = (event) => {
+    event.stopPropagation()
+    onDelete(data._id)
   }
 
   return (
@@ -277,7 +302,7 @@ const ReservationItem = ({ data, onClick, onEdit }) => {
           {combineDate(data?.startAt, data?.endAt || data?.startAt)}
         </TextEllipsis>
       </div>
-      <div style={{ display: 'grid', placeItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <IconButton
           onClick={handleEdit}
           sx={{
@@ -288,6 +313,17 @@ const ReservationItem = ({ data, onClick, onEdit }) => {
           }}
         >
           <Edit style={{ fontSize: 17 }} />
+        </IconButton>
+        <IconButton
+          onClick={handleDelete}
+          sx={{
+            width: 30,
+            height: 30,
+            color: `${theme.color.error}cc`,
+            '&:hover': { color: theme.color.error },
+          }}
+        >
+          <DeleteRoundedIcon style={{ fontSize: 19 }} />
         </IconButton>
       </div>
     </div>
