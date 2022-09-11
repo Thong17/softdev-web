@@ -24,6 +24,7 @@ import { combineDate, inputDateTimeFormat, timeFormat } from 'utils/index'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import { CapacityStructure } from '../structure/CapacityStructure'
+import useAuth from 'hooks/useAuth'
 
 const initReservation: any = {
   price: { value: 0, currency: 'USD', duration: '1h' },
@@ -306,6 +307,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
     resolver: yupResolver(reservationSchema),
     defaultValues,
   })
+  const { user } = useAuth()
   const { theme } = useTheme()
   const { device } = useWeb()
   const [priceValue, setPriceValue] = useState(0)
@@ -346,7 +348,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
     let price = 0
     structures.forEach(structure => {
       let structurePrice = structure.price.value
-      if (structure.price.currency !== 'USD') structurePrice /= 4000
+      if (structure.price.currency !== 'USD') structurePrice /= user?.drawer?.buyRate || 4000
       
       switch (structure.price.duration) {
         case '1d':
@@ -372,8 +374,8 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
     })
     
     setPriceValue(price)
-    setValue('price', { value: price, currency: 'USD', duration: '1h' })
-  }, [structures, setValue, getValues])
+    setValue('price', { value: price.toFixed(3), currency: 'USD', duration: '1h' })
+  }, [structures, user?.drawer?.buyRate, setValue, getValues])
 
   const submit = (data) => {
     Axios({
