@@ -23,9 +23,10 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListReservation, selectListReservation } from 'modules/sale/reservation/redux'
 import { combineDate, inputDateTimeFormat, timeFormat } from 'utils/index'
 import { useNavigate } from 'react-router-dom'
+import moment from 'moment'
 
 const initReservation: any = {
-  price: { value: 0, currency: 'USD' },
+  price: { value: 0, currency: 'USD', duration: '1h' },
   startAt: null,
   endAt: null,
   customer: null,
@@ -311,9 +312,21 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
   })
   const { theme } = useTheme()
   const { device } = useWeb()
+  const [priceValue, setPriceValue] = useState(0)
   const [priceCurrency, setPriceCurrency] = useState('')
   const priceCurrencyValue = watch('price.currency')
   const { notify } = useNotify()
+  const startAt = watch('startAt')
+  const endAt = watch('endAt')
+
+  useEffect(() => {
+    const start = moment(startAt)
+    const end = moment(endAt)
+    if (isNaN(end.diff(start))) return
+    const duration = end.diff(start) / 3600000
+    
+    setValue('price.value', priceValue * duration)
+  }, [startAt, endAt, priceValue, getValues, setValue])
 
   useEffect(() => {
     reset(defaultValues)
@@ -333,7 +346,34 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
 
   useEffect(() => {
     setValue('structures', structures)
+
     let price = 0
+    structures.forEach(structure => {
+      let structurePrice = structure.price.value
+      if (structure.price.currency !== 'USD') structurePrice /= 4000
+      switch (structure.price.duration) {
+        case '1d':
+          price += structurePrice / 24
+          break
+
+        case '1w':
+          price += structurePrice / 24 * 7
+          break
+
+        case '1m':
+          price += structurePrice / 24 * 30.4167
+          break
+
+        case '1y':
+          price += structurePrice / 24 * 365
+          break
+      
+        default:
+          price += structurePrice
+          break
+      }
+    })
+    setPriceValue(price)
     setValue('price', { value: price, currency: 'USD', duration: '1h' })
   }, [structures, setValue, getValues])
 
