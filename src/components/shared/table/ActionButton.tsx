@@ -206,17 +206,18 @@ export const MergeButton: FC<ButtonProps> = ({ disabled, title, ...prop }) => {
   )
 }
 
-export const UploadButton: FC<ButtonProps> = ({ title, ...prop }) => {
+export const UploadButton: FC<ButtonProps> = ({ title, disabled, ...prop }) => {
   const { theme } = useTheme()
   return (
     <IconButton
       size='small'
       style={{
-        backgroundColor: `${theme.color.success}22`,
+        backgroundColor: !disabled ? `${theme.text.secondary}22` : `${theme.color.success}22`,
         borderRadius: theme.radius.primary,
-        color: theme.color.success,
+        color: !disabled ? theme.text.secondary : theme.color.success,
         marginLeft: 5,
       }}
+      disabled={!disabled}
       {...prop}
     >
       <FileUploadRoundedIcon fontSize='small' />

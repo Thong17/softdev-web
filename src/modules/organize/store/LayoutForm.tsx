@@ -101,6 +101,7 @@ export const LayoutForm = () => {
   const [loading, setLoading] = useState(true)
   const [floorOption, setFloorOption] = useState<IOptions[]>([])
   const [defaultStructure, setDefaultStructure] = useState(initStructure)
+  const [isDirty, setIsDirty] = useState(false)
 
   useEffect(() => {
     setFloorOption(listFloor?.map(item => ({ label: item.floor, value: item._id, tags: item.tags })))
@@ -173,11 +174,13 @@ export const LayoutForm = () => {
   const handleAddColumn = () => {
     const id = column.length + 1
     setColumn((prevColumn) => [...prevColumn, id])
+    setIsDirty(true)
   }
 
   const handleAddRow = () => {
     const id = row.length + 1
     setRow((prevRow) => [...prevRow, id])
+    setIsDirty(true)
   }
 
   const handleRemoveColumn = () => {
@@ -192,6 +195,7 @@ export const LayoutForm = () => {
     }
 
     setColumn(column.slice(0, -1))
+    setIsDirty(true)
   }
 
   const handleResetLayout = () => {
@@ -204,6 +208,7 @@ export const LayoutForm = () => {
       setRow([1])
       setMergedStructures([])
       setStructures([])
+      setIsDirty(true)
     }).catch()
   }
 
@@ -219,6 +224,7 @@ export const LayoutForm = () => {
     }
 
     setRow(row.slice(0, -1))
+    setIsDirty(true)
   }
 
   const handleAddStructure = (id) => {
@@ -233,6 +239,7 @@ export const LayoutForm = () => {
           : structure
       )
     )
+    setIsDirty(true)
   }
 
   const handleMergeStructure = (id, selected) => {
@@ -244,6 +251,7 @@ export const LayoutForm = () => {
     selected
       ? setMerges([...merges, id].sort())
       : setMerges((prev) => prev.filter((prevId) => prevId !== id))
+    setIsDirty(true)
   }
 
   const handleConfirmMergeStructure = () => {
@@ -307,6 +315,7 @@ export const LayoutForm = () => {
     })
     setStructures(mappedStructures)
     setMerges([])
+    setIsDirty(true)
   }
 
   const handleSubmitStructure = (data) => {
@@ -315,6 +324,7 @@ export const LayoutForm = () => {
         structure.id === data.id ? { ...structure, ...data, floor } : structure
       )
     )
+    setIsDirty(true)
   }
 
   const handleUnMergeStructure = (structure) => {
@@ -342,6 +352,7 @@ export const LayoutForm = () => {
 
     setTemplate(newTemplate)
     setStructures(mappedStructures)
+    setIsDirty(true)
   }
 
   const handleSaveLayout = () => {
@@ -407,7 +418,7 @@ export const LayoutForm = () => {
                   onClick={handleConfirmMergeStructure}
                 />
                 <ResetButton title='Reset' onClick={handleResetLayout} />
-                <UploadButton title='Save' onClick={handleSaveLayout} />
+                <UploadButton title='Save' onClick={handleSaveLayout} disabled={isDirty} />
                 <FloorButton title='Floor' onClick={() => setFloorDialog({ ...floorDialog, open: true })} />
                 <MiniSelectField style={{ marginLeft: 10 }} options={floorOption} value={floor} onChange={handleChangeFloor} search={true} />
               </div>
