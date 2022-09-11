@@ -34,10 +34,12 @@ export const CapacityStructure = () => {
           ? `${theme.color.error}22`
           : `${theme.color.success}22`,
         color: average ? theme.color.error : theme.color.success,
-        fontSize: theme.responsive[device]?.text.tertiary
+        fontSize: theme.responsive[device]?.text.tertiary,
+        wordBreak: 'break-all',
+        maxWidth: '25%'
       }}
     >
-      {average ? `Wait ${average}` : `${available} available`}
+      {average ? `Avg. ${average}` : `${available} available`}
       <PieChartRoundedIcon style={{ fontSize: 19, marginLeft: 5 }} />
     </div>
   )
