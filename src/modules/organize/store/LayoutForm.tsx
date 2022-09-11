@@ -9,6 +9,7 @@ import {
   UploadButton,
   ResetButton,
   FloorButton,
+  UpdateButton,
 } from 'components/shared/table/ActionButton'
 import useTheme from 'hooks/useTheme'
 import { useEffect, useState } from 'react'
@@ -34,6 +35,20 @@ const Header = () => {
       <StoreBreadcrumbs page='storeLayout' />
     </>
   )
+}
+
+const mappedStructureSchema = (structure) => {
+  return {
+    title: structure.title,
+    price: structure.price,
+    size: structure.size,
+    type: structure.type,
+    length: structure.length,
+    direction: structure.direction,
+    justify: structure.justify,
+    align: structure.align,
+    description: structure.description,
+  }
 }
 
 export const mapStructures = (currentStructures, newStructures) => {
@@ -85,6 +100,7 @@ export const LayoutForm = () => {
   const [floor, setFloor] = useState('')
   const [loading, setLoading] = useState(true)
   const [floorOption, setFloorOption] = useState<IOptions[]>([])
+  const [defaultStructure, setDefaultStructure] = useState(initStructure)
 
   useEffect(() => {
     setFloorOption(listFloor?.map(item => ({ label: item.floor, value: item._id, tags: item.tags })))
@@ -349,6 +365,11 @@ export const LayoutForm = () => {
     }).catch()
   }
 
+  const handleUpdateStructure = (data) => {
+    setDefaultStructure(mappedStructureSchema(data))
+    setStructureDialog({ ...structureDialog, structureId: data?.id, open: true })
+  }
+
   return (
     <Container header={<Header />}>
       <StructureForm
@@ -356,7 +377,7 @@ export const LayoutForm = () => {
         setDialog={setStructureDialog}
         theme={theme}
         onSubmit={handleSubmitStructure}
-        defaultValues={initStructure}
+        defaultValues={defaultStructure}
       />
       <FloorForm
         dialog={floorDialog}
@@ -471,6 +492,9 @@ export const LayoutForm = () => {
                           direction={structure.direction}
                         />
                         <div className='action object'>
+                          <UpdateButton
+                            onClick={() => handleUpdateStructure(structure)}
+                          />
                           <RejectButton
                             onClick={() => handleRemoveStructure(structure.id)}
                           />
