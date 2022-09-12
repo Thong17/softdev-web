@@ -49,7 +49,6 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
   useEffect(() => {
     setColor(colorCode)
   }, [colorCode])
-  
 
   useEffect(() => {
     const selectedCurrency = currencyOptions.find(
@@ -153,7 +152,7 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
         dialog.colorId
           ? dispatch(updateColor(data?.data?.data))
           : dispatch(createColor(data?.data?.data))
-          
+
         handleCloseDialog()
       })
       .catch((err) => {
@@ -178,8 +177,9 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
           width: width < 1024 ? '80vw' : '60vw',
           padding: 20,
           gridColumnGap: 20,
-          gridTemplateAreas: device === 'mobile' 
-                            ? `
+          gridTemplateAreas:
+            device === 'mobile'
+              ? `
                               'color color color'
                               'price price price'
                               'currency currency currency'
@@ -187,8 +187,8 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
                               'profile profile profile'
                               'description description description'
                               'action action action'
-                            ` 
-                            : `
+                            `
+              : `
                               'color color color'
                               'price currency code'
                               'profile profile profile'
@@ -227,7 +227,12 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
           <TextField
             type='text'
             label='Code'
-            icon={<ColorLensRoundedIcon style={{ color: color }} onClick={() => setPicker(!picker)} />}
+            icon={
+              <ColorLensRoundedIcon
+                style={{ color: color }}
+                onClick={() => setPicker(!picker)}
+              />
+            }
             err={errors?.code?.message}
             onChange={handleChangeCode}
             value={getValues('code')}
@@ -274,13 +279,22 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
         <div
           style={{ gridArea: 'action', display: 'flex', justifyContent: 'end' }}
         >
-          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <CustomButton
+            styled={theme}
+            onClick={handleCloseDialog}
+            style={{
+              backgroundColor: `${theme.color.error}22`,
+              color: theme.color.error,
+            }}
+          >
+            Cancel
+          </CustomButton>
           <CustomButton
             type='submit'
             style={{
               marginLeft: 10,
-              backgroundColor: theme.background.secondary,
-              color: theme.text.secondary,
+              backgroundColor: `${theme.color.info}22`,
+              color: theme.color.info,
             }}
             styled={theme}
             onClick={handleSubmit(submit)}

@@ -132,7 +132,7 @@ export const OptionForm = ({
 
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
-      <DialogTitle title='Option Form'  onClose={handleCloseDialog} />
+      <DialogTitle title='Option Form' onClose={handleCloseDialog} />
       <form
         style={{
           fontFamily: theme.font.family,
@@ -200,13 +200,22 @@ export const OptionForm = ({
         <div
           style={{ gridArea: 'action', display: 'flex', justifyContent: 'end' }}
         >
-          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <CustomButton
+            styled={theme}
+            onClick={handleCloseDialog}
+            style={{
+              backgroundColor: `${theme.color.error}22`,
+              color: theme.color.error,
+            }}
+          >
+            Cancel
+          </CustomButton>
           <CustomButton
             type='submit'
             style={{
               marginLeft: 10,
-              backgroundColor: theme.background.secondary,
-              color: theme.text.secondary,
+              backgroundColor: `${theme.color.info}22`,
+              color: theme.color.info,
             }}
             styled={theme}
             onClick={handleSubmit(submit)}
