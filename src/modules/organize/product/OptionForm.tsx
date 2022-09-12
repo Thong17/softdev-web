@@ -1,5 +1,4 @@
 import { CustomButton } from 'styles'
-import { Button } from '@mui/material'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { optionSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
