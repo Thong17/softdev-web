@@ -46,7 +46,7 @@ export const Cashing = () => {
   }, [dispatch])
 
   const handleClickProduct = (id) => {
-    setProductDialog({ productId: id, open: true })
+    setProductDialog({ ...productDialog, productId: id })
   }
 
   const handleAddTransaction = (data) => {

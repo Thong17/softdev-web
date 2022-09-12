@@ -63,6 +63,32 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   
   useEffect(() => {
     if (!product) return
+    if (product.colors.length < 1 && product.options.length < 1) {
+      if (quantity < 1) return notify('Please select at least 1 quantity', 'error')
+      if (product.isStock && quantity > totalStock) return notify('Order quantity has exceed our current stock', 'error')
+      
+      Axios({
+        method: 'POST',
+        url: '/sale/transaction/add',
+        body: {
+          product: product._id,
+          description: `${product.name[lang] || product.name['English']}`,
+          color: null,
+          price: product.price,
+          currency: product.currency,
+          total: { value: product.price * quantity, currency: product.currency },
+          quantity,
+          options: [],
+          promotion: product.promotion
+        }
+      }).then(data => {
+        addTransaction(data?.data?.data)
+        handleCloseDialog()
+      }).catch(err => {
+        notify(err?.response?.data?.msg, 'error')
+      })
+    }
+
     let addedOnPrices: any[] = []
     let description = ''
 
@@ -102,6 +128,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
     })
     setTotalOptions(total)
     setTotalDescription(description)
+    // eslint-disable-next-line
   }, [productProperties, product, lang])
 
   useEffect(() => {
@@ -111,10 +138,10 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   }, [dispatch, dialog.productId])
   
   useEffect(() => {
+    if (!data) return
     setProduct(data)
     let selectedProperty: any[] = []
-
-    data?.properties?.forEach((property) => {
+    data.properties?.forEach((property) => {
       let optionValue = null
       let optionValues: any[] = []
 
@@ -137,6 +164,8 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
       })
     })
     setProductProperties(selectedProperty)
+    if (data.colors.length > 1 || data.options.length > 1) setDialog(({ ...dialog, open: true }))
+    // eslint-disable-next-line
   }, [data])
 
   const handleCloseDialog = () => {
@@ -229,7 +258,6 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
       }
     }).then(data => {
       addTransaction(data?.data?.data)
-      notify(data?.data?.msg, 'success')
       handleCloseDialog()
       setProductColor(undefined)
     }).catch(err => {
