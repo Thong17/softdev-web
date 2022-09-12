@@ -13,6 +13,8 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useLanguage from 'hooks/useLanguage'
 import Loading from 'components/shared/Loading'
+import useTheme from 'hooks/useTheme'
+import { useNavigate } from 'react-router-dom'
 
 export const RoleForm = ({ defaultValues, id }: any) => {
   const dispatch = useAppDispatch()
@@ -25,6 +27,8 @@ export const RoleForm = ({ defaultValues, id }: any) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(id ? updateUserSchema : createUserSchema), defaultValues })
   const { device } = useWeb()
+  const { theme } = useTheme()
+  const navigate = useNavigate()
   const { notify } = useNotify()
   const { lang } = useLanguage()
   const [loading, setLoading] = useState(false)
@@ -159,17 +163,16 @@ export const RoleForm = ({ defaultValues, id }: any) => {
               justifyContent: 'end',
             }}
           >
-            <Button variant='contained' color='error'>
+            <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
               Cancel
             </Button>
             <Button
               loading={loading}
               type='submit'
               variant='contained'
-              color='success'
-              style={{ marginLeft: 20 }}
+              style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
             >
-              {id ? 'Save' : 'Create'}
+              { id ? 'Save' : 'Create' }
             </Button>
           </div>
         </div>

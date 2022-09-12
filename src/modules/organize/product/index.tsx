@@ -120,9 +120,8 @@ export const Products = () => {
                 }
               })
             }}
-            style={{ color: theme.text.secondary }}
           >
-            <CloseRoundedIcon />
+            <CloseRoundedIcon style={{ color: theme.color.error, fontSize: 19 }} />
           </IconButton>
         )
         return { ...importData, action: <ImportAction no={importData?.no} /> }

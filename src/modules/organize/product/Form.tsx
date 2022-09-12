@@ -24,6 +24,7 @@ import CropFreeIcon from '@mui/icons-material/CropFree'
 import { getListProduct } from './redux'
 import { useNavigate } from 'react-router-dom'
 import { IImage } from 'components/shared/form/UploadField'
+import useTheme from 'hooks/useTheme'
 
 const statusOptions = [
   { label: 'Enabled', value: true },
@@ -62,6 +63,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
   const brandId = watch('brand')
   const categoryId = watch('category')
   const isStockCheck = watch('isStock')
+  const { theme } = useTheme()
 
   useEffect(() => {
     setIsStock(isStockCheck)
@@ -206,7 +208,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
       style={{
         display: 'grid',
         gridTemplateColumns:
-          device === 'mobile' || device === 'tablet' ? '1fr' : '700px 1fr',
+          device === 'mobile' || device === 'tablet' ? '1fr' : '1fr',
         gridGap: 20,
       }}
     >
@@ -328,17 +330,16 @@ const ProductForm = ({ defaultValues, id }: any) => {
             justifyContent: 'end',
           }}
         >
-          <Button variant='contained' color='error'>
+          <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
             Cancel
           </Button>
           <Button
             loading={loading}
             type='submit'
             variant='contained'
-            color='success'
-            style={{ marginLeft: 20 }}
+            style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
           >
-            {id ? 'Save' : 'Create'}
+            { id ? 'Save' : 'Create' }
           </Button>
         </div>
       </div>

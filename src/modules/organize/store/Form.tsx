@@ -16,6 +16,7 @@ import { IImage } from 'components/shared/form/UploadField'
 import { InvoiceContainer } from 'components/shared/container/InvoiceContainer'
 import useTheme from 'hooks/useTheme'
 import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
+import { useNavigate } from 'react-router-dom'
 
 const fontOption = [
   { label: 'Arial', value: 'Arial' },
@@ -36,6 +37,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(storeSchema), defaultValues })
   const { theme } = useTheme()
+  const navigate = useNavigate()
   const { device } = useWeb()
   const { notify, loadify } = useNotify()
   const [loading, setLoading] = useState(false)
@@ -210,17 +212,16 @@ const StoreForm = ({ defaultValues, id }: any) => {
               justifyContent: 'end',
             }}
           >
-            <Button variant='contained' color='error'>
+            <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
               Cancel
             </Button>
             <Button
               loading={loading}
               type='submit'
               variant='contained'
-              color='success'
-              style={{ marginLeft: 20 }}
+              style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
             >
-              {id ? 'Save' : 'Create'}
+              { id ? 'Save' : 'Create' }
             </Button>
           </div>
         </div>

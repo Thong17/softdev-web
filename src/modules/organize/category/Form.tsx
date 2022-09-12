@@ -15,6 +15,8 @@ import useNotify from 'hooks/useNotify'
 import { getListCategory } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import { IImage } from 'components/shared/form/UploadField'
+import useTheme from 'hooks/useTheme'
+import { useNavigate } from 'react-router-dom'
 
 const statusOption = [
   { label: 'Enabled', value: true },
@@ -22,7 +24,9 @@ const statusOption = [
 ]
 
 const CategoryForm = ({ defaultValues, id }: any) => {
+  const { theme } = useTheme()
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const {
     watch,
     register,
@@ -95,7 +99,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
       style={{
         display: 'grid',
         gridTemplateColumns:
-          device === 'mobile' || device === 'tablet' ? '1fr' : '500px 1fr',
+          device === 'mobile' || device === 'tablet' ? '1fr' : '1fr',
         gridGap: 20,
       }}
     >
@@ -156,15 +160,14 @@ const CategoryForm = ({ defaultValues, id }: any) => {
             justifyContent: 'end',
           }}
         >
-          <Button variant='contained' color='error'>
+          <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
             Cancel
           </Button>
           <Button
             loading={loading}
             type='submit'
             variant='contained'
-            color='success'
-            style={{ marginLeft: 20 }}
+            style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
           >
             { id ? 'Save' : 'Create' }
           </Button>
