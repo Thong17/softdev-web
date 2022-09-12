@@ -71,7 +71,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   }, [reservation])
   
   const handleClickProduct = (id) => {
-    setProductDialog({ productId: id, open: true })
+    setProductDialog({ ...productDialog, productId: id })
   }
 
   const handleAddTransaction = (data) => {
