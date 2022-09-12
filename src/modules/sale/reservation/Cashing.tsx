@@ -18,6 +18,8 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { InvoiceForm, mappedTransaction } from './InvoiceForm'
+import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
+import { getListCodeProduct, selectListCodeProduct } from 'shared/redux'
 
 export const Cashing = ({ id = null, transactions = [], customer, reservationData = null, onReload }: any) => {
   const { user } = useAuth()
@@ -27,7 +29,8 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   const { data: preview } = useAppSelector(selectInfoStore)
   const [paymentId, setPaymentId] = useState(id)
   const [reservation, setReservation] = useState(reservationData)
-  const [productDialog, setProductDialog] = useState({
+  const { data: listCode } = useAppSelector(selectListCodeProduct)
+  const [productDialog, setProductDialog] = useState<any>({
     open: false,
     productId: null,
   })
@@ -46,6 +49,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
 
   useEffect(() => {
     dispatch(getInfoStore())
+    dispatch(getListCodeProduct())
   }, [dispatch])
 
   useEffect(() => {
@@ -149,8 +153,19 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
     setReservation(data)
   }
 
+  const handleScanProduct = (code) => {
+    const scannedProduct = listCode.find((item: any) => item.code === code)
+    if (!scannedProduct) return
+    setProductDialog({ ...productDialog, productId: scannedProduct._id })
+  }
+
+  const handleScanError = (msg) => {
+    notify(msg, 'error')
+  }
+
   return (
     <Container>
+      <BarcodeReader onScan={handleScanProduct} onError={handleScanError} />
       <ProductForm
         dialog={productDialog}
         setDialog={setProductDialog}

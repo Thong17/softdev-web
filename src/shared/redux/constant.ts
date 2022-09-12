@@ -11,6 +11,7 @@ export interface ShareState {
   infoProduct: IBody<any>,
   capacityStructure: IBody<any>,
   listRole: IBody<IListRole[]>,
+  listCodeProduct: IBody<IListRole[]>,
   listBrand: IBody<any[]>,
   listCategory: IBody<any[]>,
   listPresetCash: IBody<any[]>,
@@ -34,6 +35,10 @@ export const initialState: ShareState = {
     status: 'INIT',
   },
   listRole: {
+    data: [],
+    status: 'INIT',
+  },
+  listCodeProduct: {
     data: [],
     status: 'INIT',
   },

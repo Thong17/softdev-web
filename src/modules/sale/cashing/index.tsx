@@ -18,15 +18,18 @@ import { PaymentForm } from './PaymentForm'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
+import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
+import { getListCodeProduct, selectListCodeProduct } from 'shared/redux'
 
 export const Cashing = () => {
   const { user } = useAuth()
   const { notify } = useNotify()
   const { device } = useWeb()
   const dispatch = useAppDispatch()
+  const { data: listCode } = useAppSelector(selectListCodeProduct)
   const { data: preview } = useAppSelector(selectInfoStore)
   const [paymentId, setPaymentId] = useState(null)
-  const [productDialog, setProductDialog] = useState({
+  const [productDialog, setProductDialog] = useState<any>({
     open: false,
     productId: null,
   })
@@ -43,6 +46,7 @@ export const Cashing = () => {
 
   useEffect(() => {
     dispatch(getInfoStore())
+    dispatch(getListCodeProduct())
   }, [dispatch])
 
   const handleClickProduct = (id) => {
@@ -118,8 +122,19 @@ export const Cashing = () => {
     })
   }
 
+  const handleScanProduct = (code) => {
+    const scannedProduct = listCode.find((item: any) => item.code === code)
+    if (!scannedProduct) return
+    setProductDialog({ ...productDialog, productId: scannedProduct._id })
+  }
+
+  const handleScanError = (msg) => {
+    notify(msg, 'error')
+  }
+
   return (
     <Container>
+      <BarcodeReader onScan={handleScanProduct} onError={handleScanError} />
       <ProductForm
         dialog={productDialog}
         setDialog={setProductDialog}

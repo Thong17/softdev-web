@@ -36,6 +36,17 @@ export const getListRole = createAsyncThunk(
   }
 )
 
+export const getListCodeProduct = createAsyncThunk(
+  'listCodeProduct/get',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/shared/product/listCode'
+    })
+    return response?.data
+  }
+)
+
 export const getListBrand = createAsyncThunk(
   'listBrand/get',
   async () => {
@@ -214,6 +225,18 @@ export const sharedSlice = createSlice({
         state.listBrand.data = action.payload.data
       })
 
+      // Get List Code Product from API
+      .addCase(getListCodeProduct.pending, (state) => {
+        state.listCodeProduct.status = 'LOADING'
+      })
+      .addCase(getListCodeProduct.rejected, (state) => {
+        state.listCodeProduct.status = 'FAILED'
+      })
+      .addCase(getListCodeProduct.fulfilled, (state, action) => {
+        state.listCodeProduct.status = 'SUCCESS'
+        state.listCodeProduct.data = action.payload.data
+      })
+
       // Get List Category from API
       .addCase(getListCategory.pending, (state) => {
         state.listCategory.status = 'LOADING'
@@ -342,6 +365,7 @@ export const sharedSlice = createSlice({
 
 export const selectInfoProduct = (state: RootState) => state.shared.infoProduct
 export const selectStructureCapacity = (state: RootState) => state.shared.capacityStructure
+export const selectListCodeProduct = (state: RootState) => state.shared.listCodeProduct
 export const selectListRole = (state: RootState) => state.shared.listRole
 export const selectListBrand = (state: RootState) => state.shared.listBrand
 export const selectListCategory = (state: RootState) => state.shared.listCategory

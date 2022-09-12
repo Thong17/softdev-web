@@ -64,8 +64,13 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   useEffect(() => {
     if (!product) return
     if (product.colors.length < 1 && product.options.length < 1) {
+      let total = 0
+      product?.stocks?.forEach(stock => {
+        total += stock.quantity
+      })
+
       if (quantity < 1) return notify('Please select at least 1 quantity', 'error')
-      if (product.isStock && quantity > totalStock) return notify('Order quantity has exceed our current stock', 'error')
+      if (product.isStock && quantity > total) return notify('Order quantity has exceed our current stock', 'error')
       
       Axios({
         method: 'POST',
