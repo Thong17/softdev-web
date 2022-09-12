@@ -301,7 +301,7 @@ export const productColumnData: ITableColumn<ColumnHeader>[] = [
   { id: 'category', label: 'Category' },
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
-  { id: 'action', label: 'Remove' },
+  { id: 'action', label: 'Remove', align: 'right' },
 ]
 
 export const detailColumnData: ITableColumn<any>[] = [
@@ -315,7 +315,7 @@ export const detailColumnData: ITableColumn<any>[] = [
   { id: 'material', label: 'Material' },
   { id: 'style', label: 'Style' },
   { id: 'product', label: 'Product' },
-  { id: 'action', label: 'Remove' },
+  { id: 'action', label: 'Remove', align: 'right' },
 ]
 
 export const colorColumnData: ITableColumn<any>[] = [
@@ -326,7 +326,7 @@ export const colorColumnData: ITableColumn<any>[] = [
   { id: 'profile', label: 'Profile' },
   { id: 'images', label: 'Images' },
   { id: 'product', label: 'Product' },
-  { id: 'action', label: 'Remove' },
+  { id: 'action', label: 'Remove', align: 'right' },
 ]
 
 export const imageColumnData: ITableColumn<any>[] = [
@@ -341,7 +341,7 @@ export const propertyColumnData: ITableColumn<any>[] = [
   { id: 'name', label: 'Name' },
   { id: 'description', label: 'Description' },
   { id: 'product', label: 'Product' },
-  { id: 'action', label: 'Remove' },
+  { id: 'action', label: 'Remove', align: 'right' },
 ]
 
 export const optionColumnData: ITableColumn<any>[] = [
@@ -353,7 +353,7 @@ export const optionColumnData: ITableColumn<any>[] = [
   { id: 'description', label: 'Description' },
   { id: 'property', label: 'Property' },
   { id: 'product', label: 'Product' },
-  { id: 'action', label: 'Remove' },
+  { id: 'action', label: 'Remove', align: 'right' },
 ]
 
 export interface Data {

@@ -177,7 +177,7 @@ export const Categories = () => {
       }
     >
       <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative', padding: 10, boxSizing: 'border-box' }}>
           <StickyTable
             columns={importColumnData}
             rows={importDialog.data}
@@ -185,12 +185,13 @@ export const Categories = () => {
           />
         </div>
         <DialogActions>
-          <Button onClick={handleCloseImport}>Cancel</Button>
+          <Button onClick={handleCloseImport} style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}>Cancel</Button>
           <CustomButton
             style={{
               marginLeft: 10,
-              backgroundColor: theme.background.secondary,
-              color: theme.text.secondary,
+              backgroundColor: `${theme.color.info}22`,
+              color: theme.color.info,
+              borderRadius: theme.radius.secondary
             }}
             styled={theme}
             onClick={handleConfirmImport}
