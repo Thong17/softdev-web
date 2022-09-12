@@ -332,7 +332,7 @@ export const ProductSetup = () => {
             describe='Color'
             style={{
               boxShadow: theme.shadow.secondary,
-              borderRadius: theme.radius.secondary,
+              borderRadius: theme.radius.ternary,
               marginTop: 20,
             }}
           >
