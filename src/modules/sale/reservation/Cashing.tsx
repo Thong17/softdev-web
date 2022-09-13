@@ -91,6 +91,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
       price: { value: data.price, currency: data.currency },
       quantity: data.quantity,
       total: data.total,
+      profile: data.product?.profile?.filename
     })
   }
 

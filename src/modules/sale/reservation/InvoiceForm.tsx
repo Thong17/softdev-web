@@ -51,6 +51,7 @@ export const mappedTransaction = (transaction) => {
     price: { value: transaction.price, currency: transaction.currency },
     quantity: transaction.quantity,
     total: transaction.total,
+    profile: transaction.product?.profile?.filename
   }
 }
 
@@ -61,7 +62,6 @@ export const InvoiceForm = forwardRef(
     {
       id = null,
       defaultTax = 0,
-      font = 'Ariel',
       transaction,
       reservationTransaction,
       onUpdate,
