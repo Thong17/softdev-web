@@ -293,9 +293,11 @@ export const Breadcrumbs = styled('div')(
       color: styled.text.secondary,
       width: 7,
       height: 7,
-      borderTop: styled.border.primary,
-      borderRight: styled.border.primary,
+      borderTop: styled.border.secondary,
+      borderRight: styled.border.secondary,
+      borderWidth: 2,
       transform: 'rotate(45deg)',
+      borderRadius: 1
     },
     '& div a': {
       textDecoration: 'none',
@@ -306,9 +308,20 @@ export const Breadcrumbs = styled('div')(
       alignItems: 'center'
     },
     '& span': {
+      position: 'relative',
       paddingRight: 20,
-      borderRight: styled.border.secondary,
-    },
+      '&::before': {
+        content: `""`,
+        position: 'absolute',
+        right: 0,
+        top: 4,
+        height: '60%',
+        width: 2,
+        borderRadius: 1,
+        backgroundColor: styled.text.quaternary
+
+      }
+    }
   })
 )
 
