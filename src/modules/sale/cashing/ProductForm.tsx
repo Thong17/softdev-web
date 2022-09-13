@@ -7,7 +7,7 @@ import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { useEffect, useState } from 'react'
-import { getInfoProduct, selectInfoProduct } from 'shared/redux'
+import { clearInfoProduct, getInfoProduct, selectInfoProduct } from 'shared/redux'
 import { CustomButton } from 'styles'
 import { CustomColorContainer, CustomOptionContainer } from 'styles/container'
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
@@ -138,12 +138,13 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
 
   useEffect(() => {
     if (!dialog.productId) return
-
+    
     dispatch(getInfoProduct(dialog.productId))
   }, [dispatch, dialog.productId])
   
   useEffect(() => {
     if (!data) return
+
     setProduct(data)
     let selectedProperty: any[] = []
     data.properties?.forEach((property) => {
@@ -176,6 +177,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false, productId: null })
     setProduct(null)
+    dispatch(clearInfoProduct())
   }
 
   const handleChangeQuantity = (event) => {

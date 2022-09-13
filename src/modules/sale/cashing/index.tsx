@@ -128,13 +128,9 @@ export const Cashing = () => {
     setProductDialog({ ...productDialog, productId: scannedProduct._id })
   }
 
-  const handleScanError = (msg) => {
-    notify(msg, 'error')
-  }
-
   return (
     <Container>
-      <BarcodeReader onScan={handleScanProduct} onError={handleScanError} />
+      <BarcodeReader onScan={handleScanProduct} onError={() => {}} />
       <ProductForm
         dialog={productDialog}
         setDialog={setProductDialog}

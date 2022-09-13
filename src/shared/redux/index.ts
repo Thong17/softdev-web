@@ -174,7 +174,11 @@ export const getOperationDashboard = createAsyncThunk(
 export const sharedSlice = createSlice({
   name: 'shared',
   initialState,
-  reducers: {},
+  reducers: {
+    clearInfoProduct(state) {
+      state.infoProduct.data = null
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Get List Role from API
@@ -378,5 +382,7 @@ export const selectPreRole = (state: RootState) => state.shared.preRole
 export const selectAdminDashboard = (state: RootState) => state.shared.adminDashboard
 export const selectOrganizeDashboard = (state: RootState) => state.shared.organizeDashboard
 export const selectOperationDashboard = (state: RootState) => state.shared.operationDashboard
+
+export const { clearInfoProduct } = sharedSlice.actions
 
 export default sharedSlice.reducer
