@@ -41,7 +41,7 @@ export const InvoicePreview = ({ payment }) => {
             }}
           >
             <CustomerStatistic
-              point={payment?.customer?.point || 0}
+              point={payment?.customer?.point?.toFixed(0) || 0}
               phone={payment?.customer?.displayName}
               style={{ marginLeft: 10 }}
             />

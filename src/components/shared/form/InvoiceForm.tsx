@@ -171,7 +171,6 @@ export const recalculatePayment = (paymentId, data) => {
 export const InvoiceForm = forwardRef(({
   id = null,
   defaultTax = 0,
-  font = 'Ariel',
   transaction,
   onUpdate,
   onPayment,

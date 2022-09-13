@@ -104,8 +104,8 @@ export const CustomerContainer = ({
     setPromotion(!promotion)
   }
 
-  const handleClickCustomer = (id) => {
-    onClickCustomer && onClickCustomer(id)
+  const handleClickCustomer = (data) => {
+    onClickCustomer && onClickCustomer(data)
   }
 
   const handleChangeFilter = ({ filter }) => {
@@ -332,7 +332,7 @@ export const CustomerContainer = ({
                           handleClickCustomer({
                             id: customer._id,
                             displayName: customer.displayName,
-                            point: 0,
+                            point: customer.point?.toFixed(0),
                           })
                         }
                         onEdit={handleEditCustomer}
@@ -352,7 +352,7 @@ export const CustomerContainer = ({
                         handleClickCustomer({
                           id: customer._id,
                           displayName: customer.displayName,
-                          point: 0,
+                          point: customer.point?.toFixed(0),
                         })
                       }
                       onEdit={handleEditCustomer}
