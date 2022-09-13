@@ -31,7 +31,6 @@ export const CustomMiniSelect = styled('div')(
       padding: 0,
       '& .MuiSelect-select': {
         minHeight: '30px !important',
-        padding: '0 7px',
         display: 'flex',
         alignItems: 'center',
       },

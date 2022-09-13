@@ -37,6 +37,44 @@ export const themeMode = {
       bottom: '0 5px 5px rgba(0, 0, 0, 0.18)',
     },
   },
+  Grey: {
+    background: {
+      primary: '#222831',
+      secondary: '#393E46',
+      tertiary: '#555555',
+      quaternary: '#666666'
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: '#dddddd',
+      tertiary: '#bbbbbb',
+      quaternary: '#999999'
+    },
+    active: {
+      primary: 'rgba(24, 67, 96, 0.4)',
+      secondary: 'rgba(29, 77, 106, 0.2)',
+      tertiary: '#555555',
+      quaternary: '#666666'
+    },
+    border: {
+      primary: '1px solid rgba(255, 255, 255, 0.5)',
+      secondary: '1px solid rgba(255, 255, 255, 0.3)',
+      tertiary: '1px solid rgba(255, 255, 255, 0.2)',
+      quaternary: '1px solid rgba(255, 255, 255, 0.1)',
+      dashed: '2px dashed rgba(255, 255, 255, 0.1)'
+    },
+    shadow: {
+      container:
+        '0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)',
+      primary:
+        '0 3px 5px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15)',
+      secondary:
+        '0 1px 3px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15)',
+      inset:
+        '0 0 0 3px hsla(0, 0%, 100%, 0), 0 0 0 4px hsla(0, 0%, 83.9%, 0), inset 0 2px 2px 0 rgba(0, 0, 0, .2)',
+      bottom: '0 5px 5px rgba(0, 0, 0, 0.18)',
+    },
+  },
   Light: {
     background: {
       primary: '#f2f2f2',
@@ -77,8 +115,8 @@ export const themeMode = {
   },
   Dark: {
     background: {
-      primary: '#333333',
-      secondary: '#444444',
+      primary: '#313131',
+      secondary: '#414141',
       tertiary: '#555555',
       quaternary: '#666666'
     },
