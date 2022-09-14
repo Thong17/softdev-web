@@ -592,8 +592,18 @@ export const InvoiceForm = forwardRef(
             dialog={customerDialog}
             setDialog={setCustomerDialog}
             onClickCustomer={(data) => {
-              onChangeCustomer(data)
-              setCustomer(data)
+              Axios({
+                method: 'PUT',
+                url: `/sale/reservation/update/${reservation?._id}`,
+                body: { customer: data?.id }
+              })
+                .then(resp => {
+                  onChangeCustomer(data)
+                  setCustomer(data)
+                  notify(resp?.data?.msg, 'success')
+                })
+                .catch(err => notify(err?.response?.data?.msg, 'error'))
+              
             }}
           />
           <div

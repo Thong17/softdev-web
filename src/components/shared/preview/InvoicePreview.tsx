@@ -6,10 +6,9 @@ import { currencyFormat } from 'utils'
 import { CustomerStatistic } from '../container/CustomerContainer'
 import { CircleIcon } from '../table/CustomIcon'
 
-export const InvoicePreview = ({ payment }) => {
+export const InvoicePreview = ({ payment, customer }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
-
   return (
     <div
       style={{
@@ -41,8 +40,8 @@ export const InvoicePreview = ({ payment }) => {
             }}
           >
             <CustomerStatistic
-              point={payment?.customer?.point?.toFixed(0) || 0}
-              phone={payment?.customer?.displayName}
+              point={customer?.point || 0}
+              phone={customer?.displayName}
               style={{ marginLeft: 10 }}
             />
           </div>

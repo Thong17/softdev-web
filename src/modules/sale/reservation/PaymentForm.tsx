@@ -40,7 +40,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   })
   const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
   const [receiveCashes, setReceiveCashes] = useState([])
-
+  
   useEffect(() => {
     setPayment(dialog.payment)
     const value =
@@ -355,7 +355,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
             </div>
           </Box>
           <div style={{ gridArea: 'preview' }}>
-            <InvoicePreview payment={payment} />
+            <InvoicePreview payment={payment} customer={dialog.customer} />
           </div>
         </div>
       </div>

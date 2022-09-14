@@ -371,7 +371,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
             </div>
           </Box>
           <div style={{ gridArea: 'preview' }}>
-            <InvoicePreview payment={payment} />
+            <InvoicePreview payment={payment} customer={dialog.customer} />
           </div>
         </div>
       </div>
