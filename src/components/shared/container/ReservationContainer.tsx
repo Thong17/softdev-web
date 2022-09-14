@@ -505,6 +505,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
         <MiniTextField
           type='number'
           label='Price'
+          step='any'
           err={errors?.price?.value?.message}
           {...register('price.value')}
           icon={

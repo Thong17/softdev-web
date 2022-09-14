@@ -28,9 +28,10 @@ import { CustomerLayout, CustomerItem } from 'components/layouts/CustomerLayout'
 export const CustomerStatistic = ({ phone, point = 0, ...props }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  
   return (
     <CustomCustomerContainer device={device} styled={theme} {...props}>
-      <RankStatus text={point} color={theme.color.info} />
+      <RankStatus text={typeof point === 'string' ? parseInt(point) : point.toFixed(0)} color={theme.color.info} />
       <div style={{ display: 'flex', alignItems: 'start', marginLeft: 7 }}>
         <p style={{ fontSize: 15 }}>{phone}</p>
       </div>
