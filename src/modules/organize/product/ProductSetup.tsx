@@ -7,7 +7,7 @@ import { CustomColorContainer, CustomOptionContainer } from 'styles'
 import { Section } from 'components/shared/Section'
 import useWeb from 'hooks/useWeb'
 import useTheme from 'hooks/useTheme'
-import { MenuList } from '@mui/material'
+import { MenuItem } from '@mui/material'
 import { useEffect, useState } from 'react'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
@@ -96,8 +96,8 @@ export const ProductSetup = () => {
 
   const propertyBreadcrumb = [
     {
-      title: 'Store',
-      path: '/store',
+      title: 'Organize',
+      path: '/organize',
     },
     {
       title: 'Product',
@@ -474,22 +474,22 @@ export const ProductSetup = () => {
                                     />
                                   }
                                 >
-                                  <MenuList
+                                  <MenuItem
                                     component='div'
                                     onClick={() =>
                                       handleEditProperty(property?._id)
                                     }
                                   >
                                     Edit
-                                  </MenuList>
-                                  <MenuList
+                                  </MenuItem>
+                                  <MenuItem
                                     component='div'
                                     onClick={() =>
                                       handleDeleteProperty(property?._id)
                                     }
                                   >
                                     Delete
-                                  </MenuList>
+                                  </MenuItem>
                                 </MenuDialog>
                               </div>
                               <CustomOptionContainer
