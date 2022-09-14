@@ -18,6 +18,7 @@ import useNotify from 'hooks/useNotify'
 import useAlert from 'hooks/useAlert'
 import { useReactToPrint } from 'react-to-print'
 import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
+import useWeb from 'hooks/useWeb'
 
 const paymentMethods = [
   { label: 'Cash', value: 'cash' },
@@ -29,6 +30,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const confirm = useAlert()
   const { theme } = useTheme()
   const { notify } = useNotify()
+  const { width } = useWeb()
   const { user, reload } = useAuth()
   const [totalReceive, setTotalReceive] = useState({ KHR: 0, USD: 0, total: 0 })
   const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
@@ -159,9 +161,16 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
             height: 'calc(100% - 69.98px)',
             gridGap: 20,
             display: 'grid',
-            gridTemplateColumns: 'calc(100% - 480px) auto',
-            gridTemplateRows: '1fr 200px',
-            gridTemplateAreas: `'payment preview''exchange preview'`,
+            gridTemplateColumns: width > 1024 ? 'calc(100% - 480px) auto' : '1fr',
+            gridTemplateRows: width > 1024 ? '1fr 200px' : 'auto',
+            gridTemplateAreas: width > 1024 
+                                ? `'payment preview''exchange preview'` 
+                                : `
+                                  'payment payment'
+                                  'exchange exchange'
+                                  'preview preview'
+                                  ` 
+                                              
           }}
         >
           <div
@@ -196,7 +205,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                 position: 'relative',
                 boxSizing: 'border-box',
                 padding: 10,
-                height: '100%',
+                height: width > 1024 ? '100%' : '40vh',
               }}
             >
               <CashForm onChange={handleChangeCashes} />
