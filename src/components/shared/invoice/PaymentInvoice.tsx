@@ -146,7 +146,7 @@ export const PaymentInvoice = ({ width = '100vw', payment }: any) => {
             justifyContent: 'space-between',
           }}
         >
-          <span>Total</span>
+          <span>Subtotal</span>
           <div style={{ width: '50%' }}>
             <FlexBetween>
               <span>USD:</span>
@@ -157,6 +157,7 @@ export const PaymentInvoice = ({ width = '100vw', payment }: any) => {
               <span style={{ lineHeight: 1 }}>{currencyFormat(info?.subtotal?.KHR, 'KHR')}</span>
             </FlexBetween>
             {info?.discounts?.map((prop, key) => {
+              if (parseFloat(prop.value) <= 0) return <span key={key} style={{ display: 'none' }}></span>
               return (
                 <FlexBetween key={key}>
                   <span>{prop.title}</span>
@@ -167,6 +168,7 @@ export const PaymentInvoice = ({ width = '100vw', payment }: any) => {
               )
             })}
             {info?.services?.map((prop, key) => {
+              if (parseFloat(prop.value) <= 0) return <span key={key} style={{ display: 'none' }}></span>
               return (
                 <FlexBetween key={key}>
                   <span>{prop.title}</span>
@@ -177,6 +179,7 @@ export const PaymentInvoice = ({ width = '100vw', payment }: any) => {
               )
             })}
             {info?.vouchers?.map((prop, key) => {
+              if (parseFloat(prop.value) <= 0) return <span key={key} style={{ display: 'none' }}></span>
               return (
                 <FlexBetween key={key}>
                   <span>{prop.title}</span>
@@ -186,6 +189,11 @@ export const PaymentInvoice = ({ width = '100vw', payment }: any) => {
                 </FlexBetween>
               )
             })}
+            <PreBorder styled={theme} />
+            <FlexBetween>
+              <span>Total</span>
+              <span style={{ lineHeight: 1 }}>{currencyFormat(parseFloat(info?.total?.value), info?.total?.currency)}</span>
+            </FlexBetween>
             <PreBorder styled={theme} />
             <FlexBetween>
               <span>Receive</span>

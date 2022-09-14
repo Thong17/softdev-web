@@ -20,6 +20,7 @@ export const PreDate = ({ date }) => {
 export const PreTime = ({ date }) => {
   return (
     <TextEllipsis style={{ textAlign: 'end' }}>
+      <span>Time: </span>
       <span>{timeFormat(date)}</span>
     </TextEllipsis>
   )

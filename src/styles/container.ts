@@ -518,6 +518,10 @@ export const CustomInvoiceContainer = styled('div')(
       fontFamily: font,
       fontSize: 18,
     },
+    '& td': {
+      fontFamily: font,
+      fontWeight: 300
+    },
   })
 )
 

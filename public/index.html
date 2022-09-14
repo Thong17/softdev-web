@@ -31,30 +31,21 @@
         padding: 0;
         box-sizing: 'border-box';
       }
+      /* width */
       ::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-        position: fixed;
-        right: 0;
-      }
-
-      ::-webkit-scrollbar-track {
-        background: #f1f1f1; 
+        width: 10px;
+        height: 5px;
       }
       
+      /* Handle */
       ::-webkit-scrollbar-thumb {
-        background: #888; 
+        background: #777; 
+        border-radius: 10px;
       }
 
+      /* Handle on hover */
       ::-webkit-scrollbar-thumb:hover {
-        background: #666; 
-      }
-
-      /* Chrome, Safari, Edge, Opera */
-      input::-webkit-outer-spin-button,
-      input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+        background: #555; 
       }
 
       /* Firefox */
