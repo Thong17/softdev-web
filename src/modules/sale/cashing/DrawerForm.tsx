@@ -127,7 +127,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
   const confirm = useAlert()
   const { user, reload } = useAuth()
   const { theme } = useTheme()
-  const { device } = useWeb()
+  const { device, width } = useWeb()
   const { notify } = useNotify()
   const {
     reset,
@@ -391,7 +391,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
       <div
         style={{
           height: '100vh',
-          width: '50vw',
+          width: width > 1024 ? '50vw' : 'calc(100vw - 64px)',
           boxSizing: 'border-box',
           position: 'relative',
           display: 'flex',
@@ -452,6 +452,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
               </Button>
             ) : (
               <Button
+                onClick={handleCloseDialog}
                 style={{
                   color: theme.color.error,
                   backgroundColor: `${theme.color.error}22`,
