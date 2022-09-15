@@ -20,6 +20,17 @@ export const languages = {
     SALE_REPORT: 'OPERATION_REPORT',
     SALE: 'Sale',
     ORGANIZE: 'Organize',
+    // Component
+    IMPORT_DATA: 'Import Data',
+    EXPORT_DATA: 'Export Data',
+    DOWNLOAD_TEMPLATE: 'Download Template',
+    PRODUCT: 'Product',
+    BY_NAME: 'By Name',
+    BY_DATE: 'By Date',
+    AVAILABLE: 'Available',
+    CANCEL: 'Cancel',
+    SAVE: 'Save',
+    CLEAR: 'Clear',
     // Sale Dashboard
     TRANSACTION: 'Transaction',
     RESERVATION: 'Reservation',
@@ -30,6 +41,17 @@ export const languages = {
     TOTAL_STOCK: 'Total Stock',
     TOTAL_PROMOTION: 'Total Promotion',
     CASHING: 'Cashing',
+    // Invoice Form
+    PRICE: 'Price',
+    QTY: 'Qty',
+    ONLY: 'Only',
+    DISC: 'Disc',
+    TOTAL: 'Total',
+    SUBTOTAL: 'Subtotal',
+    DISCOUNT: 'Discount',
+    TAX: 'Tax',
+    VOUCHER: 'Voucher',
+    PAYMENT: 'Payment'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -52,6 +74,17 @@ export const languages = {
     SALE_REPORT: 'របាយការណ៍ប្រតិបត្តិការ',
     SALE: 'លក់',
     ORGANIZE: 'រៀបចំ',
+    // Component
+    IMPORT_DATA: 'នាំចូលទិន្នន័យ',
+    EXPORT_DATA: 'នាំចេញទិន្នន័យ',
+    DOWNLOAD_TEMPLATE: 'ទាញយកគំរូ',
+    PRODUCT: 'ផលិតផល',
+    BY_NAME: 'តាមឈ្មោះ',
+    BY_DATE: 'តាមកាលបរិច្ឆេទ',
+    AVAILABLE: 'មាន',
+    CANCEL: 'បោះបង់',
+    SAVE: 'រក្សាទុក',
+    CLEAR: 'ជម្រះ',
     // Sale
     TRANSACTION: 'ប្រតិបត្តិការ',
     RESERVATION: 'ការកក់ទុក',
@@ -61,6 +94,17 @@ export const languages = {
     TOTAL_RESERVATION: 'ការកក់ទុកសរុប',
     TOTAL_STOCK: 'ស្តុកសរុប',
     TOTAL_PROMOTION: 'ការផ្សព្វផ្សាយសរុប',
-    CASHING: 'ការលក់'
+    CASHING: 'ការលក់',
+    // Invoice Form
+    PRICE: 'តម្លៃ',
+    QTY: 'ចំនួន',
+    ONLY: 'តែប៉ុណ្ណោះ',
+    DISC: 'បញ្ចុះ',
+    TOTAL: 'សរុប',
+    SUBTOTAL: 'សរុបរង',
+    DISCOUNT: 'បញ្ចុះតម្លៃ',
+    TAX: 'ពន្ធ',
+    VOUCHER: 'ប័ណ្ណទូទាត់',
+    PAYMENT: 'ការទូទាត់'
   }
 }

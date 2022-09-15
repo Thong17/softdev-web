@@ -83,7 +83,7 @@ export const ProductContainer = ({
   const { theme } = useTheme()
   const { device } = useWeb()
   const { notify } = useNotify()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [fetching, setFetching] = useState(false)
   const [products, setProducts] = useState<any[]>([])
@@ -373,7 +373,7 @@ export const ProductContainer = ({
         >
           <ArrowRightRoundedIcon fontSize='large' />
           <span style={{ fontSize: theme.responsive[device]?.text.primary }}>
-            Product
+            {language['PRODUCT']}
           </span>
         </div>
 
@@ -388,12 +388,12 @@ export const ProductContainer = ({
           <MiniSearchField onChange={handleSearch} />
           <MiniFilterButton>
             <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}>
-              <SortIcon asc={sortObj.name} /> By Name
+              <SortIcon asc={sortObj.name} /> {language['BY_NAME']}
             </MenuItem>
             <MenuItem
               onClick={() => handleChangeFilter({ filter: 'createdAt' })}
             >
-              <SortIcon asc={sortObj.createdAt} /> By Date
+              <SortIcon asc={sortObj.createdAt} /> {language['BY_DATE']}
             </MenuItem>
           </MiniFilterButton>
           <span style={{ width: 10 }}></span>
@@ -497,7 +497,7 @@ export const ProductContainer = ({
                             min={product.alertAt}
                           />
                         ) : (
-                          <span>Available</span>
+                          <span style={{ color: theme.color.success }}>{language['AVAILABLE']}</span>
                         )
                       }
                       action={product.action}
@@ -524,7 +524,7 @@ export const ProductContainer = ({
                           min={product.alertAt}
                         />
                       ) : (
-                        <span>Available</span>
+                        <span style={{ color: theme.color.success }}>{language['AVAILABLE']}</span>
                       )
                     }
                     action={product.action}

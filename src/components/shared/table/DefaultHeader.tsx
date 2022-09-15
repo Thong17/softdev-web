@@ -4,8 +4,10 @@ import { OptionButton } from 'components/shared/table/OptionButton'
 import { MenuList } from '@mui/material'
 import { CustomButton } from 'styles'
 import { CSVLink } from 'react-csv'
+import useLanguage from 'hooks/useLanguage'
 
 export const DefaultHeader = ({ exportComponent, importComponent, downloadComponent, exportData, styled, navigate, handleSearch, handleImport, breadcrumb, filename, createUrl, excelHeader, filterOption, children }: any) => {    
+  const { language } = useLanguage()
   return (
       <>
         {breadcrumb}
@@ -21,7 +23,7 @@ export const DefaultHeader = ({ exportComponent, importComponent, downloadCompon
                 ? importComponent
                 : <MenuList>
                   <label htmlFor='file-upload' style={{ cursor: 'pointer' }}>
-                    Import Data
+                    {language['IMPORT_DATA']}
                   </label>
                   <input
                     id='file-upload'
@@ -40,7 +42,7 @@ export const DefaultHeader = ({ exportComponent, importComponent, downloadCompon
                     color: styled.text.secondary,
                     textDecoration: 'none'
                   }}>
-                    Export Data
+                    {language['EXPORT_DATA']}
                   </CSVLink>
                 </MenuList>
             }
@@ -52,7 +54,7 @@ export const DefaultHeader = ({ exportComponent, importComponent, downloadCompon
                     color: styled.text.secondary,
                     textDecoration: 'none'
                   }}>
-                    Download Template
+                    {language['DOWNLOAD_TEMPLATE']}
                   </CSVLink>
                 </MenuList>
             }
@@ -66,7 +68,7 @@ export const DefaultHeader = ({ exportComponent, importComponent, downloadCompon
               styled={styled}
               onClick={() => navigate(createUrl)}
             >
-              Create
+              {language['CREATE']}
             </CustomButton>
           }
         </div>
