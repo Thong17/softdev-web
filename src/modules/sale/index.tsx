@@ -30,7 +30,7 @@ export const Sale = () => {
   const outlet = useOutlet()
   const { width } = useWeb()
   const { theme } = useTheme()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const [totalTransaction, setTotalTransaction] = useState(0)
   const [totalReservation, setTotalReservation] = useState(0)
   const [totalStock, setTotalStock] = useState(0)
@@ -163,28 +163,28 @@ export const Sale = () => {
               }}
             >
               <DetailSection
-                title='Total Transaction'
+                title={language['TOTAL_TRANSACTION']}
                 data={totalTransaction}
                 icon={<ReceiptRoundedIcon style={{ fontSize: 40 }} />}
               />
               <DetailSection
-                title='Total Reservation'
+                title={language['TOTAL_RESERVATION']}
                 data={totalReservation}
                 icon={<TodayRoundedIcon style={{ fontSize: 40 }} />}
               />
               <DetailSection
-                title='Total Stock'
+                title={language['TOTAL_STOCK']}
                 data={totalStock}
                 icon={<Inventory2RoundedIcon style={{ fontSize: 40 }} />}
               />
               <DetailSection
-                title='Total Promotion'
+                title={language['TOTAL_PROMOTION']}
                 data={totalPromotion}
                 icon={<DiscountRoundedIcon style={{ fontSize: 40 }} />}
               />
             </div>
             <CardContainer
-              title={<>Transaction</>}
+              title={<>{language['TRANSACTION']}</>}
               style={{ gridArea: 'transaction' }}
             >
               <CustomPieChart
@@ -194,7 +194,7 @@ export const Sale = () => {
               />
             </CardContainer>
             <CardContainer
-              title={<>Reservation</>}
+              title={<>{language['RESERVATION']}</>}
               style={{ gridArea: 'reservation' }}
             >
               <CustomPieChart
@@ -203,7 +203,7 @@ export const Sale = () => {
                 color={theme.text.secondary}
               />
             </CardContainer>
-            <CardContainer title={<>Stock</>} style={{ gridArea: 'stock' }}>
+            <CardContainer title={<>{language['STOCK']}</>} style={{ gridArea: 'stock' }}>
               <CustomPieChart
                 data={stocks}
                 fill={'#7B7D7D'}
@@ -211,7 +211,7 @@ export const Sale = () => {
               />
             </CardContainer>
             <CardContainer
-              title={<>Promotion</>}
+              title={<>{language['PROMOTION']}</>}
               style={{ gridArea: 'promotion' }}
             >
               <CustomPieChart

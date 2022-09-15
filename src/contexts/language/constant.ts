@@ -20,6 +20,16 @@ export const languages = {
     SALE_REPORT: 'OPERATION_REPORT',
     SALE: 'Sale',
     ORGANIZE: 'Organize',
+    // Sale Dashboard
+    TRANSACTION: 'Transaction',
+    RESERVATION: 'Reservation',
+    STOCK: 'Stock',
+    PROMOTION: 'Promotion',
+    TOTAL_TRANSACTION: 'Total Transaction',
+    TOTAL_RESERVATION: 'Total Reservation',
+    TOTAL_STOCK: 'Total Stock',
+    TOTAL_PROMOTION: 'Total Promotion',
+    CASHING: 'Cashing',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -42,5 +52,15 @@ export const languages = {
     SALE_REPORT: 'របាយការណ៍ប្រតិបត្តិការ',
     SALE: 'លក់',
     ORGANIZE: 'រៀបចំ',
+    // Sale
+    TRANSACTION: 'ប្រតិបត្តិការ',
+    RESERVATION: 'ការកក់ទុក',
+    STOCK: 'ស្តុក',
+    PROMOTION: 'ការផ្សព្វផ្សាយ',
+    TOTAL_TRANSACTION: 'ប្រតិបត្តិការសរុប',
+    TOTAL_RESERVATION: 'ការកក់ទុកសរុប',
+    TOTAL_STOCK: 'ស្តុកសរុប',
+    TOTAL_PROMOTION: 'ការផ្សព្វផ្សាយសរុប',
+    CASHING: 'ការលក់'
   }
 }
