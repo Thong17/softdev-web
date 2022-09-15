@@ -24,6 +24,7 @@ import { IconButton } from '@mui/material'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { CustomerLayout, CustomerItem } from 'components/layouts/CustomerLayout'
+import useAlert from 'hooks/useAlert'
 
 export const CustomerStatistic = ({ phone, point = 0, ...props }) => {
   const { theme } = useTheme()
@@ -64,6 +65,7 @@ export const CustomerContainer = ({
     status,
   } = useAppSelector(selectListCustomer)
   const { theme } = useTheme()
+  const confirm = useAlert()
   const { device } = useWeb()
   const { notify } = useNotify()
   const { lang } = useLanguage()
@@ -211,6 +213,24 @@ export const CustomerContainer = ({
     onEditCustomer(customer)
   }
 
+  const handleDeleteCustomer = (id) => {
+    confirm({
+      title: 'Are you sure you want to delete this customer?',
+      description: 'This will delete the customer and erase all the data.',
+      variant: 'error'
+    })
+      .then(() => {
+        Axios({
+          url: `/organize/customer/disable/${id}`,
+          method: 'DELETE',
+        }).then(data => {
+          notify(data?.data?.msg, 'success')
+          setCustomers(prev => prev.filter(item => item._id !== id))
+        }).catch(err => notify(err?.response?.data?.msg, 'error'))
+      })
+      .catch(() => {})
+  }
+
   return (
     <div
       style={{ height: '100%', boxSizing: 'border-box', position: 'relative' }}
@@ -329,6 +349,7 @@ export const CustomerContainer = ({
                         contact={customer.contact}
                         address={customer.address}
                         display={customer.display}
+                        point={customer.point}
                         onClick={() =>
                           handleClickCustomer({
                             id: customer._id,
@@ -337,6 +358,7 @@ export const CustomerContainer = ({
                           })
                         }
                         onEdit={handleEditCustomer}
+                        onDelete={handleDeleteCustomer}
                         picture={customer.picture?.filename}
                       />
                     )
@@ -349,6 +371,7 @@ export const CustomerContainer = ({
                       contact={customer.contact}
                       address={customer.address}
                       display={customer.display}
+                      point={customer.point}
                       onClick={() =>
                         handleClickCustomer({
                           id: customer._id,
@@ -357,6 +380,7 @@ export const CustomerContainer = ({
                         })
                       }
                       onEdit={handleEditCustomer}
+                      onDelete={handleDeleteCustomer}
                       picture={customer.picture?.filename}
                     />
                   )

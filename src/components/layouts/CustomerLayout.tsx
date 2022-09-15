@@ -8,13 +8,20 @@ import { CircleIcon } from 'components/shared/table/CustomIcon'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
 import Edit from '@mui/icons-material/Edit'
 import { IconButton } from '@mui/material'
+import { RankStatus } from 'components/shared/RankStatus'
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 
-const Item = ({ id, name, contact, address, picture, onClick, onEdit, display }, ref) => {
+const Item = ({ id, name, contact, address, picture, point, onClick, onEdit, onDelete, display }, ref) => {
   const { theme } = useTheme()
 
   const handleEdit = (event) => {
     event.stopPropagation()
     onEdit(id)
+  }
+
+  const handleDelete = (event) => {
+    event.stopPropagation()
+    onDelete(id)
   }
   
   return (
@@ -22,14 +29,17 @@ const Item = ({ id, name, contact, address, picture, onClick, onEdit, display },
       <div style={{ marginLeft: 10 }}><CircleIcon icon={picture} /></div>
       <div className='content' style={{ display: 'flex', flexDirection: 'column', flex: '0 100%', marginRight: 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <TextEllipsis>{name}</TextEllipsis>
-          <span className="detail" style={{ display: 'flex', alignItems: 'center' }}><LocalPhoneRoundedIcon style={{ fontSize: 15, marginRight: 5 }} /><TextEllipsis>{contact}</TextEllipsis></span>
+          <div style={{ display: 'flex' }}>
+            <TextEllipsis>{name}</TextEllipsis>
+            <RankStatus margin='0 0 0 5px' text={typeof point === 'string' ? parseInt(point) : point.toFixed(0)} color={theme.color.info} />
+          </div>
+          {contact&&<span className="detail" style={{ display: 'flex', alignItems: 'center' }}><LocalPhoneRoundedIcon style={{ fontSize: 15, marginRight: 5 }} /><TextEllipsis>{contact}</TextEllipsis></span>}
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="detail" style={{ display: 'flex', alignItems: 'end' }}><LocationOnRoundedIcon style={{ fontSize: 16, marginRight: 5 }} /><TextEllipsis>{address}</TextEllipsis></div>
         </div>
       </div>
-      <div style={{ display: 'grid', placeItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <IconButton
           onClick={handleEdit}
           sx={{
@@ -40,6 +50,17 @@ const Item = ({ id, name, contact, address, picture, onClick, onEdit, display },
           }}
         >
           <Edit style={{ fontSize: 17 }} />
+        </IconButton>
+        <IconButton
+          onClick={handleDelete}
+          sx={{
+            width: 30,
+            height: 30,
+            color: `${theme.color.error}cc`,
+            '&:hover': { color: theme.color.error },
+          }}
+        >
+          <DeleteRoundedIcon style={{ fontSize: 19 }} />
         </IconButton>
       </div>
     </div>

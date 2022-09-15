@@ -11,6 +11,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { FileField, IImage } from '../form/UploadField'
 import { DialogTitle } from 'components/shared/DialogTitle'
+import useWeb from 'hooks/useWeb'
 
 const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
   const {
@@ -163,6 +164,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
 
 export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
   const { theme } = useTheme()
+  const { width } = useWeb()
   const [showForm, setShowForm] = useState(false)
   const [reload, setReload] = useState(false)
   const [customerForm, setCustomerForm] = useState({})
@@ -199,7 +201,7 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
       <div
         style={{
           height: '100vh',
-          width: '50vw',
+          width: width > 1024 ? '50vw' : 'calc(100vw - 64px)',
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',

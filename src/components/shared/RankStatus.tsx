@@ -1,11 +1,10 @@
 import useTheme from 'hooks/useTheme'
-import { TextEllipsis } from './TextEllipsis'
 
 export const RankStatus = ({ text, color, size, label, margin }: any) => {
   const { theme } = useTheme()
 
   return (
-    <TextEllipsis
+    <div
       style={{
         padding: '1px 9px 1px 7px',
         color: color,
@@ -31,6 +30,6 @@ export const RankStatus = ({ text, color, size, label, margin }: any) => {
       ></span>
       {label && <span>{label}</span>}
       <span>{text}</span>
-    </TextEllipsis>
+    </div>
   )
 }

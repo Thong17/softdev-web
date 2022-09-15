@@ -6,6 +6,9 @@ export const CustomCalendar = styled('div')(
   ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
     backgroundColor: styled.background.primary,
     height: '100%',
+    '& .fc-media-screen': {
+      height: '-webkit-fill-available'
+    },
     '& #fc-dom-2': {
       fontSize: `${styled.responsive[device]?.text.h3}px !important`,
       fontWeight: `${styled.font.weight} !important`,
