@@ -89,6 +89,19 @@ export const stages = {
       title: 'Product',
     },
   ],
+  productDetail: [
+    {
+      title: 'Organize',
+      path: '/organize'
+    },
+    {
+      title: 'Product',
+      path: '/organize/product'
+    },
+    {
+      title: 'Detail',
+    }
+  ],
   productCreate: [
     {
       title: 'Organize',

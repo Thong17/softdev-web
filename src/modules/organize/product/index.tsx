@@ -226,6 +226,10 @@ export const Products = () => {
     setRowData(listProducts)
   }, [products, lang, user, device, theme, navigate])
 
+  const handleClickProduct = (id) => {
+    navigate(`/organize/product/detail/${id}`)
+  }
+
   return (
     <Container
       header={
@@ -281,7 +285,7 @@ export const Products = () => {
                   title={obj.name}
                   picture={obj.profile}
                   subLeft={<><SellRoundedIcon fontSize='small' />{obj.price}</>}
-                  subRight={<CustomButton styled={theme} style={{ padding: '0 5px', color: theme.text.primary, minWidth: 0 }}><TrendingFlatRoundedIcon fontSize='small' /></CustomButton>}
+                  subRight={<CustomButton onClick={() => handleClickProduct(obj.id)} styled={theme} style={{ padding: '0 5px', color: theme.text.primary, minWidth: 0 }}><TrendingFlatRoundedIcon fontSize='small' /></CustomButton>}
                   action={obj.action}
                   status={obj.status}
                 />
@@ -303,6 +307,7 @@ export const Products = () => {
             !loading ? rowData.map((obj: any, index) => {
               return (
                 <ListItem
+                  onClick={() => handleClickProduct(obj.id)}
                   key={index}
                   picture={obj.profile}
                   title={<><span>{obj.name}</span><span>{obj.description}</span></>}

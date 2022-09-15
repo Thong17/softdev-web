@@ -4,10 +4,10 @@ import { forwardRef } from 'react'
 import { CustomListContainer } from 'styles'
 
 const Item = (props, ref) => {
-  const { picture, title, first, second, third, fourth, action, status } =
+  const { picture, title, first, second, third, fourth, onClick, action, status } =
     props
   return (
-    <div className='list-item' ref={ref}>
+    <div className='list-item' onClick={() => onClick()} ref={ref}>
       <div style={{ flex: '0 50px', display: 'flex', justifyContent: 'center' }}>
         <span className={`status ${status ? 'active' : 'inactive'}`} />
       </div>
