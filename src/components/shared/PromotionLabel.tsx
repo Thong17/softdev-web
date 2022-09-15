@@ -18,7 +18,7 @@ export const PromotionLabel = ({ value, type, isFixed, size }: any) => {
         fontSize: size || 13
       }}
     >
-      <span>{isFixed ? 'Only' : 'Discount'}</span>
+      <span style={{ marginRight: 5 }}>{isFixed ? 'Only' : 'Discount'}</span>
       <span>{currencyFormat(value, type)}</span>
     </TextEllipsis>
   )

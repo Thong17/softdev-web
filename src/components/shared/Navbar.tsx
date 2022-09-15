@@ -1,6 +1,6 @@
 import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Profile from './Profile'
 import useConfig from 'hooks/useConfig'
 import {
@@ -31,7 +31,8 @@ const Navbar = ({ children }) => {
   const { theme } = useTheme()
   const { toggleSidebar, sidebar } = useConfig()
   const { device, width } = useWeb()
-  const navRef = useRef<HTMLDivElement>(document.createElement("div"))
+  const navRef = useRef<HTMLDivElement>(document.createElement('div'))
+  const location = useLocation()
 
   const openNavbar = () => {
     setNavbar(true)
@@ -42,8 +43,11 @@ const Navbar = ({ children }) => {
   }
 
   useEffect(() => {
-    navbar && 
-      document.addEventListener('mousedown', closeNavbar)
+    setNavbar(false)
+  }, [location])
+
+  useEffect(() => {
+    navbar && document.addEventListener('mousedown', closeNavbar)
     return () => {
       document.removeEventListener('mousedown', closeNavbar)
     }
@@ -69,7 +73,6 @@ const Navbar = ({ children }) => {
             toggleSidebar={openNavbar}
           ></MenuBar>
         </div>
-        
       ) : (
         <div style={{ display: 'flex' }}>
           <MenuBar
@@ -86,8 +89,8 @@ const Navbar = ({ children }) => {
             styled={theme}
             style={{ height: navbar ? '50%' : 0 }}
           >
-            <RowNavbar>{children}</RowNavbar>
-            <Footer></Footer>
+            {navbar && <RowNavbar>{children}</RowNavbar>}
+            {navbar && <Footer></Footer>}
           </NavbarContainer>
         </Dialog>
       ) : (
