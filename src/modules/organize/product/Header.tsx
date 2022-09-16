@@ -38,7 +38,7 @@ export const Header = ({
   const [sortObj, setSortObj] = useState({
     name: false,
     createdAt: false,
-    priceValue: false,
+    price: false,
   })
 
   const handleChangeFilter = ({ filter }) => {
@@ -51,7 +51,7 @@ export const Header = ({
     return <>
       <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}><SortIcon asc={sortObj.name} />{language['BY_NAME']}</MenuItem>
       <MenuItem onClick={() => handleChangeFilter({ filter: 'createdAt' })}><SortIcon asc={sortObj.createdAt} />{language['BY_DATE']}</MenuItem>
-      <MenuItem onClick={() => handleChangeFilter({ filter: 'priceValue' })}><SortIcon asc={sortObj.priceValue} />{language['BY_PRICE']}</MenuItem>
+      <MenuItem onClick={() => handleChangeFilter({ filter: 'price' })}><SortIcon asc={sortObj.price} />{language['BY_PRICE']}</MenuItem>
     </>
   }
   

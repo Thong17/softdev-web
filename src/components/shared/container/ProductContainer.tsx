@@ -44,8 +44,8 @@ const mappedProduct = (data, lang, rate) => {
     name: data?.name?.[lang] || data?.name?.['English'],
     profile: data?.profile?.filename,
     status: data?.status,
-    price: currencyFormat(data?.price, data?.currency),
-    priceValue: data?.currency === 'USD' ? data?.price : data?.price / buyRate,
+    priceTag: currencyFormat(data?.price, data?.currency),
+    price: data?.currency === 'USD' ? data?.price : data?.price / buyRate,
     tags: data?.tags,
     createdAt: data?.createdAt,
     brand: data?.brand?._id,
@@ -118,7 +118,7 @@ export const ProductContainer = ({
   const [sortObj, setSortObj] = useState({
     name: false,
     createdAt: false,
-    priceValue: false
+    price: false
   })
 
   useEffect(() => {
@@ -399,9 +399,9 @@ export const ProductContainer = ({
               <SortIcon asc={sortObj.createdAt} /> {language['BY_DATE']}
             </MenuItem>
             <MenuItem
-              onClick={() => handleChangeFilter({ filter: 'priceValue' })}
+              onClick={() => handleChangeFilter({ filter: 'price' })}
             >
-              <SortIcon asc={sortObj.priceValue} /> {language['BY_PRICE']}
+              <SortIcon asc={sortObj.price} /> {language['BY_PRICE']}
             </MenuItem>
           </MiniFilterButton>
           <span style={{ width: 10 }}></span>
@@ -497,7 +497,7 @@ export const ProductContainer = ({
                       key={index}
                       title={product.name}
                       picture={product.profile}
-                      subLeft={product.price}
+                      subLeft={product.priceTag}
                       subRight={
                         product.isStock ? (
                           <QuantityStatus
@@ -524,7 +524,7 @@ export const ProductContainer = ({
                     key={index}
                     title={product.name}
                     picture={product.profile}
-                    subLeft={product.price}
+                    subLeft={product.priceTag}
                     subRight={
                       product.isStock ? (
                         <QuantityStatus

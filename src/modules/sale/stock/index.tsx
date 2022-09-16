@@ -416,7 +416,7 @@ export const Stocks = () => {
                       fourth={
                         <>
                           <span className='subject'>Price</span>
-                          <span>{obj.price}</span>
+                          <span>{obj.priceTag}</span>
                         </>
                       }
                       action={obj.action}
@@ -456,7 +456,7 @@ export const Stocks = () => {
                       fourth={
                         <>
                           <span className='subject'>Price</span>
-                          <span>{obj.price}</span>
+                          <span>{obj.priceTag}</span>
                         </>
                       }
                       action={obj.action}

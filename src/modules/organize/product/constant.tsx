@@ -360,8 +360,8 @@ export interface Data {
   id: string
   name: string
   tags: string
-  price: ReactElement
-  priceValue: number
+  priceTag: ReactElement
+  price: number
   currency: string
   code: string | null
   description: string
@@ -442,8 +442,8 @@ export const createData = (
     profile,
     name,
     tags,
-    price: currencyFormat(price, currency),
-    priceValue: currency === 'USD' ? price : price / buyRate,
+    priceTag: currencyFormat(price, currency),
+    price: currency === 'USD' ? price : price / buyRate,
     currency,
     code,
     isStock,

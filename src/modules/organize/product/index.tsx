@@ -399,7 +399,7 @@ export const Products = () => {
                       subLeft={
                         <>
                           <SellRoundedIcon fontSize='small' />
-                          {obj.price}
+                          {obj.priceTag}
                         </>
                       }
                       subRight={
@@ -429,7 +429,7 @@ export const Products = () => {
                       subLeft={
                         <>
                           <SellRoundedIcon fontSize='small' />
-                          {obj.price}
+                          {obj.priceTag}
                         </>
                       }
                       subRight={
@@ -520,7 +520,7 @@ export const Products = () => {
                       fourth={
                         <>
                           <span className='subject'>Price</span>
-                          <span>{obj.price}</span>
+                          <span>{obj.priceTag}</span>
                         </>
                       }
                       action={obj.action}
@@ -561,7 +561,7 @@ export const Products = () => {
                       fourth={
                         <>
                           <span className='subject'>Price</span>
-                          <span>{obj.price}</span>
+                          <span>{obj.priceTag}</span>
                         </>
                       }
                       action={obj.action}
