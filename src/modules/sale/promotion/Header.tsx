@@ -4,6 +4,7 @@ import { headerColumns } from './constant'
 import { DefaultHeader } from 'components/shared/table/DefaultHeader'
 import { MenuItem } from '@mui/material'
 import { SortIcon } from 'components/shared/icons/SortIcon'
+import useLanguage from 'hooks/useLanguage'
 
 export const Header = ({
   data,
@@ -25,9 +26,10 @@ export const Header = ({
   }
 
   const FilterOption = () => {
+    const { language } = useLanguage()
     return <>
-      <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}><SortIcon asc={sortObj.name} /> By Name</MenuItem>
-      <MenuItem onClick={() => handleChangeFilter({ filter: 'createdAt' })}><SortIcon asc={sortObj.createdAt} /> By Date</MenuItem>
+      <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}><SortIcon asc={sortObj.name} />{language['BY_NAME']}</MenuItem>
+      <MenuItem onClick={() => handleChangeFilter({ filter: 'createdAt' })}><SortIcon asc={sortObj.createdAt} />{language['BY_DATE']}</MenuItem>
     </>
   }
 

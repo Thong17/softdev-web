@@ -51,7 +51,15 @@ export const languages = {
     DISCOUNT: 'Discount',
     TAX: 'Tax',
     VOUCHER: 'Voucher',
-    PAYMENT: 'Payment'
+    PAYMENT: 'Payment',
+    // Table
+    DESCRIPTION: 'Description',
+    START_AT: 'Start\u00a0At',
+    EXPIRE_AT: 'Expire\u00a0At',
+    STATUS: 'Status',
+    ITEM: 'Item',
+    ACTION: 'Action',
+    QUANTITY: 'Quantity',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -105,6 +113,14 @@ export const languages = {
     DISCOUNT: 'បញ្ចុះតម្លៃ',
     TAX: 'ពន្ធ',
     VOUCHER: 'ប័ណ្ណទូទាត់',
-    PAYMENT: 'ការទូទាត់'
+    PAYMENT: 'ការទូទាត់',
+    // Table
+    DESCRIPTION: 'ការពិពណ៌នា',
+    START_AT: 'ថ្ងៃចាប់ផ្តើម',
+    EXPIRE_AT: 'ថ្ងៃផុតកំណត់',
+    STATUS: 'ស្ថានភាព',
+    ITEM: 'ធាតុ',
+    ACTION: 'សកម្មភាព',
+    QUANTITY: 'ចំនួន',
   }
 }

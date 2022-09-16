@@ -7,6 +7,9 @@ import { HeaderButton } from 'components/shared/table/HeaderButton'
 import SaleBreadcrumbs from '../components/Breadcrumbs'
 import { useAppSelector, useAppDispatch } from 'app/hooks'
 import { selectListStock, getListStock } from './redux'
+import useLanguage from 'hooks/useLanguage'
+import { MenuItem } from '@mui/material'
+import { SortIcon } from 'components/shared/icons/SortIcon'
 
 export const Header = ({
   changeLayout,
@@ -14,12 +17,30 @@ export const Header = ({
   styled,
   navigate,
   handleSearch,
+  handleFilter,
   handleImport,
 }) => {
   const { data, status } = useAppSelector(selectListStock)
   const [stocks, setStocks] = useState<any[]>([])
   const [grid, setGrid] = useState(isGrid)
   const dispatch = useAppDispatch()
+  const [sortObj, setSortObj] = useState({
+    name: false,
+    createdAt: false,
+  })
+
+  const handleChangeFilter = ({ filter }) => {
+    setSortObj({ ...sortObj, [filter]: !sortObj[filter] })
+    return handleFilter({ filter, asc: sortObj[filter] })
+  }
+
+  const FilterOption = () => {
+    const { language } = useLanguage()
+    return <>
+      <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}><SortIcon asc={sortObj.name} />{language['BY_NAME']}</MenuItem>
+      <MenuItem onClick={() => handleChangeFilter({ filter: 'createdAt' })}><SortIcon asc={sortObj.createdAt} />{language['BY_DATE']}</MenuItem>
+    </>
+  }
 
   useEffect(() => {
     setGrid(isGrid)
@@ -61,6 +82,7 @@ export const Header = ({
       excelHeader={headerColumns}
       breadcrumb={<SaleBreadcrumbs page='stock' />}
       filename='product_stock'
+      filterOption={<FilterOption />}
     >
       <HeaderButton
         style={{ marginLeft: 10 }}

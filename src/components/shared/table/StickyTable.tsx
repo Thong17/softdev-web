@@ -13,6 +13,7 @@ import { CustomPagination, CustomTableContainer } from 'styles'
 import ToggleOnIcon from '@mui/icons-material/ToggleOn'
 import ToggleOffIcon from '@mui/icons-material/ToggleOff'
 import { IconButton } from '@mui/material'
+import useLanguage from 'hooks/useLanguage'
 
 export interface ITableColumn<Column> {
   id: Column
@@ -52,6 +53,7 @@ export const StickyTable = ({
   const [rowsPerPage, setRowsPerPage] = React.useState(limit || 10)
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
 
   React.useEffect(() => {
     setPage(skip)
@@ -92,7 +94,7 @@ export const StickyTable = ({
                     key={column.id}
                     align={column.align}
                   >
-                    {column.label}
+                    {language[column.label]}
                   </TableCell>
                 ))}
               </TableRow>

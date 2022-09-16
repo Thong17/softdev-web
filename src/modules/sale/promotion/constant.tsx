@@ -24,13 +24,13 @@ export declare type ColumnHeader =
   | 'action'
 
 export const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'description', label: 'Description' },
-  { id: 'value', label: 'Promotion' },
-  { id: 'startAt', label: 'Start\u00a0At' },
-  { id: 'expireAt', label: 'Expire\u00a0At' },
-  { id: 'status', label: 'Status' },
-  { id: 'products', label: 'Items' },
-  { id: 'action', label: 'Action', align: 'center' },
+  { id: 'description', label: 'DESCRIPTION' },
+  { id: 'value', label: 'PROMOTION' },
+  { id: 'startAt', label: 'START_AT' },
+  { id: 'expireAt', label: 'EXPIRE_AT' },
+  { id: 'status', label: 'STATUS' },
+  { id: 'products', label: 'QUANTITY' },
+  { id: 'action', label: 'ACTION', align: 'center' },
 ]
 export interface Data {
   description: string
