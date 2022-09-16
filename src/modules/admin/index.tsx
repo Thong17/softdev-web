@@ -29,7 +29,7 @@ export const Admin = () => {
   const outlet = useOutlet()
   const { width } = useWeb()
   const { theme } = useTheme()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const [totalRole, setTotalRole] = useState(0)
   const [totalUser, setTotalUser] = useState(0)
   const [totalPrivilege, setTotalPrivilege] = useState(0)
@@ -101,29 +101,29 @@ export const Admin = () => {
               }}
             >
               <DetailSection
-                title='Total Role'
+                title={language['TOTAL_ROLE']}
                 data={totalRole}
                 icon={<SecurityRoundedIcon style={{ fontSize: 40 }} />}
               />
               <DetailSection
-                title='Total User'
+                title={language['TOTAL_USER']}
                 data={totalUser}
                 icon={<AdminPanelSettingsRoundedIcon style={{ fontSize: 40 }} />}
               />
               <DetailSection
-                title='Total Privilege'
+                title={language['TOTAL_PRIVILEGE']}
                 data={totalPrivilege}
                 icon={<LocalPoliceRoundedIcon style={{ fontSize: 40 }} />}
               />
             </div>
-            <CardContainer title={<>Role Privilege</>} style={{ gridArea: 'role' }}>
+            <CardContainer title={<>{language['ROLE']}</>} style={{ gridArea: 'role' }}>
               <CustomPieChart
                 data={roles}
                 fill={'#7B7D7D'}
                 color={theme.text.secondary}
               />
             </CardContainer>
-            <CardContainer title={<>User Privilege</>} style={{ gridArea: 'user' }}>
+            <CardContainer title={<>{language['USER']}</>} style={{ gridArea: 'user' }}>
               <CustomPieChart
                 data={users}
                 fill={'#7B7D7D'}

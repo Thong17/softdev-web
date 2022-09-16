@@ -59,10 +59,10 @@ export declare type ColumnHeader =
   | 'status'
 
 export const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'username', label: 'Username' },
-  { id: 'role', label: 'Role' },
-  { id: 'email', label: 'Email' },
-  { id: 'action', label: 'Action', align: 'right' },
+  { id: 'username', label: 'USERNAME' },
+  { id: 'role', label: 'ROLE' },
+  { id: 'email', label: 'EMAIL' },
+  { id: 'action', label: 'ACTION', align: 'right' },
 ]
 
 export interface Data {

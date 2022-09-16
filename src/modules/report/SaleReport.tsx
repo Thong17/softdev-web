@@ -12,6 +12,7 @@ import { getReportSale, selectReportSale } from './redux'
 import { currencyFormat } from 'utils/index'
 import { CustomAreaChart } from 'components/shared/charts/AreaChart'
 import moment from 'moment'
+import useLanguage from 'hooks/useLanguage'
 
 const Header = () => {
   return (
@@ -72,6 +73,7 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
 
 export const SaleReport = () => {
   const dispatch = useAppDispatch()
+  const { language } = useLanguage()
   const { data } = useAppSelector(selectReportSale)
   const [selectedSaleChart, setSelectedSaleChart] = useState('day')
   const [selectedTotalIncome, setSelectedTotalIncome] = useState('day')
@@ -131,7 +133,7 @@ export const SaleReport = () => {
           }}
         >
           <DetailSection
-            title='Income'
+            title={language['INCOME']}
             header={
               <div style={{ position: 'absolute', right: 0 }}>
                 <ListFilter
@@ -146,7 +148,7 @@ export const SaleReport = () => {
             icon={<ShowChartRoundedIcon style={{ fontSize: 40 }} />}
           />
           <DetailSection
-            title='Profit'
+            title={language['PROFIT']}
             header={
               <div style={{ position: 'absolute', right: 0 }}>
                 <ListFilter
@@ -164,7 +166,7 @@ export const SaleReport = () => {
         <CardContainer
           title={
             <>
-              Charts
+              {language['CHART']}
               <div style={{ position: 'absolute', right: 10, top: 7 }}>
                 <ListFilter
                   value={selectedSaleChart}

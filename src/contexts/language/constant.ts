@@ -77,7 +77,16 @@ export const languages = {
     QUANTITY: 'Quantity',
     ICON: 'Icon',
     NAME: 'Name',
-    CREATED_BY: 'Created\u00a0By'
+    CREATED_BY: 'Created\u00a0By',
+    USERNAME: 'Username',
+    EMAIL: 'Email',
+    // Admin
+    TOTAL_ROLE: 'Total\u00a0Role',
+    TOTAL_USER: 'Total\u00a0User',
+    TOTAL_PRIVILEGE: 'Total\u00a0Privilege',
+    INCOME: 'Income',
+    PROFIT: 'Profit',
+    CHART: 'Chart'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -92,7 +101,7 @@ export const languages = {
     GRADE: 'ថ្នាក់',
     STUDENT: 'សិស្ស',
     TEACHER: 'គ្រូ',
-    ROLE: 'រ៉ូល',
+    ROLE: 'តួនាទី',
     USER: 'អ្នក​ប្រើ',
     CREATE: 'បង្កើត',
     UPDATE: 'កែប្រែ',
@@ -157,6 +166,15 @@ export const languages = {
     QUANTITY: 'ចំនួន',
     ICON: 'រូបតំណាង',
     NAME: 'ឈ្មោះ',
-    CREATED_BY: 'បង្កើត​ដោយ'
+    CREATED_BY: 'បង្កើត​ដោយ',
+    USERNAME: 'ឈ្មោះ​អ្នកប្រើ',
+    EMAIL: 'អ៊ីមែល',
+    // Admin
+    TOTAL_ROLE: 'តួនាទីសរុប',
+    TOTAL_USER: 'អ្នកប្រើសរុប',
+    TOTAL_PRIVILEGE: 'សិទ្ធិសរុប',
+    INCOME: 'ចំណូល',
+    PROFIT: 'ចំណេញ',
+    CHART: 'គំនូសតាង'
   }
 }

@@ -57,10 +57,10 @@ export const importColumnData: ITableColumn<ColumnHeader>[] = [
 ]
 
 export const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'name', label: 'Name' },
-  { id: 'description', label: 'Description' },
-  { id: 'createdBy', label: 'Created\u00a0By', align: 'right' },
-  { id: 'action', label: 'Action', align: 'right' },
+  { id: 'name', label: 'NAME' },
+  { id: 'description', label: 'DESCRIPTION' },
+  { id: 'createdBy', label: 'CREATED_BY', align: 'right' },
+  { id: 'action', label: 'ACTION', align: 'right' },
 ]
 export interface Data {
   id: string
