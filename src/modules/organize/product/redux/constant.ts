@@ -120,6 +120,8 @@ export const initialState: ProductState = {
   list: {
     data: [],
     status: 'INIT',
+    count: 0,
+    hasMore: true
   },
   detail: {
     data: initState,

@@ -106,6 +106,8 @@ export const productSlice = createSlice({
       .addCase(getListProduct.fulfilled, (state, action) => {
         state.list.status = 'SUCCESS'
         state.list.data = action.payload.data
+        state.list.count = action.payload.length
+        state.list.hasMore = action.payload.hasMore
       })
 
       // Detail product

@@ -108,6 +108,7 @@ export const importColumnData: ITableColumn<any>[] = [
 
 export interface Data {
   id: string
+  tags: string
   name: string
   stock: number
   alertAt: number
@@ -120,6 +121,7 @@ export interface Data {
   brand: string
   category: string
   createdBy: string
+  createdAt: string
   status: boolean
   action: ReactElement
 }
@@ -165,6 +167,7 @@ export const mapStockBody = (body) => {
 export const createData = (
   id: string,
   profile: string,
+  tags: string,
   name: string,
   stocks: Object[],
   price: number,
@@ -175,6 +178,7 @@ export const createData = (
   category: string,
   description: string,
   createdBy: string,
+  createdAt: string,
   status: boolean,
   privilege: any,
   device: DeviceOptions,
@@ -234,8 +238,10 @@ export const createData = (
     category,
     description,
     createdBy,
+    createdAt,
     status,
     action,
+    tags
   }
 }
 
