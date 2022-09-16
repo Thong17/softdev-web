@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { StickyTable } from 'components/shared/table/StickyTable'
 import { useNavigate } from 'react-router'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getListProduct, selectListProduct } from 'modules/organize/product/redux'
 import useLanguage from 'hooks/useLanguage'
 import useWeb from 'hooks/useWeb'
 import useAuth from 'hooks/useAuth'
@@ -29,6 +28,7 @@ import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import { ListItem, ListLayout } from 'components/layouts/ListLayout'
 import useConfig from 'hooks/useConfig'
 import { QuantityStatus } from 'components/shared/QuantityStatus'
+import { getListProduct, selectListProduct } from 'shared/redux'
 
 export const Stocks = () => {
   const dispatch = useAppDispatch()
@@ -48,12 +48,35 @@ export const Stocks = () => {
   const [isGrid, setIsGrid] = useState(display === 'grid' ? true : false)
   
   const updateQuery = debounce((value) => {
-    setLoading(false)
-    setQueryParams({ search: value })
+    handleQuery({ search: value })
   }, 300)
+
+  const handleFilter = (option) => {
+    handleQuery({ filter: option.filter, sort: option.asc ? 'asc' : 'desc' })
+  }
 
   const handleSearch = (e) => {
     updateQuery(e.target.value)
+  }
+
+  const handleQuery = (data) => {
+    let { limit, search } = data
+
+    let query = {}
+    const _limit = queryParams.get('limit')
+    const _page = queryParams.get('page')
+    const _search = queryParams.get('search')
+    const _filter = queryParams.get('filter')
+    const _sort = queryParams.get('sort')
+
+    if (_limit) query = { limit: _limit, ...query }
+    if (_page) query = { page: _page, ...query }
+    if (_search) query = { search: _search, ...query }
+    if (_filter) query = { filter: _filter, ...query }
+    if (_sort) query = { sort: _sort, ...query }
+
+    if (limit || search) return setQueryParams({ ...query, ...data, page: 0 })
+    setQueryParams({ ...query, ...data })
   }
 
   const handleImport = (e) => {
@@ -105,7 +128,7 @@ export const Stocks = () => {
     loadify(response)
     response.then(() => {
       setImportDialog({ ...importDialog, open: false })
-      dispatch(getListProduct({ query: queryParams }))
+      dispatch(getListProduct(queryParams))
     })
   }
 
@@ -115,9 +138,8 @@ export const Stocks = () => {
   }
 
   useEffect(() => {
-    if (status !== 'INIT') return
-    dispatch(getListProduct({}))
-  }, [dispatch, status])
+    dispatch(getListProduct(queryParams))
+  }, [dispatch, queryParams])
 
   useEffect(() => {
     if (status !== 'SUCCESS') return
@@ -138,7 +160,7 @@ export const Stocks = () => {
           url: `/organize/product/stock/${id}/enable`
         }).then((result) => {
           if (result?.data?.code !== 'SUCCESS') return notify(result?.data?.msg, 'error')
-          dispatch(getListProduct({ query: queryParams }))
+          dispatch(getListProduct(queryParams))
           notify(result?.data?.msg, 'success')
         }).catch((err) => notify(err?.response?.data?.msg, 'error'))
       }).catch(() => {})
@@ -178,6 +200,7 @@ export const Stocks = () => {
           navigate={navigate}
           handleSearch={handleSearch}
           handleImport={handleImport}
+          handleFilter={handleFilter}
         />
       }
     >
