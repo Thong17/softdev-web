@@ -26,6 +26,7 @@ export interface IOptions {
   label: any
   selected?: boolean
   display?: string
+  detail?: string
   tags?: string
 }
 
@@ -231,7 +232,8 @@ const MiniInput: ForwardRefRenderFunction<
           displayedOptions.map((item, index) => {
             return (
               <MenuItem key={index} value={item.value} style={{ display: item.display || 'block' }}>
-                {item.label}
+                <span>{item.label}</span>
+                {item.detail && <span className='option-detail' style={{ marginLeft: 5 }}>= {item.detail}</span>}
               </MenuItem>
             )
           })

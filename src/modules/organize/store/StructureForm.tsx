@@ -14,23 +14,28 @@ import { currencyOptions } from 'components/shared/form/InvoiceForm'
 const durationOptions = [
   {
     label: 'H',
-    value: '1h'
+    value: '1h',
+    detail: '1 Hour'
   },
   {
     label: 'D',
-    value: '1d'
+    value: '1d',
+    detail: '1 Day'
   },
   {
     label: 'W',
-    value: '1w'
+    value: '1w',
+    detail: '1 Week'
   },
   {
     label: 'M',
-    value: '1m'
+    value: '1m',
+    detail: '1 Month'
   },
   {
     label: 'Y',
-    value: '1y'
+    value: '1y',
+    detail: '1 Year'
   }
 ]
 

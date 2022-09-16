@@ -23,6 +23,9 @@ export const CustomMiniSelect = styled('div')(
       fontWeight: `${styled.font.weight} !important`,
       fontSize: `13px !important`,
       padding: 0,
+      '& .option-detail': {
+        display: 'none'
+      }
     },
     '& div': {
       zIndex: 10,
