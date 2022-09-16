@@ -61,7 +61,7 @@ export const Stocks = () => {
     filter: 'createdAt',
     asc: false,
   })
-  const limit = 1
+  const limit = 20
 
   const handleImport = (e) => {
     const response = ImportExcel(
@@ -171,6 +171,7 @@ export const Stocks = () => {
             product.createdAt,
             product.status,
             user?.privilege,
+            user?.drawer?.buyRate,
             device,
             navigate,
             handleEnableStock

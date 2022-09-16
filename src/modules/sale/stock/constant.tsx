@@ -113,6 +113,7 @@ export interface Data {
   stock: number
   alertAt: number
   price: ReactElement
+  priceValue: number
   currency: string
   code: string | null
   description: string
@@ -181,6 +182,7 @@ export const createData = (
   createdAt: string,
   status: boolean,
   privilege: any,
+  rate: any,
   device: DeviceOptions,
   navigate: Function,
   handleEnableStock
@@ -223,6 +225,7 @@ export const createData = (
       alertStocks.push(stk)
     }
   })
+  const buyRate = rate || 4000
 
   return {
     id,
@@ -231,6 +234,7 @@ export const createData = (
     stock: stock,
     alertAt,
     price: currencyFormat(price, currency),
+    priceValue: currency === 'USD' ? price : price / buyRate,
     currency,
     code,
     isStock,

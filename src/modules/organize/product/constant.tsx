@@ -361,6 +361,7 @@ export interface Data {
   name: string
   tags: string
   price: ReactElement
+  priceValue: number
   currency: string
   code: string | null
   description: string
@@ -390,6 +391,7 @@ export const createData = (
   createdAt: string,
   status: boolean,
   privilege: any,
+  rate: any,
   device: DeviceOptions,
   navigate: Function,
   setDialog: Function
@@ -434,13 +436,14 @@ export const createData = (
       )}
     </>
   )
-
+  const buyRate = rate || 4000
   return {
     id,
     profile,
     name,
     tags,
     price: currencyFormat(price, currency),
+    priceValue: currency === 'USD' ? price : price / buyRate,
     currency,
     code,
     isStock,

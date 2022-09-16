@@ -30,13 +30,14 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { CircleIcon } from '../table/CustomIcon'
 
-const mappedProduct = (data, lang) => {
+const mappedProduct = (data, lang, rate) => {
   let stock = 0
   let alertAt = 0
   data.stocks?.forEach((item) => {
     stock += item.quantity
     alertAt += item.alertAt
   })
+  const buyRate = rate || 4000
 
   return {
     id: data?._id,
@@ -44,6 +45,7 @@ const mappedProduct = (data, lang) => {
     profile: data?.profile?.filename,
     status: data?.status,
     price: currencyFormat(data?.price, data?.currency),
+    priceValue: data?.currency === 'USD' ? data?.price : data?.price / buyRate,
     tags: data?.tags,
     createdAt: data?.createdAt,
     brand: data?.brand?._id,
@@ -116,6 +118,7 @@ export const ProductContainer = ({
   const [sortObj, setSortObj] = useState({
     name: false,
     createdAt: false,
+    priceValue: false
   })
 
   useEffect(() => {
@@ -219,7 +222,7 @@ export const ProductContainer = ({
     })
       .then((data) => {
         setProducts(
-          data?.data?.data.map((product) => mappedProduct(product, lang))
+          data?.data?.data.map((product) => mappedProduct(product, lang, user?.drawer?.buyRate))
         )
       })
       .catch((err) => {
@@ -343,7 +346,7 @@ export const ProductContainer = ({
       if (!unmounted) {
         setProducts((prevData) => [
           ...prevData,
-          ...data.map((product) => mappedProduct(product, lang)),
+          ...data.map((product) => mappedProduct(product, lang, user?.drawer?.buyRate)),
         ])
         setLoading(false)
         setFetching(false)
@@ -352,7 +355,7 @@ export const ProductContainer = ({
     return () => {
       unmounted = true
     }
-  }, [status, data, lang, hasMoreProduct, countProduct])
+  }, [status, data, lang, hasMoreProduct, countProduct, user?.drawer?.buyRate])
 
   return (
     <div>
@@ -394,6 +397,11 @@ export const ProductContainer = ({
               onClick={() => handleChangeFilter({ filter: 'createdAt' })}
             >
               <SortIcon asc={sortObj.createdAt} /> {language['BY_DATE']}
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleChangeFilter({ filter: 'priceValue' })}
+            >
+              <SortIcon asc={sortObj.priceValue} /> {language['BY_PRICE']}
             </MenuItem>
           </MiniFilterButton>
           <span style={{ width: 10 }}></span>
