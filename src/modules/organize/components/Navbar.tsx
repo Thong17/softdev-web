@@ -1,13 +1,15 @@
+import useLanguage from 'hooks/useLanguage'
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
 const Navbar = () => {
+  const { language } = useLanguage()
   return (
     <>
-        <NavLink to='/organize/category'>Category</NavLink>
-        <NavLink to='/organize/brand'>Brand</NavLink>
-        <NavLink to='/organize/product'>Product</NavLink>
-        <NavLink to='/organize/store'>Store</NavLink>
+        <NavLink to='/organize/category'>{language['CATEGORY']}</NavLink>
+        <NavLink to='/organize/brand'>{language['BRAND']}</NavLink>
+        <NavLink to='/organize/product'>{language['PRODUCT']}</NavLink>
+        <NavLink to='/organize/store'>{language['STORE']}</NavLink>
     </>
   )
 }

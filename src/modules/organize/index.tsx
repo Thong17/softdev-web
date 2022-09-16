@@ -32,7 +32,7 @@ export const Organize = () => {
   const outlet = useOutlet()
   const { width } = useWeb()
   const { theme } = useTheme()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const [totalCategory, setTotalCategory] = useState(0)
   const [totalBrand, setTotalBrand] = useState(0)
   const [totalProduct, setTotalProduct] = useState(0)
@@ -53,7 +53,7 @@ export const Organize = () => {
         name: item.name?.[lang],
         value: item.value,
         title: item.title,
-        detail: `Category`,
+        detail: language['CATEGORY'],
         fill: generateColor()
       }
     })
@@ -64,7 +64,7 @@ export const Organize = () => {
         name: item.name?.[lang],
         value: item.value,
         title: item.title,
-        detail: `Brand`,
+        detail: language['BRAND'],
         fill: generateColor()
       }
     })
@@ -75,7 +75,7 @@ export const Organize = () => {
         name: item.name?.[lang],
         value: item.value,
         title: item.title,
-        detail: `Floor`,
+        detail: language['FLOOR'],
         fill: generateColor()
       }
     })
@@ -86,7 +86,7 @@ export const Organize = () => {
         name: item.name?.[lang],
         value: item.value,
         title: item.title,
-        detail: `Product`,
+        detail: language['PRODUCT'],
         fill: generateColor()
       }
     })
@@ -97,7 +97,7 @@ export const Organize = () => {
     setTotalProduct(dashboard?.totalProduct)
     setTotalFloor(dashboard?.totalFloor)
     setTotalStructure(dashboard?.totalStructure)
-  }, [dashboard, lang, theme])
+  }, [dashboard, lang, theme, language])
 
   useEffect(() => {
     if (location.pathname !== '/organize') return
@@ -140,33 +140,33 @@ export const Organize = () => {
               }}
             >
               <DetailSection
-                title='Total Category'
+                title={language['TOTAL_CATEGORY']}
                 data={totalCategory}
                 icon={<CategoryRoundedIcon style={{ fontSize: 40 }} />}
               />
               <DetailSection
-                title='Total Brand'
+                title={language['TOTAL_BRAND']}
                 data={totalBrand}
                 icon={<InterestsRoundedIcon style={{ fontSize: 40 }} />}
               />
               <DetailSection
-                title='Total Product'
+                title={language['TOTAL_PRODUCT']}
                 data={totalProduct}
                 icon={<Inventory2RoundedIcon style={{ fontSize: 40 }} />}
               />
               <DetailSection
-                title='Total Floor'
+                title={language['TOTAL_FLOOR']}
                 data={totalFloor}
                 icon={<EscalatorRoundedIcon style={{ fontSize: 40 }} />}
               />
               <DetailSection
-                title='Total Structure'
+                title={language['TOTAL_STRUCTURE']}
                 data={totalStructure}
                 icon={<TableBarRoundedIcon style={{ fontSize: 40 }} />}
               />
             </div>
             <CardContainer
-              title={<>Category</>}
+              title={<>{language['CATEGORY']}</>}
               style={{ gridArea: 'category' }}
             >
               <CustomPieChart
@@ -175,14 +175,14 @@ export const Organize = () => {
                 color={theme.text.secondary}
               />
             </CardContainer>
-            <CardContainer title={<>Brand</>} style={{ gridArea: 'brand' }}>
+            <CardContainer title={<>{language['BRAND']}</>} style={{ gridArea: 'brand' }}>
               <CustomPieChart
                 data={brands}
                 fill={'#7B7D7D'}
                 color={theme.text.secondary}
               />
             </CardContainer>
-            <CardContainer title={<>Product</>} style={{ gridArea: 'product' }}>
+            <CardContainer title={<>{language['PRODUCT']}</>} style={{ gridArea: 'product' }}>
               <CustomPieChart
                 data={products}
                 fill={'#7B7D7D'}
@@ -190,7 +190,7 @@ export const Organize = () => {
               />
             </CardContainer>
             <CardContainer
-              title={<>Floor</>}
+              title={<>{language['FLOOR']}</>}
               style={{ gridArea: 'floor' }}
             >
               <CustomPieChart

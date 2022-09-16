@@ -20,12 +20,12 @@ export declare type ColumnHeader =
   | 'action'
 
 export const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'icon', label: 'Icon' },
-  { id: 'name', label: 'Name' },
-  { id: 'description', label: 'Description' },
-  { id: 'createdBy', label: 'Created\u00a0By' },
-  { id: 'status', label: 'Status' },
-  { id: 'action', label: 'Action', align: 'center' },
+  { id: 'icon', label: 'ICON' },
+  { id: 'name', label: 'NAME' },
+  { id: 'description', label: 'DESCRIPTION' },
+  { id: 'createdBy', label: 'CREATED_BY' },
+  { id: 'status', label: 'STATUS' },
+  { id: 'action', label: 'ACTION', align: 'center' },
 ]
 export interface Data {
   id: string

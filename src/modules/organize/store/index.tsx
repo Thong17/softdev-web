@@ -10,6 +10,7 @@ import { getInfoStore, selectInfoStore } from './redux'
 import { useNavigate } from 'react-router-dom'
 import { StructureContainer } from 'components/shared/container/StructureContainer'
 import { useEffect } from 'react'
+import useLanguage from 'hooks/useLanguage'
 
 const Header = ({ stages }) => {
   return (
@@ -23,6 +24,7 @@ export const Store = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { data } = useAppSelector(selectInfoStore)
   
   useEffect(() => {
@@ -31,11 +33,11 @@ export const Store = () => {
 
   const stages = [
     {
-      title: 'Organize',
+      title: language['ORGANIZE'],
       path: '/organize',
     },
     {
-      title: 'Store',
+      title: language['STORE'],
     },
   ]
 
