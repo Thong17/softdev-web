@@ -11,7 +11,7 @@ export interface ShareState {
   infoProduct: IBody<any>,
   capacityStructure: IBody<any>,
   listRole: IBody<IListRole[]>,
-  listCodeProduct: IBody<IListRole[]>,
+  listCodeProduct: IBody<any[]>,
   listBrand: IBody<any[]>,
   listCategory: IBody<any[]>,
   listPresetCash: IBody<any[]>,

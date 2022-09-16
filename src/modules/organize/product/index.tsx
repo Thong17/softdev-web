@@ -46,6 +46,8 @@ import { CustomButton } from 'styles'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import { ListItem, ListLayout } from 'components/layouts/ListLayout'
 import useConfig from 'hooks/useConfig'
+import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
+import { getListCodeProduct, selectListCodeProduct } from 'shared/redux'
 
 export const Products = () => {
   const dispatch = useAppDispatch()
@@ -55,6 +57,7 @@ export const Products = () => {
     count: countProduct,
     hasMore: hasMoreProduct,
   } = useAppSelector(selectListProduct)
+  const { data: listCode } = useAppSelector(selectListCodeProduct)
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
   const { lang } = useLanguage()
@@ -206,6 +209,10 @@ export const Products = () => {
   }
 
   useEffect(() => {
+    dispatch(getListCodeProduct())
+  }, [dispatch])
+
+  useEffect(() => {
     if (status !== 'SUCCESS') return
 
     let unmounted = false
@@ -328,6 +335,13 @@ export const Products = () => {
   const handleClickProduct = (id) => {
     navigate(`/organize/product/detail/${id}`)
   }
+
+  const handleScanProduct = (code) => {
+    const scannedProduct = listCode.find((item: any) => item.code === code)
+    if (!scannedProduct) return
+    navigate(`/organize/product/update/${scannedProduct._id}`)
+  }
+
   return (
     <Container
       header={
@@ -343,6 +357,7 @@ export const Products = () => {
         />
       }
     >
+      <BarcodeReader onScan={handleScanProduct} onError={() => {}} />
       <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
         <div
           style={{ position: 'relative', padding: 10, boxSizing: 'border-box' }}

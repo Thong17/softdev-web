@@ -32,6 +32,8 @@ import {
   getListProduct,
   selectListProduct,
 } from 'modules/organize/product/redux'
+import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
+import { getListCodeProduct, selectListCodeProduct } from 'shared/redux'
 
 export const Stocks = () => {
   const dispatch = useAppDispatch()
@@ -41,6 +43,7 @@ export const Stocks = () => {
     count: countProduct,
     hasMore: hasMoreProduct,
   } = useAppSelector(selectListProduct)
+  const { data: listCode } = useAppSelector(selectListCodeProduct)
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
   const { lang } = useLanguage()
@@ -209,6 +212,10 @@ export const Stocks = () => {
     updateQuery(e.target.value)
   }
 
+  useEffect(() => {
+    dispatch(getListCodeProduct())
+  }, [dispatch])
+  
   const observer: any = useRef()
   const [fetching, setFetching] = useState(false)
   const lastProductElement = useCallback(
@@ -265,6 +272,31 @@ export const Stocks = () => {
     // eslint-disable-next-line
   }, [dispatch, offset, search, filterObj])
 
+  const handleScanProduct = (code) => {
+    const scannedProduct = listCode.find((item: any) => item.code === code)
+    if (!scannedProduct) return
+    if (scannedProduct.isStock) navigate(`/sale/stock/item/${scannedProduct._id}`)
+    else {
+      confirm({
+        title: 'Are you sure you want to enable stock?',
+        description:
+          'This product stock is currently not enabled. By confirm this you will enable stock for this product.',
+        variant: 'info',
+      })
+        .then(() => {
+          Axios({
+            method: 'PUT',
+            url: `/organize/product/stock/${scannedProduct._id}/enable`,
+          })
+            .then((result) => {
+              navigate(`/sale/stock/item/${scannedProduct._id}`)
+            })
+            .catch((err) => notify(err?.response?.data?.msg, 'error'))
+        })
+        .catch(() => {})
+    }
+  }
+
   return (
     <Container
       header={
@@ -279,6 +311,7 @@ export const Stocks = () => {
         />
       }
     >
+      <BarcodeReader onScan={handleScanProduct} onError={() => {}} />
       <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
         <div style={{ position: 'relative' }}>
           <StickyTable
