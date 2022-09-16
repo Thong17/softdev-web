@@ -173,11 +173,11 @@ export const ProductContainer = ({
   }
 
   const updateQuery = debounce((value) => {
-    setSearch(value)
     if (hasMore) {
       setProducts([])
       setOffset(0)
     }
+    setSearch(value)
   }, 300)
 
   const handleSearch = (e) => {

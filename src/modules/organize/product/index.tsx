@@ -1,5 +1,5 @@
 import Container from 'components/shared/Container'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { StickyTable } from 'components/shared/table/StickyTable'
 import { useNavigate } from 'react-router'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
@@ -26,14 +26,19 @@ import {
   colorColumnData,
   propertyColumnData,
   optionColumnData,
-  imageColumnData
+  imageColumnData,
 } from './constant'
 import { ImportExcel } from 'constants/functions/Excels'
 import { debounce } from 'utils'
-import { useSearchParams } from 'react-router-dom'
 import useAlert from 'hooks/useAlert'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
-import { Button, DialogActions, IconButton, Skeleton } from '@mui/material'
+import {
+  Button,
+  DialogActions,
+  IconButton,
+  Skeleton,
+  CircularProgress,
+} from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import SellRoundedIcon from '@mui/icons-material/SellRounded'
 import TrendingFlatRoundedIcon from '@mui/icons-material/TrendingFlatRounded'
@@ -44,7 +49,14 @@ import useConfig from 'hooks/useConfig'
 
 export const Products = () => {
   const dispatch = useAppDispatch()
-  const { data: products, status } = useAppSelector(selectListProduct)
+  const {
+    data: products,
+    status,
+    count: countProduct,
+    hasMore: hasMoreProduct,
+  } = useAppSelector(selectListProduct)
+  const [hasMore, setHasMore] = useState(true)
+  const [count, setCount] = useState(0)
   const { lang } = useLanguage()
   const { device } = useWeb()
   const { user } = useAuth()
@@ -54,21 +66,22 @@ export const Products = () => {
   const [rowData, setRowData] = useState<Data[]>([])
   const [dialog, setDialog] = useState({ open: false, id: null })
   const navigate = useNavigate()
-  const [queryParams, setQueryParams] = useSearchParams()
   const [loading, setLoading] = useState(status !== 'SUCCESS' ? true : false)
-  const [importDialog, setImportDialog] = useState({ open: false, data: [], model: 'product' })
+  const [importDialog, setImportDialog] = useState({
+    open: false,
+    data: [],
+    model: 'product',
+  })
   const confirm = useAlert()
   const [isGrid, setIsGrid] = useState(display === 'grid' ? true : false)
   const [columnData, setColumnData] = useState(productColumnData)
-
-  const updateQuery = debounce((value) => {
-    setLoading(false)
-    setQueryParams({ search: value })
-  }, 300)
-
-  const handleSearch = (e) => {
-    updateQuery(e.target.value)
-  }
+  const [search, setSearch] = useState('')
+  const [offset, setOffset] = useState(0)
+  const [filterObj, setFilterObj] = useState<any>({
+    filter: 'createdAt',
+    asc: false,
+  })
+  const limit = 1
 
   const handleImport = (e) => {
     const model = e.target.name
@@ -121,7 +134,9 @@ export const Products = () => {
               })
             }}
           >
-            <CloseRoundedIcon style={{ color: theme.color.error, fontSize: 19 }} />
+            <CloseRoundedIcon
+              style={{ color: theme.color.error, fontSize: 19 }}
+            />
           </IconButton>
         )
         return { ...importData, action: <ImportAction no={importData?.no} /> }
@@ -170,7 +185,7 @@ export const Products = () => {
     loadify(response)
     response.then(() => {
       setImportDialog({ ...importDialog, open: false })
-      dispatch(getListProduct({ query: queryParams }))
+      dispatch(getListProduct({}))
     })
   }
 
@@ -191,45 +206,127 @@ export const Products = () => {
   }
 
   useEffect(() => {
-    if (status !== 'INIT') return
-    dispatch(getListProduct({}))
-  }, [dispatch, status])
-
-  useEffect(() => {
     if (status !== 'SUCCESS') return
+
+    let unmounted = false
+    setHasMore(hasMoreProduct || false)
+    setCount(countProduct || 0)
     setTimeout(() => {
-      setLoading(false)
-    }, 300)
-  }, [status])
+      if (!unmounted) {
+        const listProducts = products.map((product: any) => {
+          return createData(
+            product._id,
+            product.profile?.filename,
+            product.name?.[lang] || product.name?.['English'],
+            product.tags,
+            parseFloat(product?.price),
+            product?.currency,
+            product?.code || '...',
+            product?.isStock,
+            product?.brand?.name?.[lang] || product?.brand?.name?.['English'],
+            product?.category?.name?.[lang] ||
+              product?.category?.name?.['English'],
+            product.description || '...',
+            product.createdBy || '...',
+            product.createdAt,
+            product.status,
+            user?.privilege,
+            device,
+            navigate,
+            setDialog
+          )
+        })
+
+        setRowData((prev) => [...prev, ...listProducts])
+        setLoading(false)
+        setFetching(false)
+      }
+    }, 100)
+    return () => {
+      unmounted = true
+    }
+    // eslint-disable-next-line
+  }, [status, products, lang, hasMoreProduct, countProduct])
+
+  const updateQuery = debounce((value) => {
+    if (hasMore) {
+      setOffset(0)
+      setRowData([])
+    }
+    setSearch(value)
+  }, 300)
+
+  const handleFilter = (option) => {
+    setFilterObj(option)
+    if (hasMore) {
+      setOffset(0)
+      setRowData([])
+    }
+  }
+
+  const handleSearch = (e) => {
+    updateQuery(e.target.value)
+  }
+
+  const observer: any = useRef()
+  const [fetching, setFetching] = useState(false)
+  const lastProductElement = useCallback(
+    (node) => {
+      if (fetching) return
+      if (observer.current) observer.current.disconnect()
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && count && count > offset + limit) {
+          setOffset((prev) => prev + limit)
+        }
+      })
+      if (node) observer.current.observe(node)
+    },
+    [fetching, count, offset]
+  )
 
   useEffect(() => {
-    const listProducts = products.map((product: any) => {
-      return createData(
-        product._id,
-        product.profile?.filename,
-        product.name?.[lang] || product.name?.['English'],
-        parseFloat(product?.price),
-        product?.currency,
-        product?.code || '...',
-        product?.isStock,
-        product?.brand?.name?.[lang] || product?.brand?.name?.['English'],
-        product?.category?.name?.[lang] || product?.category?.name?.['English'],
-        product.description || '...',
-        product.createdBy || '...',
-        product.status,
-        user?.privilege,
-        device,
-        navigate,
-        setDialog
-      )
-    })
-    setRowData(listProducts)
-  }, [products, lang, user, device, theme, navigate])
+    if (!hasMore) {
+      const _search = new RegExp(search || '', 'i')
+      setRowData((prevData) => {
+        return prevData
+          .map((data) => {
+            let obj = data
+
+            if (!_search.test(data.tags)) {
+              obj['display'] = 'none'
+            } else {
+              obj['display'] = 'block'
+            }
+            return obj
+          })
+          .sort((a, b) => {
+            if (!filterObj.asc) {
+              if (b[filterObj.filter] < a[filterObj.filter]) return -1
+              if (b[filterObj.filter] > a[filterObj.filter]) return 1
+              return 0
+            } else {
+              if (a[filterObj.filter] < b[filterObj.filter]) return -1
+              if (a[filterObj.filter] > b[filterObj.filter]) return 1
+              return 0
+            }
+          })
+      })
+      return
+    }
+    setFetching(true)
+    const query = new URLSearchParams()
+    query.append('search', search)
+    query.append('limit', limit.toString())
+    query.append('offset', offset.toString())
+    query.append('filter', filterObj.filter)
+    query.append('sort', filterObj.asc ? 'asc' : 'desc')
+    dispatch(getListProduct({ query }))
+    // eslint-disable-next-line
+  }, [dispatch, offset, search, filterObj])
 
   const handleClickProduct = (id) => {
     navigate(`/organize/product/detail/${id}`)
   }
-
   return (
     <Container
       header={
@@ -241,11 +338,14 @@ export const Products = () => {
           navigate={navigate}
           handleSearch={handleSearch}
           handleImport={handleImport}
+          handleFilter={handleFilter}
         />
       }
     >
       <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
-        <div style={{ position: 'relative', padding: 10, boxSizing: 'border-box' }}>
+        <div
+          style={{ position: 'relative', padding: 10, boxSizing: 'border-box' }}
+        >
           <StickyTable
             columns={columnData}
             rows={importDialog.data}
@@ -253,13 +353,21 @@ export const Products = () => {
           />
         </div>
         <DialogActions>
-          <Button onClick={handleCloseImport} style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}>Cancel</Button>
+          <Button
+            onClick={handleCloseImport}
+            style={{
+              backgroundColor: `${theme.color.error}22`,
+              color: theme.color.error,
+            }}
+          >
+            Cancel
+          </Button>
           <CustomButton
             style={{
               marginLeft: 10,
               backgroundColor: `${theme.color.info}22`,
               color: theme.color.info,
-              borderRadius: theme.radius.secondary
+              borderRadius: theme.radius.secondary,
             }}
             styled={theme}
             onClick={handleConfirmImport}
@@ -277,53 +385,217 @@ export const Products = () => {
       />
       {isGrid ? (
         <GridLayout>
-          {
-            !loading ? rowData.map((obj: any, index) => {
-              return (
-                <GridItem
-                  key={index}
-                  title={obj.name}
-                  picture={obj.profile}
-                  subLeft={<><SellRoundedIcon fontSize='small' />{obj.price}</>}
-                  subRight={<CustomButton onClick={() => handleClickProduct(obj.id)} styled={theme} style={{ padding: '0 5px', color: theme.text.primary, minWidth: 0 }}><TrendingFlatRoundedIcon fontSize='small' /></CustomButton>}
-                  action={obj.action}
-                  status={obj.status}
-                />
-              )
-            }) : Array.apply(null, Array(25)).map((index, key) => {
-              return <div key={key}>
-                <Skeleton variant='rectangular' height={130} width={150} style={{ borderRadius: theme.radius.secondary }} />
-                <div className="content" style={{ padding: '7px 0', boxSizing: 'border-box' }}>
-                  <Skeleton variant='rectangular' height={30} width='100%' style={{ borderRadius: theme.radius.secondary }} />
-                  <Skeleton variant='text' height={30} width={70} style={{ borderRadius: theme.radius.secondary }} />
-                </div>
-              </div>
-            })
-          }
+          {!loading
+            ? rowData.map((obj: any, index) => {
+                if (rowData.length === index + 1) {
+                  return (
+                    <GridItem
+                      ref={lastProductElement}
+                      key={index}
+                      title={obj.name}
+                      picture={obj.profile}
+                      display={obj.display}
+                      subLeft={
+                        <>
+                          <SellRoundedIcon fontSize='small' />
+                          {obj.price}
+                        </>
+                      }
+                      subRight={
+                        <CustomButton
+                          onClick={() => handleClickProduct(obj.id)}
+                          styled={theme}
+                          style={{
+                            padding: '0 5px',
+                            color: theme.text.primary,
+                            minWidth: 0,
+                          }}
+                        >
+                          <TrendingFlatRoundedIcon fontSize='small' />
+                        </CustomButton>
+                      }
+                      action={obj.action}
+                      status={obj.status}
+                    />
+                  )
+                } else {
+                  return (
+                    <GridItem
+                      key={index}
+                      title={obj.name}
+                      picture={obj.profile}
+                      display={obj.display}
+                      subLeft={
+                        <>
+                          <SellRoundedIcon fontSize='small' />
+                          {obj.price}
+                        </>
+                      }
+                      subRight={
+                        <CustomButton
+                          onClick={() => handleClickProduct(obj.id)}
+                          styled={theme}
+                          style={{
+                            padding: '0 5px',
+                            color: theme.text.primary,
+                            minWidth: 0,
+                          }}
+                        >
+                          <TrendingFlatRoundedIcon fontSize='small' />
+                        </CustomButton>
+                      }
+                      action={obj.action}
+                      status={obj.status}
+                    />
+                  )
+                }
+              })
+            : Array.apply(null, Array(25)).map((index, key) => {
+                return (
+                  <div key={key}>
+                    <Skeleton
+                      variant='rectangular'
+                      height={130}
+                      width={150}
+                      style={{ borderRadius: theme.radius.secondary }}
+                    />
+                    <div
+                      className='content'
+                      style={{ padding: '7px 0', boxSizing: 'border-box' }}
+                    >
+                      <Skeleton
+                        variant='rectangular'
+                        height={30}
+                        width='100%'
+                        style={{ borderRadius: theme.radius.secondary }}
+                      />
+                      <Skeleton
+                        variant='text'
+                        height={30}
+                        width={70}
+                        style={{ borderRadius: theme.radius.secondary }}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
         </GridLayout>
       ) : (
         <ListLayout isLoading={loading}>
-          {
-            !loading ? rowData.map((obj: any, index) => {
-              return (
-                <ListItem
-                  onClick={() => handleClickProduct(obj.id)}
-                  key={index}
-                  picture={obj.profile}
-                  title={<><span>{obj.name}</span><span>{obj.description}</span></>}
-                  first={<><span className='subject'>Category</span><span>{obj.category}</span></>}
-                  second={<><span className='subject'>Brand</span><span>{obj.brand}</span></>}
-                  third={<><span className='subject'>Stock</span><span>{obj.stock}</span></>}
-                  fourth={<><span className='subject'>Price</span><span>{obj.price}</span></>}
-                  action={obj.action}
-                  status={obj.status}
-                />
-              )
-            }) : Array.apply(null, Array(25)).map((index, key) => {
-              return <Skeleton key={key} variant='rectangular' width='100%' height={90} style={{ marginBottom: 10, borderRadius: theme.radius.secondary }} />
-            })
-          }
+          {!loading
+            ? rowData.map((obj: any, index) => {
+                if (rowData.length === index + 1) {
+                  return (
+                    <ListItem
+                      ref={lastProductElement}
+                      onClick={() => handleClickProduct(obj.id)}
+                      key={index}
+                      picture={obj.profile}
+                      display={obj.display}
+                      title={
+                        <>
+                          <span>{obj.name}</span>
+                          <span>{obj.description}</span>
+                        </>
+                      }
+                      first={
+                        <>
+                          <span className='subject'>Category</span>
+                          <span>{obj.category}</span>
+                        </>
+                      }
+                      second={
+                        <>
+                          <span className='subject'>Brand</span>
+                          <span>{obj.brand}</span>
+                        </>
+                      }
+                      third={
+                        <>
+                          <span className='subject'>Stock</span>
+                          <span>{obj.stock}</span>
+                        </>
+                      }
+                      fourth={
+                        <>
+                          <span className='subject'>Price</span>
+                          <span>{obj.price}</span>
+                        </>
+                      }
+                      action={obj.action}
+                      status={obj.status}
+                    />
+                  )
+                } else {
+                  return (
+                    <ListItem
+                      onClick={() => handleClickProduct(obj.id)}
+                      key={index}
+                      picture={obj.profile}
+                      display={obj.display}
+                      title={
+                        <>
+                          <span>{obj.name}</span>
+                          <span>{obj.description}</span>
+                        </>
+                      }
+                      first={
+                        <>
+                          <span className='subject'>Category</span>
+                          <span>{obj.category}</span>
+                        </>
+                      }
+                      second={
+                        <>
+                          <span className='subject'>Brand</span>
+                          <span>{obj.brand}</span>
+                        </>
+                      }
+                      third={
+                        <>
+                          <span className='subject'>Stock</span>
+                          <span>{obj.stock}</span>
+                        </>
+                      }
+                      fourth={
+                        <>
+                          <span className='subject'>Price</span>
+                          <span>{obj.price}</span>
+                        </>
+                      }
+                      action={obj.action}
+                      status={obj.status}
+                    />
+                  )
+                }
+              })
+            : Array.apply(null, Array(25)).map((index, key) => {
+                return (
+                  <Skeleton
+                    key={key}
+                    variant='rectangular'
+                    width='100%'
+                    height={90}
+                    style={{
+                      marginBottom: 10,
+                      borderRadius: theme.radius.secondary,
+                    }}
+                  />
+                )
+              })}
         </ListLayout>
+      )}
+      {fetching && (
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            padding: 10,
+          }}
+        >
+          <CircularProgress style={{ width: 30, height: 30 }} />
+        </div>
       )}
     </Container>
   )

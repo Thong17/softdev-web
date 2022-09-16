@@ -15,6 +15,9 @@ import { HeaderButton } from 'components/shared/table/HeaderButton'
 import { CSVLink } from 'react-csv'
 import { NestedMenuList } from 'components/shared/NestedMenuList'
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
+import useLanguage from 'hooks/useLanguage'
+import { MenuItem } from '@mui/material'
+import { SortIcon } from 'components/shared/icons/SortIcon'
 
 export const Header = ({
   changeLayout,
@@ -23,6 +26,7 @@ export const Header = ({
   styled,
   navigate,
   handleSearch,
+  handleFilter,
   handleImport,
 }) => {
   const [products, setProducts] = useState([])
@@ -31,6 +35,23 @@ export const Header = ({
   const [properties, setProperties] = useState([])
   const [options, setOptions] = useState([])
   const [grid, setGrid] = useState(isGrid)
+  const [sortObj, setSortObj] = useState({
+    name: false,
+    createdAt: false,
+  })
+
+  const handleChangeFilter = ({ filter }) => {
+    setSortObj({ ...sortObj, [filter]: !sortObj[filter] })
+    return handleFilter({ filter, asc: sortObj[filter] })
+  }
+
+  const FilterOption = () => {
+    const { language } = useLanguage()
+    return <>
+      <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}><SortIcon asc={sortObj.name} />{language['BY_NAME']}</MenuItem>
+      <MenuItem onClick={() => handleChangeFilter({ filter: 'createdAt' })}><SortIcon asc={sortObj.createdAt} />{language['BY_DATE']}</MenuItem>
+    </>
+  }
   
   useEffect(() => {
     setGrid(isGrid)
@@ -116,6 +137,7 @@ export const Header = ({
 
   return (
     <DefaultHeader
+      filterOption={<FilterOption />}
       exportComponent={
         <NestedMenuList label='Export Data' icon={<ArrowDropDownRoundedIcon />}>
           <CSVLink

@@ -359,6 +359,7 @@ export const optionColumnData: ITableColumn<any>[] = [
 export interface Data {
   id: string
   name: string
+  tags: string
   price: ReactElement
   currency: string
   code: string | null
@@ -368,6 +369,7 @@ export interface Data {
   brand: string
   category: string
   createdBy: string
+  createdAt: string
   status: boolean
   action: ReactElement
 }
@@ -376,6 +378,7 @@ export const createData = (
   id: string,
   profile: string,
   name: string,
+  tags: string,
   price: number,
   currency: string,
   code: string | null,
@@ -384,6 +387,7 @@ export const createData = (
   category: string,
   description: string,
   createdBy: string,
+  createdAt: string,
   status: boolean,
   privilege: any,
   device: DeviceOptions,
@@ -435,6 +439,7 @@ export const createData = (
     id,
     profile,
     name,
+    tags,
     price: currencyFormat(price, currency),
     currency,
     code,
@@ -443,6 +448,7 @@ export const createData = (
     category,
     description,
     createdBy,
+    createdAt,
     status,
     action,
   }

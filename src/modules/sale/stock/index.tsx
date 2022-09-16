@@ -61,7 +61,7 @@ export const Stocks = () => {
     filter: 'createdAt',
     asc: false,
   })
-  const limit = 20
+  const limit = 1
 
   const handleImport = (e) => {
     const response = ImportExcel(
@@ -189,11 +189,11 @@ export const Stocks = () => {
   }, [status, products, lang, hasMoreProduct, countProduct])
 
   const updateQuery = debounce((value) => {
-    setSearch(value)
     if (hasMore) {
       setRowData([])
       setOffset(0)
     }
+    setSearch(value)
   }, 300)
 
   const handleFilter = (option) => {
@@ -420,6 +420,7 @@ export const Stocks = () => {
                       }
                       action={obj.action}
                       status={obj.status}
+                      display={obj.display}
                     />
                   )
                 } else {
@@ -459,6 +460,7 @@ export const Stocks = () => {
                       }
                       action={obj.action}
                       status={obj.status}
+                      display={obj.display}
                     />
                   )
                 }
