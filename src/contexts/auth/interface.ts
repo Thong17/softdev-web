@@ -4,7 +4,7 @@ import { ThemeOptions } from "contexts/theme/interface";
 export interface IUser {
   id: string
   username: string
-  privilege: object
+  privilege: any
   photo?: string
   theme?: ThemeOptions
   language?: LanguageOptions

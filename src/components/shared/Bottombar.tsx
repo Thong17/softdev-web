@@ -3,8 +3,10 @@ import { sideNav } from '../layouts/constant'
 import useTheme from 'hooks/useTheme'
 import { CustomBottomNav } from 'styles'
 import useLanguage from 'hooks/useLanguage'
+import useAuth from 'hooks/useAuth'
 
 const Bottombar = () => {
+  const { user } = useAuth()
   const { theme } = useTheme()
   const { language } = useLanguage()
 
@@ -12,12 +14,17 @@ const Bottombar = () => {
       <CustomBottomNav
         styled={theme}
       >
-        {sideNav.map((nav, index) => (
-          <NavLink key={index} to={nav.route}>
-            {nav.icon}
-            <span>{language?.[nav.title] || nav.title}</span>
-          </NavLink>
-        ))}
+        {sideNav.map((nav, index) => {
+          const permission = nav.permission ? user?.privilege.menu[nav.permission] : true
+          if (permission) {
+            return <NavLink key={index} to={nav.route}>
+              {nav.icon}
+              <span>{language?.[nav.title] || nav.title}</span>
+            </NavLink>
+          } else {
+            return <span key={index} style={{ display: 'none' }}></span>
+          }
+        })}
       </CustomBottomNav>
   )
 }

@@ -15,21 +15,25 @@ export const sideNav = [
     route: '/sale',
     title: 'SALE',
     icon: <PriceChangeRoundedIcon />,
+    permission: 'operation'
   },
   {
     route: '/organize',
     title: 'ORGANIZE',
     icon: <StorefrontRoundedIcon />,
+    permission: 'organize'
   },
   {
     route: '/admin',
     title: 'ADMIN',
     icon: <AdminPanelSettingsIcon />,
+    permission: 'admin'
   },
   {
     route: '/report',
     title: 'REPORT',
     icon: <BarChartRoundedIcon />,
+    permission: 'report'
   },
   {
     route: '/config',

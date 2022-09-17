@@ -2,9 +2,48 @@ import { RouteObject } from 'react-router'
 import AuthGuard from '../auth/AuthGuard'
 import { Login } from 'modules/auth/Login'
 import { Register } from 'modules/auth/Register'
-import { Admin, Roles, CreateRole, UpdateRole, DetailRole, Users, CreateUser, UpdateUser, DetailUser } from 'modules/admin'
-import { Organize, Brands, Categories, CreateCategory, DetailCategory, UpdateCategory, CreateBrand, DetailBrand, UpdateBrand, Products, CreateProduct, DetailProduct, UpdateProduct, ProductSetup, Store, UpdateStore, LayoutForm } from 'modules/organize'
-import { Cashing, CreatePromotion, DetailPromotion, Promotions, Reservation, ReservationForm, Sale, Stock, Stocks, UpdatePromotion } from 'modules/sale'
+import {
+  Admin,
+  Roles,
+  CreateRole,
+  UpdateRole,
+  DetailRole,
+  Users,
+  CreateUser,
+  UpdateUser,
+  DetailUser,
+} from 'modules/admin'
+import {
+  Organize,
+  Brands,
+  Categories,
+  CreateCategory,
+  DetailCategory,
+  UpdateCategory,
+  CreateBrand,
+  DetailBrand,
+  UpdateBrand,
+  Products,
+  CreateProduct,
+  DetailProduct,
+  UpdateProduct,
+  ProductSetup,
+  Store,
+  UpdateStore,
+  LayoutForm,
+} from 'modules/organize'
+import {
+  Cashing,
+  CreatePromotion,
+  DetailPromotion,
+  Promotions,
+  Reservation,
+  ReservationForm,
+  Sale,
+  Stock,
+  Stocks,
+  UpdatePromotion,
+} from 'modules/sale'
 import { Counter } from 'modules/counter/Counter'
 import Config from 'modules/config/Config'
 import NotFound from 'components/shared/NotFound'
@@ -13,11 +52,7 @@ import { SaleReport, Report } from 'modules/report'
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: (
-      <AuthGuard role={{ route: 'admin', action: 'list' }}>
-        <Counter />
-      </AuthGuard>
-    ),
+    element: <Counter />,
   },
   {
     path: '/login',
@@ -29,7 +64,11 @@ const routes: RouteObject[] = [
   },
   {
     path: '/admin',
-    element: (<AuthGuard role={{ route: 'admin', action: 'list' }}><Admin /></AuthGuard>),
+    element: (
+      <AuthGuard role={{ route: 'menu', action: 'admin' }}>
+        <Admin />
+      </AuthGuard>
+    ),
     children: [
       {
         path: 'user',
@@ -99,7 +138,11 @@ const routes: RouteObject[] = [
   },
   {
     path: '/organize',
-    element: <Organize />,
+    element: (
+      <AuthGuard role={{ route: 'menu', action: 'organize' }}>
+        <Organize />
+      </AuthGuard>
+    ),
     children: [
       // Category
       {
@@ -228,7 +271,11 @@ const routes: RouteObject[] = [
   },
   {
     path: '/sale',
-    element: <Sale />,
+    element: (
+      <AuthGuard role={{ route: 'menu', action: 'operation' }}>
+        <Sale />
+      </AuthGuard>
+    ),
     children: [
       // Stock
       {
@@ -285,17 +332,21 @@ const routes: RouteObject[] = [
           </AuthGuard>
         ),
       },
-    ]
+    ],
   },
   {
     path: '/report',
-    element: <Report />,
+    element: (
+      <AuthGuard role={{ route: 'menu', action: 'report' }}>
+        <Report />
+      </AuthGuard>
+    ),
     children: [
       {
         path: 'sale',
         element: <SaleReport />,
       },
-    ]
+    ],
   },
   {
     path: '/config',
