@@ -22,8 +22,8 @@ import useWeb from 'hooks/useWeb'
 
 const paymentMethods = [
   { label: 'Cash', value: 'cash' },
-  { label: 'KHQR', value: 'transfer' },
-  { label: 'Loan', value: 'loan' },
+  // { label: 'KHQR', value: 'transfer' },
+  // { label: 'Loan', value: 'loan' },
 ]
 
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
