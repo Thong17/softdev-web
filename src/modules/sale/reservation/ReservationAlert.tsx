@@ -40,16 +40,15 @@ export const ReservationAlert = ({ dialog, setDialog, structures, onSave }: any)
             gridGap: 20,
             display: 'grid',
             gridTemplateColumns: 'calc(100% - 480px) auto',
-            gridTemplateRows: '1fr',
             gridTemplateAreas: width > 1024 ? `'calendar form'` : `'form form''calendar calendar'`,
           }}
         >
-          <div style={{ gridArea: 'calendar', height: '100%', position: 'relative' }}>
+          <div style={{ gridArea: 'calendar', minHeight: width > 1024 ? '100%' : '70vh', position: 'relative' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: '100%', overflowY: 'auto' }}>
               <ReservationCalendar />
             </div>
           </div>
-          <div style={{ gridArea: 'form' }}>
+          <div style={{ gridArea: 'form', height: width > 1024 ? '100%' : '70vh' }}>
             <ReservationContainer selectedStructures={structures} onSave={handleAfterSave} />
           </div>
         </div>
