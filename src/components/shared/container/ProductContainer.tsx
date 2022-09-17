@@ -355,7 +355,8 @@ export const ProductContainer = ({
     return () => {
       unmounted = true
     }
-  }, [status, data, lang, hasMoreProduct, countProduct, user?.drawer?.buyRate])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, data, lang, hasMoreProduct, countProduct])
 
   return (
     <div>
