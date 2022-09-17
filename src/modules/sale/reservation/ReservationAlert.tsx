@@ -2,8 +2,10 @@ import { ReservationCalendar } from 'components/shared/calendar/ReservationCalen
 import { AlertContainer } from 'components/shared/container/AlertContainer'
 import { ReservationContainer } from 'components/shared/container/ReservationContainer'
 import { DialogTitle } from 'components/shared/DialogTitle'
+import useWeb from 'hooks/useWeb'
 
 export const ReservationAlert = ({ dialog, setDialog, structures, onSave }: any) => {
+  const { width } = useWeb()
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false })
   }
@@ -39,7 +41,7 @@ export const ReservationAlert = ({ dialog, setDialog, structures, onSave }: any)
             display: 'grid',
             gridTemplateColumns: 'calc(100% - 480px) auto',
             gridTemplateRows: '1fr',
-            gridTemplateAreas: `'calendar form'`,
+            gridTemplateAreas: width > 1024 ? `'calendar form'` : `'form form''calendar calendar'`,
           }}
         >
           <div style={{ gridArea: 'calendar', height: '100%', position: 'relative' }}>

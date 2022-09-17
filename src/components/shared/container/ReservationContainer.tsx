@@ -161,7 +161,6 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
       >
         <div
           style={{
-            maxWidth: 440,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
