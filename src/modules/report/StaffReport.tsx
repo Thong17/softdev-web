@@ -5,12 +5,11 @@ import { useSearchParams } from 'react-router-dom'
 import { CardContainer } from 'components/shared/container/CardContainer'
 import { MiniSelectField } from 'components/shared/form'
 import { DetailSection } from 'components/shared/container/DetailSection'
-import ShowChartRoundedIcon from '@mui/icons-material/ShowChartRounded'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getReportStaff, selectReportStaff } from './redux'
 import { CustomAreaChart } from 'components/shared/charts/AreaChart'
-import moment from 'moment'
 import useLanguage from 'hooks/useLanguage'
+import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded'
 
 const Header = () => {
   return (
@@ -84,22 +83,20 @@ export const StaffReport = () => {
 
   const handleQuery = (data) => {
     let query = {}
-    const _totalIncome = queryParams.get('_totalIncome')
-    const _totalProfit = queryParams.get('_totalProfit')
+    const _topStaff = queryParams.get('_topStaff')
     const _chartData = queryParams.get('_chartData')
 
-    if (_totalIncome) query = { _totalIncome, ...query }
-    if (_totalProfit) query = { _totalProfit, ...query }
+    if (_topStaff) query = { _topStaff, ...query }
     if (_chartData) query = { _chartData, ...query }
 
     setQueryParams({ ...query, ...data })
   }
 
   useEffect(() => {
-    const _totalStaff = queryParams.get('_totalStaff')
+    const _topStaff = queryParams.get('_topStaff')
     const _chartData = queryParams.get('_chartData')
 
-    if (_totalStaff) setSelectedTotalStaff(_totalStaff)
+    if (_topStaff) setSelectedTotalStaff(_topStaff)
     if (_chartData) setSelectedSaleChart(_chartData)
     dispatch(getReportStaff({query: queryParams}))
   }, [queryParams, dispatch])
@@ -134,13 +131,13 @@ export const StaffReport = () => {
                 <ListFilter
                   value={selectedTotalStaff}
                   grades={filterTotal}
-                  name='_totalStaff'
+                  name='_topStaff'
                   onChange={handleChangeGrande}
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>90</span>}
-            icon={<ShowChartRoundedIcon style={{ fontSize: 40 }} />}
+            data={<span style={{ fontSize: 23 }}>{data.topStaff?.name}</span>}
+            icon={<EmojiEventsRoundedIcon style={{ fontSize: 40 }} />}
           />
         </div>
         <CardContainer
@@ -159,7 +156,7 @@ export const StaffReport = () => {
           }
           style={{ gridArea: 'charts' }}
         >
-          <CustomAreaChart data={data.listStaff.map(item => ({ ...item, name: moment(item.name).format(item.format)}))} labels={[{ name: 'value' }]} height={370} />
+          <CustomAreaChart data={data.listStaff.map(item => ({ ...item, name: item.name}))} labels={[{ name: 'value' }]} height={370} />
         </CardContainer>
       </div>
     </Container>

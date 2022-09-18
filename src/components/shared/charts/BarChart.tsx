@@ -4,11 +4,11 @@ import { currencyFormat } from 'utils/index'
 import React from 'react';
 
 const CustomizedLabel = (props) => {
-  const {x, y, value} = props
+  const {x, y, width, value} = props
   const { theme } = useTheme()
 
-  return <g transform={`translate(${x},${y})`}>
-    <foreignObject x={-5} y={-20} textAnchor="middle" width="150" height="20">
+  return <g transform={`translate(${0},${y})`}>
+    <foreignObject x={x} y={-20} textAnchor="middle" width={width} height="20">
       <div style={{ display: 'grid', placeItems: 'center', color: theme.text.quaternary }}>
         {currencyFormat(value, 'USD')}
       </div>

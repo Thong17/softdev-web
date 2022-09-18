@@ -12,7 +12,7 @@ interface IProductReport {
 }
 
 interface IStaffReport {
-  totalStaff: number
+  topStaff: any
   listStaff: any[]
 }
 
@@ -32,7 +32,7 @@ export const initialState: ReportState = {
     status: 'INIT',
   },
   staff: {
-    data: { totalStaff: 0, listStaff: [] },
+    data: { topStaff: {}, listStaff: [] },
     status: 'INIT',
   },
 }
