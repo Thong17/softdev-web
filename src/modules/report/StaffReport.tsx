@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getReportStaff, selectReportStaff } from './redux'
 import { CustomAreaChart } from 'components/shared/charts/AreaChart'
 import useLanguage from 'hooks/useLanguage'
-import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded'
+import { CircleIcon } from 'components/shared/table/CustomIcon'
 
 const Header = () => {
   return (
@@ -147,7 +147,14 @@ export const StaffReport = () => {
               </div>
             }
             data={<span style={{ fontSize: 23 }}>{topStaff?.name}</span>}
-            icon={<EmojiEventsRoundedIcon style={{ fontSize: 40 }} />}
+            icon={
+              <CircleIcon
+                width={36.5}
+                height={36.5}
+                icon={topStaff?.picture}
+                star={true}
+              />
+            }
           />
         </div>
         <CardContainer

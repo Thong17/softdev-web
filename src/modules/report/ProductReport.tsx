@@ -9,8 +9,8 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getReportProduct, selectReportProduct } from './redux'
 import { CustomBarChart } from 'components/shared/charts/BarChart'
 import useLanguage from 'hooks/useLanguage'
-import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded'
 import { generateColor } from 'utils/index'
+import { CircleIcon } from 'components/shared/table/CustomIcon'
 
 const Header = () => {
   return (
@@ -143,7 +143,14 @@ export const ProductReport = () => {
               </div>
             }
             data={<span style={{ fontSize: 23 }}>{chartData?.topProduct.name?.[lang] || chartData?.topProduct.name?.['English']}</span>}
-            icon={<EmojiEventsRoundedIcon style={{ fontSize: 40 }} />}
+            icon={
+              <CircleIcon
+                width={36.5}
+                height={36.5}
+                icon={chartData?.topProduct?.picture}
+                star={true}
+              />
+            }
           />
         </div>
         <CardContainer
