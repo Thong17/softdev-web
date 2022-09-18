@@ -72,10 +72,15 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
 export const ProductReport = () => {
   const dispatch = useAppDispatch()
   const { language, lang } = useLanguage()
-  const { data } = useAppSelector(selectReportProduct)
-  const [selectedSaleChart, setSelectedSaleChart] = useState('day')
-  const [selectedTopProduct, setSelectedTopProduct] = useState('day')
+  const { data, status } = useAppSelector(selectReportProduct)
+  const [selectedSaleChart, setSelectedSaleChart] = useState('month')
+  const [selectedTopProduct, setSelectedTopProduct] = useState('month')
   const [queryParams, setQueryParams] = useSearchParams()
+  const [chartData, setChartData] = useState<any>(null)
+
+  useEffect(() => {
+    setChartData(data)
+  }, [data])
   
   const handleChangeGrande = (event) => {
     const { name, value } = event.target
@@ -137,7 +142,7 @@ export const ProductReport = () => {
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>{data.topProduct.name?.[lang] || data.topProduct.name?.['English']}</span>}
+            data={<span style={{ fontSize: 23 }}>{chartData?.topProduct.name?.[lang] || chartData?.topProduct.name?.['English']}</span>}
             icon={<EmojiEventsRoundedIcon style={{ fontSize: 40 }} />}
           />
         </div>
@@ -157,7 +162,7 @@ export const ProductReport = () => {
           }
           style={{ gridArea: 'charts' }}
         >
-          <CustomBarChart data={data.listProductSale?.map(item => ({ ...item, fill: `${generateColor()}33`, name: item.name?.[lang] || item.name?.['English']}))} labels={[{ name: 'value' }]} height={370} />
+          {status === 'SUCCESS' && <CustomBarChart data={chartData?.listProductSale?.map(item => ({ ...item, fill: `${generateColor()}33`, name: item.name?.[lang] || item.name?.['English']}))} labels={[{ name: 'value' }]} height={370} />}
         </CardContainer>
       </div>
     </Container>

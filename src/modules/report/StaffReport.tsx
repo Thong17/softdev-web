@@ -71,10 +71,20 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
 export const StaffReport = () => {
   const dispatch = useAppDispatch()
   const { language } = useLanguage()
-  const { data } = useAppSelector(selectReportStaff)
-  const [selectedSaleChart, setSelectedSaleChart] = useState('day')
-  const [selectedTotalStaff, setSelectedTotalStaff] = useState('day')
+  const { data, status } = useAppSelector(selectReportStaff)
+  const [selectedSaleChart, setSelectedSaleChart] = useState('month')
+  const [selectedTotalStaff, setSelectedTotalStaff] = useState('month')
   const [queryParams, setQueryParams] = useSearchParams()
+  const [chartData, setChartData] = useState<any>([])
+  const [topStaff, setTopStaff] = useState<any>(null)
+
+  useEffect(() => {
+    setChartData(data.listStaff)
+  }, [data.listStaff])
+  
+  useEffect(() => {
+    setTopStaff(data.topStaff)
+  }, [data.topStaff])
   
   const handleChangeGrande = (event) => {
     const { name, value } = event.target
@@ -136,7 +146,7 @@ export const StaffReport = () => {
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>{data.topStaff?.name}</span>}
+            data={<span style={{ fontSize: 23 }}>{topStaff?.name}</span>}
             icon={<EmojiEventsRoundedIcon style={{ fontSize: 40 }} />}
           />
         </div>
@@ -156,7 +166,7 @@ export const StaffReport = () => {
           }
           style={{ gridArea: 'charts' }}
         >
-          <CustomAreaChart data={data.listStaff.map(item => ({ ...item, name: item.name}))} labels={[{ name: 'value' }]} height={370} />
+          {status === 'SUCCESS' && <CustomAreaChart data={chartData?.map(item => ({ ...item, name: item.name}))} labels={[{ name: 'value' }]} height={370} />}
         </CardContainer>
       </div>
     </Container>

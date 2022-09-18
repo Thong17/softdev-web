@@ -74,7 +74,7 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
 export const SaleReport = () => {
   const dispatch = useAppDispatch()
   const { language } = useLanguage()
-  const { data } = useAppSelector(selectReportSale)
+  const { data, status } = useAppSelector(selectReportSale)
   const [selectedSaleChart, setSelectedSaleChart] = useState('day')
   const [selectedTotalIncome, setSelectedTotalIncome] = useState('day')
   const [selectedTotalProfit, setSelectedTotalProfit] = useState('day')
@@ -179,7 +179,7 @@ export const SaleReport = () => {
           }
           style={{ gridArea: 'charts' }}
         >
-          <CustomAreaChart data={data.listSale.map(item => ({ ...item, name: moment(item.name).format(item.format)}))} labels={[{ name: 'value' }]} height={370} />
+          {status === 'SUCCESS' && <CustomAreaChart data={data.listSale.map(item => ({ ...item, name: moment(item.name).format(item.format)}))} labels={[{ name: 'value' }]} height={370} />}
         </CardContainer>
       </div>
     </Container>
