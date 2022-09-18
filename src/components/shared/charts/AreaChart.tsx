@@ -1,14 +1,18 @@
 import useTheme from 'hooks/useTheme'
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts'
+import { currencyFormat } from 'utils/index'
 
 const CustomizedDot = (props: any) => {
   const { cx, cy, payload } = props
+  const { theme } = useTheme()
 
   return (
     <g transform={`translate(${cx},${cy})`}>
-      <text x={30} y={5} dy={16} textAnchor="end" fill="#999">
-        {payload.value.toFixed(2)}$
-      </text>
+      <foreignObject x={-75} y={5} textAnchor="middle" width="150" height="20">
+        <div style={{ display: 'grid', placeItems: 'center', color: theme.text.quaternary }}>
+          {currencyFormat(payload.value, 'USD')}
+        </div>
+      </foreignObject>
     </g>
   )
 }

@@ -7,10 +7,10 @@ import { MiniSelectField } from 'components/shared/form'
 import { DetailSection } from 'components/shared/container/DetailSection'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getReportProduct, selectReportProduct } from './redux'
-import { CustomAreaChart } from 'components/shared/charts/AreaChart'
-import moment from 'moment'
+import { CustomBarChart } from 'components/shared/charts/BarChart'
 import useLanguage from 'hooks/useLanguage'
 import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded'
+import { generateColor } from 'utils/index'
 
 const Header = () => {
   return (
@@ -71,7 +71,7 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
 
 export const ProductReport = () => {
   const dispatch = useAppDispatch()
-  const { language } = useLanguage()
+  const { language, lang } = useLanguage()
   const { data } = useAppSelector(selectReportProduct)
   const [selectedSaleChart, setSelectedSaleChart] = useState('day')
   const [selectedTopProduct, setSelectedTopProduct] = useState('day')
@@ -137,7 +137,7 @@ export const ProductReport = () => {
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>MacBook Pro 13 inches</span>}
+            data={<span style={{ fontSize: 23 }}>{data.topProduct.name?.[lang] || data.topProduct.name?.['English']}</span>}
             icon={<EmojiEventsRoundedIcon style={{ fontSize: 40 }} />}
           />
         </div>
@@ -157,7 +157,7 @@ export const ProductReport = () => {
           }
           style={{ gridArea: 'charts' }}
         >
-          <CustomAreaChart data={data.listProductSale.map(item => ({ ...item, name: moment(item.name).format(item.format)}))} labels={[{ name: 'value' }]} height={370} />
+          <CustomBarChart data={data.listProductSale?.map(item => ({ ...item, fill: `${generateColor()}33`, name: item.name?.[lang] || item.name?.['English']}))} labels={[{ name: 'value' }]} height={370} />
         </CardContainer>
       </div>
     </Container>

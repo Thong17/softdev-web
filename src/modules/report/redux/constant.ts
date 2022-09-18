@@ -7,7 +7,7 @@ interface ISaleReport {
 }
 
 interface IProductReport {
-  topProduct: number
+  topProduct: any
   listProductSale: any[]
 }
 
@@ -28,7 +28,7 @@ export const initialState: ReportState = {
     status: 'INIT',
   },
   product: {
-    data: { topProduct: 0, listProductSale: [] },
+    data: { topProduct: {}, listProductSale: [] },
     status: 'INIT',
   },
   staff: {
