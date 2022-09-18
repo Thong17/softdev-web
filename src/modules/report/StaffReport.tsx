@@ -5,11 +5,11 @@ import { useSearchParams } from 'react-router-dom'
 import { CardContainer } from 'components/shared/container/CardContainer'
 import { MiniSelectField } from 'components/shared/form'
 import { DetailSection } from 'components/shared/container/DetailSection'
-import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getReportStaff, selectReportStaff } from './redux'
+import { getReportListStaff, getReportTopStaff } from './redux'
 import { CustomAreaChart } from 'components/shared/charts/AreaChart'
 import useLanguage from 'hooks/useLanguage'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
+import useNotify from 'hooks/useNotify'
 
 const Header = () => {
   return (
@@ -69,47 +69,70 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
 }
 
 export const StaffReport = () => {
-  const dispatch = useAppDispatch()
+  const { notify } = useNotify()
   const { language } = useLanguage()
-  const { data, status } = useAppSelector(selectReportStaff)
   const [selectedSaleChart, setSelectedSaleChart] = useState('month')
   const [selectedTotalStaff, setSelectedTotalStaff] = useState('month')
   const [queryParams, setQueryParams] = useSearchParams()
-  const [chartData, setChartData] = useState<any>([])
+  const [listStaff, setListStaff] = useState([])
   const [topStaff, setTopStaff] = useState<any>(null)
-
-  useEffect(() => {
-    setChartData(data.listStaff)
-  }, [data.listStaff])
+  const [loading, setLoading] = useState(true)
   
-  useEffect(() => {
-    setTopStaff(data.topStaff)
-  }, [data.topStaff])
-  
-  const handleChangeGrande = (event) => {
+  const handleChangeQuery = (event) => {
     const { name, value } = event.target
-    handleQuery({ [name]: value })
-  }
-
-  const handleQuery = (data) => {
-    let query = {}
+    let query = new URLSearchParams()
     const _topStaff = queryParams.get('_topStaff')
     const _chartData = queryParams.get('_chartData')
 
-    if (_topStaff) query = { _topStaff, ...query }
-    if (_chartData) query = { _chartData, ...query }
+    switch (name) {
+      case '_chartData':
+        if (_topStaff) query.append('_topStaff', _topStaff)
+        query.append('_chartData', value)
 
-    setQueryParams({ ...query, ...data })
+        setSelectedSaleChart(value)
+        getReportListStaff({query})
+          .then(data => {
+            setListStaff(data?.data)
+          })
+          .catch(err => notify(err?.response?.data?.msg, 'error'))
+        break
+    
+      default:
+        if (_chartData) query.append('_chartData', _chartData)
+        query.append('_topStaff', value)
+
+        setSelectedTotalStaff(value)
+        getReportTopStaff({query})
+          .then(data => {
+            setTopStaff(data?.data)
+          })
+          .catch(err => notify(err?.response?.data?.msg, 'error'))
+        break
+    }
+    setQueryParams(query)
   }
 
   useEffect(() => {
     const _topStaff = queryParams.get('_topStaff')
     const _chartData = queryParams.get('_chartData')
 
-    if (_topStaff) setSelectedTotalStaff(_topStaff)
     if (_chartData) setSelectedSaleChart(_chartData)
-    dispatch(getReportStaff({query: queryParams}))
-  }, [queryParams, dispatch])
+    if (_topStaff) setSelectedTotalStaff(_topStaff)
+
+    getReportTopStaff({query: queryParams})
+      .then(data => {
+        setTopStaff(data?.data)
+        getReportListStaff({query: queryParams})
+          .then(data => {
+            setListStaff(data?.data)
+            setLoading(false)
+          })
+          .catch(err => notify(err?.response?.data?.msg, 'error'))
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
+    
+    // eslint-disable-next-line
+  }, [])
   
   return (
     <Container header={<Header />}>
@@ -142,7 +165,7 @@ export const StaffReport = () => {
                   value={selectedTotalStaff}
                   grades={filterTotal}
                   name='_topStaff'
-                  onChange={handleChangeGrande}
+                  onChange={handleChangeQuery}
                 />
               </div>
             }
@@ -166,14 +189,14 @@ export const StaffReport = () => {
                   value={selectedSaleChart}
                   grades={filterOption}
                   name='_chartData'
-                  onChange={handleChangeGrande}
+                  onChange={handleChangeQuery}
                 />
               </div>
             </>
           }
           style={{ gridArea: 'charts' }}
         >
-          {status === 'SUCCESS' && <CustomAreaChart data={chartData?.map(item => ({ ...item, name: item.name}))} labels={[{ name: 'value' }]} height={370} />}
+          {!loading && <CustomAreaChart data={listStaff?.map((item: any) => ({ ...item, name: item.name}))} labels={[{ name: 'value' }]} height={370} />}
         </CardContainer>
       </div>
     </Container>

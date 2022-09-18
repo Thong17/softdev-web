@@ -5,12 +5,12 @@ import { useSearchParams } from 'react-router-dom'
 import { CardContainer } from 'components/shared/container/CardContainer'
 import { MiniSelectField } from 'components/shared/form'
 import { DetailSection } from 'components/shared/container/DetailSection'
-import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getReportProduct, selectReportProduct } from './redux'
+import { getReportTopProduct, getReportListProduct } from './redux'
 import { CustomBarChart } from 'components/shared/charts/BarChart'
 import useLanguage from 'hooks/useLanguage'
 import { generateColor } from 'utils/index'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
+import useNotify from 'hooks/useNotify'
 
 const Header = () => {
   return (
@@ -70,42 +70,70 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
 }
 
 export const ProductReport = () => {
-  const dispatch = useAppDispatch()
+  const { notify } = useNotify()
   const { language, lang } = useLanguage()
-  const { data, status } = useAppSelector(selectReportProduct)
   const [selectedSaleChart, setSelectedSaleChart] = useState('month')
   const [selectedTopProduct, setSelectedTopProduct] = useState('month')
   const [queryParams, setQueryParams] = useSearchParams()
-  const [chartData, setChartData] = useState<any>(null)
-
-  useEffect(() => {
-    setChartData(data)
-  }, [data])
+  const [listProduct, setListProduct] = useState([])
+  const [topProduct, setTopProduct] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
   
-  const handleChangeGrande = (event) => {
+  const handleChangeQuery = (event) => {
     const { name, value } = event.target
-    handleQuery({ [name]: value })
-  }
-
-  const handleQuery = (data) => {
-    let query = {}
+    let query = new URLSearchParams()
     const _topProduct = queryParams.get('_topProduct')
     const _chartData = queryParams.get('_chartData')
 
-    if (_topProduct) query = { _topProduct, ...query }
-    if (_chartData) query = { _chartData, ...query }
+    switch (name) {
+      case '_chartData':
+        if (_topProduct) query.append('_topProduct', _topProduct)
+        query.append('_chartData', value)
 
-    setQueryParams({ ...query, ...data })
+        setSelectedSaleChart(value)
+        getReportListProduct({query})
+          .then(data => {
+            setListProduct(data?.data)
+          })
+          .catch(err => notify(err?.response?.data?.msg, 'error'))
+        break
+    
+      default:
+        if (_chartData) query.append('_chartData', _chartData)
+        query.append('_topProduct', value)
+
+        setSelectedTopProduct(value)
+        getReportTopProduct({query})
+          .then(data => {
+            setTopProduct(data?.data)
+          })
+          .catch(err => notify(err?.response?.data?.msg, 'error'))
+        break
+    }
+    setQueryParams(query)
   }
 
   useEffect(() => {
     const _topProduct = queryParams.get('_topProduct')
     const _chartData = queryParams.get('_chartData')
 
-    if (_topProduct) setSelectedTopProduct(_topProduct)
     if (_chartData) setSelectedSaleChart(_chartData)
-    dispatch(getReportProduct({query: queryParams}))
-  }, [queryParams, dispatch])
+    if (_topProduct) setSelectedTopProduct(_topProduct)
+
+    getReportTopProduct({query: queryParams})
+          .then(data => {
+            setTopProduct(data?.data)
+            getReportListProduct({query: queryParams})
+              .then(data => {
+                setListProduct(data?.data)
+                setLoading(false)
+              })
+              .catch(err => notify(err?.response?.data?.msg, 'error'))
+          })
+          .catch(err => notify(err?.response?.data?.msg, 'error'))
+    
+    // eslint-disable-next-line
+  }, [])
   
   return (
     <Container header={<Header />}>
@@ -138,16 +166,16 @@ export const ProductReport = () => {
                   value={selectedTopProduct}
                   grades={filterTotal}
                   name='_topProduct'
-                  onChange={handleChangeGrande}
+                  onChange={handleChangeQuery}
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>{chartData?.topProduct.name?.[lang] || chartData?.topProduct.name?.['English']}</span>}
+            data={<span style={{ fontSize: 23 }}>{topProduct?.name?.[lang] || topProduct?.name?.['English']}</span>}
             icon={
               <CircleIcon
                 width={36.5}
                 height={36.5}
-                icon={chartData?.topProduct?.picture}
+                icon={topProduct?.picture}
                 star={true}
               />
             }
@@ -162,14 +190,14 @@ export const ProductReport = () => {
                   value={selectedSaleChart}
                   grades={filterOption}
                   name='_chartData'
-                  onChange={handleChangeGrande}
+                  onChange={handleChangeQuery}
                 />
               </div>
             </>
           }
           style={{ gridArea: 'charts' }}
         >
-          {status === 'SUCCESS' && <CustomBarChart data={chartData?.listProductSale?.map(item => ({ ...item, fill: `${generateColor()}33`, name: item.name?.[lang] || item.name?.['English']}))} labels={[{ name: 'value' }]} height={370} />}
+          {!loading && <CustomBarChart data={listProduct?.map((item: any) => ({ ...item, fill: `${generateColor()}33`, name: item.name?.[lang] || item.name?.['English']}))} labels={[{ name: 'value' }]} height={370} />}
         </CardContainer>
       </div>
     </Container>

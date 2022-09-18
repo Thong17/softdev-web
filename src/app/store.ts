@@ -10,7 +10,6 @@ import roleReducer from 'modules/admin/role/redux'
 import userReducer from 'modules/admin/user/redux'
 import reservationReducer from 'modules/sale/reservation/redux'
 import paymentReducer from 'modules/sale/payment/redux'
-import reportReducer from 'modules/report/redux'
 import sharedReducer from 'shared/redux'
 
 export const store = configureStore({
@@ -27,7 +26,6 @@ export const store = configureStore({
     role: roleReducer,
     user: userReducer,
     shared: sharedReducer,
-    report: reportReducer,
   },
 });
 
