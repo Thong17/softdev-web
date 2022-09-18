@@ -19,9 +19,6 @@ export const languages = {
     DETAIL: 'Detail',
     INFO: 'Info',
     LAYOUT: 'Layout',
-    SCHOOL_REPORT: 'School\u00a0Report',
-    ATTENDANCE_REPORT: 'Attendance\u00a0Report',
-    SALE_REPORT: 'OPERATION_REPORT',
     SALE: 'Sale',
     ORGANIZE: 'Organize',
     // Component
@@ -86,7 +83,18 @@ export const languages = {
     TOTAL_PRIVILEGE: 'Total\u00a0Privilege',
     INCOME: 'Income',
     PROFIT: 'Profit',
-    CHART: 'Chart'
+    CHART: 'Chart',
+    // Report
+    STAFF: 'Staff',
+    SCHOOL_REPORT: 'School\u00a0Report',
+    ATTENDANCE_REPORT: 'Attendance\u00a0Report',
+    SALE_REPORT: 'Sale\u00a0Report',
+    PRODUCT_REPORT: 'Product\u00a0Report',
+    STAFF_REPORT: 'Staff\u00a0Report',
+    INCOME_CHART: 'Income\u00a0Chart',
+    PERFORMANCE_CHART: 'Performance\u00a0Chart',
+    PRODUCT_CHART: 'Product\u00a0Chart',
+    TOP_PRODUCT: 'Top\u00a0Product'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -108,9 +116,6 @@ export const languages = {
     DETAIL: 'លម្អិត',
     INFO: 'ព័ត៌មាន',
     LAYOUT: 'ប្លង់',
-    SCHOOL_REPORT: 'របាយការណ៍​សិក្សា',
-    ATTENDANCE_REPORT: 'របាយការណ៍វត្តមាន',
-    SALE_REPORT: 'របាយការណ៍ប្រតិបត្តិការ',
     SALE: 'លក់',
     ORGANIZE: 'រៀបចំ',
     // Component
@@ -175,6 +180,17 @@ export const languages = {
     TOTAL_PRIVILEGE: 'សិទ្ធិសរុប',
     INCOME: 'ចំណូល',
     PROFIT: 'ចំណេញ',
-    CHART: 'គំនូសតាង'
+    CHART: 'គំនូសតាង',
+    // Report
+    STAFF: 'បុគ្គលិក',
+    SCHOOL_REPORT: 'របាយការណ៍​សិក្សា',
+    ATTENDANCE_REPORT: 'របាយការណ៍វត្តមាន',
+    SALE_REPORT: 'របាយការណ៍ប្រតិបត្តិការ',
+    PRODUCT_REPORT: 'របាយការណ៍ផលិតផល',
+    STAFF_REPORT: 'របាយការណ៍បុគ្គលិក',
+    INCOME_CHART: 'តារាងប្រាក់ចំណូល',
+    PERFORMANCE_CHART: 'តារាងការអនុវត្ត',
+    PRODUCT_CHART: 'តារាងផលិតផល',
+    TOP_PRODUCT: 'ផលិតផលនិយម'
   }
 }

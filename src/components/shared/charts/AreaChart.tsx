@@ -1,3 +1,4 @@
+import useTheme from 'hooks/useTheme'
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from 'recharts'
 
 const CustomizedDot = (props: any) => {
@@ -13,6 +14,7 @@ const CustomizedDot = (props: any) => {
 }
 
 export const CustomAreaChart = ({ width = '100%', height = 300, labels, data }) => {
+  const { theme } = useTheme()
   return (
     <ResponsiveContainer width={width} height={height}>
       <AreaChart
@@ -34,7 +36,7 @@ export const CustomAreaChart = ({ width = '100%', height = 300, labels, data }) 
         <YAxis />
         {labels?.map((item, key) => {
           return (
-            <Area key={key} type='monotone' dataKey={item.name} dot={<CustomizedDot data={item} />} stroke='#fff' fill='url(#colorUv)' />
+            <Area key={key} type='monotone' dataKey={item.name} dot={<CustomizedDot data={item} />} stroke={theme.text.tertiary} fill='url(#colorUv)' />
           )
         })}
         

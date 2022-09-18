@@ -48,6 +48,8 @@ import { Counter } from 'modules/counter/Counter'
 import Config from 'modules/config/Config'
 import NotFound from 'components/shared/NotFound'
 import { SaleReport, Report } from 'modules/report'
+import { ProductReport } from 'modules/report/ProductReport'
+import { StaffReport } from 'modules/report/StaffReport'
 
 const routes: RouteObject[] = [
   {
@@ -345,6 +347,14 @@ const routes: RouteObject[] = [
       {
         path: 'sale',
         element: <SaleReport />,
+      },
+      {
+        path: 'product',
+        element: <ProductReport />,
+      },
+      {
+        path: 'staff',
+        element: <StaffReport />,
       },
     ],
   },

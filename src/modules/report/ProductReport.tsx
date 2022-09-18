@@ -5,19 +5,17 @@ import { useSearchParams } from 'react-router-dom'
 import { CardContainer } from 'components/shared/container/CardContainer'
 import { MiniSelectField } from 'components/shared/form'
 import { DetailSection } from 'components/shared/container/DetailSection'
-import ShowChartRoundedIcon from '@mui/icons-material/ShowChartRounded'
-import StackedLineChartRoundedIcon from '@mui/icons-material/StackedLineChartRounded'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getReportSale, selectReportSale } from './redux'
-import { currencyFormat } from 'utils/index'
+import { getReportProduct, selectReportProduct } from './redux'
 import { CustomAreaChart } from 'components/shared/charts/AreaChart'
 import moment from 'moment'
 import useLanguage from 'hooks/useLanguage'
+import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded'
 
 const Header = () => {
   return (
     <>
-      <ReportBreadcrumbs page='saleReport' />
+      <ReportBreadcrumbs page='productReport' />
     </>
   )
 }
@@ -71,13 +69,12 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
   )
 }
 
-export const SaleReport = () => {
+export const ProductReport = () => {
   const dispatch = useAppDispatch()
   const { language } = useLanguage()
-  const { data } = useAppSelector(selectReportSale)
+  const { data } = useAppSelector(selectReportProduct)
   const [selectedSaleChart, setSelectedSaleChart] = useState('day')
-  const [selectedTotalIncome, setSelectedTotalIncome] = useState('day')
-  const [selectedTotalProfit, setSelectedTotalProfit] = useState('day')
+  const [selectedTopProduct, setSelectedTopProduct] = useState('day')
   const [queryParams, setQueryParams] = useSearchParams()
   
   const handleChangeGrande = (event) => {
@@ -87,26 +84,22 @@ export const SaleReport = () => {
 
   const handleQuery = (data) => {
     let query = {}
-    const _totalIncome = queryParams.get('_totalIncome')
-    const _totalProfit = queryParams.get('_totalProfit')
+    const _topProduct = queryParams.get('_topProduct')
     const _chartData = queryParams.get('_chartData')
 
-    if (_totalIncome) query = { _totalIncome, ...query }
-    if (_totalProfit) query = { _totalProfit, ...query }
+    if (_topProduct) query = { _topProduct, ...query }
     if (_chartData) query = { _chartData, ...query }
 
     setQueryParams({ ...query, ...data })
   }
 
   useEffect(() => {
-    const _totalIncome = queryParams.get('_totalIncome')
-    const _totalProfit = queryParams.get('_totalProfit')
+    const _topProduct = queryParams.get('_topProduct')
     const _chartData = queryParams.get('_chartData')
 
-    if (_totalIncome) setSelectedTotalIncome(_totalIncome)
-    if (_totalProfit) setSelectedTotalProfit(_totalProfit)
+    if (_topProduct) setSelectedTopProduct(_topProduct)
     if (_chartData) setSelectedSaleChart(_chartData)
-    dispatch(getReportSale({query: queryParams}))
+    dispatch(getReportProduct({query: queryParams}))
   }, [queryParams, dispatch])
   
   return (
@@ -133,40 +126,25 @@ export const SaleReport = () => {
           }}
         >
           <DetailSection
-            title={language['INCOME']}
+            title={language['TOP_PRODUCT']}
             header={
               <div style={{ position: 'absolute', right: 0 }}>
                 <ListFilter
-                  value={selectedTotalIncome}
+                  value={selectedTopProduct}
                   grades={filterTotal}
-                  name='_totalIncome'
+                  name='_topProduct'
                   onChange={handleChangeGrande}
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>{currencyFormat(data.totalIncome, 'USD')}</span>}
-            icon={<ShowChartRoundedIcon style={{ fontSize: 40 }} />}
-          />
-          <DetailSection
-            title={language['PROFIT']}
-            header={
-              <div style={{ position: 'absolute', right: 0 }}>
-                <ListFilter
-                  value={selectedTotalProfit}
-                  grades={filterTotal}
-                  name='_totalProfit'
-                  onChange={handleChangeGrande}
-                />
-              </div>
-            }
-            data={<span style={{ fontSize: 23 }}>{currencyFormat(data.totalProfit, 'USD')}</span>}
-            icon={<StackedLineChartRoundedIcon style={{ fontSize: 40 }} />}
+            data={<span style={{ fontSize: 23 }}>MacBook Pro 13 inches</span>}
+            icon={<EmojiEventsRoundedIcon style={{ fontSize: 40 }} />}
           />
         </div>
         <CardContainer
           title={
             <>
-              {language['INCOME_CHART']}
+              {language['CHART']}
               <div style={{ position: 'absolute', right: 10, top: 7 }}>
                 <ListFilter
                   value={selectedSaleChart}
@@ -179,7 +157,7 @@ export const SaleReport = () => {
           }
           style={{ gridArea: 'charts' }}
         >
-          <CustomAreaChart data={data.listSale.map(item => ({ ...item, name: moment(item.name).format(item.format)}))} labels={[{ name: 'value' }]} height={370} />
+          <CustomAreaChart data={data.listProductSale.map(item => ({ ...item, name: moment(item.name).format(item.format)}))} labels={[{ name: 'value' }]} height={370} />
         </CardContainer>
       </div>
     </Container>

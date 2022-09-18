@@ -6,10 +6,8 @@ import { CardContainer } from 'components/shared/container/CardContainer'
 import { MiniSelectField } from 'components/shared/form'
 import { DetailSection } from 'components/shared/container/DetailSection'
 import ShowChartRoundedIcon from '@mui/icons-material/ShowChartRounded'
-import StackedLineChartRoundedIcon from '@mui/icons-material/StackedLineChartRounded'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getReportSale, selectReportSale } from './redux'
-import { currencyFormat } from 'utils/index'
+import { getReportStaff, selectReportStaff } from './redux'
 import { CustomAreaChart } from 'components/shared/charts/AreaChart'
 import moment from 'moment'
 import useLanguage from 'hooks/useLanguage'
@@ -17,7 +15,7 @@ import useLanguage from 'hooks/useLanguage'
 const Header = () => {
   return (
     <>
-      <ReportBreadcrumbs page='saleReport' />
+      <ReportBreadcrumbs page='staffReport' />
     </>
   )
 }
@@ -71,13 +69,12 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
   )
 }
 
-export const SaleReport = () => {
+export const StaffReport = () => {
   const dispatch = useAppDispatch()
   const { language } = useLanguage()
-  const { data } = useAppSelector(selectReportSale)
+  const { data } = useAppSelector(selectReportStaff)
   const [selectedSaleChart, setSelectedSaleChart] = useState('day')
-  const [selectedTotalIncome, setSelectedTotalIncome] = useState('day')
-  const [selectedTotalProfit, setSelectedTotalProfit] = useState('day')
+  const [selectedTotalStaff, setSelectedTotalStaff] = useState('day')
   const [queryParams, setQueryParams] = useSearchParams()
   
   const handleChangeGrande = (event) => {
@@ -99,14 +96,12 @@ export const SaleReport = () => {
   }
 
   useEffect(() => {
-    const _totalIncome = queryParams.get('_totalIncome')
-    const _totalProfit = queryParams.get('_totalProfit')
+    const _totalStaff = queryParams.get('_totalStaff')
     const _chartData = queryParams.get('_chartData')
 
-    if (_totalIncome) setSelectedTotalIncome(_totalIncome)
-    if (_totalProfit) setSelectedTotalProfit(_totalProfit)
+    if (_totalStaff) setSelectedTotalStaff(_totalStaff)
     if (_chartData) setSelectedSaleChart(_chartData)
-    dispatch(getReportSale({query: queryParams}))
+    dispatch(getReportStaff({query: queryParams}))
   }, [queryParams, dispatch])
   
   return (
@@ -133,40 +128,25 @@ export const SaleReport = () => {
           }}
         >
           <DetailSection
-            title={language['INCOME']}
+            title={language['STAFF']}
             header={
               <div style={{ position: 'absolute', right: 0 }}>
                 <ListFilter
-                  value={selectedTotalIncome}
+                  value={selectedTotalStaff}
                   grades={filterTotal}
-                  name='_totalIncome'
+                  name='_totalStaff'
                   onChange={handleChangeGrande}
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>{currencyFormat(data.totalIncome, 'USD')}</span>}
+            data={<span style={{ fontSize: 23 }}>90</span>}
             icon={<ShowChartRoundedIcon style={{ fontSize: 40 }} />}
-          />
-          <DetailSection
-            title={language['PROFIT']}
-            header={
-              <div style={{ position: 'absolute', right: 0 }}>
-                <ListFilter
-                  value={selectedTotalProfit}
-                  grades={filterTotal}
-                  name='_totalProfit'
-                  onChange={handleChangeGrande}
-                />
-              </div>
-            }
-            data={<span style={{ fontSize: 23 }}>{currencyFormat(data.totalProfit, 'USD')}</span>}
-            icon={<StackedLineChartRoundedIcon style={{ fontSize: 40 }} />}
           />
         </div>
         <CardContainer
           title={
             <>
-              {language['INCOME_CHART']}
+              {language['PERFORMANCE_CHART']}
               <div style={{ position: 'absolute', right: 10, top: 7 }}>
                 <ListFilter
                   value={selectedSaleChart}
@@ -179,7 +159,7 @@ export const SaleReport = () => {
           }
           style={{ gridArea: 'charts' }}
         >
-          <CustomAreaChart data={data.listSale.map(item => ({ ...item, name: moment(item.name).format(item.format)}))} labels={[{ name: 'value' }]} height={370} />
+          <CustomAreaChart data={data.listStaff.map(item => ({ ...item, name: moment(item.name).format(item.format)}))} labels={[{ name: 'value' }]} height={370} />
         </CardContainer>
       </div>
     </Container>

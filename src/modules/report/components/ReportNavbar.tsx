@@ -8,6 +8,8 @@ const ReportNavbar = () => {
   return (
     <>
       {user?.privilege?.report?.sale && <NavLink to='/report/sale'>{language['SALE']}</NavLink>}
+      {user?.privilege?.report?.product && <NavLink to='/report/product'>{language['PRODUCT']}</NavLink>}
+      {user?.privilege?.report?.staff && <NavLink to='/report/staff'>{language['STAFF']}</NavLink>}
     </>
   )
 }
