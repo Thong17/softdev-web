@@ -35,7 +35,7 @@ export const Categories = () => {
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
-  const { loadify } = useNotify()
+  const { loadify, notify } = useNotify()
   const [rowData, setRowData] = useState<Data[]>([])
   const [dialog, setDialog] = useState({ open: false, id: null })
   const navigate = useNavigate()
@@ -163,6 +163,26 @@ export const Categories = () => {
     setRowData(listCategories)
   }, [categories, lang, user, device, theme, navigate])
 
+  const handleToggleStatus = (id) => {
+    confirm({
+      title: 'Are you sure you want to toggle the status?',
+      description:
+        'Toggle the status will update category status to opposite current status.',
+      variant: 'error',
+    })
+      .then(() => {
+        Axios({
+          method: 'PUT',
+          url: `/organize/category/toggleStatus/${id}`,
+        })
+          .then(() => {
+            dispatch(getListCategory({ query: queryParams }))
+          })
+          .catch((err) => notify(err?.response?.data?.msg, 'error'))
+      })
+      .catch(() => {})
+  }
+
   return (
     <Container
       header={
@@ -211,6 +231,7 @@ export const Categories = () => {
         columns={columnData}
         rows={rowData}
         setQuery={handleQuery}
+        onToggleStatus={handleToggleStatus}
         count={count}
         limit={parseInt(queryParams.get('limit') || '10')}
         skip={

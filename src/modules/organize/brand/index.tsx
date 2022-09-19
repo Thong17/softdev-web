@@ -35,7 +35,7 @@ export const Brands = () => {
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
-  const { loadify } = useNotify()
+  const { loadify, notify } = useNotify()
   const [rowData, setRowData] = useState<Data[]>([])
   const [dialog, setDialog] = useState({ open: false, id: null })
   const navigate = useNavigate()
@@ -97,7 +97,9 @@ export const Brands = () => {
               })
             }}
           >
-            <CloseRoundedIcon style={{ color: theme.color.error, fontSize: 19 }} />
+            <CloseRoundedIcon
+              style={{ color: theme.color.error, fontSize: 19 }}
+            />
           </IconButton>
         )
         return { ...importData, action: <ImportAction no={importData?.no} /> }
@@ -163,6 +165,26 @@ export const Brands = () => {
     setRowData(listBrands)
   }, [brands, lang, user, device, theme, navigate])
 
+  const handleToggleStatus = (id) => {
+    confirm({
+      title: 'Are you sure you want to toggle the status?',
+      description:
+        'Toggle the status will update brand status to opposite current status.',
+      variant: 'error',
+    })
+      .then(() => {
+        Axios({
+          method: 'PUT',
+          url: `/organize/brand/toggleStatus/${id}`,
+        })
+          .then(() => {
+            dispatch(getListBrand({ query: queryParams }))
+          })
+          .catch((err) => notify(err?.response?.data?.msg, 'error'))
+      })
+      .catch(() => {})
+  }
+
   return (
     <Container
       header={
@@ -177,7 +199,9 @@ export const Brands = () => {
       }
     >
       <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
-        <div style={{ position: 'relative', padding: 10, boxSizing: 'border-box' }}>
+        <div
+          style={{ position: 'relative', padding: 10, boxSizing: 'border-box' }}
+        >
           <StickyTable
             columns={importColumnData}
             rows={importDialog.data}
@@ -185,13 +209,21 @@ export const Brands = () => {
           />
         </div>
         <DialogActions>
-          <Button onClick={handleCloseImport} style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}>Cancel</Button>
+          <Button
+            onClick={handleCloseImport}
+            style={{
+              backgroundColor: `${theme.color.error}22`,
+              color: theme.color.error,
+            }}
+          >
+            Cancel
+          </Button>
           <CustomButton
             style={{
               marginLeft: 10,
               backgroundColor: `${theme.color.info}22`,
               color: theme.color.info,
-              borderRadius: theme.radius.secondary
+              borderRadius: theme.radius.secondary,
             }}
             styled={theme}
             onClick={handleConfirmImport}
@@ -211,6 +243,7 @@ export const Brands = () => {
         columns={columnData}
         rows={rowData}
         setQuery={handleQuery}
+        onToggleStatus={handleToggleStatus}
         count={count}
         limit={parseInt(queryParams.get('limit') || '10')}
         skip={

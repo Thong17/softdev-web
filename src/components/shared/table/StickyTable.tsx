@@ -33,6 +33,7 @@ interface ITable {
   limit?: number
   loading?: boolean
   handleClick?: (id) => void
+  onToggleStatus?: (id) => void
   setQuery?: (id) => void
   style?: React.CSSProperties
 }
@@ -46,6 +47,7 @@ export const StickyTable = ({
   limit = 10,
   loading,
   handleClick,
+  onToggleStatus,
   setQuery,
   style,
 }: ITable) => {
@@ -123,6 +125,7 @@ export const StickyTable = ({
                             if (typeof value === 'boolean') {
                               value = value ? (
                                 <IconButton
+                                  onClick={() => onToggleStatus && onToggleStatus(row.id)}
                                   size='small'
                                   style={{ color: theme.color.success }}
                                 >
@@ -130,6 +133,7 @@ export const StickyTable = ({
                                 </IconButton>
                               ) : (
                                 <IconButton
+                                  onClick={() => onToggleStatus && onToggleStatus(row.id)}
                                   size='small'
                                   style={{ color: theme.color.error }}
                                 >
@@ -176,6 +180,7 @@ export const StickyTable = ({
                           if (typeof value === 'boolean') {
                             value = value ? (
                               <IconButton
+                                onClick={() => onToggleStatus && onToggleStatus(row.id)}
                                 size='small'
                                 style={{ color: theme.color.success }}
                               >
@@ -183,6 +188,7 @@ export const StickyTable = ({
                               </IconButton>
                             ) : (
                               <IconButton
+                                onClick={() => onToggleStatus && onToggleStatus(row.id)}
                                 size='small'
                                 style={{ color: theme.color.error }}
                               >
