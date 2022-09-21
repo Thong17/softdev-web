@@ -124,7 +124,13 @@ export const Cashing = () => {
   }
 
   const handleScanProduct = (code) => {
-    const scannedProduct = listCode.find((item: any) => item.code === code)
+    const scannedStock = listCode.find((item: any) => item.stockCodes.includes(code))
+    if (scannedStock) {
+      console.log(scannedStock)
+      return
+    }
+    
+    const scannedProduct = listCode.find((item: any) => item.code === code)    
     if (!scannedProduct) return
     setProductDialog({ ...productDialog, productId: scannedProduct._id })
   }
