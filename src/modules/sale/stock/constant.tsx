@@ -143,12 +143,12 @@ export declare type StockColumnHeader =
   | 'action'
 
 export const stockColumnData: ITableColumn<StockColumnHeader>[] = [
-  { id: 'cost', label: 'Cost' },
-  { id: 'currency', label: 'Currency' },
-  { id: 'quantity', label: 'Quantity' },
-  { id: 'remain', label: 'Remain' },
-  { id: 'total', label: 'Total' },
-  { id: 'action', label: 'Action', align: 'center' },
+  { id: 'cost', label: 'COST' },
+  { id: 'currency', label: 'CURRENCY' },
+  { id: 'quantity', label: 'QUANTITY' },
+  { id: 'remain', label: 'REMAIN' },
+  { id: 'total', label: 'TOTAL' },
+  { id: 'action', label: 'ACTION', align: 'center' },
 ]
 
 export const mapStockBody = (body) => {

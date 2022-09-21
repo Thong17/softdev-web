@@ -77,6 +77,9 @@ export const languages = {
     CREATED_BY: 'Created\u00a0By',
     USERNAME: 'Username',
     EMAIL: 'Email',
+    COST: 'Cost',
+    CURRENCY: 'Currency',
+    REMAIN: 'Remain',
     // Admin
     TOTAL_ROLE: 'Total\u00a0Role',
     TOTAL_USER: 'Total\u00a0User',
@@ -174,6 +177,9 @@ export const languages = {
     CREATED_BY: 'បង្កើត​ដោយ',
     USERNAME: 'ឈ្មោះ​អ្នកប្រើ',
     EMAIL: 'អ៊ីមែល',
+    COST: 'ចំណាយ',
+    CURRENCY: 'រូបិយប័ណ្ណ',
+    REMAIN: 'នៅសល់',
     // Admin
     TOTAL_ROLE: 'តួនាទីសរុប',
     TOTAL_USER: 'អ្នកប្រើសរុប',

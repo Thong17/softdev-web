@@ -25,6 +25,7 @@ import useNotify from 'hooks/useNotify'
 import { Detail } from './Detail'
 import useAlert from 'hooks/useAlert'
 import { getListProduct } from 'modules/organize/product/redux'
+import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 
 const Header = ({ stages, styled, onClickAdd }) => {
   return (
@@ -61,7 +62,7 @@ export const Stock = () => {
     open: false,
   })
   const [stockValue, setStockValue] = useState(initStock)
-  const [stockRowData, setStockRowData] = useState<Object[]>([])
+  const [stockRowData, setStockRowData] = useState<any[]>([])
   const { device } = useWeb()
   const { user } = useAuth()
   const { notify, loadify } = useNotify()
@@ -180,6 +181,28 @@ export const Stock = () => {
     setStockDialog({ ...stockDialog, open: true })
   }
 
+  const handleScanProduct = async (code) => {
+    const stock = stockRowData.find(item => item.code === code)
+    if (!stock) {
+      setStockValue({...initStock, code})
+      setStockDialog({ ...stockDialog, open: true })
+      return
+    } else {
+      try {
+        const defaultValue: any = await Axios({
+          method: 'GET',
+          url: `/sale/stock/detail/${stock.id}`
+        })
+        const body = mapStockBody(defaultValue?.data?.data)
+    
+        setStockValue(body)
+        setStockDialog({ ...stockDialog, stockId: stock.id, open: true })
+      } catch (err: any) {
+        notify(err.message)
+      }
+    }
+  }
+
   return (
     <Container
       header={
@@ -190,6 +213,7 @@ export const Stock = () => {
         />
       }
     >
+      <BarcodeReader onScan={handleScanProduct} onError={() => {}} />
       <Form
         dialog={stockDialog}
         setDialog={setStockDialog}
