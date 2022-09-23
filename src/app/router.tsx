@@ -50,6 +50,8 @@ import NotFound from 'components/shared/NotFound'
 import { SaleReport, Report } from 'modules/report'
 import { ProductReport } from 'modules/report/ProductReport'
 import { StaffReport } from 'modules/report/StaffReport'
+import { Transactions } from 'modules/sale/transaction'
+import { Payments } from 'modules/sale/payment'
 
 const routes: RouteObject[] = [
   {
@@ -303,6 +305,18 @@ const routes: RouteObject[] = [
       {
         path: 'reservation/:id',
         element: <ReservationForm />,
+      },
+
+      // Transaction
+      {
+        path: 'transaction',
+        element: <Transactions />,
+      },
+
+      // Payment
+      {
+        path: 'payment',
+        element: <Payments />,
       },
 
       // Promotion

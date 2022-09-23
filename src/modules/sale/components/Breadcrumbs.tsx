@@ -7,6 +7,7 @@ import useLanguage from 'hooks/useLanguage'
 declare type page =
   | 'sale'
   | 'stock'
+  | 'transaction'
   | 'promotion'
   | 'promotionCreate'
   | 'promotionUpdate'
@@ -26,6 +27,15 @@ const SaleBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
       },
       {
         title: language['STOCK'],
+      },
+    ],
+    transaction: [
+      {
+        title: language['SALE'],
+        path: '/sale',
+      },
+      {
+        title: language['TRANSACTION'],
       },
     ],
     promotion: [

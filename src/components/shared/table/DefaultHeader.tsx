@@ -37,7 +37,7 @@ export const DefaultHeader = ({ exportComponent, importComponent, downloadCompon
             {
               exportComponent 
                 ? exportComponent 
-                : <MenuList>
+                : excelHeader && <MenuList>
                   <CSVLink headers={excelHeader} data={exportData} filename={`${filename}_${new Date().toDateString()}.csv`} style={{
                     color: styled.text.secondary,
                     textDecoration: 'none'
