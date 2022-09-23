@@ -45,6 +45,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   
   useEffect(() => {
     setPayment(dialog.payment)
+    
     const value =
       dialog.payment?.total.currency === 'KHR'
         ? dialog.payment?.total.value / dialog.payment?.rate.sellRate

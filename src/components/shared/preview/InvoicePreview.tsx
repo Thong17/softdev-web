@@ -9,6 +9,7 @@ import { CircleIcon } from '../table/CustomIcon'
 export const InvoicePreview = ({ payment, customer }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  
   return (
     <div
       style={{
@@ -70,7 +71,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                     <div className='item' key={key} style={{ cursor: 'default' }}>
                       <div className='item-description'>
                         <div className='profile'>
-                          <CircleIcon icon={transaction.profile} />
+                          <CircleIcon icon={transaction.product?.profile?.filename} />
                         </div>
                         <div className='description'>
                           <span className='main-description'>
