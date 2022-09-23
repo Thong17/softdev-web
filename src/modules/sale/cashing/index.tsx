@@ -126,7 +126,32 @@ export const Cashing = () => {
   const handleScanProduct = (code) => {
     const scannedStock = listCode.find((item: any) => item.stockCodes.includes(code))
     if (scannedStock) {
-      console.log(scannedStock)
+      Axios({
+        method: 'POST',
+        url: '/sale/transaction/stock',
+        body: {
+          stock: scannedStock.stocks.find(item => item.code === code)._id,
+          quantity: 1,
+        }
+      }).then(response => {
+        const data = response?.data?.data
+        setReload(!reload)
+        setTransaction({
+          id: data._id,
+          description: data.description,
+          discount: {
+            value: data.discount?.value || 0,
+            currency: data.discount?.type || 'PCT',
+            isFixed: data.discount?.isFixed || false,
+          },
+          price: { value: data.price, currency: data.currency },
+          quantity: data.quantity,
+          total: data.total,
+          profile: data.product?.profile?.filename
+        })
+      }).catch(err => {
+        notify(err?.response?.data?.msg, 'error')
+      })
       return
     }
     
