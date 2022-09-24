@@ -22,8 +22,8 @@ import useWeb from 'hooks/useWeb'
 
 const paymentMethods = [
   { label: 'Cash', value: 'cash' },
-  // { label: 'KHQR', value: 'transfer' },
-  // { label: 'Loan', value: 'loan' },
+  { label: 'Transfer', value: 'transfer' },
+  { label: 'Loan', value: 'loan' },
 ]
 
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
@@ -35,7 +35,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const [totalReceive, setTotalReceive] = useState({ KHR: 0, USD: 0, total: 0 })
   const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
   const [payment, setPayment] = useState<any>(null)
-  const [paymentMethod, setPaymentMethod] = useState(null)
+  const [paymentMethod, setPaymentMethod] = useState('cash')
   const [totalPayment, setTotalPayment] = useState({
     value: 0,
     currency: 'USD',
@@ -56,7 +56,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
 
   useEffect(() => {
     const remainUSD = totalPayment.value - totalReceive.total    
-    const sellRate = exchangeRate?.sellRate || 4000    
+    const sellRate = exchangeRate?.sellRate || 4000
     setTotalRemain({ USD: remainUSD, KHR: remainUSD * sellRate })
   }, [totalPayment, exchangeRate, totalReceive.total])
 
@@ -65,12 +65,22 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   }
 
   const handleChangePaymentMethod = (value) => {
+    if (value === 'transfer') {
+      const buyRate = exchangeRate?.buyRate || 4000
+      setTotalReceive({
+        KHR: totalPayment.currency === 'KHR' ? totalPayment.value : 0, 
+        USD: totalPayment.currency === 'USD' ? totalPayment.value : 0, 
+        total: totalPayment.currency === 'KHR' ? totalPayment.value / buyRate : totalPayment.value
+      })
+    }
+    else setTotalReceive({ KHR: 0, USD: 0, total: 0 })
     setPaymentMethod(value)
   }
 
   const handleChangeCashes = (cashes) => {
     let totalUSD = 0
     let totalKHR = 0
+    
     setReceiveCashes(cashes)
     cashes?.forEach((cash) => {
       if (cash.currency === 'USD') totalUSD += cash.value * cash.quantity
@@ -123,6 +133,19 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
     content: () => invoiceRef?.current,
     documentTitle: 'Invoice'
   })
+
+  const renderPaymentMethod = (method) => {
+    switch (method) {
+      case 'transfer':
+        return <div>Transfer</div>
+
+      case 'loan':
+        return <div>Loan</div>
+    
+      default:
+        return <CashForm onChange={handleChangeCashes} />
+    }
+  }
 
   return (
     <AlertContainer
@@ -192,7 +215,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                 height: width > 1024 ? '100%' : '40vh',
               }}
             >
-              <CashForm onChange={handleChangeCashes} />
+              {renderPaymentMethod(paymentMethod)}
             </div>
           </div>
           <Box
