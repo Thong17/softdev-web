@@ -1,7 +1,7 @@
 import Breadcrumb from 'components/shared/Breadcrumbs'
 import { FC } from 'react'
 import { IBreadcrumbs } from 'constants/interfaces/Breadcrumbs'
-import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
+import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
 import useLanguage from 'hooks/useLanguage'
 
 declare type page =
@@ -74,7 +74,7 @@ const SaleBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
       },
     ],
   }
-  return <Breadcrumb stages={stages[page]} title={<AttachMoneyRoundedIcon />} />
+  return <Breadcrumb stages={stages[page]} title={<PriceChangeRoundedIcon />} />
 }
 
 export default SaleBreadcrumbs
