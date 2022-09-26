@@ -37,9 +37,26 @@ export const CustomBottomNav = styled('div')(
       boxShadow: styled.shadow.container,
       borderRadius: styled.radius.secondary,
     },
-    '& a.active, a:hover': {
+    '& a.active': {
       boxShadow: styled.shadow.container,
-      backgroundColor: styled.active.primary,
+      backgroundColor: `${styled.color.info}22`,
+      color: styled.color.info,
+      position: 'relative',
+      '&::before': {
+        content: `''`,
+        backgroundColor: styled.color.info,
+        position: 'absolute',
+        bottom: 0,
+        left: '30%',
+        height: 2,
+        width: '40%',
+        borderRadius: 1
+      }
+    },
+    '& a:hover': {
+      boxShadow: styled.shadow.container,
+      backgroundColor: `${styled.color.info}22`,
+      color: styled.color.info,
     },
     '& a span': {
       display: 'none',
