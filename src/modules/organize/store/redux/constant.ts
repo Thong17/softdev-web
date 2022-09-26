@@ -23,6 +23,7 @@ export const initStructure = {
 }
 
 export interface StoreState {
+  listTransfer: IBody<any[]>
   store: IBody<any>
   structures: IBody<any[]>
   floors: IBody<any[]>
@@ -31,6 +32,10 @@ export interface StoreState {
 }
 
 export const initialState: StoreState = {
+  listTransfer: {
+    data: [],
+    status: 'INIT',
+  },
   store: {
     data: null,
     status: 'INIT',

@@ -52,6 +52,7 @@ import { ProductReport } from 'modules/report/ProductReport'
 import { StaffReport } from 'modules/report/StaffReport'
 import { Transactions } from 'modules/sale/transaction'
 import { Payments } from 'modules/sale/payment'
+import { PaymentStore } from 'modules/organize/store/Payment'
 
 const routes: RouteObject[] = [
   {
@@ -258,15 +259,23 @@ const routes: RouteObject[] = [
       {
         path: 'store/update/:id',
         element: (
-          <AuthGuard role={{ route: 'category', action: 'update' }}>
+          <AuthGuard role={{ route: 'store', action: 'update' }}>
             <UpdateStore />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'store/:id/payment',
+        element: (
+          <AuthGuard role={{ route: 'store', action: 'update' }}>
+            <PaymentStore />
           </AuthGuard>
         ),
       },
       {
         path: 'store/:id/layout',
         element: (
-          <AuthGuard role={{ route: 'category', action: 'update' }}>
+          <AuthGuard role={{ route: 'store', action: 'update' }}>
             <LayoutForm />
           </AuthGuard>
         ),

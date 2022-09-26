@@ -32,3 +32,8 @@ export const floorSchema = yup.object().shape({
   order: yup.number().required(),
   description: yup.string().optional(),
 })
+
+export const transferSchema = yup.object().shape({
+  title: yup.string().required(),
+  image: yup.mixed(),
+})

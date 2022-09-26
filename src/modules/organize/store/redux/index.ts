@@ -3,6 +3,17 @@ import { RootState } from 'app/store'
 import Axios from 'constants/functions/Axios'
 import { initialState } from './constant'
 
+export const getListTransfer = createAsyncThunk(
+  'store/transfer',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/organize/store/transfer',
+    })
+    return response?.data
+  }
+)
+
 export const getInfoStore = createAsyncThunk(
   'store/info',
   async () => {
@@ -72,6 +83,18 @@ export const storeSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // List transfer
+      .addCase(getListTransfer.pending, (state) => {
+        state.listTransfer.status = 'LOADING'
+      })
+      .addCase(getListTransfer.rejected, (state) => {
+        state.listTransfer.status = 'FAILED'
+      })
+      .addCase(getListTransfer.fulfilled, (state, action) => {
+        state.listTransfer.status = 'SUCCESS'
+        state.listTransfer.data = action.payload.data
+      })
+
       // Info store
       .addCase(getInfoStore.pending, (state) => {
         state.store.status = 'LOADING'
@@ -134,6 +157,7 @@ export const storeSlice = createSlice({
   },
 })
 
+export const selectListTransfer = (state: RootState) => state.store.listTransfer
 export const selectStore = (state: RootState) => state.store.detail
 export const selectLayoutStore = (state: RootState) => state.store.layout
 export const selectListFloor = (state: RootState) => state.store.floors

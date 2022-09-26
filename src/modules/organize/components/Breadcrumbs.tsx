@@ -140,19 +140,6 @@ const StoreBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page, id }) => {
     ],
   
     // Store
-    storeUpdate: [
-      {
-        title: language['ORGANIZE'],
-        path: '/organize'
-      },
-      {
-        title: language['STORE'],
-        path: '/organize/store'
-      },
-      {
-        title: language['INFO'],
-      },
-    ],
     storeLayout: [
       {
         title: language['ORGANIZE'],
