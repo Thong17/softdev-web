@@ -19,11 +19,14 @@ import useAlert from 'hooks/useAlert'
 import { useReactToPrint } from 'react-to-print'
 import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
 import useWeb from 'hooks/useWeb'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { getListTransfer, selectListTransfer } from 'modules/organize/store/redux'
+import { CarouselContainer } from 'components/shared/container/CarouselContainer'
 
 const paymentMethods = [
   { label: 'Cash', value: 'cash' },
   { label: 'Transfer', value: 'transfer' },
-  { label: 'Loan', value: 'loan' },
+  // { label: 'Loan', value: 'loan' },
 ]
 
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
@@ -42,6 +45,12 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   })
   const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
   const [receiveCashes, setReceiveCashes] = useState([])
+  const { data: listTransfer } = useAppSelector(selectListTransfer)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(getListTransfer())
+  }, [dispatch])
   
   useEffect(() => {
     setPayment(dialog.payment)
@@ -137,10 +146,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const renderPaymentMethod = (method) => {
     switch (method) {
       case 'transfer':
-        return <div>Transfer</div>
-
-      case 'loan':
-        return <div>Loan</div>
+        return <CarouselContainer images={listTransfer?.map(item => item.image) || []} />
     
       default:
         return <CashForm onChange={handleChangeCashes} />
@@ -199,7 +205,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
               }}
             >
               <SelectTab
-                selected={paymentMethods[0]?.value}
+                selected={paymentMethod || paymentMethods[0]?.value}
                 options={paymentMethods}
                 onChange={handleChangePaymentMethod}
               />
