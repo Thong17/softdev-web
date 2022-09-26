@@ -254,7 +254,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
       url: '/sale/transaction/add',
       body: {
         product: product._id,
-        description: `${product.name[lang] || product.name['English']} ${totalDescription}`,
+        description: `${product.name[lang] || product.name['English']} ${productColor?.name[lang] || productColor?.name['English'] || ''} ${totalDescription}`,
         color: productColor?._id,
         price: totalOptions + totalColor,
         currency: product?.currency,
@@ -383,7 +383,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                             </TextEllipsis>
                           </div>
                           <FlexBetween>
-                            <TextEllipsis><QuantityStatus qty={totalStock} min={1} /></TextEllipsis>
+                            <TextEllipsis>{product?.isStock && <QuantityStatus qty={totalStock} min={1} />}</TextEllipsis>
                             <TextEllipsis className='option-price'>
                               {currencyFormat(color.price, color.currency)}
                             </TextEllipsis>
@@ -482,7 +482,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                             </TextEllipsis>
                           </div>
                           <FlexBetween>
-                            <TextEllipsis><QuantityStatus qty={totalStock} min={1} /></TextEllipsis>
+                            <TextEllipsis>{product?.isStock && <QuantityStatus qty={totalStock} min={1} />}</TextEllipsis>
                             <TextEllipsis className='option-price'>
                               {currencyFormat(option.price, option.currency)}
                             </TextEllipsis>
