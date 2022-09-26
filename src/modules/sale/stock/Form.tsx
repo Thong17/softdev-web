@@ -1,4 +1,3 @@
-import { CustomButton } from 'styles'
 import { Button } from '@mui/material'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { stockSchema } from './schema'
@@ -241,22 +240,18 @@ export const Form = ({
         <div style={{ gridArea: 'action', display: 'flex', justifyContent: 'end', marginTop: 20 }}>
           <Button
             onClick={handleCloseDialog}
+            style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}
           >
             Cancel
           </Button>
-          <CustomButton
+          <Button
             type='submit'
-            style={{
-              marginLeft: 10,
-              backgroundColor: theme.background.secondary,
-              color: theme.text.secondary,
-            }}
-            styled={theme}
+            style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
             onClick={handleSubmit(submit)}
             autoFocus
           >
             { dialog.stockId ? 'Update' : 'Create' }
-          </CustomButton>
+          </Button>
         </div>
       </form>
     </AlertDialog>

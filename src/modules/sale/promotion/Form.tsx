@@ -18,6 +18,7 @@ import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutline
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import useTheme from 'hooks/useTheme'
 import { ProductContainer } from 'components/shared/container/ProductContainer'
+import { useNavigate } from 'react-router-dom'
 
 const typeOption = [
   ...currencyOptions,
@@ -46,6 +47,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
   const typeValue = watch('type')
   const [isFixed, setIsFixed] = useState(defaultValues?.isFixed || false)
   const [selectedProducts, setSelectedProducts] = useState<any>(defaultValues.products || [])
+  const navigate = useNavigate()
 
   useEffect(() => {
     const selectedType = typeOption.find((key) => key.value === typeValue)
@@ -167,15 +169,14 @@ const PromotionForm = ({ defaultValues, id }: any) => {
             justifyContent: 'end',
           }}
         >
-          <Button variant='contained' color='error'>
+          <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
             Cancel
           </Button>
           <Button
             loading={loading}
             type='submit'
             variant='contained'
-            color='success'
-            style={{ marginLeft: 20 }}
+            style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
           >
             {id ? 'Save' : 'Create'}
           </Button>

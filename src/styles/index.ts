@@ -70,7 +70,19 @@ export const CustomSideNav = styled(Stack)(
     },
     '& a.active': {
       boxShadow: styled.shadow.container,
-      backgroundColor: styled.active.primary,
+      backgroundColor: `${styled.color.info}22`,
+      color: styled.color.info,
+      position: 'relative',
+      '&::before': {
+        content: `''`,
+        backgroundColor: styled.color.info,
+        position: 'absolute',
+        bottom: 0,
+        left: '30%',
+        height: 2,
+        width: '40%',
+        borderRadius: 1
+      }
     },
     '& a svg': {
       marginLeft: 12,
@@ -213,18 +225,29 @@ export const CustomNavbar = styled(Stack)(
       boxShadow: 'none',
     },
     '& a.active': {
-      backgroundColor: styled.background.secondary,
-      color: styled.text.primary,
+      backgroundColor: `${styled.color.info}22`,
+      color: styled.color.info,
+      position: 'relative',
       boxShadow: styled.shadow.secondary,
+      '&::before': {
+        content: `''`,
+        backgroundColor: styled.color.info,
+        position: 'absolute',
+        bottom: 0,
+        left: '30%',
+        height: 2,
+        width: '40%',
+        borderRadius: 1
+      }
     },
     '& a:hover': {
       textDecoration: 'underline',
-      color: styled.text.primary,
+      color: styled.color.info,
     },
     '& a': {
       color: styled.text.secondary,
       padding: '7px 17px',
-      borderRadius: styled.radius.primary,
+      borderRadius: styled.radius.secondary,
     },
     transition: '0.3s ease',
     position: 'fixed',

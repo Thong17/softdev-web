@@ -47,7 +47,7 @@ export const createData = (
 ): Data => {
   let action = (
     <div style={{ float: 'right' }}>
-      {privilege?.transaction?.delete && (
+      {(privilege?.transaction?.delete && !status) && (
         <ResetButton onClick={() => onReverse(id)} />
       )}
     </div>

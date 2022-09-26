@@ -145,8 +145,7 @@ export declare type StockColumnHeader =
 export const stockColumnData: ITableColumn<StockColumnHeader>[] = [
   { id: 'cost', label: 'COST' },
   { id: 'currency', label: 'CURRENCY' },
-  { id: 'quantity', label: 'QUANTITY' },
-  { id: 'remain', label: 'REMAIN' },
+  { id: 'quantity', label: 'REMAIN' },
   { id: 'total', label: 'TOTAL' },
   { id: 'action', label: 'ACTION', align: 'center' },
 ]
