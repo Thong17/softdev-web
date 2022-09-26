@@ -19,11 +19,13 @@ import useAlert from 'hooks/useAlert'
 import { useReactToPrint } from 'react-to-print'
 import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
 import useWeb from 'hooks/useWeb'
+import { CarouselContainer } from 'components/shared/container/CarouselContainer'
+import { getListTransfer, selectListTransfer } from 'modules/organize/store/redux'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
 
 const paymentMethods = [
   { label: 'Cash', value: 'cash' },
-  // { label: 'KHQR', value: 'transfer' },
-  // { label: 'Loan', value: 'loan' },
+  { label: 'Transfer', value: 'transfer' },
 ]
 
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
@@ -42,6 +44,12 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   })
   const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
   const [receiveCashes, setReceiveCashes] = useState([])
+  const { data: listTransfer } = useAppSelector(selectListTransfer)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(getListTransfer())
+  }, [dispatch])
 
   const onClearPayment = () => {
     setTotalReceive({ KHR: 0, USD: 0, total: 0 })
@@ -75,6 +83,15 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   }
 
   const handleChangePaymentMethod = (value) => {
+    if (value === 'transfer') {
+      const buyRate = exchangeRate?.buyRate || 4000
+      setTotalReceive({
+        KHR: totalPayment.currency === 'KHR' ? totalPayment.value : 0, 
+        USD: totalPayment.currency === 'USD' ? totalPayment.value : 0, 
+        total: totalPayment.currency === 'KHR' ? totalPayment.value / buyRate : totalPayment.value
+      })
+    }
+    else setTotalReceive({ KHR: 0, USD: 0, total: 0 })
     setPaymentMethod(value)
   }
 
@@ -139,6 +156,16 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
     content: () => invoiceRef?.current,
     documentTitle: 'Invoice'
   })
+
+  const renderPaymentMethod = (method) => {
+    switch (method) {
+      case 'transfer':
+        return <CarouselContainer images={listTransfer?.map(item => item.image) || []} />
+    
+      default:
+        return <CashForm onChange={handleChangeCashes} />
+    }
+  }
 
   return (
     <AlertContainer
@@ -209,7 +236,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                 height: width > 1024 ? '100%' : '40vh',
               }}
             >
-              <CashForm onChange={handleChangeCashes} />
+              {renderPaymentMethod(paymentMethod)}
             </div>
           </div>
           <Box

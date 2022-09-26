@@ -26,7 +26,6 @@ import { CarouselContainer } from 'components/shared/container/CarouselContainer
 const paymentMethods = [
   { label: 'Cash', value: 'cash' },
   { label: 'Transfer', value: 'transfer' },
-  // { label: 'Loan', value: 'loan' },
 ]
 
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
