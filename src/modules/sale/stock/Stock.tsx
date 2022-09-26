@@ -68,6 +68,7 @@ export const Stock = () => {
   const { notify, loadify } = useNotify()
   const [detailValue, setDetailValue] = useState(initStock)
   const confirm = useAlert()
+  const { width } = useWeb()
 
   const stockBreadcrumb = [
     {
@@ -233,7 +234,7 @@ export const Stock = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '400px 1fr',
+          gridTemplateColumns: width > 1024 ? '400px 1fr' : '1fr',
           gridGap: 20
         }}
       >
