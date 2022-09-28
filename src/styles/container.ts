@@ -410,6 +410,7 @@ export const CustomOptionContainer = styled('div')(
 export const CustomProductInfo = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
     position: 'relative',
+    color: styled.text.secondary,
     '& .container': {
       backgroundColor: 'transparent',
       width: '100%',
@@ -496,6 +497,7 @@ export const CustomProductInfo = styled('div')(
 export const CustomDetailContainer = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
     padding: 20,
+    width: 700
   })
 )
 

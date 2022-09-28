@@ -1,25 +1,24 @@
 import useTheme from 'hooks/useTheme'
-import { currencyFormat } from 'utils'
 import { TextEllipsis } from './TextEllipsis'
 
-export const PromotionTag = ({ data }: any) => {
+export const ExpirationTag = ({ value }: any) => {
   const { theme } = useTheme()
 
   return (
     <div
       style={{
-        backgroundColor: `${theme.color.success}cc`,
+        backgroundColor: `${theme.color.error}cc`,
         display: 'flex',
         alignItems: 'center',
         width: 'fit-content',
         padding: '4px 8px 4px 1px',
         position: 'absolute',
         borderRadius: `0 ${theme.radius.secondary} ${theme.radius.secondary} 0`,
-        top: 7,
+        bottom: 7,
         left: 0,
       }}
     >
-      <TextEllipsis>{currencyFormat(data.value, data.type)} {data.isFixed ? 'Only' : 'Discount'}</TextEllipsis>
+      <TextEllipsis>Expire In {value} {value > 1 ? 'Days' : 'Day'}</TextEllipsis>
     </div>
   )
 }

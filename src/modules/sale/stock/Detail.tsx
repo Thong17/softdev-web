@@ -6,7 +6,6 @@ export const Detail = ({
   theme,
   dialog,
   setDialog,
-  defaultValues,
   product
 }: any) => { 
   const handleCloseDialog = () => {
@@ -21,7 +20,7 @@ export const Detail = ({
       <CustomDetailContainer styled={theme}>
         <ProductInfo info={product} />
         <div className="detail">
-
+        
         </div>
       </CustomDetailContainer>
     </AlertDialog>

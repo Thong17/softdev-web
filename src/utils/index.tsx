@@ -182,6 +182,14 @@ export const timeDifferent = (from, to) => {
   return duration.humanize()
 }
 
+export const calculateDay = (from, to) => {
+  let x = moment(from)
+  let y = moment(to)
+  const duration = moment.duration(x.diff(y))
+  
+  return duration.asDays()
+}
+
 export const capitalizeText = (text) => {
   if (!text) return '...'
   return text?.charAt(0).toUpperCase() + text?.slice(1)

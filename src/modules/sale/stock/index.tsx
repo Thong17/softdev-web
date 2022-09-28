@@ -359,6 +359,7 @@ export const Stocks = () => {
                       action={obj.action}
                       status={obj.status}
                       display={obj.display}
+                      expireAt={obj.expireAt}
                     />
                   )
                 } else {
@@ -378,6 +379,7 @@ export const Stocks = () => {
                       action={obj.action}
                       status={obj.status}
                       display={obj.display}
+                      expireAt={obj.expireAt}
                     />
                   )
                 }

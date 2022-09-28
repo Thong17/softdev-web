@@ -5,12 +5,12 @@ import {
   ViewButton,
   DeleteButton,
   UpdateButton,
-  ReportButton,
+  // ReportButton,
 } from 'components/shared/table/ActionButton'
 import { MenuList } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
-import { currencyFormat, dateFormat } from 'utils'
+import { calculateDay, currencyFormat, dateFormat } from 'utils'
 import { ColorPlate } from 'components/shared/table/ColorPlate'
 import { IThemeStyle } from 'contexts/theme/interface'
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
@@ -118,6 +118,7 @@ export interface Data {
   code: string | null
   description: string
   isStock: boolean
+  expireAt: number
   profile: string
   brand: string
   category: string
@@ -217,7 +218,14 @@ export const createData = (
 
   let stock = 0
   let alertAt = 0
+  let expireAt: any = null
   stocks?.forEach((stk: any) => {
+    if (stk.expireAt) {
+      const stockExpire = calculateDay(new Date(stk.expireAt), Date.now())
+      if (expireAt && stockExpire < expireAt) expireAt = stockExpire
+      else expireAt = stockExpire
+    }
+    
     stock += stk.quantity
     alertAt += stk.alertAt
     if (stk.quantity < stk.alertAt) {
@@ -237,6 +245,7 @@ export const createData = (
     currency,
     code,
     isStock,
+    expireAt,
     brand,
     category,
     description,
@@ -274,14 +283,14 @@ export const createStockData = (
           <MenuDialog label={<ViewButton />}>
             <MenuList component='div'>Edit</MenuList>
             <MenuList component='div'>Delete</MenuList>
-            <MenuList component='div'>View</MenuList>
+            {/* <MenuList component='div'>View</MenuList> */}
           </MenuDialog>
         )
       ) : (
         <>
           {privilege?.brand?.update && <UpdateButton onClick={() => onEditStock(id)} />}
           {privilege?.brand?.delete && <DeleteButton onClick={() => onDeleteStock(id)} />}
-          {privilege?.brand?.detail && <ReportButton onClick={() => onViewStock(id)} />}
+          {/* {privilege?.brand?.detail && <ReportButton onClick={() => onViewStock(id)} />} */}
         </>
       )}
     </div>

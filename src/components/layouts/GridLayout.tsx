@@ -12,6 +12,7 @@ import useNotify from 'hooks/useNotify'
 import useAuth from 'hooks/useAuth'
 import { CircularProgress } from '@mui/material'
 import { compareDate } from 'utils/index'
+import { ExpirationTag } from 'components/shared/ExpirationTag'
 
 const Item = (props, ref) => {
   const {
@@ -27,6 +28,7 @@ const Item = (props, ref) => {
     promotion,
     favorite,
     active,
+    expireAt,
     ...prop
   } = props
   const { notify } = useNotify()
@@ -89,6 +91,7 @@ const Item = (props, ref) => {
         )}
         {action && <div className='action'>{action}</div>}
         {promotion && !compareDate(Date.now(), new Date(promotion.expireAt)) && <PromotionTag data={promotion} />}
+        {(expireAt && expireAt < 10) && <ExpirationTag value={expireAt.toFixed(0)} />}
         {favorite !== undefined && (
           <>
             {favorite ? (
