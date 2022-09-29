@@ -13,7 +13,7 @@ import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { CircularProgress, MenuItem, Skeleton } from '@mui/material'
 import useLanguage from 'hooks/useLanguage'
-import { currencyFormat, debounce } from 'utils'
+import { calculateDay, currencyFormat, debounce } from 'utils'
 import { MiniSelectField } from '../form'
 import useWeb from 'hooks/useWeb'
 import { MiniSearchField } from '../table/SearchField'
@@ -33,7 +33,13 @@ import { CircleIcon } from '../table/CustomIcon'
 const mappedProduct = (data, lang, rate) => {
   let stock = 0
   let alertAt = 0
+  let expireAt: any = null
   data.stocks?.forEach((item) => {
+    if (item.expireAt) {
+      const stockExpire = calculateDay(new Date(item.expireAt), Date.now())
+      if (expireAt && stockExpire < expireAt) expireAt = stockExpire
+      else expireAt = stockExpire
+    }
     stock += item.quantity
     alertAt += item.alertAt
   })
@@ -53,7 +59,8 @@ const mappedProduct = (data, lang, rate) => {
     stock,
     alertAt,
     promotion: data?.promotion,
-    isStock: data.isStock
+    isStock: data.isStock,
+    expireAt
   }
 }
 
@@ -516,6 +523,7 @@ export const ProductContainer = ({
                       favorite={user?.favorites?.includes(product.id)}
                       promotion={product.promotion}
                       active={product.id === activeId}
+                      expireAt={product.expireAt}
                     />
                   )
                 }
@@ -543,6 +551,7 @@ export const ProductContainer = ({
                     favorite={user?.favorites?.includes(product.id)}
                     promotion={product.promotion}
                     active={product.id === activeId}
+                    expireAt={product.expireAt}
                   />
                 )
               })
