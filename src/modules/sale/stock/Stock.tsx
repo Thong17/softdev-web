@@ -61,7 +61,7 @@ export const Stock = () => {
   const [detailDialog, setDetailDialog] = useState({
     open: false,
   })
-  const [stockValue, setStockValue] = useState(initStock)
+  const [stockValue, setStockValue] = useState<any>(initStock)
   const [stockRowData, setStockRowData] = useState<any[]>([])
   const { device } = useWeb()
   const { user } = useAuth()
@@ -109,7 +109,7 @@ export const Stock = () => {
           url: `/sale/stock/detail/${id}`
         })
         const body = mapStockBody(defaultValue?.data?.data)
-    
+        
         setStockValue(body)
         setStockDialog({ ...stockDialog, stockId: id, open: true })
       } catch (err: any) {

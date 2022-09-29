@@ -28,7 +28,7 @@ export interface IStockBody {
   product: string
 }
 
-export const initStock = {}
+export const initStock = { alertAt: 0 }
 
 export const importColumns = [
   '_id',

@@ -142,9 +142,16 @@ export const Stocks = () => {
             url: `/organize/product/stock/${id}/enable`,
           })
             .then((result) => {
-              if (result?.data?.code !== 'SUCCESS')
-                return notify(result?.data?.msg, 'error')
               notify(result?.data?.msg, 'success')
+
+              const query = new URLSearchParams()
+              query.append('search', search)
+              query.append('limit', limit.toString())
+              query.append('offset', '0')
+              query.append('filter', filterObj.filter)
+              query.append('sort', filterObj.asc ? 'asc' : 'desc')
+              setRowData([])
+              dispatch(getListProduct({ query }))
             })
             .catch((err) => notify(err?.response?.data?.msg, 'error'))
         })

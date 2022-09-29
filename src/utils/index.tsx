@@ -133,6 +133,7 @@ export const formatAttendanceDate = (dayString) => {
 }
 
 export const inputDateFormat = (d) => {
+  if (!d) return ''
   if (d === '') return d
 
   let date = new Date(d)

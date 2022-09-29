@@ -18,7 +18,7 @@ export const ExpirationTag = ({ value }: any) => {
         left: 0,
       }}
     >
-      <TextEllipsis>Expire In {value} {value > 1 ? 'Days' : 'Day'}</TextEllipsis>
+      <TextEllipsis>{value > 0 ? `Expire in ${value} day` : `Expired ${value} day`}</TextEllipsis>
     </div>
   )
 }
