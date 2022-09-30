@@ -39,7 +39,7 @@ export const CustomBottomNav = styled('div')(
     },
     '& a.active': {
       boxShadow: styled.shadow.container,
-      backgroundColor: `${styled.color.info}22`,
+      backgroundColor: `${styled.color.info}11`,
       color: styled.color.info,
       position: 'relative',
       '&::before': {
@@ -87,7 +87,7 @@ export const CustomSideNav = styled(Stack)(
     },
     '& a.active': {
       boxShadow: styled.shadow.container,
-      backgroundColor: `${styled.color.info}22`,
+      backgroundColor: `${styled.color.info}11`,
       color: styled.color.info,
       position: 'relative',
       '&::before': {
@@ -242,7 +242,7 @@ export const CustomNavbar = styled(Stack)(
       boxShadow: 'none',
     },
     '& a.active': {
-      backgroundColor: `${styled.color.info}22`,
+      backgroundColor: `${styled.color.info}11`,
       color: styled.color.info,
       position: 'relative',
       boxShadow: styled.shadow.secondary,
