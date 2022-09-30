@@ -13,6 +13,7 @@ import { CustomAreaChart } from 'components/shared/charts/AreaChart'
 import moment from 'moment'
 import useLanguage from 'hooks/useLanguage'
 import useNotify from 'hooks/useNotify'
+import useTheme from 'hooks/useTheme'
 
 const Header = () => {
   return (
@@ -73,6 +74,7 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
 
 export const SaleReport = () => {
   const { language } = useLanguage()
+  const { theme } = useTheme()
   const { notify } = useNotify()
   const [selectedSaleChart, setSelectedSaleChart] = useState('day')
   const [selectedTotalIncome, setSelectedTotalIncome] = useState('day')
@@ -194,8 +196,8 @@ export const SaleReport = () => {
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>{currencyFormat(totalIncome, 'USD')}</span>}
-            icon={<ShowChartRoundedIcon style={{ fontSize: 40 }} />}
+            data={<span style={{ fontSize: 23, color: totalIncome === 0 ? theme.text.secondary : totalIncome < 0 ? theme.color.error : theme.color.success }}><span>{totalIncome < 0 ? '-' : '+'}</span>{currencyFormat(totalIncome, 'USD')}</span>}
+            icon={<StackedLineChartRoundedIcon style={{ fontSize: 40, color: totalIncome === 0 ? theme.text.secondary : totalIncome < 0 ? theme.color.error : theme.color.success }} />}
           />
           <DetailSection
             title={language['PROFIT']}
@@ -209,8 +211,8 @@ export const SaleReport = () => {
                 />
               </div>
             }
-            data={<span style={{ fontSize: 23 }}>{currencyFormat(totalProfit, 'USD')}</span>}
-            icon={<StackedLineChartRoundedIcon style={{ fontSize: 40 }} />}
+            data={<span style={{ fontSize: 23, color: totalProfit === 0 ? theme.text.secondary : totalProfit < 0 ? theme.color.error : theme.color.success }}><span>{totalProfit < 0 ? '-' : '+'}</span>{currencyFormat(totalProfit, 'USD')}</span>}
+            icon={<ShowChartRoundedIcon style={{ fontSize: 40, color: totalProfit === 0 ? theme.text.secondary : totalProfit < 0 ? theme.color.error : theme.color.success }} />}
           />
         </div>
         <CardContainer

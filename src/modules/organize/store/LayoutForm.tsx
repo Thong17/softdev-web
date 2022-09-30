@@ -501,6 +501,7 @@ export const LayoutForm = () => {
                           align={structure.align}
                           justify={structure.justify}
                           direction={structure.direction}
+                          status={structure.status}
                         />
                         <div className='action object'>
                           <UpdateButton
@@ -525,6 +526,7 @@ export const LayoutForm = () => {
                           align={structure.align}
                           justify={structure.justify}
                           direction={structure.direction}
+                          status={structure.status}
                         />
                         <div className='action object'>
                           <UpdateButton

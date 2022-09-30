@@ -12,16 +12,16 @@ import { TextEllipsis } from '../TextEllipsis'
 
 const roomSize = {
   small: {
-    width: 200,
-    height: 90,
+    width: '60%',
+    height: '60%',
   },
   medium: {
-    width: 230,
-    height: 110,
+    width: '80%',
+    height: '80%',
   },
   large: {
-    width: 260,
-    height: 130,
+    width: '100%',
+    height: '100%',
   },
 }
 
@@ -67,8 +67,8 @@ export const RoomStructure = ({
             direction === 'row'
               ? roomSize[size]?.height
               : roomSize[size]?.width,
-          borderRadius: theme.radius.quaternary,
-          padding: '10px 20px',
+          borderRadius: theme.radius.primary,
+          padding: '10px 20px 10px 10px',
           boxSizing: 'border-box',
           position: 'relative',
           overflow: 'hidden',

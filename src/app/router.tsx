@@ -44,7 +44,7 @@ import {
   Stocks,
   UpdatePromotion,
 } from 'modules/sale'
-import { Counter } from 'modules/counter/Counter'
+import { Home } from 'modules/home'
 import Config from 'modules/config/Config'
 import NotFound from 'components/shared/NotFound'
 import { SaleReport, Report } from 'modules/report'
@@ -57,7 +57,7 @@ import { PaymentStore } from 'modules/organize/store/Payment'
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Counter />,
+    element: <Home />,
   },
   {
     path: '/login',

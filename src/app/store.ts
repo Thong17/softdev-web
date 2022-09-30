@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
-import counterReducer from '../modules/counter/counterSlice'
 import categoryReducer from 'modules/organize/category/redux'
 import brandReducer from 'modules/organize/brand/redux'
 import productReducer from 'modules/organize/product/redux'
@@ -15,7 +14,6 @@ import sharedReducer from 'shared/redux'
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     category: categoryReducer,
     brand: brandReducer,
     product: productReducer,
