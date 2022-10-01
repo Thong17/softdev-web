@@ -97,7 +97,7 @@ const Navbar = ({ children }) => {
         <ListNavbar>{children}</ListNavbar>
       )}
       {user?.id ? (
-        <Profile username={user.username} picture={user.photo} />
+        <Profile id={user.id} username={user.username} picture={user.photo} />
       ) : (
         <Link to='/login'>Login</Link>
       )}

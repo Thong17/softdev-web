@@ -53,6 +53,8 @@ import { StaffReport } from 'modules/report/StaffReport'
 import { Transactions } from 'modules/sale/transaction'
 import { Payments } from 'modules/sale/payment'
 import { PaymentStore } from 'modules/organize/store/Payment'
+import { UserProfile } from 'modules/auth/UserProfile'
+import { UserChangePassword } from 'modules/auth/UserChangePassword'
 
 const routes: RouteObject[] = [
   {
@@ -66,6 +68,14 @@ const routes: RouteObject[] = [
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/user/:id',
+    element: <UserProfile />,
+  },
+  {
+    path: '/change-password/:id',
+    element: <UserChangePassword />,
   },
   {
     path: '/admin',

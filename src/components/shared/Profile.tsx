@@ -4,31 +4,41 @@ import useTheme from 'hooks/useTheme'
 import { FC, useState } from 'react'
 import { CustomProfile } from 'styles'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
+import VpnKeyRoundedIcon from '@mui/icons-material/VpnKeyRounded'
+import { useNavigate } from 'react-router-dom'
 
 interface IProfile {
-  username: string,
+  id: string
+  username: string
   picture?: string
 }
 
-const Profile: FC<IProfile> = ({ username, picture }) => {
+const Profile: FC<IProfile> = ({ id, username, picture }) => {
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const { logout } = useAuth()
   const { theme } = useTheme()
+  const navigate = useNavigate()
 
   return (
     <>
-      {username && <CustomProfile
-        styled={theme}
-        aria-controls='profile-menu'
-        onClick={(event) => setAnchorEl(event.currentTarget)}
-      >
-        {
-          picture 
-            ? (<img src={picture} alt={username} />) 
-            : (<div style={{ alignItems: 'center' }}>{username[0]}</div>)
-        }
-        {username}
-      </CustomProfile>}
+      {username && (
+        <CustomProfile
+          styled={theme}
+          aria-controls='profile-menu'
+          onClick={(event) => setAnchorEl(event.currentTarget)}
+        >
+          {picture ? (
+            <img
+              src={`${process.env.REACT_APP_API_UPLOADS}${picture}`}
+              alt={username}
+            />
+          ) : (
+            <div style={{ alignItems: 'center' }}>{username[0]}</div>
+          )}
+          {username}
+        </CustomProfile>
+      )}
       <Menu
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
@@ -38,7 +48,15 @@ const Profile: FC<IProfile> = ({ username, picture }) => {
           marginTop: 10,
         }}
       >
-        <MenuItem onClick={() => logout()}><LogoutRoundedIcon style={{ marginRight: 10 }} /> Logout</MenuItem>
+        <MenuItem onClick={() => navigate(`/user/${id}`)}>
+          <PersonRoundedIcon style={{ marginRight: 10 }} /> Profile
+        </MenuItem>
+        <MenuItem onClick={() => navigate(`/change-password/${id}`)}>
+          <VpnKeyRoundedIcon style={{ marginRight: 10 }} /> Change Password
+        </MenuItem>
+        <MenuItem onClick={() => logout()}>
+          <LogoutRoundedIcon style={{ marginRight: 10 }} /> Logout
+        </MenuItem>
       </Menu>
     </>
   )
