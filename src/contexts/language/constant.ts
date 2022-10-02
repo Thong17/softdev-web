@@ -98,7 +98,10 @@ export const languages = {
     INCOME_CHART: 'Income\u00a0Chart',
     PERFORMANCE_CHART: 'Performance\u00a0Chart',
     PRODUCT_CHART: 'Product\u00a0Chart',
-    TOP_PRODUCT: 'Top\u00a0Product'
+    TOP_PRODUCT: 'Top\u00a0Product',
+    // Product Form
+    COLOR: 'Color',
+    ADD_TO_CART: 'Add\u00a0To\u00a0Cart'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -199,6 +202,9 @@ export const languages = {
     INCOME_CHART: 'តារាងប្រាក់ចំណូល',
     PERFORMANCE_CHART: 'តារាងការអនុវត្ត',
     PRODUCT_CHART: 'តារាងផលិតផល',
-    TOP_PRODUCT: 'ផលិតផលនិយម'
+    TOP_PRODUCT: 'ផលិតផលនិយម',
+    // Product Form
+    COLOR: 'ពណ៌',
+    ADD_TO_CART: 'បន្ថែមទៅរទេះ'
   }
 }

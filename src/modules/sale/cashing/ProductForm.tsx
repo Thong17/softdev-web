@@ -25,7 +25,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   const { notify } = useNotify()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const dispatch = useAppDispatch()
   const { data, status } = useAppSelector(selectInfoProduct)
   const [product, setProduct] = useState<any>(null)
@@ -301,7 +301,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
         <div>
           {product?.colors.length > 0 && (
             <Section
-              describe='Color'
+              describe={language['COLOR']}
               style={{
                 boxShadow: theme.shadow.secondary,
                 borderRadius: theme.radius.ternary,
@@ -522,7 +522,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
               boxSizing: 'border-box',
             }}
           >
-            {!product?.isStock ? <span>Available</span> : <span>{totalStock} available</span>}
+            {!product?.isStock ? <span>{language['AVAILABLE']}</span> : <span>{totalStock} {language['AVAILABLE']}</span>}
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <IconButton
                 onClick={() =>
@@ -536,7 +536,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
               <NanoInput
                 value={quantity}
                 onChange={handleChangeQuantity}
-                placeholder='Qty'
+                placeholder={language['QTY']}
                 type='number'
                 name='qty'
                 id='qty'
@@ -556,7 +556,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                 />
               </IconButton>
             </div>
-            <span>Total {currencyFormat((totalOptions + totalColor) * quantity, product?.currency)}</span>
+            <span>{language['TOTAL']} {currencyFormat((totalOptions + totalColor) * quantity, product?.currency)}</span>
           </div>
           <div style={{ width: '50%', display: 'flex' }}>
             <CustomButton
@@ -570,7 +570,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
               onClick={handleCloseDialog}
               fullWidth
             >
-              Cancel
+              {language['CANCEL']}
             </CustomButton>
             <CustomButton
               onClick={handleAddToCart}
@@ -582,7 +582,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
               }}
               fullWidth
             >
-              Add to cart
+              {language['ADD_TO_CART']}
             </CustomButton>
           </div>
         </div>
