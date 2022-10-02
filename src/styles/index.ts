@@ -166,6 +166,7 @@ export const CustomProfile = styled(Button)(
       marginRight: 8,
       borderRadius: styled.radius.circle,
       boxShadow: styled.shadow.secondary,
+      objectFit: 'cover'
     },
     '& div': {
       display: 'flex',
