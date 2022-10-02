@@ -22,6 +22,7 @@ import useWeb from 'hooks/useWeb'
 import { CarouselContainer } from 'components/shared/container/CarouselContainer'
 import { getListTransfer, selectListTransfer } from 'modules/organize/store/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
+import useLanguage from 'hooks/useLanguage'
 
 const paymentMethods = [
   { label: 'Cash', value: 'cash' },
@@ -31,6 +32,7 @@ const paymentMethods = [
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const confirm = useAlert()
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { notify } = useNotify()
   const { width } = useWeb()
   const { user, reload } = useAuth()
@@ -181,7 +183,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
           position: 'relative',
         }}
       >
-        <DialogTitle title='Payment' onClose={handleCloseDialog} />
+        <DialogTitle title={language['PAYMENT']} onClose={handleCloseDialog} />
         <div
           style={{
             padding: '10px 20px 20px 20px',
@@ -285,7 +287,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
             }}
           >
             <div className='total-receive'>
-              <span>Receive Total</span>
+              <span>{language['RECEIVE_TOTAL']}</span>
               <div style={{ display: 'flex', lineHeight: 1 }}>
                 <span>
                   {currencyFormat(totalReceive.USD, 'USD')} +{' '}
@@ -313,7 +315,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                   }}
                 >
                   <span>
-                    {payment?.remainTotal?.USD < 0 ? 'Return' : 'Remain'} Total
+                    {payment?.remainTotal?.USD < 0 ? language['RETURN'] : language['REMAIN']} {language['TOTAL']}
                   </span>
                   <div style={{ display: 'flex', lineHeight: 1 }}>
                     <span>
@@ -358,7 +360,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                       width: '100%',
                     }}
                   >
-                    Close
+                    {language['CLOSE']}
                   </CustomButton>
                 ) : (
                   <CustomButton
@@ -370,7 +372,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                       width: '100%',
                     }}
                   >
-                    Close
+                    {language['CLOSE']}
                   </CustomButton>
                 )}
                 {payment?.status ? (
@@ -386,7 +388,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                     <PrintRoundedIcon
                       style={{ fontSize: 19, marginRight: 5 }}
                     />{' '}
-                    Print
+                    {language['PRINT']}
                   </CustomButton>
                 ) : (
                   <CustomButton
@@ -401,7 +403,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                     <ReceiptRoundedIcon
                       style={{ fontSize: 17, marginRight: 5 }}
                     />{' '}
-                    Check out
+                    {language['CHECKOUT']}
                   </CustomButton>
                 )}
               </div>

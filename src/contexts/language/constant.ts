@@ -109,7 +109,13 @@ export const languages = {
     SELL_RATE: 'Sell\u00a0Rate',
     STOP: 'Stop',
     START: 'Start',
-    CASH: 'Cash'
+    CASH: 'Cash',
+    // Payment Form
+    RECEIVE_TOTAL: 'Receive\u00a0Total',
+    RETURN: 'Return',
+    PRINT: 'Print',
+    CHECKOUT: 'Checkout',
+    CLOSE: 'Close'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -221,6 +227,12 @@ export const languages = {
     SELL_RATE: 'អត្រាលក់',
     STOP: 'បញ្ចប់',
     START: 'ចាប់ផ្តើម',
-    CASH: 'សាច់ប្រាក់'
+    CASH: 'សាច់ប្រាក់',
+    // Payment Form
+    RECEIVE_TOTAL: 'ទទួលសរុប',
+    RETURN: 'លុយអាប់',
+    PRINT: 'បោះពុម្ព',
+    CHECKOUT: 'បង់លុយ',
+    CLOSE: 'បិទ'
   }
 }
