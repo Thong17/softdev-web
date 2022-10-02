@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react'
 import { DeviceOptions } from 'contexts/web/interface'
 import { MenuDialog } from 'components/shared/MenuDialog'
 import { DeleteButton, UpdateButton, ViewButton } from 'components/shared/table/ActionButton'
-import { MenuList } from '@mui/material'
+import { MenuItem } from '@mui/material'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
 
 export declare type ColumnHeader = 'icon' | 'name' | 'status' | 'description' | 'createdBy' | 'action' | 'no'
@@ -76,24 +76,24 @@ export const createData = (
       {device === "mobile" ? (
         privilege?.category?.detail && (
           <MenuDialog label={<ViewButton />}>
-            <MenuList
+            <MenuItem
               component='div'
               onClick={() => navigate(`/organize/category/update/${id}`)}
             >
               Edit
-            </MenuList>
-            <MenuList
+            </MenuItem>
+            <MenuItem
               component='div'
               onClick={() => setDialog({ open: true, id })}
             >
               Delete
-            </MenuList>
-            <MenuList
+            </MenuItem>
+            <MenuItem
               component='div'
               onClick={() => navigate(`/organize/category/detail/${id}`)}
             >
               View
-            </MenuList>
+            </MenuItem>
           </MenuDialog>
         )
       ) : (

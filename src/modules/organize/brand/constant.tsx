@@ -5,7 +5,7 @@ import {
   UpdateButton,
   ViewButton,
 } from 'components/shared/table/ActionButton'
-import { MenuList } from '@mui/material'
+import { MenuItem } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
@@ -88,24 +88,24 @@ export const createData = (
       {device === 'mobile' ? (
         privilege?.brand?.detail && (
           <MenuDialog label={<ViewButton />}>
-            <MenuList
+            <MenuItem
               component='div'
               onClick={() => navigate(`/organize/brand/update/${id}`)}
             >
               Edit
-            </MenuList>
-            <MenuList
+            </MenuItem>
+            <MenuItem
               component='div'
               onClick={() => setDialog({ open: true, id })}
             >
               Delete
-            </MenuList>
-            <MenuList
+            </MenuItem>
+            <MenuItem
               component='div'
               onClick={() => navigate(`/organize/brand/detail/${id}`)}
             >
               View
-            </MenuList>
+            </MenuItem>
           </MenuDialog>
         )
       ) : (

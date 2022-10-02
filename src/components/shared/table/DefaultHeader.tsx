@@ -1,7 +1,7 @@
 import { SearchField } from 'components/shared/table/SearchField'
 import { FilterButton } from 'components/shared/table/FilterButton'
 import { OptionButton } from 'components/shared/table/OptionButton'
-import { MenuList } from '@mui/material'
+import { MenuItem } from '@mui/material'
 import { CustomButton } from 'styles'
 import { CSVLink } from 'react-csv'
 import useLanguage from 'hooks/useLanguage'
@@ -21,7 +21,7 @@ export const DefaultHeader = ({ exportComponent, importComponent, downloadCompon
             {
               importComponent
                 ? importComponent
-                : <MenuList>
+                : <MenuItem>
                   <label htmlFor='file-upload' style={{ cursor: 'pointer' }}>
                     {language['IMPORT_DATA']}
                   </label>
@@ -32,31 +32,31 @@ export const DefaultHeader = ({ exportComponent, importComponent, downloadCompon
                     style={{ display: 'none' }}
                     accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
                   />
-                </MenuList>
+                </MenuItem>
             }
             {
               exportComponent 
                 ? exportComponent 
-                : excelHeader && <MenuList>
+                : excelHeader && <MenuItem>
                   <CSVLink headers={excelHeader} data={exportData} filename={`${filename}_${new Date().toDateString()}.csv`} style={{
                     color: styled.text.secondary,
                     textDecoration: 'none'
                   }}>
                     {language['EXPORT_DATA']}
                   </CSVLink>
-                </MenuList>
+                </MenuItem>
             }
             {
               downloadComponent 
                 ? downloadComponent
-                : excelHeader && <MenuList>
+                : excelHeader && <MenuItem>
                   <CSVLink headers={excelHeader} data={[]} filename={`${filename}_template.csv`} style={{
                     color: styled.text.secondary,
                     textDecoration: 'none'
                   }}>
                     {language['DOWNLOAD_TEMPLATE']}
                   </CSVLink>
-                </MenuList>
+                </MenuItem>
             }
           </OptionButton>
           { createUrl && <CustomButton

@@ -7,7 +7,7 @@ import {
   UpdateButton,
   // ReportButton,
 } from 'components/shared/table/ActionButton'
-import { MenuList } from '@mui/material'
+import { MenuItem } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
 import { calculateDay, currencyFormat, dateFormat } from 'utils'
@@ -192,12 +192,12 @@ export const createData = (
       {device === 'mobile' ? (
         privilege?.product?.detail && (
           <MenuDialog label={<ViewButton />}>
-            <MenuList
+            <MenuItem
               component='div'
               onClick={() => navigate(`/sale/stock/item/${id}`)}
             >
               Stock
-            </MenuList>
+            </MenuItem>
           </MenuDialog>
         )
       ) : (
@@ -281,9 +281,9 @@ export const createStockData = (
       {device === 'mobile' ? (
         privilege?.brand?.detail && (
           <MenuDialog label={<ViewButton />}>
-            <MenuList component='div'>Edit</MenuList>
-            <MenuList component='div'>Delete</MenuList>
-            {/* <MenuList component='div'>View</MenuList> */}
+            <MenuItem component='div'>Edit</MenuItem>
+            <MenuItem component='div'>Delete</MenuItem>
+            {/* <MenuItem component='div'>View</MenuItem> */}
           </MenuDialog>
         )
       ) : (
@@ -305,9 +305,9 @@ export const createStockData = (
     >
       {options.map((opt, index) => {
         return (
-          <MenuList key={index} component='div'>
+          <MenuItem key={index} component='div'>
             {opt}
-          </MenuList>
+          </MenuItem>
         )
       })}
     </MenuDialog>) : null
