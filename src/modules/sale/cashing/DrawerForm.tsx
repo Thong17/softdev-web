@@ -30,6 +30,7 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded'
 import useAuth from 'hooks/useAuth'
 import { ValueLabel } from 'components/shared/ValueLabel'
 import { QuantityField } from 'components/shared/form/QuantityField'
+import useLanguage from 'hooks/useLanguage'
 
 const initCash = {
   cash: 0,
@@ -40,6 +41,7 @@ const initCash = {
 
 const CashItem = ({ data, onRemove }) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   return (
     <div
       style={{
@@ -82,7 +84,7 @@ const CashItem = ({ data, onRemove }) => {
         <QuantityStatus
           qty={data.quantity}
           min={10}
-          label='Unit'
+          label={language['QTY']}
           padding='6px 11px 6px 7px'
         />
       </div>
@@ -103,7 +105,7 @@ const CashItem = ({ data, onRemove }) => {
           }}
         >
           <ValueLabel
-            label='Total'
+            label={language['TOTAL']}
             value={currencyFormat(parseFloat(data.total), data.currency)}
           />
         </div>
@@ -139,6 +141,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
   } = useForm({
     resolver: yupResolver(drawerSchema),
   })
+  const { language } = useLanguage()
   const [cashObj, setCashObj] = useState(initCash)
   const [listCash, setListCash] = useState<any[]>(
     user?.drawer?.cashes.map((cash) => ({ ...cash, origin: true })) || []
@@ -273,7 +276,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
         setTemplateInput('')
       })
       .catch((err) => {
-        notify(err?.reponse?.data?.msg, 'error')
+        notify(err?.response?.data?.msg, 'error')
       })
   }
 
@@ -304,7 +307,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
             dispatch(getListPresetCash())
           })
           .catch((err) => {
-            notify(err?.reponse?.data?.msg, 'error')
+            notify(err?.response?.data?.msg, 'error')
           })
       })
       .catch(() => {})
@@ -327,7 +330,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
             dispatch(getListPresetCash())
           })
           .catch((err) => {
-            notify(err?.reponse?.data?.msg, 'error')
+            notify(err?.response?.data?.msg, 'error')
           })
       })
       .catch(() => {})
@@ -352,7 +355,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
             )
           })
           .catch((err) => {
-            notify(err?.reponse?.data?.msg, 'error')
+            notify(err?.response?.data?.msg, 'error')
           })
       })
       .catch(() => {})
@@ -376,7 +379,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
             reset()
           })
           .catch((err) => {
-            notify(err?.reponse?.data?.msg, 'error')
+            notify(err?.response?.data?.msg, 'error')
           })
       })
       .catch(() => {})
@@ -398,7 +401,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
           flexDirection: 'column',
         }}
       >
-        <DialogTitle title='Drawer' onClose={handleCloseDialog} />
+        <DialogTitle title={language['DRAWER']} onClose={handleCloseDialog} />
         <form
           onSubmit={handleSubmit(submit)}
           style={{
@@ -413,7 +416,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
           <div style={{ gridArea: 'buyRate' }}>
             <MiniTextField
               type='number'
-              label='Buy Rate'
+              label={language['BUY_RATE']}
               err={errors?.buyRate?.message}
               {...register('buyRate')}
             />
@@ -421,7 +424,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
           <div style={{ gridArea: 'sellRate' }}>
             <MiniTextField
               type='number'
-              label='Sell Rate'
+              label={language['SELL_RATE']}
               err={errors?.sellRate?.message}
               {...register('sellRate')}
             />
@@ -448,7 +451,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                 }}
                 fullWidth
               >
-                Stop
+                {language['STOP']}
               </Button>
             ) : (
               <Button
@@ -460,7 +463,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                 }}
                 fullWidth
               >
-                Cancel
+                {language['CANCEL']}
               </Button>
             )}
             {user?.drawer ? (
@@ -474,7 +477,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                 }}
                 fullWidth
               >
-                Save
+                {language['SAVE']}
               </Button>
             ) : (
               <Button
@@ -487,7 +490,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                 }}
                 fullWidth
               >
-                Start
+                {language['START']}
               </Button>
             )}
           </div>
@@ -522,7 +525,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
               <span
                 style={{ fontSize: theme.responsive[device]?.text.primary }}
               >
-                Cash
+                {language['CASH']}
               </span>
             </div>
 
@@ -547,7 +550,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                     value={templateInput}
                     onChange={(event) => setTemplateInput(event.target.value)}
                     width='100%'
-                    placeholder='Template'
+                    placeholder={language['NAME']}
                   />
                   <IconButton
                     style={{
@@ -720,7 +723,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                       <NanoInput
                         type='number'
                         name='total'
-                        placeholder='Total'
+                        placeholder={language['TOTAL']}
                         width='100%'
                         value={cashObj.total}
                         onChange={handleChangeCash}

@@ -101,7 +101,15 @@ export const languages = {
     TOP_PRODUCT: 'Top\u00a0Product',
     // Product Form
     COLOR: 'Color',
-    ADD_TO_CART: 'Add\u00a0To\u00a0Cart'
+    ADD_TO_CART: 'Add\u00a0To\u00a0Cart',
+    // Drawer Form
+    UNIT: 'Unit',
+    DRAWER: 'Drawer',
+    BUY_RATE: 'Buy\u00a0Rate',
+    SELL_RATE: 'Sell\u00a0Rate',
+    STOP: 'Stop',
+    START: 'Start',
+    CASH: 'Cash'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -205,6 +213,14 @@ export const languages = {
     TOP_PRODUCT: 'ផលិតផលនិយម',
     // Product Form
     COLOR: 'ពណ៌',
-    ADD_TO_CART: 'បន្ថែមទៅរទេះ'
+    ADD_TO_CART: 'បន្ថែមទៅរទេះ',
+    // Drawer Form
+    UNIT: 'ឯកតា',
+    DRAWER: 'ហិបប្រាក់',
+    BUY_RATE: 'អត្រាទិញ',
+    SELL_RATE: 'អត្រាលក់',
+    STOP: 'បញ្ចប់',
+    START: 'ចាប់ផ្តើម',
+    CASH: 'សាច់ប្រាក់'
   }
 }
