@@ -38,11 +38,14 @@ const StoreForm = ({ defaultValues, id }: any) => {
   } = useForm({ resolver: yupResolver(storeSchema), defaultValues })
   const { theme } = useTheme()
   const navigate = useNavigate()
-  const { device } = useWeb()
+  const { width } = useWeb()
   const { notify, loadify } = useNotify()
   const [loading, setLoading] = useState(false)
   const [iconPath, setIconPath] = useState<IImage>(defaultValues?.logo)
-  const [preview, setPreview] = useState({...defaultValues, logo: defaultValues?.logo?.filename })
+  const [preview, setPreview] = useState({
+    ...defaultValues,
+    logo: defaultValues?.logo?.filename,
+  })
   const name = watch('name')
   const address = watch('address')
   const contact = watch('contact')
@@ -108,14 +111,16 @@ const StoreForm = ({ defaultValues, id }: any) => {
   }
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: width > 1024 ? '500px 1fr' : '1fr',
+        gridGap: 40,
+      }}
+    >
       <form
         onSubmit={handleSubmit(submit)}
         style={{
-          display: 'grid',
-          gridTemplateColumns:
-            device === 'mobile' || device === 'tablet' ? '1fr' : '500px 1fr',
-          gridGap: 20,
           height: 'fit-content',
         }}
       >
@@ -212,16 +217,27 @@ const StoreForm = ({ defaultValues, id }: any) => {
               justifyContent: 'end',
             }}
           >
-            <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
+            <Button
+              variant='contained'
+              style={{
+                backgroundColor: `${theme.color.error}22`,
+                color: theme.color.error,
+              }}
+              onClick={() => navigate(-1)}
+            >
               Cancel
             </Button>
             <Button
               loading={loading}
               type='submit'
               variant='contained'
-              style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
+              style={{
+                marginLeft: 10,
+                backgroundColor: `${theme.color.info}22`,
+                color: theme.color.info,
+              }}
             >
-              { id ? 'Save' : 'Create' }
+              {id ? 'Save' : 'Create'}
             </Button>
           </div>
         </div>
@@ -230,7 +246,6 @@ const StoreForm = ({ defaultValues, id }: any) => {
         style={{
           display: 'flex',
           justifyContent: 'center',
-          marginLeft: 20,
           padding: '20px 0',
           width: '100%',
           border: theme.border.dashed,

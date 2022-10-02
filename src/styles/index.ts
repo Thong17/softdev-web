@@ -10,11 +10,12 @@ export const CustomBottomNav = styled('div')(
     height: NAVBAR_HEIGHT - 20,
     backgroundColor: styled.background.primary,
     display: 'flex',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
     alignItems: 'center',
     position: 'fixed',
     bottom: 0,
     boxShadow: styled.shadow.primary,
+    paddingBottom: 20,
     zIndex: 1000,
     '& a': {
       position: 'relative',
