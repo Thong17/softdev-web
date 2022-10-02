@@ -152,14 +152,6 @@ export const UserProfile = () => {
               {...register('username')}
             />
           </div>
-          <div style={{ gridArea: 'username' }}>
-            <TextField
-              type='text'
-              label='Username'
-              err={errors.username?.message}
-              {...register('username')}
-            />
-          </div>
           <div style={{ gridArea: 'gender' }}>
             <SelectField
               value={gender}
