@@ -24,11 +24,6 @@ import { getListTransfer, selectListTransfer } from 'modules/organize/store/redu
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
 
-const paymentMethods = [
-  { label: 'Cash', value: 'cash' },
-  { label: 'Transfer', value: 'transfer' },
-]
-
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const confirm = useAlert()
   const { theme } = useTheme()
@@ -48,6 +43,11 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const [receiveCashes, setReceiveCashes] = useState([])
   const { data: listTransfer } = useAppSelector(selectListTransfer)
   const dispatch = useAppDispatch()
+
+  const paymentMethods = [
+    { label: language['CASH'], value: 'cash' },
+    { label: language['TRANSFER'], value: 'transfer' },
+  ]
 
   useEffect(() => {
     dispatch(getListTransfer())

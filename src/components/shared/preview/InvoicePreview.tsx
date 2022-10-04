@@ -1,3 +1,4 @@
+import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import React from 'react'
@@ -9,6 +10,7 @@ import { CircleIcon } from '../table/CustomIcon'
 export const InvoicePreview = ({ payment, customer }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
   
   return (
     <div
@@ -78,7 +80,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                             {transaction.description}
                           </span>
                           <span className='sub-description'>
-                            Price:
+                            {language['PRICE']}:
                             {currencyFormat(
                               transaction.price?.value,
                               transaction.price?.currency
@@ -91,18 +93,18 @@ export const InvoicePreview = ({ payment, customer }) => {
                             >
                               |
                             </span>
-                            <span>Qty: {transaction.quantity}</span>
+                            <span>{language['QTY']}: {transaction.quantity}</span>
                           </span>
                         </div>
                         <div className='discount'>
-                          <span className='main-description'>Disc</span>
+                          <span className='main-description'>{language['DISC']}</span>
                           <span className='sub-description'>
                             {currencyFormat(
                               transaction.discount?.value,
                               transaction.discount?.currency
                             )}
                             {transaction.discount?.isFixed && (
-                              <span style={{ marginLeft: 3 }}>Only</span>
+                              <span style={{ marginLeft: 3 }}>{language['ONLY']}</span>
                             )}
                           </span>
                         </div>
@@ -110,7 +112,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                           <div
                             style={{ display: 'flex', flexDirection: 'column' }}
                           >
-                            <span className='main-description'>Total</span>
+                            <span className='main-description'>{language['TOTAL']}</span>
                             <span className='sub-description'>
                               {currencyFormat(total, currency)}
                             </span>
@@ -127,7 +129,7 @@ export const InvoicePreview = ({ payment, customer }) => {
             <div className='total-container'>
               <div className='charge'>
                 <div className='item'>
-                  <span>Subtotal</span>
+                  <span>{language['SUBTOTAL']}</span>
                   <div style={{ display: 'flex', lineHeight: 1 }}>
                     <span>
                       {currencyFormat(
@@ -191,7 +193,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                 })}
               </div>
               <div className='total'>
-                <span>Total</span>
+                <span>{language['TOTAL']}</span>
                 <span>
                   {currencyFormat(
                     payment?.total.value,

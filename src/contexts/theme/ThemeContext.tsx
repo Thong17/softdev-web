@@ -23,7 +23,7 @@ const ThemesProvider = ({ children }) => {
     const userTheme: ThemeOptions = user?.theme || initMode
     setMode(userTheme)
     localStorage.setItem('setting-theme', userTheme)
-  }, [user])
+  }, [user?.theme])
 
   const theme = useMemo<IThemeStyle>(() => {
     document.body.style.backgroundColor = themeMode[mode]?.background?.primary

@@ -1,4 +1,4 @@
-import { createContext, useMemo, useState } from 'react'
+import { createContext, useEffect, useMemo, useState } from 'react'
 import { LanguageOptions, ILanguageContext, ILanguage } from './interface'
 import { languages } from './constant'
 import useAuth from 'hooks/useAuth'
@@ -17,6 +17,11 @@ const LanguageProvider = ({ children }) => {
   const { user } = useAuth()
   const [lang, setLang] = useState<LanguageOptions>(user?.language || initState)
   const { notify } = useNotify()
+
+  useEffect(() => {
+    const userLang: LanguageOptions = user?.language || initState
+    setLang(userLang)
+  }, [user?.language])
 
   const language = useMemo<ILanguage>(() => languages[lang], [lang])
 

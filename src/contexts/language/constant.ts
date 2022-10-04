@@ -115,7 +115,10 @@ export const languages = {
     RETURN: 'Return',
     PRINT: 'Print',
     CHECKOUT: 'Checkout',
-    CLOSE: 'Close'
+    CLOSE: 'Close',
+    TRANSFER: 'Transfer',
+    SELL: 'Sell',
+    BUY: 'Buy'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -233,6 +236,9 @@ export const languages = {
     RETURN: 'លុយអាប់',
     PRINT: 'បោះពុម្ព',
     CHECKOUT: 'បង់លុយ',
-    CLOSE: 'បិទ'
+    CLOSE: 'បិទ',
+    TRANSFER: 'ផ្ទេរ',
+    SELL: 'លក់',
+    BUY: 'ទិញ'
   }
 }

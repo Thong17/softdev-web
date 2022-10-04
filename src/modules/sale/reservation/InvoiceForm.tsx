@@ -42,6 +42,7 @@ import {
   ITransactionItem,
   recalculatePayment,
 } from 'components/shared/form/InvoiceForm'
+import useLanguage from 'hooks/useLanguage'
 
 export const mappedTransaction = (transaction) => {
   return {
@@ -92,7 +93,7 @@ export const InvoiceForm = forwardRef(
     const { theme } = useTheme()
     const { device } = useWeb()
     const confirm = useAlert()
-
+    const { language } = useLanguage()
     const [priceCurrency, setPriceCurrency] = useState('')
     const [discountCurrency, setDiscountCurrency] = useState('')
     const [totalQuantity, setTotalQuantity] = useState(0)
@@ -495,7 +496,7 @@ export const InvoiceForm = forwardRef(
                 borderRadius: theme.radius.secondary,
               }}
             >
-              Start
+              {language['START']}
             </CustomButton>
           )
 
@@ -517,7 +518,7 @@ export const InvoiceForm = forwardRef(
                   borderRadius: theme.radius.secondary,
                 }}
               >
-                Stop
+                {language['STOP']}
               </CustomButton>
             </>
           )
@@ -533,7 +534,7 @@ export const InvoiceForm = forwardRef(
                     placeItems: 'center',
                   }}
                 >
-                  Completed
+                  {language['COMPLETED']}
                 </span>
                 <CustomButton
                   styled={theme}
@@ -545,7 +546,7 @@ export const InvoiceForm = forwardRef(
                     borderRadius: theme.radius.secondary,
                   }}
                 >
-                  Detail
+                  {language['DETAIL']}
                 </CustomButton>
               </>
             )
@@ -562,7 +563,7 @@ export const InvoiceForm = forwardRef(
                   borderRadius: theme.radius.secondary,
                 }}
               >
-                Clear
+                {language['CLEAR']}
               </CustomButton>
               <CustomButton
                 styled={theme}
@@ -574,7 +575,7 @@ export const InvoiceForm = forwardRef(
                   borderRadius: theme.radius.secondary,
                 }}
               >
-                Payment
+                {language['PAYMENT']}
               </CustomButton>
             </>
           )
@@ -656,7 +657,7 @@ export const InvoiceForm = forwardRef(
                             {transaction.description}
                           </span>
                           <span className='sub-description'>
-                            Price:
+                            {language['PRICE']}:
                             {currencyFormat(
                               transaction.price?.value,
                               transaction.price?.currency
@@ -669,18 +670,18 @@ export const InvoiceForm = forwardRef(
                             >
                               |
                             </span>
-                            <span>Qty: {transaction.quantity}</span>
+                            <span>{language['QTY']}: {transaction.quantity}</span>
                           </span>
                         </div>
                         <div className='discount'>
-                          <span className='main-description'>Disc</span>
+                          <span className='main-description'>{language['DISC']}</span>
                           <span className='sub-description'>
                             {currencyFormat(
                               transaction.discount?.value,
                               transaction.discount?.currency
                             )}
                             {transaction.discount?.isFixed && (
-                              <span style={{ marginLeft: 3 }}>Only</span>
+                              <span style={{ marginLeft: 3 }}>{language['ONLY']}</span>
                             )}
                           </span>
                         </div>
@@ -688,7 +689,7 @@ export const InvoiceForm = forwardRef(
                           <div
                             style={{ display: 'flex', flexDirection: 'column' }}
                           >
-                            <span className='main-description'>Total</span>
+                            <span className='main-description'>{language['TOTAL']}</span>
                             <span className='sub-description'>
                               {currencyFormat(total, currency)}
                             </span>
@@ -721,7 +722,7 @@ export const InvoiceForm = forwardRef(
                           <div style={{ gridArea: 'description' }}>
                             <MiniTextField
                               type='text'
-                              label='Description'
+                              label={language['DESCRIPTION']}
                               err={errors?.description?.message}
                               {...register('description')}
                             />
@@ -729,7 +730,7 @@ export const InvoiceForm = forwardRef(
                           <div style={{ gridArea: 'price' }}>
                             <MiniTextField
                               type='number'
-                              label='Price'
+                              label={language['PRICE']}
                               err={errors?.price?.value?.message}
                               {...register('price.value')}
                               icon={
@@ -759,7 +760,7 @@ export const InvoiceForm = forwardRef(
                           <div style={{ gridArea: 'quantity' }}>
                             <MiniTextField
                               type='number'
-                              label='Quantity'
+                              label={language['QUANTITY']}
                               err={errors?.quantity?.message}
                               {...register('quantity')}
                             />
@@ -767,7 +768,7 @@ export const InvoiceForm = forwardRef(
                           <div style={{ gridArea: 'discount' }}>
                             <MiniTextField
                               type='number'
-                              label='Discount'
+                              label={language['DISCOUNT']}
                               err={errors?.discount?.value?.message}
                               {...register('discount.value')}
                               icon={
@@ -821,7 +822,7 @@ export const InvoiceForm = forwardRef(
                           </div>
                           <div style={{ gridArea: 'note' }}>
                             <MiniDetailField
-                              label='Note'
+                              label={language['NOTE']}
                               style={{ height: 70 }}
                               {...register('note')}
                             />
@@ -842,7 +843,7 @@ export const InvoiceForm = forwardRef(
                               onClick={handleCancelForm}
                               fullWidth
                             >
-                              Cancel
+                              {language['CANCEL']}
                             </Button>
                             <Button
                               type='submit'
@@ -853,7 +854,7 @@ export const InvoiceForm = forwardRef(
                               }}
                               fullWidth
                             >
-                              Save
+                              {language['SAVE']}
                             </Button>
                           </div>
                         </form>
@@ -876,7 +877,7 @@ export const InvoiceForm = forwardRef(
                             {transaction.description}
                           </span>
                           <span className='sub-description'>
-                            Price:
+                            {language['PRICE']}:
                             {currencyFormat(
                               transaction.price?.value,
                               transaction.price?.currency
@@ -889,18 +890,18 @@ export const InvoiceForm = forwardRef(
                             >
                               |
                             </span>
-                            <span>Qty: {transaction.quantity}</span>
+                            <span>{language['QTY']}: {transaction.quantity}</span>
                           </span>
                         </div>
                         <div className='discount'>
-                          <span className='main-description'>Disc</span>
+                          <span className='main-description'>{language['DISC']}</span>
                           <span className='sub-description'>
                             {currencyFormat(
                               transaction.discount?.value,
                               transaction.discount?.currency
                             )}
                             {transaction.discount?.isFixed && (
-                              <span style={{ marginLeft: 3 }}>Only</span>
+                              <span style={{ marginLeft: 3 }}>{language['ONLY']}</span>
                             )}
                           </span>
                         </div>
@@ -908,7 +909,7 @@ export const InvoiceForm = forwardRef(
                           <div
                             style={{ display: 'flex', flexDirection: 'column' }}
                           >
-                            <span className='main-description'>Total</span>
+                            <span className='main-description'>{language['TOTAL']}</span>
                             <span className='sub-description'>
                               {currencyFormat(total, currency)}
                             </span>
@@ -937,7 +938,7 @@ export const InvoiceForm = forwardRef(
             <div className='total-container'>
               <div className='charge'>
                 <div className='item'>
-                  <span>Subtotal</span>
+                  <span>{language['SUBTOTAL']}</span>
                   <div style={{ display: 'flex', lineHeight: 1 }}>
                     <span>
                       {currencyFormat(
@@ -962,7 +963,7 @@ export const InvoiceForm = forwardRef(
                       }))
                     }
                   >
-                    Discount{' '}
+                    {language['DISCOUNT']}{' '}
                     {discount.isEditing ? (
                       <EditOffRoundedIcon />
                     ) : (
@@ -1007,7 +1008,7 @@ export const InvoiceForm = forwardRef(
                       }))
                     }
                   >
-                    Tax{' '}
+                    {language['TAX']}{' '}
                     {tax.isEditing ? (
                       <EditOffRoundedIcon />
                     ) : (
@@ -1053,7 +1054,7 @@ export const InvoiceForm = forwardRef(
                       }))
                     }
                   >
-                    Voucher{' '}
+                    {language['VOUCHER']}{' '}
                     {voucher.isEditing ? (
                       <EditOffRoundedIcon />
                     ) : (
@@ -1085,7 +1086,7 @@ export const InvoiceForm = forwardRef(
                 </div>
               </div>
               <div className='total'>
-                <span>Total</span>
+                <span>{language['TOTAL']}</span>
                 <span>
                   {currencyFormat(
                     calculatePaymentTotal(
