@@ -4,9 +4,11 @@ import Container from 'components/shared/Container'
 import { BubblePull } from 'components/animation/BubblePull'
 import useWeb from 'hooks/useWeb'
 import { SocialNav } from 'components/shared/SocialNav'
+import useLanguage from 'hooks/useLanguage'
 
 export const Home = () => {
   const { width } = useWeb()
+  const { language } = useLanguage()
   return (
     <Layout>
       <Container>
@@ -29,11 +31,11 @@ export const Home = () => {
             }}
           >
             <h1 style={{ fontWeight: 300 }}>
-              Welcome to SoftDev Management System
+              {language['HOMEPAGE_TITLE']}
             </h1>
             <br />
             <p>
-              We develop and design a reliable and high performance web application for you business with a modern user interface base on your requirement.
+              {language['HOMEPAGE_DESCRIPTION']}
             </p>
           </div>
           {width > 1024 && (

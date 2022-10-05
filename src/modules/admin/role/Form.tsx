@@ -16,6 +16,7 @@ import useNotify from 'hooks/useNotify'
 import { useEffect, useState } from 'react'
 import useTheme from 'hooks/useTheme'
 import { useNavigate } from 'react-router-dom'
+import useLanguage from 'hooks/useLanguage'
 
 export const RoleForm = ({ defaultValues, id }: any) => {
   const {
@@ -28,6 +29,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
   const { device } = useWeb()
   const { notify } = useNotify()
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const dispatch = useAppDispatch()
@@ -123,7 +125,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
               }}
               onClick={() => navigate(-1)}
             >
-              Cancel
+              {language['CANCEL']}
             </Button>
             <Button
               loading={loading}
@@ -135,7 +137,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
                 color: theme.color.info,
               }}
             >
-              {id ? 'Save' : 'Create'}
+              {id ? language['SAVE'] : language['CREATE']}
             </Button>
           </div>
         </form>

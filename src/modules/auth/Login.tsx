@@ -13,6 +13,7 @@ import { loadFull } from 'tsparticles'
 import useWeb from 'hooks/useWeb'
 import Footer from 'components/shared/Footer'
 import { useState } from 'react'
+import useLanguage from 'hooks/useLanguage'
 
 export const Login = () => {
   const navigate = useNavigate()
@@ -26,6 +27,7 @@ export const Login = () => {
   const { notify } = useNotify()
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
   const [loading, setLoading] = useState(false)
 
   const particlesInit = async (main) => {
@@ -132,7 +134,7 @@ export const Login = () => {
           detectRetina: true,
         }}
       />}
-      <CardContainer title='Login'>
+      <CardContainer title={language['LOGIN']}>
         <form
           onSubmit={handleSubmit(form)}
           style={{ padding: '20px 30px 40px 30px', width: device === 'mobile' ? 300 : 500 }}
@@ -159,7 +161,7 @@ export const Login = () => {
             variant='contained'
             type='submit'
           >
-            Login
+            {language['LOGIN']}
           </Button>
           {/* <button onClick={() => navigate('/register')}>Register</button> */}
         </form>

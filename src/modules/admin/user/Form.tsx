@@ -30,7 +30,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
   const { theme } = useTheme()
   const navigate = useNavigate()
   const { notify } = useNotify()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const [loading, setLoading] = useState(false)
   const [role, setRole] = useState('')
   const [privilege, setPrivilege] = useState<any>({ label: '', data: {} })
@@ -164,7 +164,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
             }}
           >
             <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
-              Cancel
+              {language['CANCEL']}
             </Button>
             <Button
               loading={loading}
@@ -172,7 +172,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
               variant='contained'
               style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
             >
-              { id ? 'Save' : 'Create' }
+              { id ? language['SAVE'] : language['CREATE'] }
             </Button>
           </div>
         </div>
