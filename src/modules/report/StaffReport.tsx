@@ -132,7 +132,7 @@ export const StaffReport = () => {
       .catch(err => notify(err?.response?.data?.msg, 'error'))
     
     // eslint-disable-next-line
-  }, [])
+  }, [])  
   
   return (
     <Container header={<Header />}>
@@ -174,7 +174,7 @@ export const StaffReport = () => {
               <CircleIcon
                 width={36.5}
                 height={36.5}
-                icon={topStaff?.picture}
+                icon={topStaff?.picture?.filename}
                 star={true}
               />
             }
