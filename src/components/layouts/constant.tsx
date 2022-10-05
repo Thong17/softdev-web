@@ -7,7 +7,7 @@ import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
 
 export const sideNav = [
   {
-    route: '/',
+    route: '/home',
     title: 'HOME',
     icon: <HomeRoundedIcon />,
   },

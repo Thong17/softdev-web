@@ -41,7 +41,7 @@ export const Login = () => {
       setLoading(false)
       return notify(response?.msg, 'error')
     }
-    navigate(location.state ? (location.state as string) : '/')
+    navigate(location.state ? (location.state as string) : '/home')
   }
 
   return (
