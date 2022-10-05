@@ -19,50 +19,40 @@ export const CustomBottomNav = styled('div')(
     zIndex: 1000,
     '& a': {
       position: 'relative',
-      padding: 5,
-      borderRadius: styled.radius.primary,
       color: styled.text.primary,
-      transition: '0.3s ease',
       display: 'flex',
       alignItem: 'center',
+      height: '100%',
+      paddingTop: 5,
+      boxSizing: 'border-box'
     },
-    '& a:hover span': {
+    '& a span': {
       display: 'block',
       position: 'absolute',
       width: 'max-content',
-      backgroundColor: styled.active.primary,
-      top: -45,
+      top: 33,
       left: '50%',
       transform: 'translate(-50%, 0)',
-      padding: '10px 20px',
-      boxShadow: styled.shadow.container,
+      fontSize: 11,
       borderRadius: styled.radius.secondary,
     },
     '& a.active': {
-      boxShadow: styled.shadow.container,
-      backgroundColor: `${styled.color.info}11`,
       color: styled.color.info,
       position: 'relative',
       '&::before': {
         content: `''`,
         backgroundColor: styled.color.info,
         position: 'absolute',
-        bottom: 0,
-        left: '30%',
+        top: 0,
+        left: 0,
         height: 2,
-        width: '40%',
+        width: '100%',
         borderRadius: 1
       }
     },
     '& a:hover': {
-      boxShadow: styled.shadow.container,
-      backgroundColor: `${styled.color.info}22`,
       color: styled.color.info,
-    },
-    '& a span': {
-      display: 'none',
-      alignSelf: 'center',
-    },
+    }
   })
 )
 
