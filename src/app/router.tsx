@@ -58,6 +58,10 @@ import { UserChangePassword } from 'modules/auth/UserChangePassword'
 
 const routes: RouteObject[] = [
   {
+    path: '/',
+    element: <Home />,
+  },
+  {
     path: '/home',
     element: <Home />,
   },

@@ -124,7 +124,10 @@ export const languages = {
     HOMEPAGE_DESCRIPTION: 'We develop and design a reliable and high performance web application for you business with a modern user interface base on your requirement.',
     // Form
     LOGIN: 'Login',
-    REGISTER: 'Register'
+    REGISTER: 'Register',
+    FROM: 'From',
+    TO: 'To',
+    NOTE: 'Note',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -251,6 +254,9 @@ export const languages = {
     HOMEPAGE_DESCRIPTION: 'យើងបង្កើត និងរចនាកម្មវិធីគេហទំព័រដែលអាចទុកចិត្តបាន និងដំណើរការខ្ពស់សម្រាប់អាជីវកម្មរបស់អ្នក ជាមួយនឹងមូលដ្ឋានចំណុចប្រទាក់អ្នកប្រើទំនើបតាមតម្រូវការរបស់អ្នក។',
     // Form
     LOGIN: 'ចូល',
-    REGISTER: 'ចុះឈ្មោះ'
+    REGISTER: 'ចុះឈ្មោះ',
+    FROM: 'ចាប់ផ្តើម',
+    TO: 'ដល់​',
+    NOTE: 'ចំណាំ',
   }
 }

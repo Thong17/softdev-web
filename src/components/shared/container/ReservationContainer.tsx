@@ -27,6 +27,7 @@ import { CapacityStructure } from '../structure/CapacityStructure'
 import useAuth from 'hooks/useAuth'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import useAlert from 'hooks/useAlert'
+import useLanguage from 'hooks/useLanguage'
 
 const initReservation: any = {
   price: { value: 0, currency: 'USD', duration: '1h' },
@@ -39,6 +40,7 @@ const initReservation: any = {
 
 export const ReservationContainer = ({ selectedStructures, onSave }) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const confirm = useAlert()
   const { notify } = useNotify()
   const dispatch = useAppDispatch()
@@ -190,7 +192,7 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
               color: theme.color.info,
             }}
           >
-            Add Reservation
+            {`${language['CREATE']} ${language['RESERVATION']}`}
           </CustomButton>
         )}
         <div
@@ -342,6 +344,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
     resolver: yupResolver(reservationSchema),
     defaultValues,
   })
+  const { language } = useLanguage()
   const { user } = useAuth()
   const { theme } = useTheme()
   const { device } = useWeb()
@@ -441,7 +444,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
       <div style={{ gridArea: 'from' }}>
         <MiniTextField
           type='datetime-local'
-          label='From'
+          label={language['FROM']}
           err={errors?.startAt?.message}
           {...register('startAt')}
         />
@@ -449,7 +452,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
       <div style={{ gridArea: 'to' }}>
         <MiniTextField
           type='datetime-local'
-          label='To'
+          label={language['TO']}
           err={errors?.endAt?.message}
           {...register('endAt')}
         />
@@ -503,7 +506,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
       <div style={{ gridArea: 'price' }}>
         <MiniTextField
           type='number'
-          label='Price'
+          label={language['PRICE']}
           step='any'
           err={errors?.price?.value?.message}
           {...register('price.value')}
@@ -533,7 +536,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
       </div>
       <div style={{ gridArea: 'note' }}>
         <MiniDetailField
-          label='Note'
+          label={language['NOTE']}
           style={{ height: 70 }}
           {...register('note')}
         />
@@ -554,7 +557,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
           }}
           fullWidth
         >
-          Cancel
+          {language['CANCEL']}
         </Button>
         <Button
           type='submit'
@@ -565,7 +568,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
           }}
           fullWidth
         >
-          {id ? 'Save' : 'Create'}
+          {id ? language['SAVE'] : language['CREATE']}
         </Button>
       </div>
     </form>

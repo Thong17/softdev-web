@@ -2,10 +2,12 @@ import { ReservationCalendar } from 'components/shared/calendar/ReservationCalen
 import { AlertContainer } from 'components/shared/container/AlertContainer'
 import { ReservationContainer } from 'components/shared/container/ReservationContainer'
 import { DialogTitle } from 'components/shared/DialogTitle'
+import useLanguage from 'hooks/useLanguage'
 import useWeb from 'hooks/useWeb'
 
 export const ReservationAlert = ({ dialog, setDialog, structures, onSave }: any) => {
   const { width } = useWeb()
+  const { language } = useLanguage()
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false })
   }
@@ -31,7 +33,7 @@ export const ReservationAlert = ({ dialog, setDialog, structures, onSave }: any)
           flexDirection: 'column',
         }}
       >
-        <DialogTitle title='Reservation' onClose={handleCloseDialog} />
+        <DialogTitle title={language['RESERVATION']} onClose={handleCloseDialog} />
         <div
           style={{
             padding: '10px 20px 20px 20px',

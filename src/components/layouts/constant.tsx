@@ -13,7 +13,7 @@ export const sideNav = [
   },
   {
     route: '/sale',
-    title: 'SALE',
+    title: 'OPERATION',
     icon: <PriceChangeRoundedIcon />,
     permission: 'operation'
   },
