@@ -497,7 +497,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
             <span
               style={{ color: customer.displayName ? theme.text.primary : theme.text.quaternary, transition: '0.2s ease' }}
             >
-              {customer.displayName || 'Customer'}
+              {customer.displayName || language['CUSTOMER']}
             </span>
             {errors?.customer && <TextEllipsis className='input-error'>{errors?.customer?.message}</TextEllipsis>}
           </Box>

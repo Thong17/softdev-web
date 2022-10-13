@@ -128,6 +128,16 @@ export const languages = {
     FROM: 'From',
     TO: 'To',
     NOTE: 'Note',
+    STRUCTURE: 'Structure',
+    SIZE: 'Size',
+    CUSTOMER: 'Customer',
+    ADD: 'Add',
+    DISPLAY_NAME: 'Display\u00a0Name',
+    FULL_NAME: 'Full\u00a0Name',
+    CONTACT: 'Contact',
+    DATE_OF_BIRTH: 'Date\u00a0Of\u00a0Birth',
+    PROFILE: 'Profile',
+    ADDRESS: 'Address'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -258,5 +268,15 @@ export const languages = {
     FROM: 'ចាប់ផ្តើម',
     TO: 'ដល់​',
     NOTE: 'ចំណាំ',
+    STRUCTURE: 'រចនាសម្ព័ន្ធ',
+    SIZE: 'ទំហំ',
+    CUSTOMER: 'អតិថិជន',
+    ADD: 'បង្កើត',
+    DISPLAY_NAME: 'ឈ្មោះបង្ហាញ',
+    FULL_NAME: 'ឈ្មោះ​ពេញ',
+    CONTACT: 'ទំនាក់ទំនង',
+    DATE_OF_BIRTH: 'ថ្ងៃខែ​ឆ្នាំ​កំណើត',
+    PROFILE: 'រូបភាព',
+    ADDRESS: 'អាសយដ្ឋាន'
   }
 }

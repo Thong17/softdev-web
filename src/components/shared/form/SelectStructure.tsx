@@ -8,10 +8,12 @@ import { TextEllipsis } from '../TextEllipsis'
 import useWeb from 'hooks/useWeb'
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import TableBarRoundedIcon from '@mui/icons-material/TableBarRounded'
+import useLanguage from 'hooks/useLanguage'
 
 const SelectLabel = ({ structures }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
 
   return (
     <div
@@ -64,7 +66,7 @@ const SelectLabel = ({ structures }) => {
           ))}
         </div>
       ) : (
-        <span style={{ marginLeft: 5 }}>Structure</span>
+        <span style={{ marginLeft: 5 }}>{language['STRUCTURE']}</span>
       )}
     </div>
   )
@@ -73,6 +75,7 @@ const SelectLabel = ({ structures }) => {
 export const SelectStructure = ({ onContinue, structures }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
   const dispatch = useAppDispatch()
   const { data } = useAppSelector(selectListStructure)
   const [listStructure, setListStructure] = useState<any[]>([])
@@ -185,7 +188,7 @@ export const SelectStructure = ({ onContinue, structures }) => {
                       fontSize: theme.responsive[device]?.text.quaternary,
                     }}
                   >
-                    Size
+                    {language['SIZE']}
                   </TextEllipsis>
                   <TextEllipsis style={{ textTransform: 'capitalize' }}>
                     {structure.size}
@@ -204,7 +207,7 @@ export const SelectStructure = ({ onContinue, structures }) => {
                       fontSize: theme.responsive[device]?.text.quaternary,
                     }}
                   >
-                    Size
+                    {language['STATUS']}
                   </TextEllipsis>
                   <TextEllipsis style={{ textTransform: 'capitalize' }}>
                     {structure.status}
@@ -236,7 +239,7 @@ export const SelectStructure = ({ onContinue, structures }) => {
         onClick={handleContinue}
       >
         <span style={{ display: 'grid', placeItems: 'center', width: '100%' }}>
-          Continue
+        {language['CONTINUE']}
         </span>
       </MenuItem>
     </MenuDialog>

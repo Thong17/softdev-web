@@ -12,6 +12,7 @@ import useNotify from 'hooks/useNotify'
 import { FileField, IImage } from '../form/UploadField'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import useWeb from 'hooks/useWeb'
+import useLanguage from 'hooks/useLanguage'
 
 const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
   const {
@@ -27,6 +28,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
     defaultValues,
   })
   const { notify } = useNotify()
+  const { language } = useLanguage()
   const [profilePath, setProfilePath] = useState<IImage>(defaultValues?.picture)
 
   useEffect(() => {
@@ -81,7 +83,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
       <div style={{ gridArea: 'displayName' }}>
         <MiniTextField
           type='text'
-          label='Display Name'
+          label={language['DISPLAY_NAME']}
           err={errors?.displayName?.message}
           {...register('displayName')}
         />
@@ -89,7 +91,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
       <div style={{ gridArea: 'fullName' }}>
         <MiniTextField
           type='text'
-          label='Full Name'
+          label={language['FULL_NAME']}
           err={errors?.fullName?.message}
           {...register('fullName')}
         />
@@ -97,7 +99,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
       <div style={{ gridArea: 'contact' }}>
         <MiniTextField
           type='text'
-          label='Contact'
+          label={language['CONTACT']}
           err={errors?.contact?.message}
           {...register('contact')}
         />
@@ -105,7 +107,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
       <div style={{ gridArea: 'dateOfBirth' }}>
         <MiniTextField
           type='date'
-          label='Date Of Birth'
+          label={language['DATE_OF_BIRTH']}
           err={errors?.dateOfBirth?.message}
           {...register('dateOfBirth')}
         />
@@ -115,7 +117,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
           images={profilePath && [profilePath]}
           selected={getValues('picture')?._id}
           name='picture'
-          label='Profile'
+          label={language['PROFILE']}
           accept='image/png, image/jpeg'
           onChange={handleChangeFile}
           height={130}
@@ -123,7 +125,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
       </div>
       <div style={{ gridArea: 'address' }}>
         <MiniDetailField
-          label='Address'
+          label={language['ADDRESS']}
           style={{ height: 70 }}
           {...register('address')}
         />
@@ -144,7 +146,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
           fullWidth
           onClick={() => onClose()}
         >
-          Cancel
+          {language['CANCEL']}
         </Button>
         <Button
           type='submit'
@@ -155,7 +157,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
           }}
           fullWidth
         >
-          {id ? 'Save' : 'Create'}
+          {id ? language['SAVE'] : language['CREATE']}
         </Button>
       </div>
     </form>
@@ -164,6 +166,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
 
 export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { width } = useWeb()
   const [showForm, setShowForm] = useState(false)
   const [reload, setReload] = useState(false)
@@ -207,7 +210,7 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
           flexDirection: 'column',
         }}
       >
-        <DialogTitle title='Customer' onClose={handleCloseDialog} />
+        <DialogTitle title={language['CUSTOMER']} onClose={handleCloseDialog} />
         <div
           style={{
             padding: '10px 20px 20px 20px',
@@ -244,7 +247,7 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
               fullWidth
               onClick={() => setShowForm(true)}
             >
-              Add Customer
+              {`${language['ADD']} ${language['CUSTOMER']}`}
             </Button>
           )}
         </div>
