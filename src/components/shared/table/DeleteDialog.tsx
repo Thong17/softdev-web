@@ -4,8 +4,10 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import useLanguage from 'hooks/useLanguage'
 
 export const DeleteDialog = ({ title, description, action, id, isOpen, handleConfirm, handleClose }: any) => {
+  const { language } = useLanguage()
   return (
     <div>
       <Dialog
@@ -15,17 +17,17 @@ export const DeleteDialog = ({ title, description, action, id, isOpen, handleCon
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {title || "Do you want to delete?"}
+          {title || language['CONFIRM_DELETE']}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {description || 'Delete role will proceed and you will not be able to select this role again.'}
+            {description || language['DESCRIPTION_DELETE']}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>{language['CANCEL']}</Button>
           <Button onClick={() => handleConfirm(id)} variant='contained' color='error' autoFocus>
-            {action || 'Delete'}
+            {action || language['DELETE']}
           </Button>
         </DialogActions>
       </Dialog>

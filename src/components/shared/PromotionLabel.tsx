@@ -1,9 +1,11 @@
+import useLanguage from "hooks/useLanguage"
 import useTheme from "hooks/useTheme"
 import { currencyFormat } from "utils"
 import { TextEllipsis } from "./TextEllipsis"
 
 export const PromotionLabel = ({ value, type, isFixed, size }: any) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
 
   return (
     <TextEllipsis
@@ -18,7 +20,7 @@ export const PromotionLabel = ({ value, type, isFixed, size }: any) => {
         fontSize: size || 13
       }}
     >
-      <span style={{ marginRight: 5 }}>{isFixed ? 'Only' : 'Discount'}</span>
+      <span style={{ marginRight: 5 }}>{isFixed ? language['ONLY'] : language['DISCOUNT']}</span>
       <span>{currencyFormat(value, type)}</span>
     </TextEllipsis>
   )

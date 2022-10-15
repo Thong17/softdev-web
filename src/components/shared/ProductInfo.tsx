@@ -17,7 +17,7 @@ export const ProductInfo = ({ info, previewColor, loading, ...props }: any) => {
   const [toSlide, setToSlide] = useState(0)
   const { theme } = useTheme()
   const { device } = useWeb()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const [isLoading, setIsLoading] = useState(loading)
 
   useEffect(() => {
@@ -211,7 +211,7 @@ export const ProductInfo = ({ info, previewColor, loading, ...props }: any) => {
                 alignItems: 'center',
               }}
             >
-              <ArrowRightRoundedIcon fontSize='large' /> Color
+              <ArrowRightRoundedIcon fontSize='large' /> {language['COLOR']}
             </div>
             {info?.colors?.map((color, index) => {
               return (

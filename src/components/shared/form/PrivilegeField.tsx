@@ -3,6 +3,7 @@ import useWeb from 'hooks/useWeb'
 import useTheme from 'hooks/useTheme'
 import { FC, useEffect, useState } from "react"
 import { CheckboxField } from "./CheckField"
+import useLanguage from "hooks/useLanguage"
 
 interface IPrivilegeField {
   label?: string,
@@ -15,6 +16,7 @@ interface IPrivilegeField {
 export const PrivilegeField: FC<IPrivilegeField> = ({ label, preValue, value, returnValue, isReadOnly }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
   const [checkSection, setCheckSection] = useState({})
   const [privilege, setPrivilege] = useState({ ...preValue, ...value })
   const [checkAll, setCheckAll] = useState(false)
@@ -99,7 +101,7 @@ export const PrivilegeField: FC<IPrivilegeField> = ({ label, preValue, value, re
   }, [privilege])
 
   return <CustomPrivilege styled={theme} device={device}>
-    <span className='label'>{label || 'Privilege'}</span>
+    <span className='label'>{label || language['PRIVILEGE']}</span>
     <div className='checkAll-container'>
       <CheckboxField disabled={isReadOnly} label='Super Admin' defaultChecked={checkAll} onChange={handleCheckAll} />
     </div>

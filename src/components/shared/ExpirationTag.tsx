@@ -1,8 +1,10 @@
+import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import { TextEllipsis } from './TextEllipsis'
 
 export const ExpirationTag = ({ value }: any) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
 
   return (
     <div
@@ -18,7 +20,7 @@ export const ExpirationTag = ({ value }: any) => {
         left: 0,
       }}
     >
-      <TextEllipsis>{value > 0 ? `Expire in ${value} day` : `Expired ${value} day`}</TextEllipsis>
+      <TextEllipsis>{value > 0 ? `${language['EXPIRE_IN']} ${value} ${language['day']}` : `${language['EXPIRED']} ${value} ${language['day']}`}</TextEllipsis>
     </div>
   )
 }

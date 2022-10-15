@@ -4,9 +4,11 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
 import { NanoInput } from './InputField'
 import useTheme from 'hooks/useTheme'
+import useLanguage from 'hooks/useLanguage'
 
 export const QuantityField = ({ onChange, value }) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const [quantity, setQuantity] = useState<number>(value || 0)
 
   const handleOnFocus = (event) => event.target.select()
@@ -46,7 +48,7 @@ export const QuantityField = ({ onChange, value }) => {
       <NanoInput
         type='number'
         name='quantity'
-        placeholder='Unit'
+        placeholder={language['UNIT']}
         width={50}
         value={quantity}
         onChange={handleChangeQuantity}

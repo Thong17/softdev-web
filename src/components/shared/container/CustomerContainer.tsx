@@ -68,7 +68,7 @@ export const CustomerContainer = ({
   const confirm = useAlert()
   const { device } = useWeb()
   const { notify } = useNotify()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
   const [fetching, setFetching] = useState(false)
@@ -215,8 +215,8 @@ export const CustomerContainer = ({
 
   const handleDeleteCustomer = (id) => {
     confirm({
-      title: 'Are you sure you want to delete this customer?',
-      description: 'This will delete the customer and erase all the data.',
+      title: language['CONFIRM_DELETE_CUSTOMER'],
+      description: language['DESCRIPTION_DELETE_CUSTOMER'],
       variant: 'error'
     })
       .then(() => {
@@ -252,7 +252,7 @@ export const CustomerContainer = ({
         >
           <ArrowRightRoundedIcon fontSize='large' />
           <span style={{ fontSize: theme.responsive[device]?.text.primary }}>
-            Customer
+            {language['CUSTOMER']}
           </span>
         </div>
 
@@ -267,12 +267,12 @@ export const CustomerContainer = ({
           <MiniSearchField onChange={handleSearch} />
           <MiniFilterButton>
             <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}>
-              <SortIcon asc={sortObj.name} /> By Name
+              <SortIcon asc={sortObj.name} /> {language['BY_NAME']}
             </MenuItem>
             <MenuItem
               onClick={() => handleChangeFilter({ filter: 'createdAt' })}
             >
-              <SortIcon asc={sortObj.createdAt} /> By Date
+              <SortIcon asc={sortObj.createdAt} /> {language['BY_DATE']}
             </MenuItem>
           </MiniFilterButton>
           <IconButton

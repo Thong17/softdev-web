@@ -14,6 +14,7 @@ import Dialog from './Dialog'
 import useWeb from 'hooks/useWeb'
 import { useEffect, useRef, useState } from 'react'
 import Footer from './Footer'
+import useLanguage from 'hooks/useLanguage'
 
 export const MenuBar = ({ theme, open, toggleSidebar }) => {
   return (
@@ -29,6 +30,7 @@ const Navbar = ({ children }) => {
   const [navbar, setNavbar] = useState(false)
   const { user } = useAuth()
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { toggleSidebar, sidebar } = useConfig()
   const { device, width } = useWeb()
   const navRef = useRef<HTMLDivElement>(document.createElement('div'))
@@ -99,7 +101,7 @@ const Navbar = ({ children }) => {
       {user?.id ? (
         <Profile id={user.id} username={user.username} picture={user.photo} />
       ) : (
-        <Link to='/login'>Login</Link>
+        <Link to='/login'>{language['LOGIN']}</Link>
       )}
     </CustomNavbar>
   )

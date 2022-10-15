@@ -20,6 +20,7 @@ import {
 import { CustomMiniSelect, CustomSelect } from 'styles'
 import SearchIcon from '@mui/icons-material/Search'
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
+import useLanguage from 'hooks/useLanguage'
 
 export interface IOptions {
   value: any
@@ -53,6 +54,7 @@ const Input: ForwardRefRenderFunction<
 > = ({ options, name, value, label, err, hint, loading, search = false, ...props }, ref) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
 
   const [searchText, setSearchText] = useState('')
   const displayedOptions = useMemo(
@@ -110,7 +112,7 @@ const Input: ForwardRefRenderFunction<
           <TextField
             size='small'
             autoFocus
-            placeholder='Type to search...'
+            placeholder={language['SEARCH']}
             fullWidth
             onChange={(e) => setSearchText(e.target.value)}
             InputProps={{
@@ -151,6 +153,7 @@ const MiniInput: ForwardRefRenderFunction<
   ISelectField
 > = ({ options, name, value, label, err, hint, loading, search = false, width = 68, containerStyle, ...props }, ref) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { device } = useWeb()
 
   const [searchText, setSearchText] = useState('')
@@ -211,7 +214,7 @@ const MiniInput: ForwardRefRenderFunction<
           <TextField
             size='small'
             autoFocus
-            placeholder='Type to search...'
+            placeholder={language['SEARCH']}
             fullWidth
             onChange={(e) => setSearchText(e.target.value)}
             InputProps={{

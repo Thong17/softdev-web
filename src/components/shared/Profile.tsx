@@ -7,6 +7,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
 import VpnKeyRoundedIcon from '@mui/icons-material/VpnKeyRounded'
 import { useNavigate } from 'react-router-dom'
+import useLanguage from 'hooks/useLanguage'
 
 interface IProfile {
   id: string
@@ -18,6 +19,7 @@ const Profile: FC<IProfile> = ({ id, username, picture }) => {
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
   const { logout } = useAuth()
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const navigate = useNavigate()
 
   return (
@@ -49,13 +51,13 @@ const Profile: FC<IProfile> = ({ id, username, picture }) => {
         }}
       >
         <MenuItem onClick={() => navigate(`/user/${id}`)}>
-          <PersonRoundedIcon style={{ marginRight: 10 }} /> Profile
+          <PersonRoundedIcon style={{ marginRight: 10 }} /> {language['PROFILE']}
         </MenuItem>
         <MenuItem onClick={() => navigate(`/change-password/${id}`)}>
-          <VpnKeyRoundedIcon style={{ marginRight: 10 }} /> Change Password
+          <VpnKeyRoundedIcon style={{ marginRight: 10 }} /> {language['CHANGE_PASSWORD']}
         </MenuItem>
         <MenuItem onClick={() => logout()}>
-          <LogoutRoundedIcon style={{ marginRight: 10 }} /> Logout
+          <LogoutRoundedIcon style={{ marginRight: 10 }} /> {language['LOGOUT']}
         </MenuItem>
       </Menu>
     </>

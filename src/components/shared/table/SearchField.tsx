@@ -6,11 +6,13 @@ import { CustomSearchField, CustomMiniSearchField } from 'styles'
 import { IconButton, MenuItem } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import useWeb from 'hooks/useWeb'
+import useLanguage from 'hooks/useLanguage'
 
 export const SearchField = ({ ...props }) => {
   const searchField = useRef(document.createElement('input'))
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
   const [active, setActive] = useState(false)
 
   const handleClick = () => {
@@ -39,9 +41,9 @@ export const SearchField = ({ ...props }) => {
             <KeyboardCommandKeyIcon style={{ fontSize: 15 }} />
           }
         >
-          <MenuItem>No Options</MenuItem>
+          <MenuItem>{language['NO_OPTION']}</MenuItem>
         </MenuDialog> 
-        <input ref={searchField} type='text' placeholder='Search' {...props} />
+        <input ref={searchField} type='text' placeholder={language['SEARCH']} {...props} />
       </div>
       <IconButton className='search-btn' size='small' onClick={handleClick}><SearchIcon style={{ fontSize: 23 }} /></IconButton>
     </CustomSearchField>
@@ -52,6 +54,7 @@ export const MiniSearchField = ({ ...props }) => {
   const searchField = useRef(document.createElement('input'))
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
   const [active, setActive] = useState(false)
 
   const handleClick = () => {
@@ -77,9 +80,9 @@ export const MiniSearchField = ({ ...props }) => {
             height: 26
           }}
         >
-          <MenuItem>No Options</MenuItem>
+          <MenuItem>{language['NO_OPTION']}</MenuItem>
         </MenuDialog> 
-        <input ref={searchField} type='text' placeholder='Search' {...props} />
+        <input ref={searchField} type='text' placeholder={language['SEARCH']} {...props} />
       </div>
       <IconButton className='search-btn' size='small' onClick={handleClick}><SearchIcon fontSize='small' /></IconButton>
     </CustomMiniSearchField>

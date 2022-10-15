@@ -1,4 +1,5 @@
 import { Container } from '@mui/material'
+import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { Link } from 'react-router-dom'
@@ -6,6 +7,7 @@ import { Link } from 'react-router-dom'
 const Restrict = ({ redirect }) => {
   const { device } = useWeb()
   const { theme } = useTheme()
+  const { language } = useLanguage()
 
   return (
     <Container>
@@ -34,7 +36,7 @@ const Restrict = ({ redirect }) => {
             margin: '10px 0',
           }}
         >
-          You don't have permission to access this page
+          {language['NO_PERMISSION']}
         </h3>
         <p
           style={{
@@ -42,9 +44,9 @@ const Restrict = ({ redirect }) => {
             color: theme.text.tertiary,
           }}
         >
-          Please go to{' '}
+          {language['NO_PERMISSION_DESCRIPTION']}{' '}
           <Link to='/login' state={redirect}>
-            Login
+            {language['LOGIN']}
           </Link>
         </p>
       </div>

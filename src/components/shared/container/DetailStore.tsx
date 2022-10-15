@@ -1,3 +1,4 @@
+import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import Button from '../Button'
@@ -14,6 +15,7 @@ export const DetailStore = ({
 }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
 
   return (
     <div
@@ -111,7 +113,7 @@ export const DetailStore = ({
             backgroundColor: `${theme.color.info}22`
           }}
         >
-          Edit Store
+          {language['EDIT']}
         </Button>
       </div>
       <div style={{ width: '100%', height: '100%', marginLeft: 20, padding: 10, boxShadow: theme.shadow.primary, borderRadius: theme.radius.primary }}>{children}</div>

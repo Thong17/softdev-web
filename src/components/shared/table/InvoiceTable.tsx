@@ -6,6 +6,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { ITableColumn } from './StickyTable'
+import useLanguage from 'hooks/useLanguage'
 
 interface ITable {
   columns: ITableColumn<string>[]
@@ -17,6 +18,7 @@ export const InvoiceTable = ({
   columns,
   rows,
 }: ITable) => {
+  const { language } = useLanguage()
   return (
     <div className='table-container'>
       <TableContainer className='table'>
@@ -81,7 +83,7 @@ export const InvoiceTable = ({
           
         </Table>
       </TableContainer>
-      <div style={{ height: rows?.length > 0 ? 70 : 130, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>{rows?.length === 0 && 'No Transaction'}</div>
+      <div style={{ height: rows?.length > 0 ? 70 : 130, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>{rows?.length === 0 && language['NO_TRANSACTION']}</div>
     </div>
   )
 }
