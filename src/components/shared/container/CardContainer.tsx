@@ -22,7 +22,7 @@ export const CardContainer = ({ title, children, ...props }) => {
             }}
         >
             <TextEllipsis style={{ textAlign: 'center', fontSize: theme.responsive[device]?.text.h3, padding: 10 }}>{title}</TextEllipsis>
-            <div style={{ backgroundColor: `${theme.background.primary}99`, borderRadius: theme.radius.secondary, display: 'flex', width: '100%' }}>
+            <div style={{ backgroundColor: theme.background.primary, borderRadius: theme.radius.secondary, display: 'flex', width: '100%' }}>
                 {children}
             </div>
         </div>
