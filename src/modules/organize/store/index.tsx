@@ -54,7 +54,7 @@ export const Store = () => {
           <DetailTitle title='Room' value={13} />
           <DetailTitle title='Table' value={27} />
           </div>
-          <Button fullWidth style={{ backgroundColor: `${theme.color.info}22`, color: theme.color.info }} onClick={() => navigate(`/organize/store/${data?._id}/layout`)}>Edit Layout</Button>
+          <Button fullWidth style={{ backgroundColor: `${theme.color.info}22`, color: theme.color.info }} onClick={() => navigate(`/organize/store/${data?._id}/layout`)}>{language['EDIT']}</Button>
         </div>
       </DetailStore>
       <StructureContainer />

@@ -1,3 +1,4 @@
+import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import React, { useEffect, useState } from 'react'
@@ -6,7 +7,7 @@ import {
   StructureSizeType,
   StructureStatusType,
 } from 'shared/interface'
-import { capitalizeText, statusReservation } from 'utils'
+import { statusReservation } from 'utils'
 import { StructureStatus } from '.'
 import { TextEllipsis } from '../TextEllipsis'
 
@@ -83,6 +84,7 @@ export const TableStructure = ({
   align?: 'start' | 'center' | 'end'
 }) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { device } = useWeb()
   const [chairs, setChairs] = useState<any[]>([])
 
@@ -190,7 +192,7 @@ export const TableStructure = ({
                   color: theme.color[statusReservation(status)],
                 }}
               >
-                {capitalizeText(status)}
+                {language[status.toUpperCase()]}
               </TextEllipsis>
             </div>
           </div>

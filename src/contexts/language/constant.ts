@@ -158,6 +158,10 @@ export const languages = {
     PAGE_NOT_FOUND_DESCRIPTION: 'The request destination could not be found on the server',
     NO_PERMISSION: `You don't have permission to access this page`,
     NO_PERMISSION_DESCRIPTION: 'Please go to',
+    // Status
+    VACANT: 'Vacant',
+    OCCUPIED: 'Occupied',
+    RESERVED: 'Reserved'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -302,21 +306,25 @@ export const languages = {
     DELETE: 'លុប',
     PRIVILEGE: 'Privilege',
     LOGOUT: 'ចាកចេញ',
-    CHANGE_PASSWORD: 'Change password',
+    CHANGE_PASSWORD: 'ផ្លាស់ប្តូរពាក្យសម្ងាត់',
     // Message
-    TYPE_TO_SEARCH: 'Type to search...',
-    CONFIRM_DELETE: 'Do you want to delete?',
-    CONFIRM_DELETE_CUSTOMER: 'Are you sure you want to delete this customer?',
-    DESCRIPTION_DELETE: 'After proceed you will not see this item again!',
-    DESCRIPTION_DELETE_CUSTOMER: 'This will delete the customer and erase all the data.',
-    NO_TRANSACTION: 'No\u00a0Transaction',
-    NO_OPTIONS: 'No\u00a0Option',
+    TYPE_TO_SEARCH: 'វាយបញ្ចូលដើម្បីស្វែងរក...',
+    CONFIRM_DELETE: 'តើអ្នកពិតជាចង់លុបមែនទេ?',
+    CONFIRM_DELETE_CUSTOMER: 'តើអ្នកប្រាកដថាចង់លុបអតិថិជននេះទេ?',
+    DESCRIPTION_DELETE: 'បន្ទាប់ពីបន្តអ្នកនឹងមិនឃើញធាតុនេះទៀតទេ!',
+    DESCRIPTION_DELETE_CUSTOMER: 'នឹងលុបអតិថិជននិងលុបទិន្នន័យទាំងអស់។',
+    NO_TRANSACTION: 'គ្មានប្រតិបត្តិការ',
+    NO_OPTIONS: 'គ្មានជម្រើស',
     EXPIRE_IN: 'ហួសនៅ',
     EXPIRED: 'បានហួស',
     day: 'ថ្ងៃ',
-    PAGE_NOT_FOUND: 'Page not found',
-    PAGE_NOT_FOUND_DESCRIPTION: 'The request destination could not be found on the server',
-    NO_PERMISSION: `You don't have permission to access this page`,
-    NO_PERMISSION_DESCRIPTION: 'Please go to',
+    PAGE_NOT_FOUND: 'រកមិនឃើញទំព័រ',
+    PAGE_NOT_FOUND_DESCRIPTION: 'មិនអាចរកឃើញទិសដៅសំណើនៅលើម៉ាស៊ីនមេទេ។',
+    NO_PERMISSION: `អ្នកមិនមានសិទ្ធិចូលប្រើទំព័រនេះទេ។`,
+    NO_PERMISSION_DESCRIPTION: 'សូមចូលទៅកាន់',
+    // Status
+    VACANT: 'ទំនេរ',
+    OCCUPIED: 'បានបម្រើ',
+    RESERVED: 'បានកក់'
   }
 }

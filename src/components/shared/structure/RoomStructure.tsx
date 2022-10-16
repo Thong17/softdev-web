@@ -1,3 +1,4 @@
+import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import React from 'react'
@@ -6,7 +7,7 @@ import {
   StructureSizeType,
   StructureStatusType,
 } from 'shared/interface'
-import { capitalizeText, statusReservation } from 'utils'
+import { statusReservation } from 'utils'
 import { StructureStatus } from '.'
 import { TextEllipsis } from '../TextEllipsis'
 
@@ -46,6 +47,7 @@ export const RoomStructure = ({
 }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
   return (
     <div
       style={{
@@ -109,7 +111,7 @@ export const RoomStructure = ({
                 color: theme.color[statusReservation(status)],
               }}
             >
-              {capitalizeText(status)}
+              {language[status.toUpperCase()]}
             </TextEllipsis>
           </div>
         </div>
