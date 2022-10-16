@@ -155,8 +155,8 @@ export const Login = () => {
             fullWidth
             style={{
               marginTop: 30,
-              backgroundColor: theme.background.secondary,
-              color: theme.text.secondary,
+              backgroundColor: `${theme.color.info}22`,
+              color: theme.color.info,
             }}
             variant='contained'
             type='submit'
