@@ -48,7 +48,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
         dispatch(getListUser({}))
         notify(data?.data?.msg, 'success')
       })
-      .catch((err) => notify(err.response?.data?.[0]?.path, 'error'))
+      .catch((err) => notify(err.response?.data?.[0]?.path || err.response?.data?.msg, 'error'))
       .finally(() => setLoading(false))
   }
 
