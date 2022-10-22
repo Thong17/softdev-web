@@ -192,6 +192,7 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
                   >
                     <TableStructure
                       title={structure.title}
+                      price={structure.price}
                       length={structure.length}
                       size={structure.size}
                       align={structure.align}
@@ -211,6 +212,7 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
                   >
                     <RoomStructure
                       title={structure.title}
+                      price={structure.price}
                       size={structure.size}
                       align={structure.align}
                       justify={structure.justify}

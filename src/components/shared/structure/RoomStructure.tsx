@@ -7,7 +7,7 @@ import {
   StructureSizeType,
   StructureStatusType,
 } from 'shared/interface'
-import { statusReservation } from 'utils'
+import { durationPriceFormat, statusReservation } from 'utils'
 import { StructureStatus } from '.'
 import { TextEllipsis } from '../TextEllipsis'
 
@@ -29,6 +29,7 @@ const roomSize = {
 export const RoomStructure = ({
   size = 'medium',
   title,
+  price,
   description,
   status = 'vacant',
   area,
@@ -38,6 +39,7 @@ export const RoomStructure = ({
 }: {
   size?: StructureSizeType
   title: string
+  price: any
   description?: string
   status?: StructureStatusType
   area?: string
@@ -86,12 +88,13 @@ export const RoomStructure = ({
           }}
         >
           <TextEllipsis
+            title={price?.value > 0 ? `${price.value}${price.currency}/${price.duration}` : ''}
             style={{
               fontSize: theme.responsive[device]?.text.h5,
               color: theme.text.tertiary,
             }}
           >
-            {title}
+            {price?.value > 0 ? <>{title}, {durationPriceFormat(price.value, price.currency, price.duration)}</> : title}
           </TextEllipsis>
           <div
             style={{

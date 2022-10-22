@@ -7,7 +7,7 @@ import {
   StructureSizeType,
   StructureStatusType,
 } from 'shared/interface'
-import { statusReservation } from 'utils'
+import { durationPriceFormat, statusReservation } from 'utils'
 import { StructureStatus } from '.'
 import { TextEllipsis } from '../TextEllipsis'
 
@@ -66,6 +66,7 @@ const ChairStructure = ({ column, row }) => {
 export const TableStructure = ({
   size = 'small',
   title,
+  price,
   description = '',
   status = 'vacant',
   length = 1,
@@ -75,6 +76,7 @@ export const TableStructure = ({
 }: {
   size?: StructureSizeType
   title: string
+  price: any
   description?: string
   status?: StructureStatusType
   area?: string
@@ -166,12 +168,13 @@ export const TableStructure = ({
             }}
           >
             <TextEllipsis
+              title={price?.value > 0 ? `${price.value}${price.currency}/${price.duration}` : ''}
               style={{
                 fontSize: theme.responsive[device]?.text.primary,
                 color: theme.text.tertiary,
               }}
             >
-              {title}
+              {price?.value > 0 ? <>{title}, {durationPriceFormat(price.value, price.currency, price.duration)}</> : title}
             </TextEllipsis>
             <div
               style={{

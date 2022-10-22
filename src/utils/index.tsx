@@ -87,6 +87,35 @@ export const currencyFormat = (value, currency) => {
   )
 }
 
+export const durationPriceFormat = (value, currency, duration) => {
+  let symbol
+  let decimal
+
+  switch (true) {
+    case currency === 'USD':
+      symbol = <>&#36;</>
+      decimal = value % 1 !== 0 ? 2 : 0
+      break
+
+    case currency === 'KHR':
+      symbol = <>&#6107;</>
+      decimal = 0
+      break
+  
+    default:
+      symbol = <>&#37;</>
+      decimal = 0
+      break
+  }
+  if (!value || typeof value !== 'number') return <span>0{symbol}</span>
+  return (
+    <span>
+      {value?.toFixed(decimal).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') || 0}
+      {symbol}/{duration}
+    </span>
+  )
+}
+
 export const compareDate = (date1, date2) => {
   if (!date1 && !date2) return false
 
