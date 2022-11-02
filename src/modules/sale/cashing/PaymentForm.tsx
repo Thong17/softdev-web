@@ -23,6 +23,7 @@ import { CarouselContainer } from 'components/shared/container/CarouselContainer
 import { getListTransfer, selectListTransfer } from 'modules/organize/store/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
+import { LoanForm } from 'components/shared/form/LoanForm'
 
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const confirm = useAlert()
@@ -47,6 +48,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
     { label: language['TRANSFER'], value: 'transfer' },
+    { label: language['LOAN'], value: 'loan' },
   ]
 
   useEffect(() => {
@@ -163,6 +165,9 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
     switch (method) {
       case 'transfer':
         return <CarouselContainer images={listTransfer?.map(item => item.image) || []} />
+
+      case 'loan':
+        return <LoanForm onChange={handleChangeCashes} />
     
       default:
         return <CashForm onChange={handleChangeCashes} />
