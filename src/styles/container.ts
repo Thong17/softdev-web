@@ -332,6 +332,77 @@ export const CustomColorContainer = styled('div')(
   })
 )
 
+export const CustomCustomerOptionContainer = styled('div')(
+  ({
+    styled,
+    device,
+    loading,
+  }: {
+    styled: IThemeStyle
+    device: DeviceOptions
+    loading: string
+  }) => ({
+    display: 'grid',
+    gridTemplateColumns: `repeat(auto-fill, minmax(130px, 1fr))`,
+    gridGap: 20,
+    '& div.color-container': {
+      height: 100,
+      position: 'relative',
+      border: styled.border.quaternary,
+      borderRadius: styled.radius.ternary,
+      padding: '10px 0',
+      boxSizing: 'border-box',
+      '& .select': {
+        position: 'absolute',
+        top: 8,
+        right: 10,
+        zIndex: 10,
+      },
+      '& .action': {
+        position: 'absolute',
+        padding: '5px 5px 5px 0',
+        top: 0,
+        right: 0,
+        zIndex: 10,
+        backgroundColor: styled.background.primary,
+        opacity: 0,
+        transition: '0.3s ease',
+        borderRadius: styled.radius.primary
+      },
+      '&:hover .action': {
+        opacity: 0.9,
+      },
+      '& .option-detail': {
+        display: 'flex',
+        flexDirection: 'column',
+        '& .title': {
+          color: styled.text.primary
+        },
+        '& .description': {
+          color: styled.text.tertiary,
+          fontSize: styled.responsive[device]?.text.quaternary
+        }
+      },
+      '& .option-price': {
+        display: 'flex',
+        justifyContent: 'end'
+      }
+    },
+    '& button.create-button': {
+      height: 100,
+      borderRadius: styled.radius.ternary,
+      border: styled.border.quaternary,
+      borderColor: `${styled.color.info}55`,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      color: styled.color.info,
+      backgroundColor: `${styled.color.info}11`,
+    },
+  })
+)
+
 export const CustomOptionContainer = styled('div')(
   ({
     styled,

@@ -7,9 +7,13 @@ import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { useEffect, useState } from 'react'
-import { clearInfoProduct, getInfoProduct, selectInfoProduct } from 'shared/redux'
+import {
+  clearInfoProduct,
+  getInfoProduct,
+  selectInfoProduct,
+} from 'shared/redux'
 import { CustomButton } from 'styles'
-import { CustomColorContainer, CustomOptionContainer } from 'styles/container'
+import { CustomColorContainer, CustomOptionContainer, CustomCustomerOptionContainer } from 'styles/container'
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { IconButton } from '@mui/material'
@@ -33,8 +37,11 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   const [productProperties, setProductProperties] = useState<any[]>([])
   const [productOptions, setProductOptions] = useState<any[]>([])
   const [productColor, setProductColor] = useState<any>(undefined)
+  const [productCustomerOption, setProductCustomerOption] =
+    useState<any>(undefined)
   const [totalOptions, setTotalOptions] = useState(0)
   const [totalColor, setTotalColor] = useState(0)
+  const [totalCustomerOption, setTotalCustomerOption] = useState(0)
   const [totalStock, setTotalStock] = useState(0)
   const [totalDescription, setTotalDescription] = useState('')
   const [requireFields, setRequireFields] = useState<any[]>([])
@@ -42,36 +49,42 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   useEffect(() => {
     let total = 0
     let selectedOptions: any[] = []
-    productProperties.forEach(property => {
+    productProperties.forEach((property) => {
       if (property.choice === 'MULTIPLE') {
-        return selectedOptions = [...selectedOptions, ...property.options]
-      } 
+        return (selectedOptions = [...selectedOptions, ...property.options])
+      }
 
       if (!property.option) return
-      return selectedOptions = [...selectedOptions, property.option]
+      return (selectedOptions = [...selectedOptions, property.option])
     })
 
-    product?.stocks?.forEach(stock => {
+    product?.stocks?.forEach((stock) => {
       const options = [...stock.options]
-      
-      if (productColor?._id !== stock.color || selectedOptions.sort().join(',') !== options.sort().join(',')) return
+
+      if (
+        productColor?._id !== stock.color ||
+        selectedOptions.sort().join(',') !== options.sort().join(',')
+      )
+        return
       total += stock.quantity
     })
     setProductOptions(selectedOptions)
     setTotalStock(total)
   }, [productProperties, productColor, product?.stocks])
-  
+
   useEffect(() => {
     if (!product) return
     if (product.colors.length < 1 && product.options.length < 1) {
       let total = 0
-      product?.stocks?.forEach(stock => {
+      product?.stocks?.forEach((stock) => {
         total += stock.quantity
       })
 
-      if (quantity < 1) return notify('Please select at least 1 quantity', 'error')
-      if (product.isStock && quantity > total) return notify('Order quantity has exceed our current stock', 'error')
-      
+      if (quantity < 1)
+        return notify('Please select at least 1 quantity', 'error')
+      if (product.isStock && quantity > total)
+        return notify('Order quantity has exceed our current stock', 'error')
+
       Axios({
         method: 'POST',
         url: '/sale/transaction/add',
@@ -81,17 +94,22 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
           color: null,
           price: product.price,
           currency: product.currency,
-          total: { value: product.price * quantity, currency: product.currency },
+          total: {
+            value: product.price * quantity,
+            currency: product.currency,
+          },
           quantity,
           options: [],
-          promotion: product.promotion
-        }
-      }).then(data => {
-        addTransaction(data?.data?.data)
-        handleCloseDialog()
-      }).catch(err => {
-        notify(err?.response?.data?.msg, 'error')
+          promotion: product.promotion,
+        },
       })
+        .then((data) => {
+          addTransaction(data?.data?.data)
+          handleCloseDialog()
+        })
+        .catch((err) => {
+          notify(err?.response?.data?.msg, 'error')
+        })
     }
 
     let addedOnPrices: any[] = []
@@ -109,7 +127,6 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
         })
 
         if (options.length > 0) addedOnPrices.push(...options)
-        
       } else {
         const option = product.options.find((opt) => {
           if (property.option !== opt._id) return false
@@ -138,10 +155,10 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
 
   useEffect(() => {
     if (!dialog.productId) return
-    
+
     dispatch(getInfoProduct(dialog.productId))
   }, [dispatch, dialog.productId])
-  
+
   useEffect(() => {
     if (!data) return
 
@@ -170,7 +187,8 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
       })
     })
     setProductProperties(selectedProperty)
-    if (data.colors.length > 1 || data.options.length > 1) setDialog(({ ...dialog, open: true }))
+    if (data.colors.length > 1 || data.options.length > 1)
+      setDialog({ ...dialog, open: true })
     // eslint-disable-next-line
   }, [data])
 
@@ -186,7 +204,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   }
 
   const handleClickColor = (id) => {
-    const color = product?.colors.find(color => color._id === id)
+    const color = product?.colors.find((color) => color._id === id)
 
     if (!id) return
     let price = color.price
@@ -203,13 +221,31 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
     setTotalColor(0)
   }
 
+  const handleClickCustomerOption = (id) => {
+    const customer = product?.customers.find((customer) => customer._id === id)
+
+    if (!id) return
+    let price = customer.price
+    if (customer.currency !== product.currency) {
+      if (product.currency === 'KHR') price *= 4000
+      else price /= 4000
+    }
+    setTotalCustomerOption(price)
+    setProductCustomerOption(customer)
+  }
+
+  const handleCancelCustomerOption = () => {
+    setProductCustomerOption(undefined)
+    setTotalCustomerOption(0)
+  }
+
   const handleClickOption = (optionId, propId, choice) => {
     setProductProperties((prev) => {
       const prop = prev.find((prop) => prop.id === propId)
       let key = choice !== 'SINGLE' ? 'options' : 'option'
       let value = choice !== 'SINGLE' ? [...prop.options, optionId] : optionId
 
-      setRequireFields(fields => fields.filter(field => field !== prop.id))
+      setRequireFields((fields) => fields.filter((field) => field !== prop.id))
       return prev.map((prop) =>
         prop.id !== propId ? prop : { ...prop, [key]: value }
       )
@@ -233,44 +269,54 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
 
   const handleAddToCart = () => {
     let isError = false
-    productProperties?.forEach(property => {
+    productProperties?.forEach((property) => {
       if (property.isRequire) {
         if (property.choice === 'MULTIPLE' && property.options.length < 1) {
-          setRequireFields(prev => [...prev, property.id])
-          return isError = true
+          setRequireFields((prev) => [...prev, property.id])
+          return (isError = true)
         }
         if (property.choice === 'SINGLE' && !property.option) {
-          setRequireFields(prev => [...prev, property.id])
-          return isError = true
+          setRequireFields((prev) => [...prev, property.id])
+          return (isError = true)
         }
       }
     })
     if (isError) return notify(`Option is required`, 'error')
-    if (quantity < 1) return notify('Please select at least 1 quantity', 'error')
-    if (product.isStock && quantity > totalStock) return notify('Order quantity has exceed our current stock', 'error')
+    if (quantity < 1)
+      return notify('Please select at least 1 quantity', 'error')
+    if (product.isStock && quantity > totalStock)
+      return notify('Order quantity has exceed our current stock', 'error')
 
     Axios({
       method: 'POST',
       url: '/sale/transaction/add',
       body: {
         product: product._id,
-        description: `${product.name[lang] || product.name['English']} ${productColor?.name[lang] || productColor?.name['English'] || ''} ${totalDescription}`,
+        description: `${product.name[lang] || product.name['English']} ${
+          productColor?.name[lang] || productColor?.name['English'] || ''
+        } ${totalDescription}`,
         color: productColor?._id,
-        price: totalOptions + totalColor,
+        price: totalOptions + totalColor + totalCustomerOption,
         currency: product?.currency,
-        total: { value: (totalOptions + totalColor) * quantity, currency: product?.currency },
+        total: {
+          value: (totalOptions + totalColor + totalCustomerOption) * quantity,
+          currency: product?.currency,
+        },
         quantity,
         options: productOptions,
-        promotion: product.promotion
-      }
-    }).then(data => {
-      addTransaction(data?.data?.data)
-      handleCloseDialog()
-      setProductColor(undefined)
-      setTotalColor(0)
-    }).catch(err => {
-      notify(err?.response?.data?.msg, 'error')
+        customer: productCustomerOption._id,
+        promotion: product.promotion,
+      },
     })
+      .then((data) => {
+        addTransaction(data?.data?.data)
+        handleCloseDialog()
+        setProductColor(undefined)
+        setTotalColor(0)
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
   }
 
   return (
@@ -300,6 +346,89 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
           />
         </div>
         <div>
+          {product?.customers.length > 0 && (
+            <Section
+              describe={language['CUSTOMER']}
+              style={{
+                boxShadow: theme.shadow.secondary,
+                borderRadius: theme.radius.ternary,
+                marginTop: 20,
+              }}
+            >
+              <CustomCustomerOptionContainer
+                device={device}
+                styled={theme}
+                loading={'false'}
+              >
+                {product?.customers?.map((customer, index) => {
+                  return (
+                    <div
+                      className='color-container'
+                      key={index}
+                      onClick={() =>
+                        productCustomerOption?._id === customer._id
+                          ? handleCancelCustomerOption()
+                          : handleClickCustomerOption(customer._id)
+                      }
+                      style={{
+                        border:
+                          customer._id === productCustomerOption?._id
+                            ? `1px solid ${theme.color.info}`
+                            : theme.border.quaternary,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <div className='select'>
+                        {customer._id === productCustomerOption?._id && (
+                          <DoneAllRoundedIcon
+                            fontSize='small'
+                            style={{ color: theme.color.info }}
+                          />
+                        )}
+                      </div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          height: '100%',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            height: '100%',
+                            width: 'calc(100% - 7px)',
+                            paddingLeft: 10,
+                            boxSizing: 'border-box',
+                          }}
+                        >
+                          <div className='option-detail'>
+                            <TextEllipsis className='title'>
+                              {customer?.name?.[lang] ||
+                                customer?.name?.['English']}
+                            </TextEllipsis>
+                            <TextEllipsis className='description'>
+                              {customer?.description}
+                            </TextEllipsis>
+                          </div>
+                          <FlexBetween>
+                            <TextEllipsis className='option-price'>
+                              {currencyFormat(
+                                customer.price,
+                                customer.currency
+                              )}
+                            </TextEllipsis>
+                          </FlexBetween>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </CustomCustomerOptionContainer>
+            </Section>
+          )}
           {product?.colors.length > 0 && (
             <Section
               describe={language['COLOR']}
@@ -316,14 +445,22 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
               >
                 {product?.colors?.map((color, index) => {
                   let totalStock = 0
-                  product?.stocks?.forEach(stock => {
+                  product?.stocks?.forEach((stock) => {
                     if (stock.color !== color._id) return
                     let selectedOptions = [...productOptions]
                     let stockOptions = [...stock.options]
 
-                    const matchedOptions = stockOptions.filter((opt => selectedOptions.includes(opt)))
-                    if (selectedOptions.length > 0 && matchedOptions.sort().join(',') !== selectedOptions.sort().join(',')) return
-                    if (productColor && stock.color !== productColor?._id) return
+                    const matchedOptions = stockOptions.filter((opt) =>
+                      selectedOptions.includes(opt)
+                    )
+                    if (
+                      selectedOptions.length > 0 &&
+                      matchedOptions.sort().join(',') !==
+                        selectedOptions.sort().join(',')
+                    )
+                      return
+                    if (productColor && stock.color !== productColor?._id)
+                      return
 
                     totalStock += stock.quantity
                   })
@@ -331,7 +468,11 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                     <div
                       className='color-container'
                       key={index}
-                      onClick={() => productColor?._id === color._id ? handleCancelColor() : handleClickColor(color._id)}
+                      onClick={() =>
+                        productColor?._id === color._id
+                          ? handleCancelColor()
+                          : handleClickColor(color._id)
+                      }
                       style={{
                         border:
                           color._id === productColor?._id
@@ -384,7 +525,11 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                             </TextEllipsis>
                           </div>
                           <FlexBetween>
-                            <TextEllipsis>{product?.isStock && <QuantityStatus qty={totalStock} min={1} />}</TextEllipsis>
+                            <TextEllipsis>
+                              {product?.isStock && (
+                                <QuantityStatus qty={totalStock} min={1} />
+                              )}
+                            </TextEllipsis>
                             <TextEllipsis className='option-price'>
                               {currencyFormat(color.price, color.currency)}
                             </TextEllipsis>
@@ -429,14 +574,22 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                         : selectedProperty?.options?.includes(option._id)
 
                     let totalStock = 0
-                    product?.stocks?.forEach(stock => {
+                    product?.stocks?.forEach((stock) => {
                       if (!stock.options.includes(option._id)) return
                       let selectedOptions = [...productOptions]
                       let stockOptions = [...stock.options]
 
-                      const matchedOptions = stockOptions.filter((opt => selectedOptions.includes(opt)))
-                      if (selectedOptions.length > 0 && matchedOptions.sort().join(',') !== selectedOptions.sort().join(',')) return
-                      if (productColor && stock.color !== productColor?._id) return
+                      const matchedOptions = stockOptions.filter((opt) =>
+                        selectedOptions.includes(opt)
+                      )
+                      if (
+                        selectedOptions.length > 0 &&
+                        matchedOptions.sort().join(',') !==
+                          selectedOptions.sort().join(',')
+                      )
+                        return
+                      if (productColor && stock.color !== productColor?._id)
+                        return
 
                       totalStock += stock.quantity
                     })
@@ -483,7 +636,11 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                             </TextEllipsis>
                           </div>
                           <FlexBetween>
-                            <TextEllipsis>{product?.isStock && <QuantityStatus qty={totalStock} min={1} />}</TextEllipsis>
+                            <TextEllipsis>
+                              {product?.isStock && (
+                                <QuantityStatus qty={totalStock} min={1} />
+                              )}
+                            </TextEllipsis>
                             <TextEllipsis className='option-price'>
                               {currencyFormat(option.price, option.currency)}
                             </TextEllipsis>
@@ -523,7 +680,13 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
               boxSizing: 'border-box',
             }}
           >
-            {!product?.isStock ? <span>{language['AVAILABLE']}</span> : <span>{totalStock} {language['AVAILABLE']}</span>}
+            {!product?.isStock ? (
+              <span>{language['AVAILABLE']}</span>
+            ) : (
+              <span>
+                {totalStock} {language['AVAILABLE']}
+              </span>
+            )}
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <IconButton
                 onClick={() =>
@@ -557,7 +720,13 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                 />
               </IconButton>
             </div>
-            <span>{language['TOTAL']} {currencyFormat((totalOptions + totalColor) * quantity, product?.currency)}</span>
+            <span>
+              {language['TOTAL']}{' '}
+              {currencyFormat(
+                (totalOptions + totalColor + totalCustomerOption) * quantity,
+                product?.currency
+              )}
+            </span>
           </div>
           <div style={{ width: '50%', display: 'flex' }}>
             <CustomButton
