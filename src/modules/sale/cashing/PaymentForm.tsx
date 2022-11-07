@@ -20,9 +20,13 @@ import { useReactToPrint } from 'react-to-print'
 import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
 import useWeb from 'hooks/useWeb'
 import { CarouselContainer } from 'components/shared/container/CarouselContainer'
-import { getListTransfer, selectListTransfer } from 'modules/organize/store/redux'
+import {
+  getListTransfer,
+  selectListTransfer,
+} from 'modules/organize/store/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
+import { LoanForm } from 'components/shared/form/LoanForm'
 
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const confirm = useAlert()
@@ -47,6 +51,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
     { label: language['TRANSFER'], value: 'transfer' },
+    { label: language['LOAN'], value: 'loan' },
   ]
 
   useEffect(() => {
@@ -65,7 +70,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
 
   useEffect(() => {
     setPayment(dialog.payment)
-    
+
     const value =
       dialog.payment?.total.currency === 'KHR'
         ? dialog.payment?.total.value / dialog.payment?.rate.sellRate
@@ -75,8 +80,8 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   }, [dialog.payment])
 
   useEffect(() => {
-    const remainUSD = totalPayment.value - totalReceive.total    
-    const sellRate = exchangeRate?.sellRate || 4000    
+    const remainUSD = totalPayment.value - totalReceive.total
+    const sellRate = exchangeRate?.sellRate || 4000
     setTotalRemain({ USD: remainUSD, KHR: remainUSD * sellRate })
   }, [totalPayment, exchangeRate, totalReceive.total])
 
@@ -88,12 +93,14 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
     if (value === 'transfer') {
       const buyRate = exchangeRate?.buyRate || 4000
       setTotalReceive({
-        KHR: totalPayment.currency === 'KHR' ? totalPayment.value : 0, 
-        USD: totalPayment.currency === 'USD' ? totalPayment.value : 0, 
-        total: totalPayment.currency === 'KHR' ? totalPayment.value / buyRate : totalPayment.value
+        KHR: totalPayment.currency === 'KHR' ? totalPayment.value : 0,
+        USD: totalPayment.currency === 'USD' ? totalPayment.value : 0,
+        total:
+          totalPayment.currency === 'KHR'
+            ? totalPayment.value / buyRate
+            : totalPayment.value,
       })
-    }
-    else setTotalReceive({ KHR: 0, USD: 0, total: 0 })
+    } else setTotalReceive({ KHR: 0, USD: 0, total: 0 })
     setPaymentMethod(value)
   }
 
@@ -117,57 +124,70 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
     confirm({
       title: 'Are you sure you want to check out?',
       description: 'Checkout the payment will update the status to complete.',
-      variant: 'info'
-    }).then(() => {
-      const body = {
-        receiveCashes,
-        receiveTotal: totalReceive,
-        remainTotal: totalRemain,
-        customer: dialog.customer?.id,
-        paymentMethod,
-      }
-      Axios({
-        method: 'PUT',
-        url: `/sale/payment/checkout/${dialog.payment?._id}`,
-        body,
+      variant: 'info',
+    })
+      .then(() => {
+        const body = {
+          receiveCashes,
+          receiveTotal: totalReceive,
+          remainTotal: totalRemain,
+          customer: dialog.customer?.id,
+          paymentMethod,
+        }
+        Axios({
+          method: 'PUT',
+          url: `/sale/payment/checkout/${dialog.payment?._id}`,
+          body,
+        })
+          .then((data) => {
+            setPayment(data?.data?.data)
+            reload()
+          })
+          .catch((err) => {
+            notify(err?.response?.data?.msg, 'error')
+          })
       })
-        .then((data) => {
-          setPayment(data?.data?.data)
-          reload()
-        })
-        .catch((err) => {
-          notify(err?.response?.data?.msg, 'error')
-        })
-    }).catch(() => {})
+      .catch(() => {})
   }
 
   const handleClearPayment = () => {
     confirm({
       title: 'Are you sure you want to clear the payment?',
       description: 'The payment will be clear.',
-      variant: 'error'
-    }).then(() => {
-      onClearPayment()
-      onClear()
-    }).catch(() => {})
+      variant: 'error',
+    })
+      .then(() => {
+        onClearPayment()
+        onClear()
+      })
+      .catch(() => {})
   }
 
   const invoiceRef = useRef(document.createElement('div'))
 
   const handlePrintInvoice = useReactToPrint({
     content: () => invoiceRef?.current,
-    documentTitle: 'Invoice'
+    documentTitle: 'Invoice',
   })
 
+  const loanButtonRef = useRef(document.createElement('button'))
   const renderPaymentMethod = (method) => {
     switch (method) {
       case 'transfer':
-        return <CarouselContainer images={listTransfer?.map(item => item.image) || []} />
-    
+        return (
+          <CarouselContainer
+            images={listTransfer?.map((item) => item.image) || []}
+          />
+        )
+
+      case 'loan':
+        return <LoanForm onChange={handleChangeCashes} loanButtonRef={loanButtonRef} />
+
       default:
         return <CashForm onChange={handleChangeCashes} />
     }
   }
+
 
   return (
     <AlertContainer
@@ -191,16 +211,17 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
             height: 'calc(100% - 69.98px)',
             gridGap: 20,
             display: 'grid',
-            gridTemplateColumns: width > 1024 ? 'calc(100% - 480px) auto' : '1fr',
+            gridTemplateColumns:
+              width > 1024 ? 'calc(100% - 480px) auto' : '1fr',
             gridTemplateRows: width > 1024 ? '1fr 200px' : 'auto',
-            gridTemplateAreas: width > 1024 
-                                ? `'payment preview''exchange preview'` 
-                                : `
+            gridTemplateAreas:
+              width > 1024
+                ? `'payment preview''exchange preview'`
+                : `
                                   'payment payment'
                                   'exchange exchange'
                                   'preview preview'
-                                  ` 
-                                              
+                                  `,
           }}
         >
           <div
@@ -315,7 +336,10 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                   }}
                 >
                   <span>
-                    {payment?.remainTotal?.USD < 0 ? language['RETURN'] : language['REMAIN']} {language['TOTAL']}
+                    {payment?.remainTotal?.USD < 0
+                      ? language['RETURN']
+                      : language['REMAIN']}{' '}
+                    {language['TOTAL']}
                   </span>
                   <div style={{ display: 'flex', lineHeight: 1 }}>
                     <span>
@@ -349,64 +373,78 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                   ))}
                 </Box>
               </div>
-              <div style={{ display: 'flex', gap: 10 }}>
-                {payment?.status ? (
-                  <CustomButton
-                    onClick={handleClearPayment}
-                    styled={theme}
-                    style={{
-                      backgroundColor: `${theme.color.error}22`,
-                      color: theme.color.error,
-                      width: '100%',
-                    }}
-                  >
-                    {language['CLOSE']}
-                  </CustomButton>
-                ) : (
-                  <CustomButton
-                    onClick={() => handleCloseDialog()}
-                    styled={theme}
-                    style={{
-                      backgroundColor: `${theme.color.error}22`,
-                      color: theme.color.error,
-                      width: '100%',
-                    }}
-                  >
-                    {language['CLOSE']}
-                  </CustomButton>
-                )}
-                {payment?.status ? (
-                  <CustomButton
-                    onClick={handlePrintInvoice}
-                    styled={theme}
-                    style={{
-                      backgroundColor: `${theme.color.info}22`,
-                      color: theme.color.info,
-                      width: '100%',
-                    }}
-                  >
-                    <PrintRoundedIcon
-                      style={{ fontSize: 19, marginRight: 5 }}
-                    />{' '}
-                    {language['PRINT']}
-                  </CustomButton>
-                ) : (
-                  <CustomButton
-                    onClick={handleCheckout}
-                    styled={theme}
-                    style={{
-                      backgroundColor: `${theme.color.success}22`,
-                      color: theme.color.success,
-                      width: '100%',
-                    }}
-                  >
-                    <ReceiptRoundedIcon
-                      style={{ fontSize: 17, marginRight: 5 }}
-                    />{' '}
-                    {language['CHECKOUT']}
-                  </CustomButton>
-                )}
-              </div>
+              {paymentMethod === 'loan' ? (
+                <CustomButton
+                  onClick={() => loanButtonRef.current.click()}
+                  styled={theme}
+                  style={{
+                    backgroundColor: `${theme.color.info}22`,
+                    color: theme.color.info,
+                    width: '100%',
+                  }}
+                >
+                  PROCEED
+                </CustomButton>
+              ) : (
+                <div style={{ display: 'flex', gap: 10 }}>
+                  {payment?.status ? (
+                    <CustomButton
+                      onClick={handleClearPayment}
+                      styled={theme}
+                      style={{
+                        backgroundColor: `${theme.color.error}22`,
+                        color: theme.color.error,
+                        width: '100%',
+                      }}
+                    >
+                      {language['CLOSE']}
+                    </CustomButton>
+                  ) : (
+                    <CustomButton
+                      onClick={() => handleCloseDialog()}
+                      styled={theme}
+                      style={{
+                        backgroundColor: `${theme.color.error}22`,
+                        color: theme.color.error,
+                        width: '100%',
+                      }}
+                    >
+                      {language['CLOSE']}
+                    </CustomButton>
+                  )}
+                  {payment?.status ? (
+                    <CustomButton
+                      onClick={handlePrintInvoice}
+                      styled={theme}
+                      style={{
+                        backgroundColor: `${theme.color.info}22`,
+                        color: theme.color.info,
+                        width: '100%',
+                      }}
+                    >
+                      <PrintRoundedIcon
+                        style={{ fontSize: 19, marginRight: 5 }}
+                      />{' '}
+                      {language['PRINT']}
+                    </CustomButton>
+                  ) : (
+                    <CustomButton
+                      onClick={handleCheckout}
+                      styled={theme}
+                      style={{
+                        backgroundColor: `${theme.color.success}22`,
+                        color: theme.color.success,
+                        width: '100%',
+                      }}
+                    >
+                      <ReceiptRoundedIcon
+                        style={{ fontSize: 17, marginRight: 5 }}
+                      />{' '}
+                      {language['CHECKOUT']}
+                    </CustomButton>
+                  )}
+                </div>
+              )}
             </div>
           </Box>
           <div style={{ gridArea: 'preview' }}>
@@ -426,7 +464,9 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
 const CashReturn = ({ cash }) => (
   <div className='cash'>
     <span>{currencyFormat(parseFloat(cash.cash), cash.currency)}</span>
-    {cash.exchange && <span>({currencyFormat(parseFloat(cash.exchange), 'KHR')})</span>}
+    {cash.exchange && (
+      <span>({currencyFormat(parseFloat(cash.exchange), 'KHR')})</span>
+    )}
     <span style={{ marginLeft: 5 }}>x{cash.quantity}</span>
   </div>
 )

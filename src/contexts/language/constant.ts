@@ -142,7 +142,13 @@ export const languages = {
     DELETE: 'Delete',
     PRIVILEGE: 'Privilege',
     LOGOUT: 'Logout',
+    ATTACHMENT: 'Attachment',
+    INTEREST: 'Interest',
+    PENALTY: 'Penalty',
+    DURATION: 'Duration',
     CHANGE_PASSWORD: 'Change\u00a0Password',
+    OVERDUE: 'Overdue',
+    PREPAYMENT: 'Prepayment',
     // Message
     TYPE_TO_SEARCH: 'Type to search...',
     CONFIRM_DELETE: 'Do you want to delete?',
@@ -161,7 +167,8 @@ export const languages = {
     // Status
     VACANT: 'Vacant',
     OCCUPIED: 'Occupied',
-    RESERVED: 'Reserved'
+    RESERVED: 'Reserved',
+    LOAN: 'Loan'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -306,7 +313,13 @@ export const languages = {
     DELETE: 'លុប',
     PRIVILEGE: 'Privilege',
     LOGOUT: 'ចាកចេញ',
+    ATTACHMENT: 'ឯកសារ​ភ្ជាប់',
+    INTEREST: 'ការប្រាក់',
+    PENALTY: 'ពិន័យ',
+    DURATION: 'រយៈពេល',
     CHANGE_PASSWORD: 'ផ្លាស់ប្តូរពាក្យសម្ងាត់',
+    OVERDUE: 'ហួសកាលកំណត់',
+    PREPAYMENT: 'ការបង់ប្រាក់ជាមុន',
     // Message
     TYPE_TO_SEARCH: 'វាយបញ្ចូលដើម្បីស្វែងរក...',
     CONFIRM_DELETE: 'តើអ្នកពិតជាចង់លុបមែនទេ?',
@@ -325,6 +338,7 @@ export const languages = {
     // Status
     VACANT: 'ទំនេរ',
     OCCUPIED: 'បានបម្រើ',
-    RESERVED: 'បានកក់'
+    RESERVED: 'បានកក់',
+    LOAN: 'រំលោះ'
   }
 }

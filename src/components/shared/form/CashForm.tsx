@@ -14,7 +14,7 @@ import { QuantityField } from './QuantityField'
 
 const initCash = { value: '0', currency: 'USD', quantity: 1 }
 
-const presetCashes = [
+export const presetCashes = [
   {
     value: 1,
     currency: 'USD',
