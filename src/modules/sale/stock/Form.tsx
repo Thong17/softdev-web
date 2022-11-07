@@ -47,7 +47,7 @@ export const Form = ({
   const [optionObj, setOptionObj] = useState(defaultValues?.options || {})
   const [color, setColor] = useState(defaultValues?.color)
   const colorValue = watch('color')
-  const [customer, setCustomer] = useState(defaultValues?.customers)
+  const [customer, setCustomer] = useState(defaultValues?.customers || [])
   const customerValue = watch('customers')
 
   useEffect(() => {
@@ -67,11 +67,9 @@ export const Form = ({
   }, [colorValue, colors])
 
   useEffect(() => {
-    const selectedCustomers = customers.find(
-      (key) => key._id === customerValue
-    )
-
-    setCustomer(selectedCustomers?._id || '')
+    const selectedCustomers = customers.filter((key) => customerValue?.includes(key._id))
+    
+    setCustomer(selectedCustomers.map(item => item._id) || [])
   }, [customerValue, customers])
 
   useEffect(() => {
@@ -228,6 +226,7 @@ export const Form = ({
                 onChange={handleChangeColor}
               />
               <SelectField
+                multiple={true}
                 search={true}
                 name='Customer'
                 value={customer}

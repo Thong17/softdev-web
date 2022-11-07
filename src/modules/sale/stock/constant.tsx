@@ -162,6 +162,7 @@ export const mapStockBody = (body) => {
     color: body?.color,
     product: body?.product,
     options: body?.options,
+    customers: body?.customers,
   }
 }
 
