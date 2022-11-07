@@ -68,6 +68,14 @@ export const initColor: IColorBody = {
   description: '',
 }
 
+export const initCustomerOption: IColorBody = {
+  name: {},
+  code: '',
+  currency: 'USD',
+  price: 0,
+  description: '',
+}
+
 export const initProperty: IPropertyBody = {
   name: {},
   description: '',
@@ -98,6 +106,16 @@ export const mapColorBody = (body) => {
     description: body.description,
     profile: body.profile?._id,
     images: body.images
+  }
+}
+
+export const mapCustomerOptionBody = (body) => {
+  return {
+    name: body.name,
+    currency: body.currency,
+    price: body.price,
+    code: body.code,
+    description: body.description,
   }
 }
 

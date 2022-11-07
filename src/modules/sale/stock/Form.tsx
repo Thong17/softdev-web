@@ -25,6 +25,7 @@ export const Form = ({
   defaultValues,
   theme,
   colors,
+  customers,
   properties,
   options,
 }: any) => {
@@ -46,6 +47,8 @@ export const Form = ({
   const [optionObj, setOptionObj] = useState(defaultValues?.options || {})
   const [color, setColor] = useState(defaultValues?.color)
   const colorValue = watch('color')
+  const [customer, setCustomer] = useState(defaultValues?.customers)
+  const customerValue = watch('customers')
 
   useEffect(() => {
     const selectedCurrency = currencyOptions.find(
@@ -62,6 +65,14 @@ export const Form = ({
 
     setColor(selectedColor?._id || '')
   }, [colorValue, colors])
+
+  useEffect(() => {
+    const selectedCustomers = customers.find(
+      (key) => key._id === customerValue
+    )
+
+    setCustomer(selectedCustomers?._id || '')
+  }, [customerValue, customers])
 
   useEffect(() => {
     reset(defaultValues)
@@ -119,6 +130,10 @@ export const Form = ({
   
   const handleChangeColor = ({ target: { value } }) => {
     setValue('color', value)
+  }
+
+  const handleChangeCustomer = ({ target: { value } }) => {
+    setValue('customers', value)
   }
 
   return (
@@ -211,6 +226,16 @@ export const Form = ({
                 })}
                 label='Color'
                 onChange={handleChangeColor}
+              />
+              <SelectField
+                search={true}
+                name='Customer'
+                value={customer}
+                options={customers.map((customer) => {
+                  return { value: customer?._id, label: customer?.name?.[lang] || customer?.name?.['English'] }
+                })}
+                label='Customer'
+                onChange={handleChangeCustomer}
               />
               
               {properties?.map((property, index) => {

@@ -46,3 +46,13 @@ export const colorSchema = yup.object().shape({
   images: yup.array().optional(),
   description: yup.string().optional(),
 })
+
+export const customerOptionSchema = yup.object().shape({
+  name: yup.object({
+    English: yup.string().required('English is required'),
+  }),
+  price: yup.number().optional(),
+  currency: yup.string().optional(),
+  code: yup.string().optional(),
+  description: yup.string().optional(),
+})

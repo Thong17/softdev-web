@@ -92,6 +92,20 @@ export const productSlice = createSlice({
     },
     deleteColor(state, action) {
       state.single.data.colors = state.single.data.colors?.filter((color) => color._id !== action.payload)
+    },
+    createCustomerOption(state, action) {
+      state.single.data.customers = [...state.single.data.customers, action.payload]
+    },
+    updateCustomerOption(state, action) {
+      state.single.data.customers = state.single.data.customers.map((customer) => {
+        if (customer._id === action.payload._id) {
+          customer = action.payload
+        }
+        return customer
+      })
+    },
+    deleteCustomerOption(state, action) {
+      state.single.data.customers = state.single.data.customers?.filter((customer) => customer._id !== action.payload)
     }
   },
   extraReducers: (builder) => {
@@ -139,6 +153,6 @@ export const productSlice = createSlice({
 export const selectProduct = (state: RootState) => state.product.single
 export const selectListProduct = (state: RootState) => state.product.list
 export const selectDetailProduct = (state: RootState) => state.product.detail
-export const { updateOption, deleteOption, createOption, updateProperty, deleteProperty, createProperty, updateColor, deleteColor, createColor } = productSlice.actions
+export const { updateOption, deleteOption, createOption, updateProperty, deleteProperty, createProperty, updateColor, deleteColor, createColor, createCustomerOption, updateCustomerOption, deleteCustomerOption } = productSlice.actions
 
 export default productSlice.reducer

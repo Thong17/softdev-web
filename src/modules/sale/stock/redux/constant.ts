@@ -13,7 +13,8 @@ export interface IProductBody {
   images: IImage[],
   colors?: Object[],
   properties?: Object[],
-  options?: Object[]
+  options?: Object[],
+  customers?: Object[]
 }
 
 export const initState: IProductBody = {

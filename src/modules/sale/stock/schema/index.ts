@@ -11,4 +11,5 @@ export const stockSchema = yup.object().shape({
   alertAt: yup.number().optional(),
   color: yup.string().optional(),
   options: yup.array().optional(),
+  customers: yup.array().optional(),
 })

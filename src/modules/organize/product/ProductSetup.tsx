@@ -18,6 +18,7 @@ import {
   deleteOption,
   deleteProperty,
   deleteColor,
+  deleteCustomerOption,
 } from './redux'
 import useLanguage from 'hooks/useLanguage'
 import { MenuDialog } from 'components/shared/MenuDialog'
@@ -30,12 +31,14 @@ import {
 } from 'components/shared/table/ActionButton'
 import useAlert from 'hooks/useAlert'
 import {
+  initCustomerOption,
   initColor,
   initOption,
   initProperty,
   mapOptionBody,
   mapPropertyBody,
   mapColorBody,
+  mapCustomerOptionBody,
 } from './redux/constant'
 import { PropertyForm } from './PropertyForm'
 import { ColorForm } from './ColorForm'
@@ -45,6 +48,7 @@ import Button from 'components/shared/Button'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
 import RadioButtonCheckedRoundedIcon from '@mui/icons-material/RadioButtonCheckedRounded'
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded'
+import { CustomerOptionForm } from './CustomerOptionForm'
 
 const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
@@ -57,6 +61,7 @@ export const ProductSetup = () => {
   const [properties, setProperties] = useState(product?.properties || [])
   const [optionValue, setOptionValue] = useState(initOption)
   const [colorValue, setColorValue] = useState(initColor)
+  const [customerOptionValue, setCustomerOptionValue] = useState(initCustomerOption)
   const [propertyValue, setPropertyValue] = useState(initProperty)
   const [optionDialog, setOptionDialog] = useState({
     open: false,
@@ -67,6 +72,11 @@ export const ProductSetup = () => {
   const [colorDialog, setColorDialog] = useState({
     open: false,
     colorId: null,
+    productId: id,
+  })
+  const [customerOptionDialog, setCustomerOptionDialog] = useState({
+    open: false,
+    customerId: null,
     productId: id,
   })
   const [propertyDialog, setPropertyDialog] = useState({
@@ -254,6 +264,61 @@ export const ProductSetup = () => {
       })
   }
 
+
+
+
+
+
+  const handleEditCustomerOption = (cid) => {
+    Axios({
+      method: 'GET',
+      url: `/organize/product/customer/detail/${cid}`,
+    })
+      .then((data) => {
+        setCustomerOptionValue(mapCustomerOptionBody(data.data.data))
+        setCustomerOptionDialog({
+          ...optionDialog,
+          customerId: cid,
+          open: true,
+        })
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
+  }
+
+  const handleDeleteCustomerOption = (id) => {
+    confirm({
+      title: 'Delete Customer Option',
+      description: 'Are you sure?',
+      variant: 'error',
+    })
+      .then(() => {
+        Axios({
+          method: 'DELETE',
+          url: `/organize/product/customer/disable/${id}`,
+        })
+          .then((data: any) => {
+            if (data?.data?.code !== 'SUCCESS') {
+              notify(data?.data?.msg, 'error')
+              return
+            }
+            dispatch(deleteCustomerOption(data?.data?.data?._id))
+            notify(data?.data?.msg, 'success')
+          })
+          .catch((err) => {
+            notify(err?.response?.data?.msg, 'error')
+          })
+      })
+      .catch(() => {
+        return
+      })
+  }
+
+
+
+
+
   const handleDropProperty = (event: any) => {
     if (!event.destination || event.destination?.index === event.source?.index)
       return
@@ -306,6 +371,12 @@ export const ProductSetup = () => {
         theme={theme}
         defaultValues={colorValue}
       />
+      <CustomerOptionForm
+        dialog={customerOptionDialog}
+        setDialog={setCustomerOptionDialog}
+        theme={theme}
+        defaultValues={customerOptionValue}
+      />
       <PropertyForm
         dialog={propertyDialog}
         setDialog={setPropertyDialog}
@@ -328,7 +399,7 @@ export const ProductSetup = () => {
           </div>
         )}
         <div>
-          <Section
+        <Section
             describe='Color'
             style={{
               boxShadow: theme.shadow.secondary,
@@ -404,6 +475,78 @@ export const ProductSetup = () => {
                           borderRadius: 3,
                         }}
                       ></span>
+                    </div>
+                  </div>
+                )
+              })}
+            </CustomColorContainer>
+          </Section>
+          <Section
+            describe='Customer Option'
+            style={{
+              boxShadow: theme.shadow.secondary,
+              borderRadius: theme.radius.ternary,
+              marginTop: 20,
+            }}
+          >
+            <CustomColorContainer
+              device={device}
+              styled={theme}
+              loading={'false'}
+            >
+              <Button
+                className='create-button'
+                onClick={() => {
+                  setCustomerOptionValue(initColor)
+                  setCustomerOptionDialog({
+                    ...customerOptionDialog,
+                    open: true,
+                  })
+                }}
+              >
+                <AddRoundedIcon />
+              </Button>
+              {product?.customers?.map((color, index) => {
+                return (
+                  <div className='color-container' key={index}>
+                    <div className='action'>
+                      <UpdateButton
+                        style={{ margin: 0 }}
+                        onClick={() => handleEditCustomerOption(color._id)}
+                      />
+                      <DeleteButton
+                        onClick={() => handleDeleteCustomerOption(color._id)}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        height: '100%',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                          height: '100%',
+                          width: '100%',
+                          boxSizing: 'border-box',
+                        }}
+                      >
+                        <div className='option-detail'>
+                          <TextEllipsis className='title'>
+                            {color?.name?.[lang] || color?.name?.['English']}
+                          </TextEllipsis>
+                          <TextEllipsis className='description'>
+                            {color?.description}
+                          </TextEllipsis>
+                        </div>
+                        <TextEllipsis className='option-price'>
+                          {color?.price} {color?.currency}
+                        </TextEllipsis>
+                      </div>
                     </div>
                   </div>
                 )

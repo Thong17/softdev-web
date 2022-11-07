@@ -223,6 +223,7 @@ export const Stock = () => {
         colors={product?.colors || []}
         properties={product?.properties || []}
         options={product?.options || []}
+        customers={product?.customers || []}
       />
       <Detail
         dialog={detailDialog}
