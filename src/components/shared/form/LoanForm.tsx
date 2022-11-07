@@ -327,7 +327,7 @@ export const LoanForm = ({ onChange, customer }: any) => {
           />
         </div>
         <div style={{ gridArea: 'penalty', marginTop: 20 }}>
-          <Section describe='Penalty'>
+          <Section describe={language['PENALTY']}>
             <div
               style={{
                 display: 'grid',
@@ -338,13 +338,13 @@ export const LoanForm = ({ onChange, customer }: any) => {
               <div>
                 <TextField
                   type='number'
-                  label={language['PENALTY']}
+                  label={language['OVERDUE']}
                 />
               </div>
               <div>
                 <TextField
                   type='number'
-                  label={language['PENALTY']}
+                  label={language['PREPAYMENT']}
                 />
               </div>
             </div>
