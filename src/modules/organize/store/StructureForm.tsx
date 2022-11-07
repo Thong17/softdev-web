@@ -11,31 +11,31 @@ import { structureSchema } from './schema'
 import { useForm } from 'react-hook-form'
 import { currencyOptions } from 'components/shared/form/InvoiceForm'
 
-const durationOptions = [
+export const durationOptions = [
   {
     label: 'H',
     value: '1h',
-    detail: '1 Hour'
+    detail: 'Hour'
   },
   {
     label: 'D',
     value: '1d',
-    detail: '1 Day'
+    detail: 'Day'
   },
   {
     label: 'W',
     value: '1w',
-    detail: '1 Week'
+    detail: 'Week'
   },
   {
     label: 'M',
     value: '1m',
-    detail: '1 Month'
+    detail: 'Month'
   },
   {
     label: 'Y',
     value: '1y',
-    detail: '1 Year'
+    detail: 'Year'
   }
 ]
 

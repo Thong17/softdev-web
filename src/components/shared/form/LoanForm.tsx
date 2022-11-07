@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MiniSelectField } from '.'
 import { NanoInput, TextField } from './InputField'
-import { currencyOptions } from './InvoiceForm'
+import { currencyOptions, discountOptions } from './InvoiceForm'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
@@ -15,89 +15,42 @@ import useLanguage from 'hooks/useLanguage'
 import { useForm } from 'react-hook-form'
 import { CustomerField } from './CustomerField'
 import { Section } from '../Section'
+import { durationOptions } from 'modules/organize/store/StructureForm'
+import { presetCashes } from './CashForm'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 const initCash = { value: '0', currency: 'USD', quantity: 1 }
 
-const presetCashes = [
-  {
-    value: 1,
-    currency: 'USD',
-    quantity: 1,
-    color: '#dde1c5',
-  },
-  {
-    value: 10,
-    currency: 'USD',
-    quantity: 1,
-    color: '#dbcb9f',
-  },
-  {
-    value: 20,
-    currency: 'USD',
-    quantity: 1,
-    color: '#a7c3a8',
-  },
-  {
-    value: 50,
-    currency: 'USD',
-    quantity: 1,
-    color: '#a1bebd',
-  },
-  {
-    value: 100,
-    currency: 'USD',
-    quantity: 1,
-    color: '#b5a072',
-  },
-  {
-    value: 100,
-    currency: 'KHR',
-    quantity: 1,
-    color: '#d9886d',
-  },
-  {
-    value: 500,
-    currency: 'KHR',
-    quantity: 1,
-    color: '#a37f83',
-  },
-  {
-    value: 1000,
-    currency: 'KHR',
-    quantity: 1,
-    color: '#c9b9c9',
-  },
-  {
-    value: 5000,
-    currency: 'KHR',
-    quantity: 1,
-    color: '#a48ca7',
-  },
-  {
-    value: 10000,
-    currency: 'KHR',
-    quantity: 1,
-    color: '#6f8c8f',
-  },
-  {
-    value: 20000,
-    currency: 'KHR',
-    quantity: 1,
-    color: '#6f8c8f',
-  },
-  {
-    value: 50000,
-    currency: 'KHR',
-    quantity: 1,
-    color: '#9d8f70',
-  },
-  {
-    value: 100000,
-    currency: 'KHR',
-    quantity: 1,
-    color: '#738e78',
-  },
-]
+export const loanSchema = yup.object().shape({
+  customer: yup.string().required(),
+  attachments: yup.mixed().optional(),
+  duration: yup.object({
+    value: yup.number().required('Duration is required'),
+    time: yup.string().required('Time is required'),
+  }),
+  interest: yup.object({
+    value: yup.number().required('Price is required'),
+    currency: yup.string().required('Currency is required'),
+  }),
+  overdue: yup.object({
+    value: yup.number().required('Price is required'),
+    currency: yup.string().required('Currency is required'),
+  }),
+  prepayment: yup.object({
+    value: yup.number().required('Price is required'),
+    currency: yup.string().required('Currency is required'),
+  })
+})
+
+const defaultValues = {
+  duration: { value: 1, time: '1d' },
+  interest: { value: 1, currency: 'PCT' },
+  overdue: { value: 1, currency: 'PCT' },
+  prepayment: { value: 1, currency: 'PCT' },
+  customer: '',
+  attachment: null
+}
 
 const CastPreset = ({ theme, onClick }) => {
   return (
@@ -134,16 +87,49 @@ const CastPreset = ({ theme, onClick }) => {
   )
 }
 
-export const LoanForm = ({ onChange, customer }: any) => {
+export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
   const { theme } = useTheme()
   const { language } = useLanguage()
   const [cashForm, setCashForm] = useState(initCash)
   const [cashes, setCashes] = useState<any[]>([])
   const {
     handleSubmit,
-    formState: { errors }
+  } = useForm({})
+  const {
+    handleSubmit: handleSubmitLoan,
+    register,
+    setValue,
+    watch,
+    formState: { errors: errorsLoan }
   } = useForm({
+    resolver: yupResolver(loanSchema),
+    defaultValues
   })
+  const [durationTime, setDurationTime] = useState(defaultValues.duration.time)
+  const [interestCurrency, setInterestCurrency] = useState(defaultValues.interest.currency)
+  const [overdueCurrency, setOverdueCurrency] = useState(defaultValues.overdue.currency)
+  const [prepaymentCurrency, setPrepaymentCurrency] = useState(defaultValues.prepayment.currency)
+
+  const durationTimeValue = watch('duration.time')
+  const interestCurrencyValue = watch('interest.currency')
+  const overdueCurrencyValue = watch('overdue.currency')
+  const prepaymentCurrencyValue = watch('prepayment.currency')
+
+  useEffect(() => {
+    setDurationTime(durationTimeValue)
+  }, [durationTimeValue])
+
+  useEffect(() => {
+    setInterestCurrency(interestCurrencyValue)
+  }, [interestCurrencyValue])
+
+  useEffect(() => {
+    setOverdueCurrency(overdueCurrencyValue)
+  }, [overdueCurrencyValue])
+
+  useEffect(() => {
+    setPrepaymentCurrency(prepaymentCurrencyValue)
+  }, [prepaymentCurrencyValue])
 
   const submit = (event) => {
     event.preventDefault()
@@ -173,7 +159,11 @@ export const LoanForm = ({ onChange, customer }: any) => {
   }
   
   const handleChangeCustomer = (data) => {
-    console.log(data);
+    setValue('customer', data.id)
+  }
+
+  const submitLoan = (data) => {
+    console.log(data)
   }
 
   return (
@@ -289,7 +279,8 @@ export const LoanForm = ({ onChange, customer }: any) => {
           ))}
         </div>
       </div>
-      <div
+      <form
+        onSubmit={handleSubmitLoan(submitLoan)}
         style={{
           backgroundColor: theme.background.primary,
           borderRadius: theme.radius.secondary,
@@ -306,24 +297,74 @@ export const LoanForm = ({ onChange, customer }: any) => {
         }}
       >
         <div style={{ gridArea: 'customer' }}>
-          <CustomerField err={errors?.customer?.message} onChange={handleChangeCustomer} />
+          <CustomerField err={errorsLoan?.customer?.message} onChange={handleChangeCustomer} />
         </div>
         <div style={{ gridArea: 'attachment' }}>
           <TextField
             type='file'
             label={language['ATTACHMENT']}
+            style={{ paddingTop: 7 }}
+            {...register('attachment')}
           />
         </div>
         <div style={{ gridArea: 'duration' }}>
           <TextField
             type='text'
+            err={errorsLoan?.duration?.value?.message || errorsLoan?.duration?.time?.message}
             label={language['DURATION']}
+            {...register('duration.value')}
+            icon={
+              <>
+                <MiniSelectField
+                  options={durationOptions}
+                  value={durationTime}
+                  onChange={(event) => setValue('duration.time', event.target.value as string)}
+                  sx={{
+                    position: 'absolute',
+                    top: -1,
+                    right: -38,
+                    height: 23,
+                    '& .MuiSelect-select': {
+                      position: 'absolute',
+                      top: -2,
+                    },
+                    '& .MuiSvgIcon-root': {
+                      right: 33,
+                    },
+                  }}
+                />
+              </>
+            }
           />
         </div>
         <div style={{ gridArea: 'interest' }}>
           <TextField
             type='number'
             label={language['INTEREST']}
+            err={errorsLoan?.interest?.value?.message || errorsLoan?.interest?.currency?.message}
+            {...register('interest.value')}
+            icon={
+              <>
+                <MiniSelectField
+                  options={discountOptions}
+                  value={interestCurrency}
+                  onChange={(event) => setValue('interest.currency', event.target.value as string)}
+                  sx={{
+                    position: 'absolute',
+                    top: -1,
+                    right: -38,
+                    height: 23,
+                    '& .MuiSelect-select': {
+                      position: 'absolute',
+                      top: -2,
+                    },
+                    '& .MuiSvgIcon-root': {
+                      right: 33,
+                    },
+                  }}
+                />
+              </>
+            }
           />
         </div>
         <div style={{ gridArea: 'penalty', marginTop: 20 }}>
@@ -339,18 +380,68 @@ export const LoanForm = ({ onChange, customer }: any) => {
                 <TextField
                   type='number'
                   label={language['OVERDUE']}
+                  err={errorsLoan?.overdue?.value?.message || errorsLoan?.overdue?.currency?.message}
+                  {...register('overdue.value')}
+                  icon={
+                    <>
+                      <MiniSelectField
+                        options={discountOptions}
+                        value={overdueCurrency}
+                        onChange={(event) => setValue('overdue.currency', event.target.value as string)}
+                        sx={{
+                          position: 'absolute',
+                          top: -1,
+                          right: -38,
+                          height: 23,
+                          '& .MuiSelect-select': {
+                            position: 'absolute',
+                            top: -2,
+                          },
+                          '& .MuiSvgIcon-root': {
+                            right: 33,
+                          },
+                        }}
+                      />
+                    </>
+                  }
                 />
               </div>
               <div>
                 <TextField
                   type='number'
                   label={language['PREPAYMENT']}
+                  err={errorsLoan?.prepayment?.value?.message || errorsLoan?.prepayment?.currency?.message}
+                  {...register('prepayment.value')}
+                  icon={
+                    <>
+                      <MiniSelectField
+                        options={discountOptions}
+                        name='prepayment.currency'
+                        value={prepaymentCurrency}
+                        onChange={(event) => setValue('prepayment.currency', event.target.value as string)}
+                        sx={{
+                          position: 'absolute',
+                          top: -1,
+                          right: -38,
+                          height: 23,
+                          '& .MuiSelect-select': {
+                            position: 'absolute',
+                            top: -2,
+                          },
+                          '& .MuiSvgIcon-root': {
+                            right: 33,
+                          },
+                        }}
+                      />
+                    </>
+                  }
                 />
               </div>
             </div>
           </Section>
         </div>
-      </div>
+        <button type="submit" ref={loanButtonRef} style={{ display: 'none' }}></button>
+      </form>
     </div>
   )
 }
