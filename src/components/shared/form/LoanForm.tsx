@@ -15,12 +15,29 @@ import useLanguage from 'hooks/useLanguage'
 import { useForm } from 'react-hook-form'
 import { CustomerField } from './CustomerField'
 import { Section } from '../Section'
-import { durationOptions } from 'modules/organize/store/StructureForm'
 import { presetCashes } from './CashForm'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 const initCash = { value: '0', currency: 'USD', quantity: 1 }
+const durationOptions = [
+  {
+    label: 'Day',
+    value: 'day',
+  },
+  {
+    label: 'Week',
+    value: 'week',
+  },
+  {
+    label: 'Month',
+    value: 'month',
+  },
+  {
+    label: 'Year',
+    value: 'year',
+  }
+]
 
 export const loanSchema = yup.object().shape({
   customer: yup.string().required(),
@@ -44,7 +61,7 @@ export const loanSchema = yup.object().shape({
 })
 
 const defaultValues = {
-  duration: { value: 1, time: '1d' },
+  duration: { value: 1, time: 'month' },
   interest: { value: 1, currency: 'PCT' },
   overdue: { value: 1, currency: 'PCT' },
   prepayment: { value: 1, currency: 'PCT' },
@@ -284,7 +301,7 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
         style={{
           backgroundColor: theme.background.primary,
           borderRadius: theme.radius.secondary,
-          padding: 20,
+          padding: 10,
           display: 'grid',
           gridTemplateColumns: '1fr 1fr 1fr 1fr',
           gridColumnGap: 20,
@@ -309,7 +326,8 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
         </div>
         <div style={{ gridArea: 'duration' }}>
           <TextField
-            type='text'
+            type='number'
+            step='any'
             err={errorsLoan?.duration?.value?.message || errorsLoan?.duration?.time?.message}
             label={language['DURATION']}
             {...register('duration.value')}
@@ -322,14 +340,14 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
                   sx={{
                     position: 'absolute',
                     top: -1,
-                    right: -38,
+                    right: -13,
                     height: 23,
                     '& .MuiSelect-select': {
                       position: 'absolute',
                       top: -2,
                     },
                     '& .MuiSvgIcon-root': {
-                      right: 33,
+                      right: 8,
                     },
                   }}
                 />
@@ -340,6 +358,7 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
         <div style={{ gridArea: 'interest' }}>
           <TextField
             type='number'
+            step='any'
             label={language['INTEREST']}
             err={errorsLoan?.interest?.value?.message || errorsLoan?.interest?.currency?.message}
             {...register('interest.value')}
@@ -379,6 +398,7 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
               <div>
                 <TextField
                   type='number'
+                  step='any'
                   label={language['OVERDUE']}
                   err={errorsLoan?.overdue?.value?.message || errorsLoan?.overdue?.currency?.message}
                   {...register('overdue.value')}
@@ -409,6 +429,7 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
               <div>
                 <TextField
                   type='number'
+                  step='any'
                   label={language['PREPAYMENT']}
                   err={errorsLoan?.prepayment?.value?.message || errorsLoan?.prepayment?.currency?.message}
                   {...register('prepayment.value')}
