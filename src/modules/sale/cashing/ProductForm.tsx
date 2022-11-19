@@ -304,7 +304,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
         },
         quantity,
         options: productOptions,
-        customer: productCustomerOption._id,
+        customer: productCustomerOption?._id,
         promotion: product.promotion,
       },
     })
