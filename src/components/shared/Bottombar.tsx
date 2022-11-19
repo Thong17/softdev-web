@@ -15,7 +15,7 @@ const Bottombar = () => {
         styled={theme}
       >
         {sideNav.map((nav, index) => {
-          const permission = nav.permission ? user?.privilege.menu[nav.permission] : true
+          const permission = nav.permission ? user?.privilege.menu?.[nav.permission] : true
           if (permission) {
             return <NavLink key={index} to={nav.route}>
               {nav.icon}

@@ -5,7 +5,7 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
 
-export const sideNav = [
+export const sideNav: any = [
   {
     route: '/home',
     title: 'HOME',
