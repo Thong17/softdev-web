@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { MiniSelectField } from '.'
-import { NanoInput, TextField } from './InputField'
+import { NanoInput, NanoTextField, TextField } from './InputField'
 import { currencyOptions, discountOptions } from './InvoiceForm'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { IconButton } from '@mui/material'
@@ -53,18 +53,26 @@ export const loanSchema = yup.object().shape({
   overdue: yup.object({
     value: yup.number().required('Price is required'),
     currency: yup.string().required('Currency is required'),
+    duration: yup.object({
+      value: yup.number().required('Duration is required'),
+      time: yup.string().required('Time is required'),
+    }),
   }),
   prepayment: yup.object({
     value: yup.number().required('Price is required'),
     currency: yup.string().required('Currency is required'),
+    duration: yup.object({
+      value: yup.number().required('Duration is required'),
+      time: yup.string().required('Time is required'),
+    }),
   })
 })
 
 const defaultValues = {
   duration: { value: 1, time: 'month' },
   interest: { value: 1, currency: 'PCT' },
-  overdue: { value: 1, currency: 'PCT' },
-  prepayment: { value: 1, currency: 'PCT' },
+  overdue: { value: 1, currency: 'PCT', duration: { value: 7, time: 'day' } },
+  prepayment: { value: 1, currency: 'PCT', duration: { value: 7, time: 'day' } },
   customer: '',
   attachment: null
 }
@@ -125,12 +133,16 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
   const [durationTime, setDurationTime] = useState(defaultValues.duration.time)
   const [interestCurrency, setInterestCurrency] = useState(defaultValues.interest.currency)
   const [overdueCurrency, setOverdueCurrency] = useState(defaultValues.overdue.currency)
+  const [overdueDurationTime, setOverdueDurationTime] = useState(defaultValues.overdue.duration.time)
   const [prepaymentCurrency, setPrepaymentCurrency] = useState(defaultValues.prepayment.currency)
+  const [prepaymentDurationTime, setPrepaymentDurationTime] = useState(defaultValues.prepayment.duration.time)
 
   const durationTimeValue = watch('duration.time')
   const interestCurrencyValue = watch('interest.currency')
   const overdueCurrencyValue = watch('overdue.currency')
+  const overdueDurationTimeValue = watch('overdue.duration.time')
   const prepaymentCurrencyValue = watch('prepayment.currency')
+  const prepaymentDurationTimeValue = watch('prepayment.duration.time')
 
   useEffect(() => {
     setDurationTime(durationTimeValue)
@@ -145,8 +157,16 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
   }, [overdueCurrencyValue])
 
   useEffect(() => {
+    setOverdueDurationTime(overdueDurationTimeValue)
+  }, [overdueDurationTimeValue])
+
+  useEffect(() => {
     setPrepaymentCurrency(prepaymentCurrencyValue)
   }, [prepaymentCurrencyValue])
+
+  useEffect(() => {
+    setPrepaymentDurationTime(prepaymentDurationTimeValue)
+  }, [prepaymentDurationTimeValue])
 
   const submit = (event) => {
     event.preventDefault()
@@ -401,6 +421,7 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
                   step='any'
                   label={language['OVERDUE']}
                   err={errorsLoan?.overdue?.value?.message || errorsLoan?.overdue?.currency?.message}
+                  style={{ paddingRight: 160 }}
                   {...register('overdue.value')}
                   icon={
                     <>
@@ -411,17 +432,41 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
                         sx={{
                           position: 'absolute',
                           top: -1,
-                          right: -38,
+                          right: 108,
                           height: 23,
+                          maxWidth: 35,
                           '& .MuiSelect-select': {
                             position: 'absolute',
                             top: -2,
                           },
                           '& .MuiSvgIcon-root': {
-                            right: 33,
+                            right: 0,
                           },
                         }}
                       />
+                      <div style={{ display: 'flex', justifyContent: 'start' }}>
+                        <NanoTextField height={21} type="number" {...register('overdue.duration.value')} />
+                        <MiniSelectField
+                          options={durationOptions}
+                          value={overdueDurationTime}
+                          onChange={(event) => setValue('overdue.duration.time', event.target.value as string)}
+                          width={70}
+                          sx={{
+                            position: 'absolute',
+                            top: -1,
+                            right: 0,
+                            height: 23,
+                            maxWidth: 60,
+                            '& .MuiSelect-select': {
+                              position: 'absolute',
+                              top: -2,
+                            },
+                            '& .MuiSvgIcon-root': {
+                              right: 0,
+                            },
+                          }}
+                        />
+                      </div>
                     </>
                   }
                 />
@@ -432,6 +477,7 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
                   step='any'
                   label={language['PREPAYMENT']}
                   err={errorsLoan?.prepayment?.value?.message || errorsLoan?.prepayment?.currency?.message}
+                  style={{ paddingRight: 160 }}
                   {...register('prepayment.value')}
                   icon={
                     <>
@@ -443,17 +489,41 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
                         sx={{
                           position: 'absolute',
                           top: -1,
-                          right: -38,
+                          right: 108,
                           height: 23,
+                          maxWidth: 35,
                           '& .MuiSelect-select': {
                             position: 'absolute',
                             top: -2,
                           },
                           '& .MuiSvgIcon-root': {
-                            right: 33,
+                            right: 0,
                           },
                         }}
                       />
+                      <div style={{ display: 'flex', justifyContent: 'start' }}>
+                        <NanoTextField height={21} type="number" {...register('prepayment.duration.value')} />
+                        <MiniSelectField
+                          options={durationOptions}
+                          value={prepaymentDurationTime}
+                          onChange={(event) => setValue('prepayment.duration.time', event.target.value as string)}
+                          width={70}
+                          sx={{
+                            position: 'absolute',
+                            top: -1,
+                            right: 0,
+                            height: 23,
+                            maxWidth: 60,
+                            '& .MuiSelect-select': {
+                              position: 'absolute',
+                              top: -2,
+                            },
+                            '& .MuiSvgIcon-root': {
+                              right: 0,
+                            },
+                          }}
+                        />
+                      </div>
                     </>
                   }
                 />

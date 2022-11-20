@@ -76,7 +76,6 @@ export const NanoInput: ForwardRefRenderFunction<HTMLInputElement, ITextInput> =
   return (
     <>
       <input
-        {...props}
         style={{
           width: width,
           padding: icon ? '5px 35px 5px 5px' :  5,
@@ -88,6 +87,33 @@ export const NanoInput: ForwardRefRenderFunction<HTMLInputElement, ITextInput> =
           color: theme.text.secondary,
           boxSizing: 'border-box'
         }}
+        {...props}
+      />
+      {icon}
+    </>
+  )
+}
+
+export const Nano: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
+  { width = 37, height = 27, icon, ...props }, ref) => {
+  const { theme } = useTheme()
+
+  return (
+    <>
+      <input
+        ref={ref}
+        style={{
+          width: width,
+          padding: icon ? '5px 35px 5px 5px' :  5,
+          height: height,
+          outline: 'none',
+          border: theme.border.quaternary,
+          background: 'none',
+          borderRadius: theme.radius.primary,
+          color: theme.text.secondary,
+          boxSizing: 'border-box'
+        }}
+        {...props}
       />
       {icon}
     </>
@@ -136,7 +162,8 @@ export const MiniDetail: ForwardRefRenderFunction<HTMLTextAreaElement, IDetailIn
 
 const TextField = forwardRef(Input)
 const MiniTextField = forwardRef(MiniInput)
+const NanoTextField = forwardRef(Nano)
 const DetailField = forwardRef(Detail)
 const MiniDetailField = forwardRef(MiniDetail)
 
-export { TextField, DetailField, MiniTextField, MiniDetailField }
+export { TextField, DetailField, MiniTextField, NanoTextField, MiniDetailField }
