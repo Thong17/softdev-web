@@ -453,8 +453,9 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
                   <TextField 
                     height={21} 
                     step='any'
-                    type="number" 
-                    style={{ paddingRight: 80, width: 150 }}
+                    type="number"
+                    label={language['OVERDUE_DURATION']}
+                    style={{ paddingRight: 80, width: 120 }}
                     err={errorsLoan?.overdue?.duration?.value?.message || errorsLoan?.overdue?.duration?.time?.message}
                     {...register('overdue.duration.value')} 
                     icon={
@@ -520,8 +521,9 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
                   <TextField 
                     height={21} 
                     step='any'
-                    type="number" 
-                    style={{ paddingRight: 80, width: 160 }}
+                    type="number"
+                    label={language['PREPAYMENT_DURATION']}
+                    style={{ paddingRight: 80, width: 120 }}
                     err={errorsLoan?.prepayment?.duration?.value?.message || errorsLoan?.prepayment?.duration?.time?.message}
                     {...register('prepayment.duration.value')}
                     icon={

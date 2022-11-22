@@ -149,6 +149,8 @@ export const languages = {
     CHANGE_PASSWORD: 'Change\u00a0Password',
     OVERDUE: 'Overdue',
     PREPAYMENT: 'Prepayment',
+    PREPAYMENT_DURATION: 'Prepayment\u00a0Duration',
+    OVERDUE_DURATION: 'Overdue\u00a0Duration',
     // Message
     TYPE_TO_SEARCH: 'Type to search...',
     CONFIRM_DELETE: 'Do you want to delete?',
@@ -320,6 +322,8 @@ export const languages = {
     CHANGE_PASSWORD: 'ផ្លាស់ប្តូរពាក្យសម្ងាត់',
     OVERDUE: 'ហួសកាលកំណត់',
     PREPAYMENT: 'ការបង់ប្រាក់ជាមុន',
+    PREPAYMENT_DURATION: 'រយៈពេលមុន',
+    OVERDUE_DURATION: 'រយៈពេលហួស',
     // Message
     TYPE_TO_SEARCH: 'វាយបញ្ចូលដើម្បីស្វែងរក...',
     CONFIRM_DELETE: 'តើអ្នកពិតជាចង់លុបមែនទេ?',

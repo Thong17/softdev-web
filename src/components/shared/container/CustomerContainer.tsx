@@ -385,13 +385,13 @@ export const CustomerContainer = ({
                     />
                   )
                 })
-              : Array.apply(null, Array(25)).map((index, key) => {
+              : Array.apply(null, Array(5)).map((index, key) => {
                   return (
                     <div key={key}>
                       <Skeleton
                         variant='rectangular'
                         height={30}
-                        width={150}
+                        width={100}
                         style={{ borderRadius: theme.radius.secondary }}
                       />
                       <div
