@@ -349,7 +349,7 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
             type='number'
             step='any'
             err={errorsLoan?.duration?.value?.message || errorsLoan?.duration?.time?.message}
-            label={language['DURATION']}
+            label={language['INSTALMENT_DURATION']}
             {...register('duration.value')}
             icon={
               <>
