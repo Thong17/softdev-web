@@ -14,8 +14,7 @@ import moment from 'moment'
 import useLanguage from 'hooks/useLanguage'
 import useNotify from 'hooks/useNotify'
 import useTheme from 'hooks/useTheme'
-import FileDownloadRoundedIcon from '@mui/icons-material/FileDownloadRounded'
-import { IconButton, styled } from '@mui/material'
+import { styled } from '@mui/material'
 import { IThemeStyle } from 'contexts/theme/interface'
 
 const Header = () => {
@@ -331,7 +330,7 @@ export const SaleReport = () => {
                   position: 'absolute',
                   display: 'flex',
                   alignItems: 'center',
-                  right: 10,
+                  right: 0,
                   top: 7,
                 }}
               >
@@ -342,17 +341,12 @@ export const SaleReport = () => {
                   onChange={handleChangeQuery}
                 />
                 {selectedSaleChart === 'range' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginRight: 5 }}>
                     <DateInput styled={theme} type='date' name='fromDate' id='fromDate' value={fromDate} onChange={(event) => setFromDate(event.target.value)} />
                     <span style={{ color: theme.text.secondary, fontSize: 13, lineHeight: 1 }}>{language['TO']}</span>
                     <DateInput styled={theme} type='date' name='toDate' id='toDate' value={toDate} onChange={(event) => setToDate(event.target.value)} />
                   </div>
                 )}
-                <IconButton>
-                  <FileDownloadRoundedIcon
-                    style={{ color: theme.text.tertiary, fontSize: 21 }}
-                  />
-                </IconButton>
               </div>
             </>
           }

@@ -10,8 +10,7 @@ import { CustomAreaChart } from 'components/shared/charts/AreaChart'
 import useLanguage from 'hooks/useLanguage'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
 import useNotify from 'hooks/useNotify'
-import FileDownloadRoundedIcon from '@mui/icons-material/FileDownloadRounded'
-import { IconButton, styled } from '@mui/material'
+import { styled } from '@mui/material'
 import { IThemeStyle } from 'contexts/theme/interface'
 import useTheme from 'hooks/useTheme'
 
@@ -243,7 +242,7 @@ export const StaffReport = () => {
                   position: 'absolute',
                   display: 'flex',
                   alignItems: 'center',
-                  right: 10,
+                  right: 0,
                   top: 7,
                 }}
               >
@@ -255,7 +254,7 @@ export const StaffReport = () => {
                 />
                 {selectedSaleChart === 'range' && (
                   <div
-                    style={{ display: 'flex', alignItems: 'center', gap: 10 }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 10, marginRight: 5 }}
                   >
                     <DateInput
                       styled={theme}
@@ -284,11 +283,6 @@ export const StaffReport = () => {
                     />
                   </div>
                 )}
-                <IconButton>
-                  <FileDownloadRoundedIcon
-                    style={{ color: theme.text.tertiary, fontSize: 21 }}
-                  />
-                </IconButton>
               </div>
             </>
           }
