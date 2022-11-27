@@ -60,8 +60,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dockerBuild": "docker build -t thonggee/softdev-web .",
-    "dockerPush": "docker push thonggee/softdev-web"
+    "dockerBuild": "docker build -t thonggee/softdev-web:prod-putin-ktv .",
+    "dockerPush": "docker push thonggee/softdev-web:prod-putin-ktv"
   },
   "eslintConfig": {
     "extends": "react-app"
