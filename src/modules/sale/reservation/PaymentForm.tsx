@@ -22,14 +22,11 @@ import useWeb from 'hooks/useWeb'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListTransfer, selectListTransfer } from 'modules/organize/store/redux'
 import { CarouselContainer } from 'components/shared/container/CarouselContainer'
-
-const paymentMethods = [
-  { label: 'Cash', value: 'cash' },
-  { label: 'Transfer', value: 'transfer' },
-]
+import useLanguage from 'hooks/useLanguage'
 
 export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const confirm = useAlert()
+  const { language } = useLanguage()
   const { theme } = useTheme()
   const { notify } = useNotify()
   const { width } = useWeb()
@@ -46,6 +43,12 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const [receiveCashes, setReceiveCashes] = useState([])
   const { data: listTransfer } = useAppSelector(selectListTransfer)
   const dispatch = useAppDispatch()
+
+  const paymentMethods = [
+    { label: language['CASH'], value: 'cash' },
+    { label: language['TRANSFER'], value: 'transfer' },
+    { label: language['LOAN'], value: 'loan' },
+  ]
 
   useEffect(() => {
     dispatch(getListTransfer())
