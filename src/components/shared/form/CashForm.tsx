@@ -184,6 +184,7 @@ export const CashForm = ({ onChange }) => {
               }
               onFocus={(event) => event.target.select()}
               type='number'
+              step='any'
               label='Price'
               height={33}
               width={230}

@@ -730,6 +730,7 @@ export const InvoiceForm = forwardRef(
                           <div style={{ gridArea: 'price' }}>
                             <MiniTextField
                               type='number'
+                              step='any'
                               label={language['PRICE']}
                               err={errors?.price?.value?.message}
                               {...register('price.value')}
@@ -760,6 +761,7 @@ export const InvoiceForm = forwardRef(
                           <div style={{ gridArea: 'quantity' }}>
                             <MiniTextField
                               type='number'
+                              step='any'
                               label={language['QUANTITY']}
                               err={errors?.quantity?.message}
                               {...register('quantity')}
@@ -768,6 +770,7 @@ export const InvoiceForm = forwardRef(
                           <div style={{ gridArea: 'discount' }}>
                             <MiniTextField
                               type='number'
+                              step='any'
                               label={language['DISCOUNT']}
                               err={errors?.discount?.value?.message}
                               {...register('discount.value')}

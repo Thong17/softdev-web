@@ -263,6 +263,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
         <div style={{ gridArea: 'price' }}>
           <TextField
             type='number'
+            step='any'
             label='Price'
             err={errors?.price?.message}
             {...register('price')}

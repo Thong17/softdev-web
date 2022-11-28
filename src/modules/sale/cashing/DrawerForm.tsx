@@ -416,6 +416,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
           <div style={{ gridArea: 'buyRate' }}>
             <MiniTextField
               type='number'
+              step='any'
               label={language['BUY_RATE']}
               err={errors?.buyRate?.message}
               {...register('buyRate')}
@@ -424,6 +425,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
           <div style={{ gridArea: 'sellRate' }}>
             <MiniTextField
               type='number'
+              step='any'
               label={language['SELL_RATE']}
               err={errors?.sellRate?.message}
               {...register('sellRate')}
@@ -656,6 +658,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                   <div style={{ position: 'relative', width: '30%' }}>
                     <NanoInput
                       type='number'
+                      step='any'
                       name='cash'
                       placeholder='Cash'
                       width='100%'
@@ -722,6 +725,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
                     <div style={{ position: 'relative', width: '100%' }}>
                       <NanoInput
                         type='number'
+                        step='any'
                         name='total'
                         placeholder={language['TOTAL']}
                         width='100%'

@@ -129,6 +129,7 @@ export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: 
         <div style={{ gridArea: 'price' }}>
           <TextField
             type='number'
+            step='any'
             label='Price'
             err={errors?.price?.message}
             {...register('price')}

@@ -47,6 +47,7 @@ export const QuantityField = ({ onChange, value }) => {
       </IconButton>
       <NanoInput
         type='number'
+        step='any'
         name='quantity'
         placeholder={language['UNIT']}
         width={50}
