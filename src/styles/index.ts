@@ -61,6 +61,7 @@ export const CustomSideNav = styled(Stack)(
     height: '100%',
     width: '100%',
     paddingTop: 20,
+    boxSizing: 'border-box',
     backgroundColor: styled.background.secondary,
     boxShadow: styled.shadow.secondary,
     borderRadius: styled.radius.ternary,
