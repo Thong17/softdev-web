@@ -586,13 +586,13 @@ export const CustomInvoiceContainer = styled('div')(
     color: mode === 'preview' ? styled.text.secondary : '#222',
     backgroundColor:
       mode === 'preview' ? styled.background.secondary : '#ffffff',
-    fontFamily: font,
+    fontFamily: `${font} !important`,
     '& th': {
-      fontFamily: font,
+      fontFamily: `${font} !important`,
       fontSize: 18,
     },
     '& td': {
-      fontFamily: font,
+      fontFamily: `${font} !important`,
       fontWeight: 300
     },
   })
