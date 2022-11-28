@@ -160,6 +160,7 @@ export const Form = ({
         <div style={{ gridArea: 'cost' }}>
           <TextField
             type='number'
+            step='any'
             label='Cost'
             err={errors?.cost?.message}
             {...register('cost')}
@@ -177,6 +178,7 @@ export const Form = ({
         <div style={{ gridArea: 'quantity' }}>
           <TextField
             type='number'
+            step='any'
             label='Quantity'
             err={errors?.quantity?.message}
             {...register('quantity')}
@@ -201,6 +203,7 @@ export const Form = ({
         <div style={{ gridArea: 'alertAt' }}>
           <TextField
             type='number'
+            step='any'
             label='Alert At'
             err={errors?.alertAt?.message}
             {...register('alertAt')}

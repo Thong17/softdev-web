@@ -167,6 +167,7 @@ export const StructureForm = ({
         <div style={{ gridArea: 'price' }}>
           <TextField
             type='number'
+            step='any'
             label='Price'
             err={errors?.price?.value?.message}
             {...register('price.value')}
@@ -219,6 +220,7 @@ export const StructureForm = ({
         <div style={{ gridArea: 'length' }}>
           <TextField
             type='number'
+            step='any'
             label='Length'
             err={errors?.length?.message}
             {...register('length')}

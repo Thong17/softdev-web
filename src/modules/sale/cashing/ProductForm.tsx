@@ -702,6 +702,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
                 onChange={handleChangeQuantity}
                 placeholder={language['QTY']}
                 type='number'
+                step='any'
                 name='qty'
                 id='qty'
                 min='1'

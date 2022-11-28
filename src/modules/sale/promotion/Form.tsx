@@ -121,6 +121,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
         <div style={{ gridArea: 'value' }}>
           <TextField
             type='number'
+            step='any'
             label='Value'
             err={errors?.value?.message}
             {...register('value')}

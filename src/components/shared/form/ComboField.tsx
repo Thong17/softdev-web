@@ -44,6 +44,7 @@ const ComboField = ({ onChange, defaultValue, selectOption, name = '', checkbox 
         value={input}
         placeholder={name}
         type='number'
+        step='any'
         onChange={handleChangeInput}
         style={{
           width: 37,

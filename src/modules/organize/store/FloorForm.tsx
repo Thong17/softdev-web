@@ -146,6 +146,7 @@ export const FloorForm = ({
           <div style={{ gridArea: 'order' }}>
             <TextField
               type='number'
+              step='any'
               label='Order'
               err={errors?.order?.message}
               {...register('order')}
