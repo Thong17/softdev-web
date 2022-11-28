@@ -1,3 +1,4 @@
+import { Box } from '@mui/material'
 import { invoiceColumns } from 'constants/variables'
 import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
@@ -74,8 +75,8 @@ export const InvoiceContainer = ({
   const { device } = useWeb()
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         overflowX: 'hidden',
         overflowY: 'visible',
         height: 'fit-content',
@@ -83,6 +84,9 @@ export const InvoiceContainer = ({
         minWidth: width,
         boxSizing: 'border-box',
         padding: '35px 0',
+        '*': {
+          fontFamily: `${font} !important`
+        }
       }}
     >
       <ThermalBorder styled={theme} position='top' />
@@ -194,6 +198,6 @@ export const InvoiceContainer = ({
         </p>
       </CustomInvoiceContainer>
       <ThermalBorder styled={theme} />
-    </div>
+    </Box>
   )
 }
