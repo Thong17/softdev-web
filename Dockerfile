@@ -6,12 +6,12 @@ COPY package.json .
 
 RUN npm install
 
-RUN npm uninstall react-hook-form
-
-RUN npm install react-hook-form@7.30.0
-
 COPY . .
+
+RUN npm run build
+
+RUN npm i -g serve
 
 EXPOSE 3000
 
-CMD [ "npm", "start"]
+CMD [ "npm", "run", "serve"]
