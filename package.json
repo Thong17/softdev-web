@@ -42,7 +42,7 @@
     "react-color": "^2.19.3",
     "react-csv": "^2.2.2",
     "react-dom": "^17.0.2",
-    "react-hook-form": "^7.30.0",
+    "react-hook-form": "7.30.0",
     "react-redux": "^7.2.8",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
@@ -60,6 +60,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "serve": "serve -s build",
     "dockerBuild": "docker build -t thonggee/softdev-web .",
     "dockerPush": "docker push thonggee/softdev-web"
   },
