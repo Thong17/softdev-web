@@ -74,7 +74,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
 
   useEffect(() => {
     if (!product) return
-    if (product.colors.length < 1 && product.options.length < 1) {
+    if (product.colors.length < 1 && product.options.length < 1 && product.customers.length < 1) {
       let total = 0
       product?.stocks?.forEach((stock) => {
         total += stock.quantity
@@ -187,7 +187,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
       })
     })
     setProductProperties(selectedProperty)
-    if (data.colors.length > 1 || data.options.length > 1)
+    if (data.colors?.length > 1 || data.options?.length > 1 || data.customers?.length > 1)
       setDialog({ ...dialog, open: true })
     // eslint-disable-next-line
   }, [data])
@@ -312,7 +312,9 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
         addTransaction(data?.data?.data)
         handleCloseDialog()
         setProductColor(undefined)
+        setProductCustomerOption(undefined)
         setTotalColor(0)
+        setTotalCustomerOption(0)
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
