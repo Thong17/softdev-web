@@ -302,7 +302,7 @@ export const SaleReport = () => {
                       : theme.color.success,
                 }}
               >
-                <span>{totalProfit < 0 ? '-' : '+'}</span>
+                <span>{totalProfit < 0 ? '' : '+'}</span>
                 {currencyFormat(totalProfit, 'USD')}
               </span>
             }
