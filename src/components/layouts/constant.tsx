@@ -54,5 +54,6 @@ export const sideNav: any = [
     route: '/config',
     title: 'CONFIG',
     icon: <SettingsIcon />,
+    permission: 'config'
   },
 ]
