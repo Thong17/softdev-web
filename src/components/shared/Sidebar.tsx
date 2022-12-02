@@ -41,7 +41,7 @@ const Sidebar = () => {
       >
         {sideNav.map((nav, index) => {
           const permission = nav.permission
-            ? user?.privilege.menu?.[nav.permission]
+            ? user?.privilege?.menu?.[nav.permission]
             : true
           if (permission) {
             if (!nav.children) {
