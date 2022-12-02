@@ -116,8 +116,8 @@ const Item = (props, ref) => {
         />
       </div>
       <div className='content'>
-        <div className='title' title={title}>
-          <TextEllipsis>{title}</TextEllipsis>
+        <div className='title'>
+          <TextEllipsis title={title}>{title}</TextEllipsis>
         </div>
         <div className='sub-title'>
           <TextEllipsis className='sub-left'>{subLeft}</TextEllipsis>
