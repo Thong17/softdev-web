@@ -26,8 +26,6 @@ import DiscountIcon from '@mui/icons-material/Discount'
 import { IconButton } from '@mui/material'
 import { QuantityStatus } from '../QuantityStatus'
 import useAuth from 'hooks/useAuth'
-import Axios from 'constants/functions/Axios'
-import useNotify from 'hooks/useNotify'
 import { CircleIcon } from '../table/CustomIcon'
 
 const mappedProduct = (data, lang, rate) => {
@@ -91,7 +89,6 @@ export const ProductContainer = ({
     useAppSelector(selectListCategory)
   const { theme } = useTheme()
   const { device } = useWeb()
-  const { notify } = useNotify()
   const { lang, language } = useLanguage()
   const [loading, setLoading] = useState(true)
   const [fetching, setFetching] = useState(false)
@@ -209,14 +206,12 @@ export const ProductContainer = ({
     [fetching, count, offset]
   )
 
-  console.log(hasMore, offset, products.length);
-  
-
   useEffect(() => {    
     if (products.length < 1) return
-    setOffset(0)
     setHasMore(true)
     setProducts([])
+    setOffset(0)
+    setFetching(true)
     const query = new URLSearchParams()
     query.append('search', search)
     query.append('limit', limit.toString())
@@ -228,20 +223,7 @@ export const ProductContainer = ({
     query.append('promotions', promotion ? 'on' : 'off')
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected && promotionId) query.append('promotion', promotionId)
-    Axios({
-      method: 'GET',
-      url: '/shared/product/list',
-      params: query,
-    })
-      .then((data) => {
-        setProducts(
-          data?.data?.data.map((product) => mappedProduct(product, lang, user?.drawer?.buyRate))
-        )
-        setOffset(data?.data?.data.length)
-      })
-      .catch((err) => {
-        notify(err?.response?.data?.msg, 'error')
-      })
+    dispatch(getListProduct(query))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleReload])
 
