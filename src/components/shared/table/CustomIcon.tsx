@@ -39,6 +39,7 @@ export const CircleIcon = ({ icon, star = false, master = false, color = '#FFD70
             icon ? icon : 'default.png'
           }`}
           alt={icon}
+          loading='lazy'
         />
       </div>
     </div>

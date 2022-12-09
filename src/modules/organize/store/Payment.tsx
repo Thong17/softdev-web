@@ -177,6 +177,7 @@ export const PaymentStore = () => {
                   image ? image : 'default.png'
                 }`}
                 alt='transfer'
+                loading='lazy'
               />
             </>
           )}

@@ -113,6 +113,7 @@ const Item = (props, ref) => {
             picture ? picture : 'default.png'
           }`}
           alt={picture}
+          loading='lazy'
         />
       </div>
       <div className='content'>

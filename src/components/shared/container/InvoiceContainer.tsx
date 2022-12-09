@@ -106,6 +106,7 @@ export const InvoiceContainer = ({
               }}
               src={`${process.env.REACT_APP_API_UPLOADS}${logo}`}
               alt='logo'
+              loading='lazy'
             />
         </div>}
         <p

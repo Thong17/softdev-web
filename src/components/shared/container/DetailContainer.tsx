@@ -51,6 +51,7 @@ export const DetailContainer = ({ username, profile, position, id, children }) =
               profile ? profile : 'default.png'
             }`}
             alt={profile}
+            loading='lazy'
           />
         </div>
         <TextEllipsis
