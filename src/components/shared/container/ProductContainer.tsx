@@ -209,8 +209,14 @@ export const ProductContainer = ({
     [fetching, count, offset]
   )
 
-  useEffect(() => {
+  console.log(hasMore, offset, products.length);
+  
+
+  useEffect(() => {    
     if (products.length < 1) return
+    setOffset(0)
+    setHasMore(true)
+    setProducts([])
     const query = new URLSearchParams()
     query.append('search', search)
     query.append('limit', limit.toString())
@@ -231,6 +237,7 @@ export const ProductContainer = ({
         setProducts(
           data?.data?.data.map((product) => mappedProduct(product, lang, user?.drawer?.buyRate))
         )
+        setOffset(data?.data?.data.length)
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')

@@ -750,7 +750,14 @@ export const InvoiceForm = forwardRef(({
                           >
                             |
                           </span>
-                          <span>{language['QTY']}: {transaction.quantity}</span>
+                          <div style={{ display: 'flex' }}>
+                            <span>{language['QTY']}:</span>
+                            <div >
+                              <span>-</span>
+                              <span>{transaction.quantity}</span>
+                              <span>+</span>
+                            </div>
+                          </div>
                         </span>
                       </div>
                       <div className='discount'>
