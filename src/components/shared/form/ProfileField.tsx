@@ -89,6 +89,7 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
             <img
               src={`${process.env.REACT_APP_API_UPLOADS}${image?.filename}`}
               alt='file upload'
+              loading='lazy'
             />
           </div>
         ),

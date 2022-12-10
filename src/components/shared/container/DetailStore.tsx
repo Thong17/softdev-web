@@ -67,6 +67,7 @@ export const DetailStore = ({
                   icon ? icon : 'default.png'
                 }`}
                 alt={icon}
+                loading='lazy'
               />
             </div>
             <div

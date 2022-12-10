@@ -47,6 +47,7 @@ export const ProductInfo = ({ info, previewColor, loading, ...props }: any) => {
             <img
               src={`${process.env.REACT_APP_API_UPLOADS}${image?.filename}`}
               alt='file upload'
+              loading='lazy'
             />
           </div>
         ),

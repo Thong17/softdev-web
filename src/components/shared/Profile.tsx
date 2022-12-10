@@ -34,6 +34,7 @@ const Profile: FC<IProfile> = ({ id, username, picture }) => {
             <img
               src={`${process.env.REACT_APP_API_UPLOADS}${picture}`}
               alt={username}
+              loading='lazy'
             />
           ) : (
             <div style={{ alignItems: 'center' }}>{username[0]}</div>
