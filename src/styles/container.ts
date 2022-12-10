@@ -679,6 +679,12 @@ export const CustomInvoiceForm = styled('div')(
               alignItems: 'start',
               flex: '0 15%'
             },
+            '& .quantity': {
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              flex: '0 25%'
+            },
             '& .total': {
               display: 'flex',
               justifyContent: 'space-between',

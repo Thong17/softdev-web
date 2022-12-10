@@ -66,6 +66,7 @@ export const InvoiceForm = forwardRef(
       transaction,
       reservationTransaction,
       onUpdate,
+      onUpdateStock,
       onPayment,
       onChangePayment,
       onChangeCustomer,
@@ -321,7 +322,7 @@ export const InvoiceForm = forwardRef(
                 : transaction
             )
           )
-          onUpdate()
+          onUpdateStock(respData?.data?.stockRemain)
           reset({})
           if (!paymentId) return
           recalculatePayment(paymentId, {})
@@ -346,11 +347,11 @@ export const InvoiceForm = forwardRef(
             method: 'DELETE',
             url: `/sale/transaction/remove/${id}`,
           })
-            .then(() => {
+            .then((respData) => {
               setTransactions((prev) =>
                 prev.filter((transaction) => transaction.id !== id)
               )
-              onUpdate()
+              onUpdateStock(respData?.data?.stockRemain)
               if (!paymentId) return
               recalculatePayment(paymentId, {})
                 .then((data) => {
@@ -582,6 +583,48 @@ export const InvoiceForm = forwardRef(
       }
     }
 
+    const handleIncreaseQuantity = (event, transactionId) => {
+      event.stopPropagation()
+      const id = transactionId
+  
+      Axios({
+        method: 'PUT',
+        url: `/sale/transaction/quantity/increase/${id}`,
+      }).then((respData) => {
+        setTransactions((prev) => prev.map((transaction) => transaction.id === id ? { ...transaction, quantity: respData?.data?.data?.quantity, total: respData?.data?.data?.total } : transaction))
+        onUpdateStock(respData?.data?.stockRemain)
+        if (!paymentId) return
+        recalculatePayment(paymentId, {})
+          .then(data => {
+            onChangePayment(data)
+          })
+          .catch(msg => notify(msg, 'error'))
+      }).catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
+    }
+  
+    const handleDecreaseQuantity = (event, transactionId) => {
+      event.stopPropagation()
+      const id = transactionId
+  
+      Axios({
+        method: 'PUT',
+        url: `/sale/transaction/quantity/decrease/${id}`,
+      }).then((respData) => {
+        setTransactions((prev) => prev.map((transaction) => transaction.id === id ? { ...transaction, quantity: respData?.data?.data?.quantity, total: respData?.data?.data?.total } : transaction))
+        onUpdateStock(respData?.data?.stockRemain)
+        if (!paymentId) return
+        recalculatePayment(paymentId, {})
+          .then(data => {
+            onChangePayment(data)
+          })
+          .catch(msg => notify(msg, 'error'))
+      }).catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
+    }
+
     return (
       <CustomInvoiceForm
         mode={invoiceBar ? 'expand' : 'compact'}
@@ -760,6 +803,8 @@ export const InvoiceForm = forwardRef(
                           </div>
                           <div style={{ gridArea: 'quantity' }}>
                             <MiniTextField
+                              onFocus={(event) => event.target.select()}
+                              autoFocus
                               type='number'
                               step='any'
                               label={language['QUANTITY']}
@@ -885,16 +930,15 @@ export const InvoiceForm = forwardRef(
                               transaction.price?.value,
                               transaction.price?.currency
                             )}
-                            <span
-                              style={{
-                                margin: '0 3px',
-                                color: theme.text.quaternary,
-                              }}
-                            >
-                              |
-                            </span>
-                            <span>{language['QTY']}: {transaction.quantity}</span>
                           </span>
+                        </div>
+                        <div className='quantity'>
+                          <span className='main-description'>{language['QTY']}</span>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <IconButton onClick={(event) => handleDecreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>-</IconButton>
+                            <span style={{ margin: '0 1px' }}>{transaction.quantity}</span>
+                            <IconButton onClick={(event) => handleIncreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>+</IconButton>
+                          </div>
                         </div>
                         <div className='discount'>
                           <span className='main-description'>{language['DISC']}</span>

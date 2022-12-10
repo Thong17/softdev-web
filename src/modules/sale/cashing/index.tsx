@@ -53,23 +53,6 @@ export const Cashing = () => {
     setProductDialog({ ...productDialog, productId: id })
   }
 
-  const handleAddTransaction = (data) => {
-    setReload(!reload)
-    setTransaction({
-      id: data._id,
-      description: data.description,
-      discount: {
-        value: data.discount?.value || 0,
-        currency: data.discount?.type || 'PCT',
-        isFixed: data.discount?.isFixed || false,
-      },
-      price: { value: data.price, currency: data.currency },
-      quantity: data.quantity,
-      total: data.total,
-      profile: data.product?.profile?.filename
-    })
-  }
-
   const handlePayment = (data) => {
     if (data.transactions.length < 1)
       return notify('No transaction added', 'error')
@@ -160,6 +143,29 @@ export const Cashing = () => {
     setProductDialog({ ...productDialog, productId: scannedProduct._id })
   }
 
+  const [stockProducts, setStockProducts] = useState({})
+  
+  const handleUpdateStock = (data) => {
+    setStockProducts(data)
+  }
+
+  const handleAddTransaction = (data, stockRemain) => {
+    setStockProducts(stockRemain)
+    setTransaction({
+      id: data._id,
+      description: data.description,
+      discount: {
+        value: data.discount?.value || 0,
+        currency: data.discount?.type || 'PCT',
+        isFixed: data.discount?.isFixed || false,
+      },
+      price: { value: data.price, currency: data.currency },
+      quantity: data.quantity,
+      total: data.total,
+      profile: data.product?.profile?.filename
+    })
+  }
+
   return (
     <Container>
       <BarcodeReader onScan={handleScanProduct} onError={() => {}} />
@@ -192,6 +198,7 @@ export const Cashing = () => {
             onClickProduct={handleClickProduct}
             filterPromotion={true}
             toggleReload={reload}
+            updateStocks={stockProducts}
             actions={
               <>
                 <IconButton
@@ -237,6 +244,7 @@ export const Cashing = () => {
             defaultTax={preview?.tax}
             transaction={transaction}
             onUpdate={() => setReload(!reload)}
+            onUpdateStock={handleUpdateStock}
             onPayment={handlePayment}
             onChangeCustomer={handleChangeCustomer}
             onChangePayment={handleChangePayment}

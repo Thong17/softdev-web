@@ -71,6 +71,7 @@ export const ProductContainer = ({
   promotionId,
   activeId,
   toggleReload,
+  updateStocks,
   isDisabled,
 }: any) => {
   const { user } = useAuth()
@@ -124,6 +125,12 @@ export const ProductContainer = ({
     createdAt: false,
     price: false
   })
+
+  useEffect(() => {
+    if (!updateStocks) return
+    const { productId, totalAllStock: stock } = updateStocks
+    setProducts(prev => prev.map(data => data.id === productId ? { ...data, stock } : data))
+  }, [updateStocks])  
 
   useEffect(() => {
     setDisabled(isDisabled)
