@@ -213,10 +213,6 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
               borderRadius: theme.radius.secondary,
               boxSizing: 'border-box',
               '& .item': {
-                display: 'flex',
-                padding: '7px 10px 7px 7px',
-                marginBottom: 1,
-                cursor: 'pointer',
                 '&:hover': {
                   backgroundColor: theme.active.primary
                 }
@@ -235,22 +231,28 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
   )
 }
 
-const ReservationItem = ({ data, onClick, onEdit, onDelete }) => {
+export const ReservationItem = ({ data, onClick, onEdit, onDelete }: any) => {
   const { theme } = useTheme()
   const { device } = useWeb()
 
   const handleEdit = (event) => {
     event.stopPropagation()
-    onEdit(data._id)
+    onEdit && onEdit(data._id)
   }
 
   const handleDelete = (event) => {
     event.stopPropagation()
-    onDelete(data._id)
+    onDelete && onDelete(data._id)
   }
 
   return (
-    <div className='item' onClick={() => onClick(data._id)}>
+    <div className='item' onClick={() => onClick(data._id)} style={{
+      display: 'flex',
+      padding: '7px 10px 7px 7px',
+      marginBottom: 1,
+      cursor: 'pointer',
+      minWidth: 270
+     }}>
       <div style={{ marginRight: 10, display: 'flex', gap: 5 }}>
         <span
           style={{
@@ -304,7 +306,7 @@ const ReservationItem = ({ data, onClick, onEdit, onDelete }) => {
         </TextEllipsis>
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <IconButton
+        {onEdit && <IconButton
           onClick={handleEdit}
           sx={{
             width: 30,
@@ -314,8 +316,8 @@ const ReservationItem = ({ data, onClick, onEdit, onDelete }) => {
           }}
         >
           <Edit style={{ fontSize: 17 }} />
-        </IconButton>
-        <IconButton
+        </IconButton>}
+        {onDelete && <IconButton
           onClick={handleDelete}
           sx={{
             width: 30,
@@ -325,7 +327,7 @@ const ReservationItem = ({ data, onClick, onEdit, onDelete }) => {
           }}
         >
           <DeleteRoundedIcon style={{ fontSize: 19 }} />
-        </IconButton>
+        </IconButton>}
       </div>
     </div>
   )

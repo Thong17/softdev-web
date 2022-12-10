@@ -13,10 +13,21 @@ import {
 } from 'modules/organize/store/redux'
 import { mapStructures } from 'modules/organize/store/LayoutForm'
 import useTheme from 'hooks/useTheme'
-import { Box } from '@mui/material'
+import { Box, MenuItem } from '@mui/material'
 import { SelectTab } from '../form/SelectTab'
+import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded'
+import { MenuDialog } from '../MenuDialog'
+import { ReservationItem } from './ReservationContainer'
+import { useNavigate } from 'react-router-dom'
 
-export const StructureContainer = ({ onClick, onRemove, selected, reload, selectFloor = false, actions }: any) => {
+export const StructureContainer = ({
+  onClick,
+  onRemove,
+  selected,
+  reload,
+  selectFloor = false,
+  actions,
+}: any) => {
   const dispatch = useAppDispatch()
   const { data: storeLayout, status: statusLayout } =
     useAppSelector(selectLayoutStore)
@@ -40,7 +51,7 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
     dispatch(getLayoutStore({ query: params }))
     // eslint-disable-next-line
   }, [reload])
-  
+
   useEffect(() => {
     setSelectedStructure(selected)
   }, [selected])
@@ -138,16 +149,38 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
     <div
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: 5 }}>
-        {floorOption?.length > 0 && <SelectTab options={floorOption} onChange={handleChangeTab} selected={floor} />}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }}>
-          {selectFloor && <MiniSelectField
-            style={{ width: 100 }}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: '100%',
+          marginBottom: 5,
+        }}
+      >
+        {floorOption?.length > 0 && (
+          <SelectTab
             options={floorOption}
-            value={floor}
-            onChange={handleChangeFloor}
-            search={true}
-          />}
+            onChange={handleChangeTab}
+            selected={floor}
+          />
+        )}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'end',
+          }}
+        >
+          {selectFloor && (
+            <MiniSelectField
+              style={{ width: 100 }}
+              options={floorOption}
+              value={floor}
+              onChange={handleChangeFloor}
+              search={true}
+            />
+          )}
           {actions}
         </div>
       </div>
@@ -169,7 +202,9 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
       >
         {loading && <Loading />}
         {structures?.map((structure, index) => {
-          const isSelected = selectedStructure?.some(item => item._id === structure._id)
+          const isSelected = selectedStructure?.some(
+            (item) => item._id === structure._id
+          )
 
           if (structure.merged && structure.isMain === false)
             return <div key={index} style={{ display: 'none' }}></div>
@@ -177,7 +212,11 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
             return (
               <div
                 key={index}
-                style={{ gridArea: `${structure.id}`, backgroundColor: `${theme.background.secondary}33`, borderRadius: theme.radius.primary }}
+                style={{
+                  gridArea: `${structure.id}`,
+                  backgroundColor: `${theme.background.secondary}33`,
+                  borderRadius: theme.radius.primary,
+                }}
               ></div>
             )
           } else {
@@ -185,11 +224,25 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
               case 'table':
                 return (
                   <Box
-                    onClick={() => isSelected ? handleRemoveStructure(structure._id) : handleAddStructure(structure)}
+                    onClick={() =>
+                      isSelected
+                        ? handleRemoveStructure(structure._id)
+                        : handleAddStructure(structure)
+                    }
                     key={index}
                     className='structure'
-                    sx={{ gridArea: `${structure.id}`, backgroundColor: isSelected ? `${theme.active.primary} !important` : `${theme.background.secondary}33`, borderRadius: theme.radius.primary, cursor: onClick ? 'pointer' : 'default', '&:hover': { backgroundColor: theme.active.secondary } }}
+                    sx={{
+                      position: 'relative',
+                      gridArea: `${structure.id}`,
+                      backgroundColor: isSelected
+                        ? `${theme.active.primary} !important`
+                        : `${theme.background.secondary}33`,
+                      borderRadius: theme.radius.primary,
+                      cursor: onClick ? 'pointer' : 'default',
+                      '&:hover': { backgroundColor: theme.active.secondary },
+                    }}
                   >
+                    {structure.reservations?.length > 0 && <SelectReservation reservations={structure.reservations} />}
                     <TableStructure
                       title={structure.title}
                       price={structure.price}
@@ -205,11 +258,25 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
               default:
                 return (
                   <Box
-                    onClick={() => isSelected ? handleRemoveStructure(structure._id) : handleAddStructure(structure)}
+                    onClick={() =>
+                      isSelected
+                        ? handleRemoveStructure(structure._id)
+                        : handleAddStructure(structure)
+                    }
                     key={index}
                     className='structure'
-                    sx={{ gridArea: `${structure.id}`, backgroundColor: isSelected ? `${theme.active.primary} !important` : `${theme.background.secondary}33`, borderRadius: theme.radius.primary, cursor: onClick ? 'pointer' : 'default', '&:hover': { backgroundColor: theme.active.secondary } }}
+                    sx={{
+                      position: 'relative',
+                      gridArea: `${structure.id}`,
+                      backgroundColor: isSelected
+                        ? `${theme.active.primary} !important`
+                        : `${theme.background.secondary}33`,
+                      borderRadius: theme.radius.primary,
+                      cursor: onClick ? 'pointer' : 'default',
+                      '&:hover': { backgroundColor: theme.active.secondary },
+                    }}
                   >
+                    {structure.reservations?.length > 0 && <SelectReservation reservations={structure.reservations} />}
                     <RoomStructure
                       title={structure.title}
                       price={structure.price}
@@ -225,6 +292,42 @@ export const StructureContainer = ({ onClick, onRemove, selected, reload, select
           }
         })}
       </div>
+    </div>
+  )
+}
+
+const SelectReservation = ({ reservations }) => {
+  const { theme } = useTheme()
+  const navigate = useNavigate()
+
+  return (
+    <div
+      onClick={(event) => event.stopPropagation()}
+      style={{
+        position: 'absolute',
+        width: 50,
+        height: 37,
+        top: 10,
+        right: 10,
+        zIndex: 100,
+      }}
+    >
+      <MenuDialog
+        style={{
+          height: 37,
+          color: theme.color.info,
+          backgroundColor: `${theme.color.info}22`,
+          borderRadius: theme.radius.primary,
+          width: '100%',
+        }}
+        label={<MenuBookRoundedIcon style={{ fontSize: 21 }} />}
+      >
+        <div style={{ maxHeight: 400, overflowY: 'auto' }}>
+          {reservations?.map((reservation, key) => {
+            return <MenuItem key={key} style={{ padding: '0 5px' }} onClick={() => navigate(`/sale/reservation/${reservation._id}`)}><ReservationItem data={reservation} /></MenuItem>
+          })}
+        </div>
+      </MenuDialog>
     </div>
   )
 }
