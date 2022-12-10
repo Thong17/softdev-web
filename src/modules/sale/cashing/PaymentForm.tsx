@@ -195,7 +195,6 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     }
   }
 
-
   return (
     <AlertContainer
       justify='center'
@@ -250,7 +249,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
               }}
             >
               <SelectTab
-                selected={paymentMethods[0]?.value}
+                selected={paymentMethod || paymentMethods[0]?.value}
                 options={paymentMethods}
                 onChange={handleChangePaymentMethod}
               />
