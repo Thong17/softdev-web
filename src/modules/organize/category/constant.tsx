@@ -52,7 +52,6 @@ export const headerColumns = [
 
 export const importColumnData: ITableColumn<ColumnHeader>[] = [
   { id: 'no', label: 'No' },
-  { id: 'icon', label: 'Icon' },
   { id: 'name', label: 'Name' },
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },

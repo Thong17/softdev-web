@@ -96,7 +96,7 @@ export const StickyTable = ({
                     key={column.id}
                     align={column.align}
                   >
-                    {language[column.label]}
+                    {language[column.label] || column.label}
                   </TableCell>
                 ))}
               </TableRow>

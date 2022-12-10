@@ -290,15 +290,11 @@ export const imageHeaderColumns = [
 
 export const productColumnData: ITableColumn<ColumnHeader>[] = [
   { id: 'no', label: 'No' },
-  { id: 'profile', label: 'Profile' },
-  { id: 'images', label: 'Images' },
   { id: 'name', label: 'Name' },
   { id: 'price', label: 'Price' },
   { id: 'currency', label: 'Currency' },
   { id: 'code', label: 'Code' },
   { id: 'isStock', label: 'Is Stock', minWidth: 70 },
-  { id: 'brand', label: 'Brand' },
-  { id: 'category', label: 'Category' },
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
   { id: 'action', label: 'Remove', align: 'right' },
