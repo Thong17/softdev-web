@@ -239,7 +239,7 @@ export const SelectStructure = ({ onContinue, structures }) => {
         onClick={handleContinue}
       >
         <span style={{ display: 'grid', placeItems: 'center', width: '100%' }}>
-        {language['CONTINUE']}
+        {language['CONFIRM']}
         </span>
       </MenuItem>
     </MenuDialog>

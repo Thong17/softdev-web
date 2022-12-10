@@ -153,6 +153,7 @@ export const languages = {
     PREPAYMENT_DURATION: 'Prepayment\u00a0Duration',
     OVERDUE_DURATION: 'Overdue\u00a0Duration',
     SEARCH: 'Search',
+    CONFIRM: 'Confirm',
     // Message
     TYPE_TO_SEARCH: 'Type to search...',
     CONFIRM_DELETE: 'Do you want to delete?',
@@ -328,6 +329,7 @@ export const languages = {
     PREPAYMENT_DURATION: 'រយៈពេលមុន',
     OVERDUE_DURATION: 'រយៈពេលហួស',
     SEARCH: 'ស្វែងរក',
+    CONFIRM: 'យល់ព្រម',
     // Message
     TYPE_TO_SEARCH: 'វាយបញ្ចូលដើម្បីស្វែងរក...',
     CONFIRM_DELETE: 'តើអ្នកពិតជាចង់លុបមែនទេ?',

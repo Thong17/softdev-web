@@ -105,7 +105,7 @@ export const InvoiceForm = forwardRef(
 
     const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
     const [paymentId, setPaymentId] = useState(id)
-    const [reservation, setReservation] = useState<any>(null)
+    const [reservation, setReservation] = useState<any>(null)    
     const [transactions, setTransactions] = useState<ITransactionItem[]>([])
     const [discount, setDiscount] = useState({
       title: 'Discount',
@@ -178,8 +178,14 @@ export const InvoiceForm = forwardRef(
       setVoucher(reservation?.payment?.vouchers[0])
     }, [reservation])
 
+    const [structureTitle, setStructureTitle] = useState('')
     useEffect(() => {
       setReservation(reservationData)
+      let title = ''
+      reservationData?.structures?.forEach((structure, index) => {
+        title += reservationData?.structures?.length === index + 1 ? structure.title : structure.title + '-'
+      })
+      setStructureTitle(title)
     }, [reservationData])
 
     useEffect(() => {
@@ -497,7 +503,7 @@ export const InvoiceForm = forwardRef(
                 borderRadius: theme.radius.secondary,
               }}
             >
-              {language['START']}
+              {language['START']} {structureTitle}
             </CustomButton>
           )
 
@@ -519,7 +525,7 @@ export const InvoiceForm = forwardRef(
                   borderRadius: theme.radius.secondary,
                 }}
               >
-                {language['STOP']}
+                {language['STOP']} {structureTitle}
               </CustomButton>
             </>
           )
@@ -547,7 +553,7 @@ export const InvoiceForm = forwardRef(
                     borderRadius: theme.radius.secondary,
                   }}
                 >
-                  {language['DETAIL']}
+                  {language['DETAIL']} {structureTitle}
                 </CustomButton>
               </>
             )
@@ -576,7 +582,7 @@ export const InvoiceForm = forwardRef(
                   borderRadius: theme.radius.secondary,
                 }}
               >
-                {language['PAYMENT']}
+                {language['PAYMENT']} {structureTitle}
               </CustomButton>
             </>
           )

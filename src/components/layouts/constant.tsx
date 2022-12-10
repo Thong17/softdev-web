@@ -19,6 +19,12 @@ export const sideNav: any = [
     permission: 'operation',
     children: [
       {
+        route: '/sale/stock',
+        title: 'STOCK',
+        icon: <ArrowRightAltRoundedIcon />,
+        permission: 'stock'
+      },
+      {
         route: '/sale/cashing',
         title: 'CASHING',
         icon: <ArrowRightAltRoundedIcon />,
@@ -36,7 +42,27 @@ export const sideNav: any = [
     route: '/organize',
     title: 'ORGANIZE',
     icon: <StorefrontRoundedIcon />,
-    permission: 'organize'
+    permission: 'organize',
+    children: [
+      {
+        route: '/organize/brand',
+        title: 'BRAND',
+        icon: <ArrowRightAltRoundedIcon />,
+        permission: 'brand'
+      },
+      {
+        route: '/organize/category',
+        title: 'CATEGORY',
+        icon: <ArrowRightAltRoundedIcon />,
+        permission: 'category'
+      },
+      {
+        route: '/organize/product',
+        title: 'PRODUCT',
+        icon: <ArrowRightAltRoundedIcon />,
+        permission: 'product'
+      },
+    ]
   },
   {
     route: '/admin',
