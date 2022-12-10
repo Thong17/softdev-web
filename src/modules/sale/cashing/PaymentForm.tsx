@@ -6,7 +6,7 @@ import { CashForm } from 'components/shared/form/CashForm'
 import { SelectTab } from 'components/shared/form/SelectTab'
 import { InvoicePreview } from 'components/shared/preview/InvoicePreview'
 import useTheme from 'hooks/useTheme'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { CustomButton } from 'styles'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import ReceiptRoundedIcon from '@mui/icons-material/ReceiptRounded'
@@ -28,7 +28,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
 import { LoanForm } from 'components/shared/form/LoanForm'
 
-export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
+export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout }: any, ref) => {
   const confirm = useAlert()
   const { theme } = useTheme()
   const { language } = useLanguage()
@@ -57,6 +57,12 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   useEffect(() => {
     dispatch(getListTransfer())
   }, [dispatch])
+
+  useImperativeHandle(ref, () => ({
+    callClearPayment() {
+      onClearPayment()
+    }
+  }))
 
   const onClearPayment = () => {
     setTotalReceive({ KHR: 0, USD: 0, total: 0 })
@@ -142,6 +148,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
           .then((data) => {
             setPayment(data?.data?.data)
             reload()
+            onCheckout()
           })
           .catch((err) => {
             notify(err?.response?.data?.msg, 'error')
@@ -459,7 +466,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
       </div>
     </AlertContainer>
   )
-}
+})
 
 const CashReturn = ({ cash }) => (
   <div className='cash'>

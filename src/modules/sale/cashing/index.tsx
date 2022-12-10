@@ -29,6 +29,7 @@ export const Cashing = () => {
   const { data: listCode } = useAppSelector(selectListCodeProduct)
   const { data: preview } = useAppSelector(selectInfoStore)
   const [paymentId, setPaymentId] = useState(null)
+  const [disableProduct, setDisableProduct] = useState(false)
   const [productDialog, setProductDialog] = useState<any>({
     open: false,
     productId: null,
@@ -90,13 +91,16 @@ export const Cashing = () => {
   }
 
   const invoiceRef = useRef<any>()
+  const paymentRef = useRef<any>()
   const handleClearPayment = () => {
     invoiceRef?.current?.callClearPayment()
+    paymentRef?.current?.callClearPayment()
     setPaymentDialog({
       open: false,
       payment: null,
       customer: null,
     })
+    setDisableProduct(false)
   }
 
   const handleChangePayment = (data) => {
@@ -176,9 +180,11 @@ export const Cashing = () => {
       />
       <DrawerForm dialog={drawerDialog} setDialog={setDrawerDialog} />
       <PaymentForm
+        ref={paymentRef}
         dialog={paymentDialog}
         setDialog={setPaymentDialog}
         onClear={handleClearPayment}
+        onCheckout={() => setDisableProduct(true)}
       />
       <div
         style={{
@@ -199,6 +205,7 @@ export const Cashing = () => {
             filterPromotion={true}
             toggleReload={reload}
             updateStocks={stockProducts}
+            isDisabled={disableProduct}
             actions={
               <>
                 <IconButton
@@ -246,6 +253,7 @@ export const Cashing = () => {
             onUpdate={() => setReload(!reload)}
             onUpdateStock={handleUpdateStock}
             onPayment={handlePayment}
+            onClear={handleClearPayment}
             onChangeCustomer={handleChangeCustomer}
             onChangePayment={handleChangePayment}
           />

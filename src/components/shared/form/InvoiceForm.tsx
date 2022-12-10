@@ -176,6 +176,7 @@ export const InvoiceForm = forwardRef(({
   onUpdate,
   onUpdateStock,
   onPayment,
+  onClear,
   onChangePayment,
   onChangeCustomer,
   listTransactions = []
@@ -281,7 +282,7 @@ export const InvoiceForm = forwardRef(({
       description: 'Clear the invoice will erase all the transaction.',
       variant: 'error'
     }).then(() => {
-      onClearPayment()
+      onClear()
     }).catch(() => {})
   }
 
