@@ -188,7 +188,17 @@ export const Products = () => {
     loadify(response)
     response.then(() => {
       setImportDialog({ ...importDialog, open: false })
-      dispatch(getListProduct({}))
+      setHasMore(true)
+      setRowData([])
+      setOffset(0)
+      // setFetching(true)
+      const query = new URLSearchParams()
+      query.append('search', search)
+      query.append('limit', limit.toString())
+      query.append('offset', offset.toString())
+      query.append('filter', filterObj.filter)
+      query.append('sort', filterObj.asc ? 'asc' : 'desc')
+      dispatch(getListProduct({ query }))
     })
   }
 
@@ -198,7 +208,19 @@ export const Products = () => {
       url: `/organize/product/disable/${id}`,
     })
     loadify(response)
-    response.then(() => dispatch(getListProduct({})))
+    response.then(() => {
+      setHasMore(true)
+      setRowData([])
+      setOffset(0)
+      // setFetching(true)
+      const query = new URLSearchParams()
+      query.append('search', search)
+      query.append('limit', limit.toString())
+      query.append('offset', offset.toString())
+      query.append('filter', filterObj.filter)
+      query.append('sort', filterObj.asc ? 'asc' : 'desc')
+      dispatch(getListProduct({ query }))
+    })
 
     setDialog({ open: false, id: null })
   }
