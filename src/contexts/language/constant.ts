@@ -271,9 +271,9 @@ export const languages = {
     SALE_REPORT: 'របាយការណ៍ប្រតិបត្តិការ',
     PRODUCT_REPORT: 'របាយការណ៍ផលិតផល',
     STAFF_REPORT: 'របាយការណ៍បុគ្គលិក',
-    INCOME_CHART: 'តារាងប្រាក់ចំណូល',
-    PERFORMANCE_CHART: 'តារាងការអនុវត្ត',
-    PRODUCT_CHART: 'តារាងផលិតផល',
+    INCOME_CHART: 'ស្ថិតិប្រាក់ចំណូល',
+    PERFORMANCE_CHART: 'ស្ថិតិអ្នកលក់',
+    PRODUCT_CHART: 'ស្ថិតិផលិតផល',
     TOP_PRODUCT: 'ផលិតផលនិយម',
     // Product Form
     COLOR: 'ពណ៌',

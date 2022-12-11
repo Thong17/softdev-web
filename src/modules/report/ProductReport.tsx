@@ -241,7 +241,7 @@ export const ProductReport = () => {
         <CardContainer
           title={
             <>
-              {language['CHART']}
+              {language['PRODUCT_CHART']}
               <div
                 style={{
                   position: 'absolute',
