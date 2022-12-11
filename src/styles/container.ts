@@ -613,7 +613,7 @@ export const CustomInvoiceForm = styled('div')(
     overflowX: 'hidden',
     overflowY: 'visible',
     position: 'sticky',
-    top: 0,
+    top: 30,
     boxSizing: 'border-box',
     background: `linear-gradient(0deg, ${styled.background.secondary}cc, ${styled.background.secondary}77)`,
     minWidth: device === 'laptop' || device === 'desktop' ? (mode === 'expand' ? 460 : 50) : '100%', 
