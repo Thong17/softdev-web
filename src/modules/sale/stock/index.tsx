@@ -64,7 +64,7 @@ export const Stocks = () => {
     filter: 'createdAt',
     asc: false,
   })
-  const limit = 20
+  const limit = 40
 
   const handleImport = (e) => {
     const response = ImportExcel(

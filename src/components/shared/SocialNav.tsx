@@ -3,9 +3,17 @@ import FacebookIcon from '@mui/icons-material/Facebook'
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import useTheme from 'hooks/useTheme'
+import { styled } from '@mui/system'
+import { IThemeStyle } from 'contexts/theme/interface'
+
+const NavItem = styled('a')(
+  ({ styled }: { styled: IThemeStyle }) => ({
+    color: styled.text.secondary
+  })
+)
 
 export const SocialNav = () => {
-    const { theme } = useTheme()
+  const { theme } = useTheme()
   return (
     <div
       style={{
@@ -21,12 +29,19 @@ export const SocialNav = () => {
         justifyContent: 'space-between',
         padding: '20px 15px',
         borderRadius: theme.radius.ternary,
-        boxShadow: theme.shadow.secondary
+        boxShadow: theme.shadow.secondary,
+        zIndex: 1000
       }}
     >
-      <FacebookIcon />
-      <YouTubeIcon />
-      <InstagramIcon />
+      <NavItem styled={theme} href='https://www.youtube.com/channel/UCVmabo4MSxCJjtRDvGcPL5g' target='blank'>
+        <FacebookIcon />
+      </NavItem>
+      <NavItem styled={theme} href='https://www.youtube.com/channel/UCVmabo4MSxCJjtRDvGcPL5g' target='blank'>
+        <YouTubeIcon />
+      </NavItem>
+      <NavItem styled={theme} href='https://www.youtube.com/channel/UCVmabo4MSxCJjtRDvGcPL5g' target='blank'>
+        <InstagramIcon />
+      </NavItem>
     </div>
   )
 }
