@@ -84,7 +84,7 @@ export const Products = () => {
     filter: 'createdAt',
     asc: false,
   })
-  const limit = 20
+  const limit = 40
 
   const handleImport = (e) => {
     const model = e.target.name
