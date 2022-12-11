@@ -118,7 +118,7 @@ export const ProductContainer = ({
     filter: 'createdAt',
     asc: false,
   })
-  const limit = 20
+  const limit = 30
 
   const [sortObj, setSortObj] = useState({
     name: false,
@@ -275,8 +275,7 @@ export const ProductContainer = ({
       setProducts((prevData) => {
         return prevData
           .map((data) => {
-            let obj = data
-
+            let obj = data            
             if (!_search.test(data.tags)) {
               obj['display'] = 'none'
             } else {
