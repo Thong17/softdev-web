@@ -33,13 +33,13 @@ export const SocialNav = () => {
         zIndex: 1000
       }}
     >
-      <NavItem styled={theme} href='https://www.youtube.com/channel/UCVmabo4MSxCJjtRDvGcPL5g' target='blank'>
+      <NavItem styled={theme} href='https://www.facebook.com/Software-Dev-116227830285629/' target='blank'>
         <FacebookIcon />
       </NavItem>
       <NavItem styled={theme} href='https://www.youtube.com/channel/UCVmabo4MSxCJjtRDvGcPL5g' target='blank'>
         <YouTubeIcon />
       </NavItem>
-      <NavItem styled={theme} href='https://www.youtube.com/channel/UCVmabo4MSxCJjtRDvGcPL5g' target='blank'>
+      <NavItem styled={theme} href='https://www.instagram.com/invites/contact/?i=1gnka2w9x15pj&utm_content=q6i0hsn' target='blank'>
         <InstagramIcon />
       </NavItem>
     </div>

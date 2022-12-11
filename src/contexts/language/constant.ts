@@ -121,7 +121,7 @@ export const languages = {
     BUY: 'Buy',
     // Homepage
     HOMEPAGE_TITLE: 'Welcome to SoftDev Management System',
-    HOMEPAGE_DESCRIPTION: 'We develop and design a reliable and high performance web application for you business with a modern user interface base on your requirement.',
+    HOMEPAGE_DESCRIPTION: 'We develop and design a reliable and high performance web application for your business base on your requirement.',
     // Form
     LOGIN: 'Login',
     REGISTER: 'Register',
