@@ -10,6 +10,7 @@ export interface IUser {
   language?: LanguageOptions
   favorites?: string[]
   drawer?: IDrawer
+  isDefault?: boolean
 }
 
 export interface IDrawer {

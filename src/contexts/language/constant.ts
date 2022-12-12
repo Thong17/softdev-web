@@ -173,7 +173,11 @@ export const languages = {
     VACANT: 'Vacant',
     OCCUPIED: 'Occupied',
     RESERVED: 'Reserved',
-    LOAN: 'Loan'
+    LOAN: 'Loan',
+    // Config
+    SENT_AFTER_PAYMENT: 'Sent after payment',
+    SENT_AFTER_OPEN_DRAWER: 'Sent after open drawer',
+    SENT_AFTER_CLOSE_DRAWER: 'Sent after close drawer',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -349,6 +353,10 @@ export const languages = {
     VACANT: 'ទំនេរ',
     OCCUPIED: 'បានបម្រើ',
     RESERVED: 'បានកក់',
-    LOAN: 'រំលោះ'
+    LOAN: 'រំលោះ',
+    // Config
+    SENT_AFTER_PAYMENT: 'ផ្ញើបន្ទាប់ពីការទូទាត់',
+    SENT_AFTER_OPEN_DRAWER: 'ផ្ញើបន្ទាប់ពីបើកហិបប្រាក់',
+    SENT_AFTER_CLOSE_DRAWER: 'ផ្ញើបន្ទាប់ពីបិទហិបប្រាក់',
   }
 }
