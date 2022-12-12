@@ -8,7 +8,7 @@ import {
 } from 'react'
 
 export const MenuDialog = forwardRef(
-  ({ label, children, ...props }: any, ref) => {
+  ({ label, children, anchorOrigin = { vertical: 'bottom', horizontal: 'center' }, transformOrigin = { vertical: 'top', horizontal: 'center' }, ...props }: any, ref) => {
     const { theme } = useTheme()
     const [anchorEl, setAnchorEl] = useState<Element | null>(null)
 
@@ -40,6 +40,8 @@ export const MenuDialog = forwardRef(
           id='menu'
           styled={theme}
           style={{ maxHeight: 500 }}
+          anchorOrigin={anchorOrigin}
+          transformOrigin={transformOrigin}
         >
           {children}
         </CustomMenu>
