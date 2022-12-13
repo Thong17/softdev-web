@@ -159,7 +159,7 @@ const StoreBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page, id }) => {
     stage = [
       ...stage,
       {
-        title: 'Setup',
+        title: language['SETUP'],
         path: `/organize/product/update/property/${id}`
       }
     ]

@@ -84,7 +84,7 @@ export const ProductSetup = () => {
     propertyId: null,
     productId: id,
   })
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { device } = useWeb()
   const { theme } = useTheme()
   const { notify } = useNotify()
@@ -106,22 +106,22 @@ export const ProductSetup = () => {
 
   const propertyBreadcrumb = [
     {
-      title: 'Organize',
+      title: language['ORGANIZE'],
       path: '/organize',
     },
     {
-      title: 'Product',
+      title: language['PRODUCT'],
       path: '/organize/product',
     },
     {
-      title: action === 'create' ? 'Create' : 'Update',
+      title: action === 'create' ? language['CREATE'] : language['UPDATE'],
       path:
         action === 'create'
           ? '/organize/product/create'
           : `/organize/product/update/${id}`,
     },
     {
-      title: 'Setup',
+      title: language['SETUP'],
     },
   ]
 
