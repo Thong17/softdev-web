@@ -25,3 +25,5 @@ package-lock.json
 .vscode/settings.json
 yarn.lock
 .env
+.env.development
+.env.test

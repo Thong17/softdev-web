@@ -105,6 +105,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
       })
         .then((data) => {
           addTransaction(data?.data?.data, data?.data?.stockRemain)
+          setQuantity(1)
           handleCloseDialog()
         })
         .catch((err) => {
@@ -315,6 +316,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
         setProductCustomerOption(undefined)
         setTotalColor(0)
         setTotalCustomerOption(0)
+        setQuantity(1)
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')

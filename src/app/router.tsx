@@ -55,6 +55,7 @@ import { Payments } from 'modules/sale/payment'
 import { PaymentStore } from 'modules/organize/store/Payment'
 import { UserProfile } from 'modules/auth/UserProfile'
 import { UserChangePassword } from 'modules/auth/UserChangePassword'
+import { HintButton } from 'components/shared/HintButton'
 
 const routes: RouteObject[] = [
   {
@@ -94,6 +95,7 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'user', action: 'list' }}>
             <Users />
+            <HintButton playlistId='PLfv4NxemTuOwLxEXeGv9CA9_huR_1CPOs' />
           </AuthGuard>
         ),
       },
@@ -126,6 +128,7 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'role', action: 'list' }}>
             <Roles />
+            <HintButton playlistId='FLqm4smO-rcFQfYvIyD1FihQ' />
           </AuthGuard>
         ),
       },

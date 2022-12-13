@@ -154,6 +154,7 @@ export const languages = {
     OVERDUE_DURATION: 'Overdue\u00a0Duration',
     SEARCH: 'Search',
     CONFIRM: 'Confirm',
+    SETUP: 'Setup',
     // Message
     TYPE_TO_SEARCH: 'Type to search...',
     CONFIRM_DELETE: 'Do you want to delete?',
@@ -173,7 +174,11 @@ export const languages = {
     VACANT: 'Vacant',
     OCCUPIED: 'Occupied',
     RESERVED: 'Reserved',
-    LOAN: 'Loan'
+    LOAN: 'Loan',
+    // Config
+    SENT_AFTER_PAYMENT: 'Sent after payment',
+    SENT_AFTER_OPEN_DRAWER: 'Sent after open drawer',
+    SENT_AFTER_CLOSE_DRAWER: 'Sent after close drawer',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -330,6 +335,7 @@ export const languages = {
     OVERDUE_DURATION: 'រយៈពេលហួស',
     SEARCH: 'ស្វែងរក',
     CONFIRM: 'យល់ព្រម',
+    SETUP: 'រៀបចំ',
     // Message
     TYPE_TO_SEARCH: 'វាយបញ្ចូលដើម្បីស្វែងរក...',
     CONFIRM_DELETE: 'តើអ្នកពិតជាចង់លុបមែនទេ?',
@@ -349,6 +355,10 @@ export const languages = {
     VACANT: 'ទំនេរ',
     OCCUPIED: 'បានបម្រើ',
     RESERVED: 'បានកក់',
-    LOAN: 'រំលោះ'
+    LOAN: 'រំលោះ',
+    // Config
+    SENT_AFTER_PAYMENT: 'ផ្ញើបន្ទាប់ពីការទូទាត់',
+    SENT_AFTER_OPEN_DRAWER: 'ផ្ញើបន្ទាប់ពីបើកហិបប្រាក់',
+    SENT_AFTER_CLOSE_DRAWER: 'ផ្ញើបន្ទាប់ពីបិទហិបប្រាក់',
   }
 }
