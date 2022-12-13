@@ -70,7 +70,7 @@ export const MiniInput: ForwardRefRenderFunction<HTMLInputElement, ITextInput> =
 }
 
 export const NanoInput: ForwardRefRenderFunction<HTMLInputElement, ITextInput> = (
-  { width = 37, height = 27, icon, ...props }) => {
+  { width = 43, height = 27, icon, ...props }) => {
   const { theme } = useTheme()
 
   return (
