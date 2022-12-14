@@ -21,6 +21,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
   const { data: listRole, status: statusListRole } = useAppSelector(selectListRole)
   const { data: preRole, status: statusPreRole } = useAppSelector(selectPreRole)
   const {
+    reset,
     watch,
     register,
     handleSubmit,
@@ -47,6 +48,9 @@ export const RoleForm = ({ defaultValues, id }: any) => {
       .then((data) => {
         dispatch(getListUser({}))
         notify(data?.data?.msg, 'success')
+        if (!id) {
+          reset(defaultValues)
+        }
       })
       .catch((err) => notify(err.response?.data?.[0]?.path || err.response?.data?.msg, 'error'))
       .finally(() => setLoading(false))

@@ -1,12 +1,16 @@
 import { languages } from 'contexts/language/constant'
 import { Section } from '../Section'
 import { DetailField, TextField } from '.'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const LocaleField = ({ name, onChange, describe, defaultValue, err, ...prop }: any) => {
   const [localeField, setLocaleField] = useState(defaultValue || {})
   const langs = Object.keys(languages)
 
+  useEffect(() => {
+    setLocaleField(defaultValue)
+  }, [defaultValue])
+  
   const handleChange = (event) => {
     const props = event.target.name.split('.')
     const value = event.target.value
