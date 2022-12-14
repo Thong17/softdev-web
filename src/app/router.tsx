@@ -95,7 +95,7 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'user', action: 'list' }}>
             <Users />
-            <HintButton playlistId='PLfv4NxemTuOwLxEXeGv9CA9_huR_1CPOs' />
+            <HintButton playlistId='PLHX_VLeC9D-7V5WOxVhHQ6xDFSqHNh2OC' />
           </AuthGuard>
         ),
       },
@@ -128,7 +128,7 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'role', action: 'list' }}>
             <Roles />
-            <HintButton playlistId='FLqm4smO-rcFQfYvIyD1FihQ' />
+            <HintButton playlistId='PLHX_VLeC9D-7V5WOxVhHQ6xDFSqHNh2OC' />
           </AuthGuard>
         ),
       },
@@ -172,6 +172,7 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'category', action: 'list' }}>
             <Categories />
+            <HintButton playlistId='PLHX_VLeC9D-6Ikbr2cQThon9FadJEz6sP' />
           </AuthGuard>
         ),
       },
@@ -203,7 +204,12 @@ const routes: RouteObject[] = [
       // Brand
       {
         path: 'brand',
-        element: <Brands />,
+        element: (
+          <AuthGuard role={{ route: 'brand', action: 'list' }}>
+            <Brands />
+            <HintButton playlistId='PLHX_VLeC9D-6Ikbr2cQThon9FadJEz6sP' />
+          </AuthGuard>
+        ),
       },
       {
         path: 'brand/create',
@@ -233,13 +239,19 @@ const routes: RouteObject[] = [
       // Product
       {
         path: 'product',
-        element: <Products />,
+        element: (
+          <AuthGuard role={{ route: 'product', action: 'list' }}>
+            <Products />
+            <HintButton playlistId='PLHX_VLeC9D-78msvumaCBdk2x668hpA0x' />
+          </AuthGuard>
+        ),
       },
       {
         path: 'product/create',
         element: (
           <AuthGuard role={{ route: 'category', action: 'create' }}>
             <CreateProduct />
+            <HintButton playlistId='PLHX_VLeC9D-78msvumaCBdk2x668hpA0x' />
           </AuthGuard>
         ),
       },
@@ -248,6 +260,7 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'category', action: 'update' }}>
             <UpdateProduct />
+            <HintButton playlistId='PLHX_VLeC9D-78msvumaCBdk2x668hpA0x' />
           </AuthGuard>
         ),
       },
@@ -264,6 +277,7 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'category', action: 'detail' }}>
             <ProductSetup />
+            <HintButton playlistId='PLHX_VLeC9D-78msvumaCBdk2x668hpA0x' />
           </AuthGuard>
         ),
       },
@@ -271,13 +285,17 @@ const routes: RouteObject[] = [
       // Store
       {
         path: 'store',
-        element: <Store />,
+        element: <>
+          <Store />
+          <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
+        </>,
       },
       {
         path: 'store/update/:id',
         element: (
           <AuthGuard role={{ route: 'store', action: 'update' }}>
             <UpdateStore />
+            <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
           </AuthGuard>
         ),
       },
@@ -286,6 +304,7 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'store', action: 'update' }}>
             <PaymentStore />
+            <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
           </AuthGuard>
         ),
       },
@@ -294,6 +313,7 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'store', action: 'update' }}>
             <LayoutForm />
+            <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
           </AuthGuard>
         ),
       },
@@ -310,7 +330,10 @@ const routes: RouteObject[] = [
       // Stock
       {
         path: 'stock',
-        element: <Stocks />,
+        element: <>
+          <Stocks />
+          <HintButton playlistId='PLHX_VLeC9D-6dfu3mnwiaK5iq9KnN4vhg' />
+        </>,
       },
       {
         path: 'stock/item/:id',
@@ -320,13 +343,19 @@ const routes: RouteObject[] = [
       // Cashing
       {
         path: 'cashing',
-        element: <Cashing />,
+        element: <>
+          <Cashing />        
+          <HintButton playlistId='PLHX_VLeC9D-68Mw8MY1B7w9R_jdN5LJ4C' />
+        </>
       },
 
       // Reservation
       {
         path: 'reservation',
-        element: <Reservation />,
+        element: <>
+          <Reservation />      
+          <HintButton playlistId='PLHX_VLeC9D-68Mw8MY1B7w9R_jdN5LJ4C' />
+        </>
       },
       {
         path: 'reservation/:id',
