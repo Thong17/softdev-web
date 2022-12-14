@@ -28,6 +28,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const {
+    reset,
     watch,
     register,
     handleSubmit,
@@ -37,7 +38,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(categorySchema), defaultValues })
   const { device } = useWeb()
-  const { notify, loadify } = useNotify()
+  const { notify } = useNotify()
   const [status, setStatus] = useState(defaultValues?.status)
   const [loading, setLoading] = useState(false)
   const [iconPath, setIconPath] = useState<IImage>(defaultValues?.icon)
@@ -64,7 +65,6 @@ const CategoryForm = ({ defaultValues, id }: any) => {
         'content-type': 'multipart/form-data',
       },
     })
-    loadify(response)
     response.then((data) => {
       const filename: IImage = data.data.data as IImage
       const fileId = data.data.data._id
@@ -82,6 +82,10 @@ const CategoryForm = ({ defaultValues, id }: any) => {
       .then((data) => {
         dispatch(getListCategory({}))
         notify(data?.data?.msg, 'success')
+        if (!id) {
+          reset(defaultValues)
+          setIconPath(defaultValues?.icon)
+        }
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {

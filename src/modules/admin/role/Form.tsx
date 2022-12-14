@@ -20,6 +20,7 @@ import useLanguage from 'hooks/useLanguage'
 
 export const RoleForm = ({ defaultValues, id }: any) => {
   const {
+    reset,
     register,
     setValue,
     getValues,
@@ -57,6 +58,9 @@ export const RoleForm = ({ defaultValues, id }: any) => {
       .then((data) => {
         notify(data?.data?.msg, 'success')
         dispatch(getListRole())
+        if (!id) {
+          reset(defaultValues)
+        }
       })
       .catch((err) => notify(err?.response?.data?.msg, 'error'))
       .finally(() => setLoading(false))
