@@ -189,7 +189,6 @@ export const Brands = () => {
     <Container
       header={
         <Header
-          data={brands}
           styled={theme}
           navigate={navigate}
           handleSearch={handleSearch}

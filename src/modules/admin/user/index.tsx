@@ -156,7 +156,6 @@ export const Users = () => {
     <Container
       header={
         <Header
-          data={users}
           styled={theme}
           navigate={navigate}
           handleImport={handleImport}

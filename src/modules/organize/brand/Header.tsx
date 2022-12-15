@@ -1,19 +1,16 @@
 import StoreBreadcrumbs from '../components/Breadcrumbs'
-import { useEffect, useState } from 'react'
-import { headerColumns } from './constant'
+import { useState } from 'react'
 import { DefaultHeader } from 'components/shared/table/DefaultHeader'
 import { MenuItem } from '@mui/material'
 import { SortIcon } from 'components/shared/icons/SortIcon'
 
 export const Header = ({
-  data,
   styled,
   navigate,
   handleSearch,
   handleFilter,
   handleImport,
 }) => {
-  const [brands, setBrands] = useState([])
   const [sortObj, setSortObj] = useState({
     name: false,
     createdAt: false,
@@ -31,30 +28,14 @@ export const Header = ({
     </>
   }
 
-  useEffect(() => {
-    const newBrands = data.map((brand) => {
-      return {
-        _id: brand._id,
-        name: JSON.stringify(brand.name)?.replace(/"/g, '""'),
-        description: brand.description,
-        status: brand.status,
-        icon: JSON.stringify(brand.icon)?.replace(/"/g, '""')
-      }
-    })
-    setBrands(newBrands)
-  }, [data])
-
   return (
       <DefaultHeader
-        exportData={brands}
         styled={styled}
         navigate={navigate}
         handleSearch={handleSearch}
         handleImport={handleImport}
-        excelHeader={headerColumns}
         breadcrumb={<StoreBreadcrumbs page='brand' />}
         createUrl='/organize/brand/create'
-        filename='brands'
         filterOption={<FilterOption />}
       />
   )

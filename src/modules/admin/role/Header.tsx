@@ -1,19 +1,17 @@
 import AdminBreadcrumbs from '../components/Breadcrumbs'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { headerColumns } from './constant'
 import { DefaultHeader } from 'components/shared/table/DefaultHeader'
 import { MenuItem } from '@mui/material'
 import { SortIcon } from 'components/shared/icons/SortIcon'
 
 export const Header = ({
-  data,
   styled,
   navigate,
   handleSearch,
   handleFilter,
   handleImport,
 }) => {
-  const [roles, setRoles] = useState([])
   const [sortObj, setSortObj] = useState({
     name: false,
     createdAt: false,
@@ -33,21 +31,8 @@ export const Header = ({
     </>
   }
 
-  useEffect(() => {
-    const newRoles = data.map((role) => {
-      return {
-        _id: role._id,
-        name: JSON.stringify(role.name)?.replace(/"/g, '""'),
-        description: role.description,
-        privilege: JSON.stringify(role.privilege)?.replace(/"/g, '""'),
-      }
-    })
-    setRoles(newRoles)
-  }, [data])
-
   return (
     <DefaultHeader
-      exportData={roles}
       styled={styled}
       navigate={navigate}
       handleSearch={handleSearch}

@@ -157,7 +157,6 @@ export const Roles = () => {
     <Container
       header={
         <Header
-          data={roles}
           styled={theme}
           navigate={navigate}
           handleSearch={handleSearch}

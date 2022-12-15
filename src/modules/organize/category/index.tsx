@@ -187,7 +187,6 @@ export const Categories = () => {
     <Container
       header={
         <Header
-          data={categories}
           styled={theme}
           navigate={navigate}
           handleSearch={handleSearch}
