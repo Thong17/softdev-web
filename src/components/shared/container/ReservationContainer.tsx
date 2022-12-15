@@ -20,7 +20,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListReservation, selectListReservation } from 'modules/sale/reservation/redux'
-import { combineDate, inputDateTimeFormat, timeFormat } from 'utils/index'
+import { calculateStructuresPrice, combineDate, inputDateTimeFormat, timeFormat } from 'utils/index'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import { CapacityStructure } from '../structure/CapacityStructure'
@@ -234,6 +234,7 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
 export const ReservationItem = ({ data, onClick, onEdit, onDelete }: any) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
 
   const handleEdit = (event) => {
     event.stopPropagation()
@@ -246,7 +247,7 @@ export const ReservationItem = ({ data, onClick, onEdit, onDelete }: any) => {
   }
 
   return (
-    <div className='item' onClick={() => onClick(data._id)} style={{
+    <div className='item' onClick={() => onClick && onClick(data._id)} style={{
       display: 'flex',
       padding: '7px 10px 7px 7px',
       marginBottom: 1,
@@ -264,13 +265,13 @@ export const ReservationItem = ({ data, onClick, onEdit, onDelete }: any) => {
             boxShadow: theme.shadow.inset,
           }}
         ></span>
-        <CircleIcon icon={data?.customer.picture?.filename} />
+        <CircleIcon icon={data?.customer?.picture?.filename} />
       </div>
       <div style={{ flex: '30%', display: 'flex', flexDirection: 'column' }}>
         <TextEllipsis
           style={{ fontSize: theme.responsive[device]?.text.secondary }}
         >
-          {data?.customer.displayName}
+          {data?.customer?.displayName || language['GENERAL']}
         </TextEllipsis>
         <div style={{ display: 'flex' }}>
           <PhoneEnabledRoundedIcon
@@ -286,7 +287,7 @@ export const ReservationItem = ({ data, onClick, onEdit, onDelete }: any) => {
               fontSize: theme.responsive[device]?.text.quaternary,
             }}
           >
-            {data?.customer.contact}
+            {data?.customer?.contact}
           </TextEllipsis>
         </div>
       </div>
@@ -379,39 +380,12 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
   }
 
   useEffect(() => {
-    setValue('customer', customer.id)
+    setValue('customer', customer?.id)
   }, [customer, setValue])
 
   useEffect(() => {
     setValue('structures', structures)
-
-    let price = 0
-    structures.forEach(structure => {
-      let structurePrice = structure.price.value
-      if (structure.price.currency !== 'USD') structurePrice /= user?.drawer?.buyRate || 4000
-      
-      switch (structure.price.duration) {
-        case '1d':
-          price += structurePrice / 24
-          break
-
-        case '1w':
-          price += structurePrice / (24 * 7)
-          break
-
-        case '1m':
-          price += structurePrice / (24 * 30.4167)
-          break
-
-        case '1y':
-          price += structurePrice / (24 * 365)
-          break
-      
-        default:
-          price += structurePrice
-          break
-      }
-    })
+    const { price } = calculateStructuresPrice(structures, user?.drawer?.buyRate)
     
     setPriceValue(price)
     setValue('price', { value: price.toFixed(3), currency: 'USD', duration: '1h' })
@@ -497,9 +471,9 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
             }}
           >
             <span
-              style={{ color: customer.displayName ? theme.text.primary : theme.text.quaternary, transition: '0.2s ease' }}
+              style={{ color: customer?.displayName ? theme.text.primary : theme.text.quaternary, transition: '0.2s ease' }}
             >
-              {customer.displayName || language['CUSTOMER']}
+              {customer?.displayName || language['CUSTOMER']}
             </span>
             {errors?.customer && <TextEllipsis className='input-error'>{errors?.customer?.message}</TextEllipsis>}
           </Box>

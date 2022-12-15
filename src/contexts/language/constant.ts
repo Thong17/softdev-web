@@ -65,6 +65,7 @@ export const languages = {
     TAX: 'Tax',
     VOUCHER: 'Voucher',
     PAYMENT: 'Payment',
+    GENERAL: 'General',
     // Table
     DESCRIPTION: 'Description',
     START_AT: 'Start\u00a0At',
@@ -246,6 +247,7 @@ export const languages = {
     TAX: 'ពន្ធ',
     VOUCHER: 'ប័ណ្ណទូទាត់',
     PAYMENT: 'ការទូទាត់',
+    GENERAL: 'ទូទៅ',
     // Table
     DESCRIPTION: 'ការពិពណ៌នា',
     START_AT: 'ថ្ងៃចាប់ផ្តើម',

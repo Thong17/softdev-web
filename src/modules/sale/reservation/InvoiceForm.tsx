@@ -667,16 +667,16 @@ export const InvoiceForm = forwardRef(
             {device === 'laptop' || device === 'desktop' ? (
               invoiceBar && (
                 <CustomerStatistic
-                  point={customer.point}
-                  phone={customer.displayName}
+                  point={customer?.point}
+                  phone={customer?.displayName}
                   onClick={handleClickCustomer}
                   style={{ marginLeft: 10 }}
                 />
               )
             ) : (
               <CustomerStatistic
-                point={customer.point}
-                phone={customer.displayName}
+                point={customer?.point}
+                phone={customer?.displayName}
                 onClick={handleClickCustomer}
                 style={{ marginLeft: 10 }}
               />
