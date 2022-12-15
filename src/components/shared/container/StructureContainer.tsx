@@ -19,6 +19,11 @@ import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded'
 import { MenuDialog } from '../MenuDialog'
 import { ReservationItem } from './ReservationContainer'
 import { useNavigate } from 'react-router-dom'
+import useLanguage from 'hooks/useLanguage'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
+import { calculateStructuresPrice } from 'utils/index'
+import useAuth from 'hooks/useAuth'
 
 export const StructureContainer = ({
   onClick,
@@ -41,6 +46,9 @@ export const StructureContainer = ({
   const [mergedStructures, setMergedStructures] = useState<any>([])
   const [floorOption, setFloorOption] = useState<IOptions[]>([])
   const { theme } = useTheme()
+  const { notify } = useNotify()
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const [selectedStructure, setSelectedStructure] = useState(selected || [])
 
   useEffect(() => {
@@ -145,6 +153,23 @@ export const StructureContainer = ({
     onRemove && onRemove(id)
   }
 
+  const handleCreateReservation = (structure) => {
+    const { price, structuresIds } = calculateStructuresPrice([structure], user?.drawer?.buyRate)
+    Axios({
+      method: 'POST',
+      url: '/sale/reservation/create',
+      body: {
+        price: { value: price.toFixed(3), currency: 'USD', duration: '1h' },
+        structures: structuresIds
+      }
+    })
+      .then((data: any) => {
+        navigate(`/sale/reservation/${data?.data?.data?._id}`)
+        notify(data?.data?.msg, 'success')
+      })
+      .catch((err) => notify(err?.response?.data?.msg, 'error'))
+  }
+
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}
@@ -242,7 +267,7 @@ export const StructureContainer = ({
                       '&:hover': { backgroundColor: theme.active.secondary },
                     }}
                   >
-                    {structure.reservations?.length > 0 && <SelectReservation reservations={structure.reservations} />}
+                    <SelectReservation reservations={structure.reservations} onCreate={() => handleCreateReservation(structure)} />
                     <TableStructure
                       title={structure.title}
                       price={structure.price}
@@ -276,7 +301,7 @@ export const StructureContainer = ({
                       '&:hover': { backgroundColor: theme.active.secondary },
                     }}
                   >
-                    {structure.reservations?.length > 0 && <SelectReservation reservations={structure.reservations} />}
+                    <SelectReservation reservations={structure.reservations} onCreate={() => handleCreateReservation(structure)} />
                     <RoomStructure
                       title={structure.title}
                       price={structure.price}
@@ -296,9 +321,10 @@ export const StructureContainer = ({
   )
 }
 
-const SelectReservation = ({ reservations }) => {
+const SelectReservation = ({ reservations, onCreate }) => {
   const { theme } = useTheme()
   const navigate = useNavigate()
+  const { language } = useLanguage()
 
   return (
     <div
@@ -326,6 +352,11 @@ const SelectReservation = ({ reservations }) => {
           {reservations?.map((reservation, key) => {
             return <MenuItem key={key} style={{ padding: '0 5px' }} onClick={() => navigate(`/sale/reservation/${reservation._id}`)}><ReservationItem data={reservation} /></MenuItem>
           })}
+          <MenuItem onClick={() => onCreate()}>
+            <span style={{ display: 'grid', placeItems: 'center', width: '100%' }}>
+              {language['CREATE']} {language['RESERVATION']}
+            </span>
+          </MenuItem>
         </div>
       </MenuDialog>
     </div>

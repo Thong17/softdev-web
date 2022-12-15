@@ -345,3 +345,36 @@ export const checkArraySequence = (array, increment) => {
   })
   return result
 }
+
+export const calculateStructuresPrice = (structures, buyRate) => {
+  let price = 0
+  const structuresIds: any[] = []
+  structures.forEach(structure => {
+    let structurePrice = structure.price.value
+    if (structure.price.currency !== 'USD') structurePrice /= buyRate || 4000
+    structuresIds.push(structure._id)
+
+    switch (structure.price.duration) {
+      case '1d':
+        price += structurePrice / 24
+        break
+
+      case '1w':
+        price += structurePrice / (24 * 7)
+        break
+
+      case '1m':
+        price += structurePrice / (24 * 30.4167)
+        break
+
+      case '1y':
+        price += structurePrice / (24 * 365)
+        break
+    
+      default:
+        price += structurePrice
+        break
+    }
+  })
+  return { price, structuresIds }
+}

@@ -45,7 +45,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
   const [reservationTransaction, setReservationTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
-  const [disableProduct, setDisableProduct] = useState(false)
+  const [disableProduct, setDisableProduct] = useState(true)
 
   useEffect(() => {
     dispatch(getInfoStore())
@@ -68,7 +68,9 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
     let isDisabled = reservation && !reservation.payment
     let isCompleted = reservation?.isCompleted
 
-    if (!isDisabled) setDisableProduct(isCompleted)
+    
+    if (!reservation)  setDisableProduct(true)
+    else if (!isDisabled) setDisableProduct(isCompleted)
     else setDisableProduct(true)
     
     setPaymentDialog(prev => ({ ...prev, payment: reservation?.payment }))
