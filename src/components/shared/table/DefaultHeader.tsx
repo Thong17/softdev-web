@@ -7,6 +7,7 @@ import useLanguage from 'hooks/useLanguage'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { convertBufferToArrayBuffer, downloadBuffer } from 'utils/index'
+import { languages } from 'contexts/language/constant'
 
 export const DefaultHeader = ({ optionAction, exportUrl, styled, navigate, handleSearch, handleImport, breadcrumb, createUrl, filterOption, children }: any) => {    
   const { language } = useLanguage()
@@ -15,13 +16,14 @@ export const DefaultHeader = ({ optionAction, exportUrl, styled, navigate, handl
     if (!exportUrl) return
     const config = {
       responseType: "arraybuffer",
+      body: { languages: Object.keys(languages) },
       headers: {
         Accept: "application/octet-stream",
       },
     }
     Axios({ url: exportUrl, method: 'POST', ...config })
       .then(data => {
-        downloadBuffer(convertBufferToArrayBuffer(data?.data?.file?.data), data?.data?.filename)
+        downloadBuffer(convertBufferToArrayBuffer(data?.data?.file?.data), data?.data?.name)
       })
       .catch(err => notify(err?.response?.data?.message, 'error'))
   }
@@ -48,8 +50,8 @@ export const DefaultHeader = ({ optionAction, exportUrl, styled, navigate, handl
                 accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
               />
             </MenuItem>
-            <MenuItem onClick={() => handleExport}>
-                {language['EXPORT_DATA']}
+            <MenuItem onClick={handleExport}>
+              {language['EXPORT_DATA']}
             </MenuItem>
             <MenuItem>
               {language['DOWNLOAD_TEMPLATE']}
