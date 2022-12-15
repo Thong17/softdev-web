@@ -5,6 +5,7 @@ import { MenuDialog } from 'components/shared/MenuDialog'
 import { DeleteButton, UpdateButton, ViewButton } from 'components/shared/table/ActionButton'
 import { MenuItem } from '@mui/material'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
+import { languages } from 'contexts/language/constant'
 
 export declare type ColumnHeader = 'icon' | 'name' | 'status' | 'description' | 'createdBy' | 'action' | 'no'
 
@@ -25,11 +26,11 @@ export interface Data {
   status: boolean
   action: ReactElement
 }
-export const importColumns = ['_id', 'name', 'description', 'status', 'icon']
+export const importColumns = ['ID', Object.keys(languages).map(lang => `NAME_${lang}`.toUpperCase()), 'DESCRIPTION', 'STATUS', 'TAGS']
 
-export const importColumnData: ITableColumn<ColumnHeader>[] = [
+export const importColumnData: ITableColumn<any>[] = [
   { id: 'no', label: 'No' },
-  { id: 'name', label: 'Name' },
+  ...Object.keys(languages).map(lang => ({ id: `name${lang}`, label: `${lang}` })),
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
   { id: 'action', label: 'Remove', align: 'right' },

@@ -27,6 +27,7 @@ import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { Button, DialogActions, IconButton } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CustomButton } from 'styles'
+import { languages } from 'contexts/language/constant'
 
 export const Brands = () => {
   const dispatch = useAppDispatch()
@@ -102,7 +103,11 @@ export const Brands = () => {
             />
           </IconButton>
         )
-        return { ...importData, action: <ImportAction no={importData?.no} /> }
+        let mappedData = { ...importData, action: <ImportAction no={importData?.no} /> }
+        Object.keys(languages).forEach(lang => {
+          mappedData[`name${lang}`] = importData.name[lang]
+        })
+        return mappedData
       })
 
       return setImportDialog({ open: true, data: importList })

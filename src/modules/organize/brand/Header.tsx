@@ -30,6 +30,8 @@ export const Header = ({
 
   return (
       <DefaultHeader
+        optionAction={true}
+        exportUrl='/organize/brand/excel/export'
         styled={styled}
         navigate={navigate}
         handleSearch={handleSearch}
