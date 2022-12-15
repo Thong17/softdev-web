@@ -354,7 +354,7 @@ const SelectReservation = ({ reservations, onCreate }) => {
           })}
           <MenuItem onClick={() => onCreate()}>
             <span style={{ display: 'grid', placeItems: 'center', width: '100%' }}>
-              {language['CREATE']} {language['RESERVATION']}
+              {language['START_NOW']}
             </span>
           </MenuItem>
         </div>

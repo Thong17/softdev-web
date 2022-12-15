@@ -13,16 +13,16 @@ import { TextEllipsis } from '../TextEllipsis'
 
 const roomSize = {
   small: {
-    width: '60%',
-    height: '60%',
+    width: '50%',
+    height: '50%',
   },
   medium: {
-    width: '80%',
-    height: '80%',
+    width: '70%',
+    height: '70%',
   },
   large: {
-    width: '100%',
-    height: '100%',
+    width: '90%',
+    height: '90%',
   },
 }
 

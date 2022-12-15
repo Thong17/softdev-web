@@ -66,6 +66,7 @@ export const languages = {
     VOUCHER: 'Voucher',
     PAYMENT: 'Payment',
     GENERAL: 'General',
+    START_NOW: 'Start\u00a0Now',
     // Table
     DESCRIPTION: 'Description',
     START_AT: 'Start\u00a0At',
@@ -248,6 +249,7 @@ export const languages = {
     VOUCHER: 'ប័ណ្ណទូទាត់',
     PAYMENT: 'ការទូទាត់',
     GENERAL: 'ទូទៅ',
+    START_NOW: 'ចាប់ផ្តើមឥឡូវនេះ',
     // Table
     DESCRIPTION: 'ការពិពណ៌នា',
     START_AT: 'ថ្ងៃចាប់ផ្តើម',
