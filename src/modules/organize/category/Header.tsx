@@ -4,6 +4,7 @@ import { headerColumns } from './constant'
 import { DefaultHeader } from 'components/shared/table/DefaultHeader'
 import { MenuItem } from '@mui/material'
 import { SortIcon } from 'components/shared/icons/SortIcon'
+import { languages } from 'contexts/language/constant'
 
 export const Header = ({
   data,
@@ -33,13 +34,15 @@ export const Header = ({
 
   useEffect(() => {
     const newCategories = data.map((category) => {
-      return {
-        _id: category._id,
-        name: JSON.stringify(category.name)?.replace(/"/g, '""'),
+      const nameLangs = Object.keys(languages)
+      let obj = {
         description: category.description,
         status: category.status,
-        icon: JSON.stringify(category.icon)?.replace(/"/g, '""')
       }
+      nameLangs.forEach(lang => {
+        obj[`name${lang}`] = category.name[lang] || ''
+      })
+      return obj
     })
     setCategories(newCategories)
   }, [data])

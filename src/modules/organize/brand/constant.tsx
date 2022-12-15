@@ -9,6 +9,7 @@ import { MenuItem } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
+import { languages } from 'contexts/language/constant'
 
 export declare type ColumnHeader =
   | 'no'
@@ -37,17 +38,8 @@ export interface Data {
   action: ReactElement
 }
 
-export const importColumns = ['_id', 'name', 'description', 'status', 'icon']
-
 export const headerColumns = [
-  {
-    label: '_id',
-    key: '_id',
-  },
-  {
-    label: 'name',
-    key: 'name',
-  },
+  ...Object.keys(languages).map(key => ({ label: `name${key}`, key: `name${key}` })),
   {
     label: 'description',
     key: 'description',
@@ -56,18 +48,14 @@ export const headerColumns = [
     label: 'status',
     key: 'status',
   },
-  {
-    label: 'icon',
-    key: 'icon',
-  },
 ]
 
-export const importColumnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'no', label: 'No' },
-  { id: 'name', label: 'Name' },
-  { id: 'description', label: 'Description' },
-  { id: 'status', label: 'Status' },
-  { id: 'action', label: 'Remove', align: 'right' },
+export const importColumns = headerColumns.map(header => header.key)
+
+export const importColumnData: ITableColumn<any>[] = [
+  { id: 'no', label: 'no' },
+  ...headerColumns.map(header => ({ id: header.key, label: header.key })),
+  { id: 'action', label: 'remove', align: 'right' },
 ]
 
 export const createData = (

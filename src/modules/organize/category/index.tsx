@@ -27,6 +27,7 @@ import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { Button, DialogActions, IconButton } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CustomButton } from 'styles'
+import { languages } from 'contexts/language/constant'
 
 export const Categories = () => {
   const dispatch = useAppDispatch()
@@ -121,7 +122,7 @@ export const Categories = () => {
     const response = Axios({
       method: 'POST',
       url: '/organize/category/batch',
-      body: importDialog.data,
+      body: { data: importDialog.data, languages: Object.keys(languages) },
     })
     loadify(response)
     response.then(() => {
