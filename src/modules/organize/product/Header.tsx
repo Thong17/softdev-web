@@ -15,6 +15,7 @@ export const Header = ({
   navigate,
   handleSearch,
   handleFilter,
+  handleImport
 }) => {
   const [grid, setGrid] = useState(isGrid)
   const [sortObj, setSortObj] = useState({
@@ -43,9 +44,12 @@ export const Header = ({
 
   return (
     <DefaultHeader
+      optionAction={true}
+      exportUrl='/organize/product/excel/export'
       filterOption={<FilterOption />}
       styled={styled}
       navigate={navigate}
+      handleImport={handleImport}
       handleSearch={handleSearch}
       breadcrumb={<StoreBreadcrumbs page='product' />}
       createUrl='/organize/product/create'

@@ -15,6 +15,8 @@ import { Header } from './Header'
 import {
   Data,
   createData,
+  productColumnData,
+  productImportColumns,
 } from './constant'
 import { debounce } from 'utils'
 import useAlert from 'hooks/useAlert'
@@ -24,7 +26,9 @@ import {
   DialogActions,
   Skeleton,
   CircularProgress,
+  IconButton,
 } from '@mui/material'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import SellRoundedIcon from '@mui/icons-material/SellRounded'
 import TrendingFlatRoundedIcon from '@mui/icons-material/TrendingFlatRounded'
 import { CustomButton } from 'styles'
@@ -33,6 +37,40 @@ import { ListItem, ListLayout } from 'components/layouts/ListLayout'
 import useConfig from 'hooks/useConfig'
 import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 import { getListCodeProduct, selectListCodeProduct } from 'shared/redux'
+import { ImportExcel } from 'constants/functions/Excels'
+import { languages } from 'contexts/language/constant'
+
+const mappedImportList = (data, setImportDialog, theme) => {
+  const mappedData = data.map((importData) => {
+    const ImportAction = ({ no }) => (
+      <IconButton
+        onClick={() => {
+          setImportDialog((prevData) => {
+            return {
+              ...prevData,
+              data: prevData.data.filter(
+                (prevItem: any) => prevItem.no !== no
+              ),
+            }
+          })
+        }}
+      >
+        <CloseRoundedIcon
+          style={{ color: theme.color.error, fontSize: 19 }}
+        />
+      </IconButton>
+    )
+    let mappedData = { ...importData, action: <ImportAction no={importData?.no} /> }
+    Object.keys(languages).forEach(lang => {
+      mappedData[`name${lang}`] = importData.name[lang]
+      mappedData['brand'] = importData.brand?.name[lang] || importData.brand?.name['English']
+      mappedData['category'] = importData.category?.name[lang] || importData.category?.name['English']
+    })
+    return mappedData
+  })
+  
+  return mappedData
+}
 
 export const Products = () => {
   const dispatch = useAppDispatch()
@@ -49,7 +87,7 @@ export const Products = () => {
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
-  const { notify } = useNotify()
+  const { notify, loadify } = useNotify()
   const { toggleDisplay, display } = useConfig()
   const [rowData, setRowData] = useState<Data[]>([])
   const [dialog, setDialog] = useState({ open: false, id: null })
@@ -69,6 +107,21 @@ export const Products = () => {
     asc: false,
   })
   const limit = 40
+
+  const handleImport = (e) => {
+    const model = e.target.name
+
+    const response = ImportExcel(
+      '/organize/product/excel/import',
+      e.target.files[0],
+      productImportColumns
+    )
+    loadify(response)
+    response.then((data) => {
+      const importList = data.data.data
+      return setImportDialog({ open: true, data: importList, model })
+    })
+  }
 
   const handleCloseImport = () => {
     confirm({
@@ -92,7 +145,6 @@ export const Products = () => {
         setHasMore(true)
         setRowData([])
         setOffset(0)
-        // setFetching(true)
         const query = new URLSearchParams()
         query.append('search', search)
         query.append('limit', limit.toString())
@@ -276,6 +328,7 @@ export const Products = () => {
           navigate={navigate}
           handleSearch={handleSearch}
           handleFilter={handleFilter}
+          handleImport={handleImport}
         />
       }
     >
@@ -285,8 +338,8 @@ export const Products = () => {
           style={{ position: 'relative', padding: 10, boxSizing: 'border-box' }}
         >
           <StickyTable
-            columns={[]}
-            rows={importDialog.data}
+            columns={productColumnData}
+            rows={mappedImportList(importDialog.data, setImportDialog, theme)}
             style={{ maxWidth: '90vw' }}
           />
         </div>

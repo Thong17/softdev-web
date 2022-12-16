@@ -9,33 +9,21 @@ import { MenuItem } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
 import { currencyFormat } from 'utils'
+import { languages } from 'contexts/language/constant'
 
-export declare type ColumnHeader =
-  | 'no'
-  | 'images'
-  | 'profile'
-  | 'price'
-  | 'currency'
-  | 'code'
-  | 'isStock'
-  | 'brand'
-  | 'category'
-  | 'profile'
-  | 'name'
-  | 'status'
-  | 'description'
-  | 'createdBy'
-  | 'action'
+export const productImportColumns = ['ID', Object.keys(languages).map(lang => `NAME_${lang}`.toUpperCase()), 'PRICE', 'CURRENCY', 'CODE', 'IS_STOCK', 'DESCRIPTION', 'STATUS', 'TAGS', 'BRAND_ID', 'CATEGORY_ID']
 
-export const productColumnData: ITableColumn<ColumnHeader>[] = [
+export const productColumnData: ITableColumn<any>[] = [
   { id: 'no', label: 'No' },
-  { id: 'name', label: 'Name' },
+  ...Object.keys(languages).map(lang => ({ id: `name${lang}`, label: `${lang}` })),
   { id: 'price', label: 'Price' },
   { id: 'currency', label: 'Currency' },
   { id: 'code', label: 'Code' },
   { id: 'isStock', label: 'Is Stock', minWidth: 70 },
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
+  { id: 'brand', label: 'Brand' },
+  { id: 'category', label: 'Category' },
   { id: 'action', label: 'Remove', align: 'right' },
 ]
 
