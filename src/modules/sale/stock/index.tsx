@@ -38,7 +38,7 @@ export const Stocks = () => {
   const { data: listCode } = useAppSelector(selectListCodeProduct)
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -266,11 +266,14 @@ export const Stocks = () => {
                       picture={obj.profile}
                       subLeft='Qty'
                       subRight={
-                        <QuantityStatus
-                          qty={obj.stock}
-                          min={obj.alertAt}
-                          label='Left'
-                        />
+                        obj.isStock ? (
+                          <QuantityStatus
+                            qty={obj.stock}
+                            min={obj.alertAt}
+                          />
+                        ) : (
+                          <span style={{ color: theme.color.success }}>{language['AVAILABLE']}</span>
+                        )
                       }
                       action={obj.action}
                       status={obj.status}
@@ -286,11 +289,14 @@ export const Stocks = () => {
                       picture={obj.profile}
                       subLeft='Qty'
                       subRight={
-                        <QuantityStatus
-                          qty={obj.stock}
-                          min={obj.alertAt}
-                          label='Left'
-                        />
+                        obj.isStock ? (
+                          <QuantityStatus
+                            qty={obj.stock}
+                            min={obj.alertAt}
+                          />
+                        ) : (
+                          <span style={{ color: theme.color.success }}>{language['AVAILABLE']}</span>
+                        )
                       }
                       action={obj.action}
                       status={obj.status}
@@ -361,7 +367,7 @@ export const Stocks = () => {
                       third={
                         <>
                           <span className='subject'>Stock</span>
-                          <span>{obj.stock}</span>
+                          <span>{obj.isStock ? obj.stock : language['AVAILABLE']}</span>
                         </>
                       }
                       fourth={
@@ -401,7 +407,7 @@ export const Stocks = () => {
                       third={
                         <>
                           <span className='subject'>Stock</span>
-                          <span>{obj.stock}</span>
+                          <span>{obj.isStock ? obj.stock : language['AVAILABLE']}</span>
                         </>
                       }
                       fourth={
