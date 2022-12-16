@@ -29,7 +29,7 @@ export interface Data {
 export const importColumns = ['ID', Object.keys(languages).map(lang => `NAME_${lang}`.toUpperCase()), 'DESCRIPTION', 'STATUS', 'TAGS']
 
 export const importColumnData: ITableColumn<any>[] = [
-  { id: 'no', label: 'No' },
+  { id: 'no', label: 'ID' },
   ...Object.keys(languages).map(lang => ({ id: `name${lang}`, label: `${lang}` })),
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },

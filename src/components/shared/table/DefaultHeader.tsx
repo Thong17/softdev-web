@@ -53,9 +53,6 @@ export const DefaultHeader = ({ optionAction, exportUrl, styled, navigate, handl
             <MenuItem onClick={handleExport}>
               {language['EXPORT_DATA']}
             </MenuItem>
-            <MenuItem>
-              {language['DOWNLOAD_TEMPLATE']}
-            </MenuItem>
           </OptionButton>}
           { createUrl && <CustomButton
               style={{

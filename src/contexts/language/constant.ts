@@ -205,8 +205,8 @@ export const languages = {
     SALE: 'លក់',
     ORGANIZE: 'រៀបចំ',
     // Component
-    IMPORT_DATA: 'នាំចូលទិន្នន័យ',
-    EXPORT_DATA: 'នាំចេញទិន្នន័យ',
+    IMPORT_DATA: 'បញ្ចូលទិន្នន័យ',
+    EXPORT_DATA: 'បញ្ចេញទិន្នន័យ',
     DOWNLOAD_TEMPLATE: 'ទាញយកគំរូ',
     PRODUCT: 'ផលិតផល',
     BY_NAME: 'តាមឈ្មោះ',

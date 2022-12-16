@@ -14,7 +14,7 @@ import { languages } from 'contexts/language/constant'
 export const productImportColumns = ['ID', Object.keys(languages).map(lang => `NAME_${lang}`.toUpperCase()), 'PRICE', 'CURRENCY', 'CODE', 'IS_STOCK', 'DESCRIPTION', 'STATUS', 'TAGS', 'BRAND_ID', 'CATEGORY_ID']
 
 export const productColumnData: ITableColumn<any>[] = [
-  { id: 'no', label: 'No' },
+  { id: 'no', label: 'ID' },
   ...Object.keys(languages).map(lang => ({ id: `name${lang}`, label: `${lang}` })),
   { id: 'price', label: 'Price' },
   { id: 'currency', label: 'Currency' },
