@@ -24,7 +24,6 @@ export const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'icon', label: 'ICON' },
   { id: 'name', label: 'NAME' },
   { id: 'description', label: 'DESCRIPTION' },
-  { id: 'createdBy', label: 'CREATED_BY' },
   { id: 'status', label: 'STATUS' },
   { id: 'action', label: 'ACTION', align: 'center' },
 ]
