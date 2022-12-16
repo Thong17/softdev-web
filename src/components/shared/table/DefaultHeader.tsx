@@ -3,11 +3,31 @@ import { FilterButton } from 'components/shared/table/FilterButton'
 import { OptionButton } from 'components/shared/table/OptionButton'
 import { MenuItem } from '@mui/material'
 import { CustomButton } from 'styles'
-import { CSVLink } from 'react-csv'
 import useLanguage from 'hooks/useLanguage'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
+import { convertBufferToArrayBuffer, downloadBuffer } from 'utils/index'
+import { languages } from 'contexts/language/constant'
 
-export const DefaultHeader = ({ exportComponent, importComponent, downloadComponent, exportData, styled, navigate, handleSearch, handleImport, breadcrumb, filename, createUrl, excelHeader, filterOption, children }: any) => {    
+export const DefaultHeader = ({ optionAction, exportUrl, styled, navigate, handleSearch, handleImport, breadcrumb, createUrl, filterOption, children }: any) => {    
   const { language } = useLanguage()
+  const { notify } = useNotify()
+  const handleExport = () => {
+    if (!exportUrl) return
+    const config = {
+      responseType: "arraybuffer",
+      body: { languages: Object.keys(languages) },
+      headers: {
+        Accept: "application/octet-stream",
+      },
+    }
+    Axios({ url: exportUrl, method: 'POST', ...config })
+      .then(data => {
+        downloadBuffer(convertBufferToArrayBuffer(data?.data?.file?.data), data?.data?.name)
+      })
+      .catch(err => notify(err?.response?.data?.message, 'error'))
+  }
+
   return (
       <>
         {breadcrumb}
@@ -17,48 +37,23 @@ export const DefaultHeader = ({ exportComponent, importComponent, downloadCompon
           <FilterButton style={{ marginLeft: 10 }}>
             {filterOption}
           </FilterButton>
-          <OptionButton style={{ marginLeft: 10 }}>
-            {
-              importComponent
-                ? importComponent
-                : <MenuItem>
-                  <label htmlFor='file-upload' style={{ cursor: 'pointer' }}>
-                    {language['IMPORT_DATA']}
-                  </label>
-                  <input
-                    id='file-upload'
-                    type='file'
-                    onChange={handleImport}
-                    style={{ display: 'none' }}
-                    accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-                  />
-                </MenuItem>
-            }
-            {
-              exportComponent 
-                ? exportComponent 
-                : excelHeader && <MenuItem>
-                  <CSVLink headers={excelHeader} data={exportData} filename={`${filename}_${new Date().toDateString()}.csv`} style={{
-                    color: styled.text.secondary,
-                    textDecoration: 'none'
-                  }}>
-                    {language['EXPORT_DATA']}
-                  </CSVLink>
-                </MenuItem>
-            }
-            {
-              downloadComponent 
-                ? downloadComponent
-                : excelHeader && <MenuItem>
-                  <CSVLink headers={excelHeader} data={[]} filename={`${filename}_template.csv`} style={{
-                    color: styled.text.secondary,
-                    textDecoration: 'none'
-                  }}>
-                    {language['DOWNLOAD_TEMPLATE']}
-                  </CSVLink>
-                </MenuItem>
-            }
-          </OptionButton>
+          {optionAction && <OptionButton style={{ marginLeft: 10 }}>
+            <MenuItem>
+              <label htmlFor='file-upload' style={{ cursor: 'pointer' }}>
+                {language['IMPORT_DATA']}
+              </label>
+              <input
+                id='file-upload'
+                type='file'
+                onChange={handleImport}
+                style={{ display: 'none' }}
+                accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+              />
+            </MenuItem>
+            <MenuItem onClick={handleExport}>
+              {language['EXPORT_DATA']}
+            </MenuItem>
+          </OptionButton>}
           { createUrl && <CustomButton
               style={{
                 marginLeft: 10,

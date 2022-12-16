@@ -50,7 +50,7 @@ export const Organize = () => {
   useEffect(() => {
     const mappedCategory = dashboard?.categories?.map((item) => {
       return {
-        name: item.name?.[lang],
+        name: item.name?.[lang] || item.name?.['English'],
         value: item.value,
         title: item.title,
         detail: language['CATEGORY'],
@@ -61,7 +61,7 @@ export const Organize = () => {
 
     const mappedBrand = dashboard?.brands?.map((item) => {
       return {
-        name: item.name?.[lang],
+        name: item.name?.[lang] || item.name?.['English'],
         value: item.value,
         title: item.title,
         detail: language['BRAND'],
@@ -72,7 +72,7 @@ export const Organize = () => {
 
     const mappedFloor = dashboard?.floors?.map((item) => {
       return {
-        name: item.name?.[lang],
+        name: item.name?.[lang] || item.name?.['English'],
         value: item.value,
         title: item.title,
         detail: language['FLOOR'],
@@ -83,7 +83,7 @@ export const Organize = () => {
 
     const mappedProduct = dashboard?.products?.map((item) => {
       return {
-        name: item.name?.[lang],
+        name: item.name,
         value: item.value,
         title: item.title,
         detail: language['PRODUCT'],

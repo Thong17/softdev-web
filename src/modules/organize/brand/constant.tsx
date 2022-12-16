@@ -9,6 +9,7 @@ import { MenuItem } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { ReactElement } from 'react'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
+import { languages } from 'contexts/language/constant'
 
 export declare type ColumnHeader =
   | 'no'
@@ -37,34 +38,11 @@ export interface Data {
   action: ReactElement
 }
 
-export const importColumns = ['_id', 'name', 'description', 'status', 'icon']
+export const importColumns = ['ID', Object.keys(languages).map(lang => `NAME_${lang}`.toUpperCase()), 'DESCRIPTION', 'STATUS', 'TAGS']
 
-export const headerColumns = [
-  {
-    label: '_id',
-    key: '_id',
-  },
-  {
-    label: 'name',
-    key: 'name',
-  },
-  {
-    label: 'description',
-    key: 'description',
-  },
-  {
-    label: 'status',
-    key: 'status',
-  },
-  {
-    label: 'icon',
-    key: 'icon',
-  },
-]
-
-export const importColumnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'no', label: 'No' },
-  { id: 'name', label: 'Name' },
+export const importColumnData: ITableColumn<any>[] = [
+  { id: 'no', label: 'ID' },
+  ...Object.keys(languages).map(lang => ({ id: `name${lang}`, label: `${lang}` })),
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
   { id: 'action', label: 'Remove', align: 'right' },

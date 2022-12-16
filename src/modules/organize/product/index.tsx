@@ -15,29 +15,18 @@ import { Header } from './Header'
 import {
   Data,
   createData,
-  productColumns,
-  detailColumns,
-  colorColumns,
-  imageColumns,
-  propertyColumns,
-  optionColumns,
   productColumnData,
-  detailColumnData,
-  colorColumnData,
-  propertyColumnData,
-  optionColumnData,
-  imageColumnData,
+  productImportColumns,
 } from './constant'
-import { ImportExcel } from 'constants/functions/Excels'
 import { debounce } from 'utils'
 import useAlert from 'hooks/useAlert'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import {
   Button,
   DialogActions,
-  IconButton,
   Skeleton,
   CircularProgress,
+  IconButton,
 } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import SellRoundedIcon from '@mui/icons-material/SellRounded'
@@ -48,6 +37,40 @@ import { ListItem, ListLayout } from 'components/layouts/ListLayout'
 import useConfig from 'hooks/useConfig'
 import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 import { getListCodeProduct, selectListCodeProduct } from 'shared/redux'
+import { ImportExcel } from 'constants/functions/Excels'
+import { languages } from 'contexts/language/constant'
+
+const mappedImportList = (data, setImportDialog, theme) => {
+  const mappedData = data.map((importData) => {
+    const ImportAction = ({ no }) => (
+      <IconButton
+        onClick={() => {
+          setImportDialog((prevData) => {
+            return {
+              ...prevData,
+              data: prevData.data.filter(
+                (prevItem: any) => prevItem.no !== no
+              ),
+            }
+          })
+        }}
+      >
+        <CloseRoundedIcon
+          style={{ color: theme.color.error, fontSize: 19 }}
+        />
+      </IconButton>
+    )
+    let mappedData = { ...importData, action: <ImportAction no={importData?.no} /> }
+    Object.keys(languages).forEach(lang => {
+      mappedData[`name${lang}`] = importData.name[lang]
+      mappedData['brand'] = importData.brand?.name[lang] || importData.brand?.name['English']
+      mappedData['category'] = importData.category?.name[lang] || importData.category?.name['English']
+    })
+    return mappedData
+  })
+  
+  return mappedData
+}
 
 export const Products = () => {
   const dispatch = useAppDispatch()
@@ -64,7 +87,7 @@ export const Products = () => {
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
-  const { loadify } = useNotify()
+  const { notify, loadify } = useNotify()
   const { toggleDisplay, display } = useConfig()
   const [rowData, setRowData] = useState<Data[]>([])
   const [dialog, setDialog] = useState({ open: false, id: null })
@@ -77,7 +100,6 @@ export const Products = () => {
   })
   const confirm = useAlert()
   const [isGrid, setIsGrid] = useState(display === 'grid' ? true : false)
-  const [columnData, setColumnData] = useState(productColumnData)
   const [search, setSearch] = useState('')
   const [offset, setOffset] = useState(0)
   const [filterObj, setFilterObj] = useState<any>({
@@ -88,63 +110,15 @@ export const Products = () => {
 
   const handleImport = (e) => {
     const model = e.target.name
-    let columns
-    switch (model) {
-      case 'product':
-        columns = productColumns
-        setColumnData(productColumnData)
-        break
-      case 'detail':
-        columns = detailColumns
-        setColumnData(detailColumnData)
-        break
-      case 'image':
-        columns = imageColumns
-        setColumnData(imageColumnData)
-        break
-      case 'color':
-        columns = colorColumns
-        setColumnData(colorColumnData)
-        break
-      case 'property':
-        columns = propertyColumns
-        setColumnData(propertyColumnData)
-        break
-      case 'option':
-        columns = optionColumns
-        setColumnData(optionColumnData)
-        break
-    }
 
     const response = ImportExcel(
       '/organize/product/excel/import',
       e.target.files[0],
-      columns
+      productImportColumns
     )
     loadify(response)
     response.then((data) => {
-      const importList = data.data.data.map((importData) => {
-        const ImportAction = ({ no }) => (
-          <IconButton
-            onClick={() => {
-              setImportDialog((prevData) => {
-                return {
-                  ...prevData,
-                  data: prevData.data.filter(
-                    (prevItem: any) => prevItem.no !== no
-                  ),
-                }
-              })
-            }}
-          >
-            <CloseRoundedIcon
-              style={{ color: theme.color.error, fontSize: 19 }}
-            />
-          </IconButton>
-        )
-        return { ...importData, action: <ImportAction no={importData?.no} /> }
-      })
-
+      const importList = data.data.data
       return setImportDialog({ open: true, data: importList, model })
     })
   }
@@ -160,67 +134,47 @@ export const Products = () => {
   }
 
   const handleConfirmImport = () => {
-    let url
-
-    switch (importDialog.model) {
-      case 'product':
-        url = '/organize/product/batch'
-        break
-      case 'image':
-        url = '/organize/product/image/batch'
-        break
-      case 'color':
-        url = '/organize/product/color/batch'
-        break
-      case 'property':
-        url = '/organize/product/property/batch'
-        break
-      case 'option':
-        url = '/organize/product/option/batch'
-        break
-    }
-
-    const response = Axios({
+    let url = '/organize/product/batch'
+    Axios({
       method: 'POST',
       url,
       body: importDialog.data,
     })
-    loadify(response)
-    response.then(() => {
-      setImportDialog({ ...importDialog, open: false })
-      setHasMore(true)
-      setRowData([])
-      setOffset(0)
-      // setFetching(true)
-      const query = new URLSearchParams()
-      query.append('search', search)
-      query.append('limit', limit.toString())
-      query.append('offset', '0')
-      query.append('filter', filterObj.filter)
-      query.append('sort', filterObj.asc ? 'asc' : 'desc')
-      dispatch(getListProduct({ query }))
-    })
+      .then(() => {
+        setImportDialog({ ...importDialog, open: false })
+        setHasMore(true)
+        setRowData([])
+        setOffset(0)
+        const query = new URLSearchParams()
+        query.append('search', search)
+        query.append('limit', limit.toString())
+        query.append('offset', '0')
+        query.append('filter', filterObj.filter)
+        query.append('sort', filterObj.asc ? 'asc' : 'desc')
+        dispatch(getListProduct({ query }))
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
   }
 
   const handleConfirm = (id) => {
-    const response = Axios({
+    Axios({
       method: 'DELETE',
       url: `/organize/product/disable/${id}`,
     })
-    loadify(response)
-    response.then(() => {
-      setHasMore(true)
-      setRowData([])
-      setOffset(0)
-      // setFetching(true)
-      const query = new URLSearchParams()
-      query.append('search', search)
-      query.append('limit', limit.toString())
-      query.append('offset', '0')
-      query.append('filter', filterObj.filter)
-      query.append('sort', filterObj.asc ? 'asc' : 'desc')
-      dispatch(getListProduct({ query }))
-    })
+      .then(() => {
+        setHasMore(true)
+        setRowData([])
+        setOffset(0)
+        // setFetching(true)
+        const query = new URLSearchParams()
+        query.append('search', search)
+        query.append('limit', limit.toString())
+        query.append('offset', '0')
+        query.append('filter', filterObj.filter)
+        query.append('sort', filterObj.asc ? 'asc' : 'desc')
+        dispatch(getListProduct({ query }))
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
 
     setDialog({ open: false, id: null })
   }
@@ -370,12 +324,11 @@ export const Products = () => {
         <Header
           changeLayout={changeLayout}
           isGrid={isGrid}
-          data={products}
           styled={theme}
           navigate={navigate}
           handleSearch={handleSearch}
-          handleImport={handleImport}
           handleFilter={handleFilter}
+          handleImport={handleImport}
         />
       }
     >
@@ -385,8 +338,8 @@ export const Products = () => {
           style={{ position: 'relative', padding: 10, boxSizing: 'border-box' }}
         >
           <StickyTable
-            columns={columnData}
-            rows={importDialog.data}
+            columns={productColumnData}
+            rows={mappedImportList(importDialog.data, setImportDialog, theme)}
             style={{ maxWidth: '90vw' }}
           />
         </div>

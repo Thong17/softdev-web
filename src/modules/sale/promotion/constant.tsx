@@ -43,42 +43,6 @@ export interface Data {
   action: ReactElement
 }
 
-export const importColumns = ['_id', 'name', 'description', 'status', 'icon']
-
-export const headerColumns = [
-  {
-    label: '_id',
-    key: '_id',
-  },
-  {
-    label: 'name',
-    key: 'name',
-  },
-  {
-    label: 'description',
-    key: 'description',
-  },
-  {
-    label: 'status',
-    key: 'status',
-  },
-  {
-    label: 'icon',
-    key: 'icon',
-  },
-]
-
-export const importColumnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'description', label: 'Description' },
-  { id: 'value', label: 'Promotion' },
-  { id: 'startAt', label: 'Start\u00a0At' },
-  { id: 'expireAt', label: 'Expire\u00a0At' },
-  { id: 'products', label: 'Items' },
-  { id: 'createdBy', label: 'Created\u00a0By' },
-  { id: 'status', label: 'Status' },
-  { id: 'action', label: 'Remove' },
-]
-
 export const createData = (
   id: string,
   description: string,

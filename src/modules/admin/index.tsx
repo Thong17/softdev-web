@@ -42,9 +42,9 @@ export const Admin = () => {
   useEffect(() => {
     const mappedRole = dashboard?.roles?.map((role) => {
       return {
-        name: role.name?.[lang],
+        name: role.name?.[lang] || role.name?.['English'],
         value: role.value,
-        title: role.title,
+        title: `${role.title}:`,
         detail: `Privilege ${role.detail}`,
         fill: role.detail === role.value ? theme.color.success : theme.color.info
       }
@@ -53,9 +53,9 @@ export const Admin = () => {
 
     const mappedUser = dashboard?.users?.map((role) => {
       return {
-        name: role.name?.[lang],
+        name: role.name?.[lang] || role.name?.['English'],
         value: role.value,
-        title: role.title,
+        title: `${role.title}:`,
         detail: `Privilege ${role.detail}`
       }
     })

@@ -1,6 +1,5 @@
 import Container from 'components/shared/Container'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { StickyTable } from 'components/shared/table/StickyTable'
 import { useNavigate } from 'react-router'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
@@ -10,20 +9,13 @@ import useNotify from 'hooks/useNotify'
 import Axios from 'constants/functions/Axios'
 import useTheme from 'hooks/useTheme'
 import { Header } from './Header'
-import { Data, createData, importColumns, importColumnData } from './constant'
-import { ImportExcel } from 'constants/functions/Excels'
+import { Data, createData } from './constant'
 import { debounce } from 'utils'
 import useAlert from 'hooks/useAlert'
-import { AlertDialog } from 'components/shared/table/AlertDialog'
 import {
-  Button,
   CircularProgress,
-  DialogActions,
-  IconButton,
   Skeleton,
 } from '@mui/material'
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import { CustomButton } from 'styles'
 import { GridItem, GridLayout } from 'components/layouts/GridLayout'
 import { ListItem, ListLayout } from 'components/layouts/ListLayout'
 import useConfig from 'hooks/useConfig'
@@ -46,16 +38,15 @@ export const Stocks = () => {
   const { data: listCode } = useAppSelector(selectListCodeProduct)
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
-  const { loadify, notify } = useNotify()
+  const { notify } = useNotify()
   const [rowData, setRowData] = useState<Data[]>([])
   const navigate = useNavigate()
   const { toggleDisplay, display } = useConfig()
   const [loading, setLoading] = useState(status !== 'SUCCESS' ? true : false)
-  const [importDialog, setImportDialog] = useState({ open: false, data: [] })
   const confirm = useAlert()
   const [isGrid, setIsGrid] = useState(display === 'grid' ? true : false)
   const [search, setSearch] = useState('')
@@ -65,62 +56,6 @@ export const Stocks = () => {
     asc: false,
   })
   const limit = 40
-
-  const handleImport = (e) => {
-    const response = ImportExcel(
-      '/organize/product/excel/import',
-      e.target.files[0],
-      importColumns
-    )
-    loadify(response)
-    response.then((data) => {
-      const importList = data.data.data.map((importData) => {
-        const ImportAction = ({ no }) => (
-          <IconButton
-            onClick={() => {
-              setImportDialog((prevData) => {
-                return {
-                  ...prevData,
-                  data: prevData.data.filter(
-                    (prevItem: any) => prevItem.no !== no
-                  ),
-                }
-              })
-            }}
-            style={{ color: theme.text.secondary }}
-          >
-            <CloseRoundedIcon />
-          </IconButton>
-        )
-        return { ...importData, action: <ImportAction no={importData?.no} /> }
-      })
-
-      return setImportDialog({ open: true, data: importList })
-    })
-  }
-
-  const handleCloseImport = () => {
-    confirm({
-      title: 'Discard Import',
-      description: 'Do you want to discard all the change?',
-      variant: 'error',
-    })
-      .then(() => setImportDialog({ ...importDialog, open: false }))
-      .catch(() => setImportDialog({ ...importDialog }))
-  }
-
-  const handleConfirmImport = () => {
-    const response = Axios({
-      method: 'POST',
-      url: '/sale/stock/batch',
-      body: importDialog.data,
-    })
-    loadify(response)
-    response.then(() => {
-      setImportDialog({ ...importDialog, open: false })
-      dispatch(getListProduct({}))
-    })
-  }
 
   const changeLayout = () => {
     setIsGrid(!isGrid)
@@ -295,7 +230,7 @@ export const Stocks = () => {
             method: 'PUT',
             url: `/organize/product/stock/${scannedProduct._id}/enable`,
           })
-            .then((result) => {
+            .then(() => {
               navigate(`/sale/stock/item/${scannedProduct._id}`)
             })
             .catch((err) => notify(err?.response?.data?.msg, 'error'))
@@ -313,37 +248,11 @@ export const Stocks = () => {
           styled={theme}
           navigate={navigate}
           handleSearch={handleSearch}
-          handleImport={handleImport}
           handleFilter={handleFilter}
         />
       }
     >
       <BarcodeReader onScan={handleScanProduct} onError={() => {}} />
-      <AlertDialog isOpen={importDialog.open} handleClose={handleCloseImport}>
-        <div style={{ position: 'relative' }}>
-          <StickyTable
-            columns={importColumnData}
-            rows={importDialog.data}
-            loading={loading}
-            style={{ maxWidth: '90vw' }}
-          />
-        </div>
-        <DialogActions>
-          <Button onClick={handleCloseImport}>Cancel</Button>
-          <CustomButton
-            style={{
-              marginLeft: 10,
-              backgroundColor: theme.background.secondary,
-              color: theme.text.secondary,
-            }}
-            styled={theme}
-            onClick={handleConfirmImport}
-            autoFocus
-          >
-            Import
-          </CustomButton>
-        </DialogActions>
-      </AlertDialog>
       {isGrid ? (
         <GridLayout>
           {!loading
@@ -357,11 +266,14 @@ export const Stocks = () => {
                       picture={obj.profile}
                       subLeft='Qty'
                       subRight={
-                        <QuantityStatus
-                          qty={obj.stock}
-                          min={obj.alertAt}
-                          label='Left'
-                        />
+                        obj.isStock ? (
+                          <QuantityStatus
+                            qty={obj.stock}
+                            min={obj.alertAt}
+                          />
+                        ) : (
+                          <span style={{ color: theme.color.success }}>{language['AVAILABLE']}</span>
+                        )
                       }
                       action={obj.action}
                       status={obj.status}
@@ -377,11 +289,14 @@ export const Stocks = () => {
                       picture={obj.profile}
                       subLeft='Qty'
                       subRight={
-                        <QuantityStatus
-                          qty={obj.stock}
-                          min={obj.alertAt}
-                          label='Left'
-                        />
+                        obj.isStock ? (
+                          <QuantityStatus
+                            qty={obj.stock}
+                            min={obj.alertAt}
+                          />
+                        ) : (
+                          <span style={{ color: theme.color.success }}>{language['AVAILABLE']}</span>
+                        )
                       }
                       action={obj.action}
                       status={obj.status}
@@ -452,7 +367,7 @@ export const Stocks = () => {
                       third={
                         <>
                           <span className='subject'>Stock</span>
-                          <span>{obj.stock}</span>
+                          <span>{obj.isStock ? obj.stock : language['AVAILABLE']}</span>
                         </>
                       }
                       fourth={
@@ -492,7 +407,7 @@ export const Stocks = () => {
                       third={
                         <>
                           <span className='subject'>Stock</span>
-                          <span>{obj.stock}</span>
+                          <span>{obj.isStock ? obj.stock : language['AVAILABLE']}</span>
                         </>
                       }
                       fourth={
