@@ -17,7 +17,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useAlert from 'hooks/useAlert'
 import { useReactToPrint } from 'react-to-print'
-import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
+import { PaymentReceipt } from 'components/shared/invoice/PaymentReceipt'
 import useWeb from 'hooks/useWeb'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListTransfer, selectListTransfer } from 'modules/organize/store/redux'
@@ -401,7 +401,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
       </div>
       <div style={{ position: 'absolute', top: '-200%' }}>
         <div ref={invoiceRef}>
-          <PaymentInvoice payment={payment} />
+          <PaymentReceipt payment={payment} />
         </div>
       </div>
     </AlertContainer>

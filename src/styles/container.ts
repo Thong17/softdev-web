@@ -598,6 +598,31 @@ export const CustomInvoiceContainer = styled('div')(
   })
 )
 
+export const CustomReceiptContainer = styled('div')(
+  ({
+    styled,
+    mode,
+    font,
+  }: {
+    styled: IThemeStyle
+    mode: 'preview' | 'invoice'
+    font: string
+  }) => ({
+    padding: '40px 30px 40px 0',
+    color: mode === 'preview' ? styled.text.secondary : '#222',
+    backgroundColor:
+      mode === 'preview' ? styled.background.secondary : '#ffffff',
+    '& th': {
+      fontSize: 28,
+      fontFamily: `${font} !important`,
+    },
+    '& td': {
+      fontWeight: '300 !important',
+      fontSize: 24
+    },
+  })
+)
+
 export const CustomInvoiceForm = styled('div')(
   ({
     styled,
