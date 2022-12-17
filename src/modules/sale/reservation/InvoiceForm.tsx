@@ -43,6 +43,7 @@ import {
   recalculatePayment,
 } from 'components/shared/form/InvoiceForm'
 import useLanguage from 'hooks/useLanguage'
+import { TextEllipsis } from 'components/shared/TextEllipsis'
 
 export const mappedTransaction = (transaction) => {
   return {
@@ -503,7 +504,7 @@ export const InvoiceForm = forwardRef(
                 borderRadius: theme.radius.secondary,
               }}
             >
-              {language['START']} {structureTitle}
+              <TextEllipsis style={{ maxWidth: 170 }}>{language['START']} {structureTitle}</TextEllipsis>
             </CustomButton>
           )
 
@@ -525,7 +526,7 @@ export const InvoiceForm = forwardRef(
                   borderRadius: theme.radius.secondary,
                 }}
               >
-                {language['STOP']} {structureTitle}
+                <TextEllipsis style={{ maxWidth: 170 }}>{language['STOP']} {structureTitle}</TextEllipsis>
               </CustomButton>
             </>
           )
@@ -553,7 +554,7 @@ export const InvoiceForm = forwardRef(
                     borderRadius: theme.radius.secondary,
                   }}
                 >
-                  {language['DETAIL']} {structureTitle}
+                  <TextEllipsis style={{ maxWidth: 170 }}>{language['DETAIL']} {structureTitle}</TextEllipsis>
                 </CustomButton>
               </>
             )
@@ -582,7 +583,7 @@ export const InvoiceForm = forwardRef(
                   borderRadius: theme.radius.secondary,
                 }}
               >
-                {language['PAYMENT']} {structureTitle}
+                <TextEllipsis style={{ maxWidth: 170 }}>{language['PAYMENT']} {structureTitle}</TextEllipsis>
               </CustomButton>
             </>
           )
