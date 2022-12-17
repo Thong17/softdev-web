@@ -14,8 +14,8 @@ export const currencyOptions: IOptions[] = [
 
 export const invoiceColumns: ITableColumn<string>[] = [
   { id: 'description', label: 'Description' },
+  { id: 'qty', label: 'Qty' },
   { id: 'price', label: 'Price' },
   { id: 'disc', label: 'Disc' },
-  { id: 'qty', label: 'Qty' },
   { id: 'total', label: 'Total' },
 ]

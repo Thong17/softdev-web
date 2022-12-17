@@ -33,8 +33,8 @@ export const InvoiceTable = ({
                     padding: 5,
                     border: 'none',
                     fontWeight: 600,
-                    borderBottom: '2px dashed #777',
-                    borderTop: '2px dashed #777',
+                    borderBottom: '2px dashed #333',
+                    borderTop: '2px dashed #333',
                     backgroundColor: 'none'
                   }}
                   key={column.id}
@@ -65,7 +65,7 @@ export const InvoiceTable = ({
                             style={{
                               minWidth: column.minWidth,
                               maxWidth: column.maxWidth,
-                              padding: 5,
+                              padding: '0 5px',
                               borderBottom: 'none'
                             }}
                           >
