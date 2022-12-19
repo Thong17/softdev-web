@@ -104,6 +104,7 @@ export const languages = {
     // Product Form
     COLOR: 'Color',
     ADD_TO_CART: 'Add\u00a0To\u00a0Cart',
+    ADD_PROPERTY: 'Add\u00a0Section',
     // Drawer Form
     UNIT: 'Unit',
     DRAWER: 'Drawer',
@@ -287,6 +288,7 @@ export const languages = {
     // Product Form
     COLOR: 'ពណ៌',
     ADD_TO_CART: 'បន្ថែមទៅរទេះ',
+    ADD_PROPERTY: 'បន្ថែមផ្នែក',
     // Drawer Form
     UNIT: 'ឯកតា',
     DRAWER: 'ហិបប្រាក់',
