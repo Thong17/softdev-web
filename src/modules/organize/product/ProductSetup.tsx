@@ -264,11 +264,6 @@ export const ProductSetup = () => {
       })
   }
 
-
-
-
-
-
   const handleEditCustomerOption = (cid) => {
     Axios({
       method: 'GET',
@@ -314,10 +309,6 @@ export const ProductSetup = () => {
         return
       })
   }
-
-
-
-
 
   const handleDropProperty = (event: any) => {
     if (!event.destination || event.destination?.index === event.source?.index)
@@ -400,7 +391,7 @@ export const ProductSetup = () => {
         )}
         <div>
         <Section
-            describe='Color'
+            describe={language['COLOR']}
             style={{
               boxShadow: theme.shadow.secondary,
               borderRadius: theme.radius.ternary,
@@ -482,7 +473,7 @@ export const ProductSetup = () => {
             </CustomColorContainer>
           </Section>
           <Section
-            describe='Customer Option'
+            describe={language['CUSTOMER']}
             style={{
               boxShadow: theme.shadow.secondary,
               borderRadius: theme.radius.ternary,
@@ -569,7 +560,7 @@ export const ProductSetup = () => {
               })
             }}
           >
-            Add Property
+            {language['ADD_PROPERTY']}
           </Button>
           <DragDropContext onDragEnd={handleDropProperty}>
             <Droppable droppableId='properties'>
@@ -623,7 +614,7 @@ export const ProductSetup = () => {
                                       handleEditProperty(property?._id)
                                     }
                                   >
-                                    Edit
+                                    {language['EDIT']}
                                   </MenuItem>
                                   <MenuItem
                                     component='div'
@@ -631,7 +622,7 @@ export const ProductSetup = () => {
                                       handleDeleteProperty(property?._id)
                                     }
                                   >
-                                    Delete
+                                    {language['DELETE']}
                                   </MenuItem>
                                 </MenuDialog>
                               </div>
