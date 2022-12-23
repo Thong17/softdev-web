@@ -46,6 +46,8 @@ export const languages = {
     TOTAL_STOCK: 'Total\u00a0Stock',
     TOTAL_PROMOTION: 'Total\u00a0Promotion',
     CASHING: 'Cashing',
+    // Function
+    TOTAL_QUEUE: 'Total\u00a0Queue',
     // Organize
     CATEGORY: 'Category',
     BRAND: 'Brand',
@@ -232,6 +234,8 @@ export const languages = {
     TOTAL_STOCK: 'ស្តុកសរុប',
     TOTAL_PROMOTION: 'ការផ្សព្វផ្សាយសរុប',
     CASHING: 'ការលក់',
+    // Function
+    TOTAL_QUEUE: 'ជួររងចាំសរុប',
     // Organize
     CATEGORY: 'ប្រភេទ',
     BRAND: 'ម៉ាក',

@@ -14,6 +14,9 @@ import {
   DetailUser,
 } from 'modules/admin'
 import {
+  Function,
+} from 'modules/function'
+import {
   Organize,
   Brands,
   Categories,
@@ -56,6 +59,7 @@ import { PaymentStore } from 'modules/organize/store/Payment'
 import { UserProfile } from 'modules/auth/UserProfile'
 import { UserChangePassword } from 'modules/auth/UserChangePassword'
 import { HintButton } from 'components/shared/HintButton'
+import { Queue } from 'modules/function/queue'
 
 const routes: RouteObject[] = [
   {
@@ -153,6 +157,25 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'role', action: 'detail' }}>
             <DetailRole />
+          </AuthGuard>
+        ),
+      },
+    ],
+  },
+  {
+    path: '/function',
+    element: (
+      <AuthGuard role={{ route: 'menu', action: 'function' }}>
+        <Function />
+      </AuthGuard>
+    ),
+    children: [
+      {
+        path: 'queue',
+        element: (
+          <AuthGuard role={{ route: 'menu', action: 'queue' }}>
+            <Queue />
+            <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
           </AuthGuard>
         ),
       },

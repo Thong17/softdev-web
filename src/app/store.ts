@@ -6,6 +6,7 @@ import storeReducer from 'modules/organize/store/redux'
 import stockReducer from 'modules/sale/stock/redux'
 import promotionReducer from 'modules/sale/promotion/redux'
 import transactionReducer from 'modules/report/transaction/redux'
+import queueReducer from 'modules/function/queue/redux'
 import roleReducer from 'modules/admin/role/redux'
 import userReducer from 'modules/admin/user/redux'
 import reservationReducer from 'modules/sale/reservation/redux'
@@ -24,6 +25,7 @@ export const store = configureStore({
     reservation: reservationReducer,
     payment: paymentReducer,
     role: roleReducer,
+    queue: queueReducer,
     user: userReducer,
     shared: sharedReducer,
   },
