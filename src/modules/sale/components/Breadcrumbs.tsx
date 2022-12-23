@@ -29,15 +29,6 @@ const SaleBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
         title: language['STOCK'],
       },
     ],
-    transaction: [
-      {
-        title: language['SALE'],
-        path: '/sale',
-      },
-      {
-        title: language['TRANSACTION'],
-      },
-    ],
     promotion: [
       {
         title: language['SALE'],
