@@ -10,6 +10,7 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } f
 import { CustomButton } from 'styles'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import ReceiptRoundedIcon from '@mui/icons-material/ReceiptRounded'
+import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded'
 import { currencyFormat } from 'utils'
 import useAuth from 'hooks/useAuth'
 import { IDrawer } from 'contexts/auth/interface'
@@ -27,6 +28,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
 import { LoanForm } from 'components/shared/form/LoanForm'
+import { QueueReceipt } from 'components/shared/invoice/QueueReceipt'
 
 export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout }: any, ref) => {
   const confirm = useAlert()
@@ -38,6 +40,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   const [totalReceive, setTotalReceive] = useState({ KHR: 0, USD: 0, total: 0 })
   const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
   const [payment, setPayment] = useState<any>(null)
+  const [queue, setQueue] = useState<any>(null)
   const [paymentMethod, setPaymentMethod] = useState(null)
   const [totalPayment, setTotalPayment] = useState({
     value: 0,
@@ -126,6 +129,19 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     })
   }
 
+  const handleAddToQueue = () => {
+    Axios({
+      method: 'POST',
+      url: '/function/queue/create',
+      body: { payment: dialog?.payment?._id }
+    })
+      .then(data => {
+        setQueue(data?.data?.data)
+        handlePrintTicket()
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
+  }
+
   const handleCheckout = () => {
     confirm({
       title: 'Are you sure you want to check out?',
@@ -171,10 +187,15 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   }
 
   const invoiceRef = useRef(document.createElement('div'))
-
   const handlePrintInvoice = useReactToPrint({
     content: () => invoiceRef?.current,
     documentTitle: 'Invoice',
+  })
+
+  const ticketRef = useRef(document.createElement('div'))
+  const handlePrintTicket = useReactToPrint({
+    content: () => ticketRef?.current,
+    documentTitle: 'Ticket',
   })
 
   const loanButtonRef = useRef(document.createElement('button'))
@@ -419,20 +440,37 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                     </CustomButton>
                   )}
                   {payment?.status ? (
-                    <CustomButton
-                      onClick={handlePrintInvoice}
-                      styled={theme}
-                      style={{
-                        backgroundColor: `${theme.color.info}22`,
-                        color: theme.color.info,
-                        width: '100%',
-                      }}
-                    >
-                      <PrintRoundedIcon
-                        style={{ fontSize: 19, marginRight: 5 }}
-                      />{' '}
-                      {language['PRINT']}
-                    </CustomButton>
+                    <>
+                      <CustomButton
+                        onClick={handlePrintInvoice}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.info}22`,
+                          color: theme.color.info,
+                          width: '100%',
+                        }}
+                      >
+                        <PrintRoundedIcon
+                          style={{ fontSize: 19, marginRight: 5 }}
+                        />{' '}
+                        {language['PRINT']}
+                      </CustomButton>
+                      <CustomButton
+                        onClick={handleAddToQueue}
+                        styled={theme}
+                        style={{
+                          backgroundColor: !!queue ? `${theme.text.secondary}22` : `${theme.color.info}22`,
+                          color: !!queue ? theme.text.secondary : theme.color.info,
+                          width: '100%',
+                        }}
+                        disabled={!!queue}
+                      >
+                        <ConfirmationNumberRoundedIcon
+                          style={{ fontSize: 19, marginRight: 5 }}
+                        />{' '}
+                        {!!queue ? language['ADDED_TO_QUEUE'] : language['ADD_TO_QUEUE']}
+                      </CustomButton>
+                    </>
                   ) : (
                     <CustomButton
                       onClick={handleCheckout}
@@ -461,6 +499,9 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       <div style={{ position: 'absolute', top: '-200%' }}>
         <div ref={invoiceRef}>
           <PaymentReceipt payment={payment} />
+        </div>
+        <div ref={ticketRef}>
+          <QueueReceipt info={queue} />
         </div>
       </div>
     </AlertContainer>
