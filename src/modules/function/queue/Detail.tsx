@@ -51,6 +51,27 @@ export const Detail = ({
     // eslint-disable-next-line
   }, [dialog.queueId])
 
+  const handleComplete = () => {
+    if (dialog.queueId) return
+    Axios({
+      method: 'PUT',
+      url: `/function/queue/complete/${dialog.queueId}`
+    })
+      .then(() => {
+        handleCloseDialog()
+      })
+      .catch(err => notify(err?.response?.data?.msg))
+  }
+
+  const handleCall = () => {
+    Axios({
+      method: 'POST',
+      url: `/function/queue/call/${dialog.queueId}`
+    })
+      .then(() => {})
+      .catch(err => notify(err?.response?.data?.msg))
+  }
+
   return (
     <AlertDialog
       isOpen={dialog.open}
@@ -62,9 +83,10 @@ export const Detail = ({
       </CustomDetailContainer>
       <div style={{ display: 'flex', gap: 10, padding: 10 }}>
         <CustomButton
+          onClick={handleCall}
           styled={theme}
           style={{
-            borderRadius: theme.radius.ternary,
+            borderRadius: theme.radius.secondary,
             backgroundColor: `${theme.color.info}22`,
             color: theme.color.info,
             width: '100%',
@@ -73,9 +95,10 @@ export const Detail = ({
           {language['CALL']}
         </CustomButton>
         <CustomButton
+          onClick={handleComplete}
           styled={theme}
           style={{
-            borderRadius: theme.radius.ternary,
+            borderRadius: theme.radius.secondary,
             backgroundColor: `${theme.color.success}22`,
             color: theme.color.success,
             width: '100%',
