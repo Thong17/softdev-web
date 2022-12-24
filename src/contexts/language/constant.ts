@@ -164,6 +164,8 @@ export const languages = {
     SEARCH: 'Search',
     CONFIRM: 'Confirm',
     SETUP: 'Setup',
+    CALL: 'Call',
+    COMPLETE: 'Complete',
     // Message
     TYPE_TO_SEARCH: 'Type to search...',
     CONFIRM_DELETE: 'Do you want to delete?',
@@ -354,6 +356,8 @@ export const languages = {
     SEARCH: 'ស្វែងរក',
     CONFIRM: 'យល់ព្រម',
     SETUP: 'រៀបចំ',
+    CALL: 'ហៅ',
+    COMPLETE: 'រួចរាល់',
     // Message
     TYPE_TO_SEARCH: 'វាយបញ្ចូលដើម្បីស្វែងរក...',
     CONFIRM_DELETE: 'តើអ្នកពិតជាចង់លុបមែនទេ?',
