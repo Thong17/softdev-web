@@ -28,6 +28,7 @@ export const Detail = ({
   theme,
   dialog,
   setDialog,
+  onUpdate
 }: any) => {
   const { notify } = useNotify()
   const [data, setData] = useState<any>(null)
@@ -52,12 +53,13 @@ export const Detail = ({
   }, [dialog.queueId])
 
   const handleComplete = () => {
-    if (dialog.queueId) return
+    if (!dialog.queueId) return
     Axios({
       method: 'PUT',
       url: `/function/queue/complete/${dialog.queueId}`
     })
       .then(() => {
+        onUpdate(dialog.queueId)
         handleCloseDialog()
       })
       .catch(err => notify(err?.response?.data?.msg))

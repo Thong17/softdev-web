@@ -114,6 +114,10 @@ export const Queue = () => {
     setRowData(data.map(item => mappedItem(item, user?.privilege, theme, handleCancel, handleCall)))
     // eslint-disable-next-line
   }, [data])
+
+  const handleUpdateQueue = (id) => {
+    setRowData(data => data.filter(item => item._id !== id))
+  }
   
   return (
     <Container
@@ -127,6 +131,7 @@ export const Queue = () => {
         dialog={detailDialog}
         setDialog={setDetailDialog}
         theme={theme}
+        onUpdate={handleUpdateQueue}
       />
       <StickyTable columns={columnData} rows={rowData} pagination={false} />
     </Container>
