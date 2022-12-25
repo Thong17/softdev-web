@@ -1,4 +1,5 @@
 import { DialogTitle } from 'components/shared/DialogTitle'
+import Loading from 'components/shared/Loading'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
@@ -79,9 +80,16 @@ export const Detail = ({
       handleClose={handleCloseDialog}
     >
       <DialogTitle title={`#Ticket ${data?.ticket || ''}`} onClose={handleCloseDialog} />
-      <div style={{ width: 500, padding: '0 20px', boxSizing: 'border-box' }}>
-        {data?.payment?.transactions?.map((transaction, key) => <TransactionItem key={key} info={transaction} />)}
-      </div>
+      {
+      data 
+        ? <div style={{ width: 500, padding: '0 20px', boxSizing: 'border-box' }}>
+          <h4 style={{ color: theme.text.secondary }}>{data?.payment?.invoice || ''}</h4>
+          <div style={{ maxHeight: 600, overflowY: 'auto' }}>
+            {data?.payment?.transactions?.map((transaction, key) => <TransactionItem key={key} info={transaction} />)}
+          </div>
+        </div>
+        : <Loading />
+      }
       <div style={{ display: 'flex', gap: 10, padding: 10 }}>
         <CustomButton
           onClick={handleCall}
