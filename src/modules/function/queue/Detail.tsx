@@ -15,7 +15,7 @@ const TransactionItem = ({ info }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
 
-  return <div style={{ display: 'flex', gap: 10, alignItems: 'center', color: theme.text.secondary }}>
+  return <div style={{ display: 'flex', gap: 10, alignItems: 'center', color: theme.text.secondary, padding: '10px 0' }}>
     <CircleIcon icon={info.profile?.filename} />
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <TextEllipsis>{info.description}</TextEllipsis>
@@ -80,9 +80,9 @@ export const Detail = ({
       handleClose={handleCloseDialog}
     >
       <DialogTitle title={`#Ticket ${data?.ticket || ''}`} onClose={handleCloseDialog} />
-      <CustomDetailContainer styled={theme}>
+      <div style={{ width: 500, padding: '0 20px', boxSizing: 'border-box' }}>
         {data?.payment?.transactions?.map((transaction, key) => <TransactionItem key={key} info={transaction} />)}
-      </CustomDetailContainer>
+      </div>
       <div style={{ display: 'flex', gap: 10, padding: 10 }}>
         <CustomButton
           onClick={handleCall}
