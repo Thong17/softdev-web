@@ -8,7 +8,6 @@ import useNotify from 'hooks/useNotify'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { useEffect, useState } from 'react'
-import { CustomDetailContainer } from 'styles/container'
 import { CustomButton } from 'styles/index'
 
 const TransactionItem = ({ info }) => {

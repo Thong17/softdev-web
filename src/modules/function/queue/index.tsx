@@ -103,12 +103,6 @@ export const Queue = () => {
     }
     const handleCall = (id) => {
       setDetailDialog({ open: true, queueId: id })
-      Axios({
-        method: 'POST',
-        url: `/function/queue/call/${id}`
-      })
-        .then(() => {})
-        .catch(err => notify(err?.response?.data?.msg))
     }
 
     setRowData(data.map(item => mappedItem(item, user?.privilege, theme, handleCancel, handleCall)))
