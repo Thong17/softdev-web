@@ -225,97 +225,99 @@ export const StructureContainer = ({
           borderRadius: theme.radius.primary,
         }}
       >
-        {loading && <Loading />}
-        {structures?.map((structure, index) => {
-          const isSelected = selectedStructure?.some(
-            (item) => item._id === structure._id
-          )
-
-          if (structure.merged && structure.isMain === false)
-            return <div key={index} style={{ display: 'none' }}></div>
-          if (structure.type === 'blank') {
-            return (
-              <div
-                key={index}
-                style={{
-                  gridArea: `${structure.id}`,
-                  backgroundColor: `${theme.background.secondary}33`,
-                  borderRadius: theme.radius.primary,
-                }}
-              ></div>
+        {loading 
+          ? <Loading /> 
+          : structures?.map((structure, index) => {
+            const isSelected = selectedStructure?.some(
+              (item) => item._id === structure._id
             )
-          } else {
-            switch (structure.type) {
-              case 'table':
-                return (
-                  <Box
-                    onClick={() =>
-                      isSelected
-                        ? handleRemoveStructure(structure._id)
-                        : handleAddStructure(structure)
-                    }
-                    key={index}
-                    className='structure'
-                    sx={{
-                      position: 'relative',
-                      gridArea: `${structure.id}`,
-                      backgroundColor: isSelected
-                        ? `${theme.active.primary} !important`
-                        : `${theme.background.secondary}33`,
-                      borderRadius: theme.radius.primary,
-                      cursor: onClick ? 'pointer' : 'default',
-                      '&:hover': { backgroundColor: theme.active.secondary },
-                    }}
-                  >
-                    <SelectReservation reservations={structure.reservations} onCreate={() => handleCreateReservation(structure)} />
-                    <TableStructure
-                      title={structure.title}
-                      price={structure.price}
-                      length={structure.length}
-                      size={structure.size}
-                      align={structure.align}
-                      justify={structure.justify}
-                      direction={structure.direction}
-                      status={structure.status}
-                    />
-                  </Box>
-                )
-              default:
-                return (
-                  <Box
-                    onClick={() =>
-                      isSelected
-                        ? handleRemoveStructure(structure._id)
-                        : handleAddStructure(structure)
-                    }
-                    key={index}
-                    className='structure'
-                    sx={{
-                      position: 'relative',
-                      gridArea: `${structure.id}`,
-                      backgroundColor: isSelected
-                        ? `${theme.active.primary} !important`
-                        : `${theme.background.secondary}33`,
-                      borderRadius: theme.radius.primary,
-                      cursor: onClick ? 'pointer' : 'default',
-                      '&:hover': { backgroundColor: theme.active.secondary },
-                    }}
-                  >
-                    <SelectReservation reservations={structure.reservations} onCreate={() => handleCreateReservation(structure)} />
-                    <RoomStructure
-                      title={structure.title}
-                      price={structure.price}
-                      size={structure.size}
-                      align={structure.align}
-                      justify={structure.justify}
-                      direction={structure.direction}
-                      status={structure.status}
-                    />
-                  </Box>
-                )
+
+            if (structure.merged && structure.isMain === false)
+              return <div key={index} style={{ display: 'none' }}></div>
+            if (structure.type === 'blank') {
+              return (
+                <div
+                  key={index}
+                  style={{
+                    gridArea: `${structure.id}`,
+                    backgroundColor: `${theme.background.secondary}33`,
+                    borderRadius: theme.radius.primary,
+                  }}
+                ></div>
+              )
+            } else {
+              switch (structure.type) {
+                case 'table':
+                  return (
+                    <Box
+                      onClick={() =>
+                        isSelected
+                          ? handleRemoveStructure(structure._id)
+                          : handleAddStructure(structure)
+                      }
+                      key={index}
+                      className='structure'
+                      sx={{
+                        position: 'relative',
+                        gridArea: `${structure.id}`,
+                        backgroundColor: isSelected
+                          ? `${theme.active.primary} !important`
+                          : `${theme.background.secondary}33`,
+                        borderRadius: theme.radius.primary,
+                        cursor: onClick ? 'pointer' : 'default',
+                        '&:hover': { backgroundColor: theme.active.secondary },
+                      }}
+                    >
+                      <SelectReservation reservations={structure.reservations} onCreate={() => handleCreateReservation(structure)} />
+                      <TableStructure
+                        title={structure.title}
+                        price={structure.price}
+                        length={structure.length}
+                        size={structure.size}
+                        align={structure.align}
+                        justify={structure.justify}
+                        direction={structure.direction}
+                        status={structure.status}
+                      />
+                    </Box>
+                  )
+                default:
+                  return (
+                    <Box
+                      onClick={() =>
+                        isSelected
+                          ? handleRemoveStructure(structure._id)
+                          : handleAddStructure(structure)
+                      }
+                      key={index}
+                      className='structure'
+                      sx={{
+                        position: 'relative',
+                        gridArea: `${structure.id}`,
+                        backgroundColor: isSelected
+                          ? `${theme.active.primary} !important`
+                          : `${theme.background.secondary}33`,
+                        borderRadius: theme.radius.primary,
+                        cursor: onClick ? 'pointer' : 'default',
+                        '&:hover': { backgroundColor: theme.active.secondary },
+                      }}
+                    >
+                      <SelectReservation reservations={structure.reservations} onCreate={() => handleCreateReservation(structure)} />
+                      <RoomStructure
+                        title={structure.title}
+                        price={structure.price}
+                        size={structure.size}
+                        align={structure.align}
+                        justify={structure.justify}
+                        direction={structure.direction}
+                        status={structure.status}
+                      />
+                    </Box>
+                  )
+              }
             }
-          }
-        })}
+          })
+        }
       </div>
     </div>
   )
