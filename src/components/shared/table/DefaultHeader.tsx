@@ -32,11 +32,11 @@ export const DefaultHeader = ({ optionAction, exportUrl, styled, navigate, handl
       <>
         {breadcrumb}
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <SearchField onChange={handleSearch} />
+          {handleSearch && <SearchField onChange={handleSearch} />}
           {children}
-          <FilterButton style={{ marginLeft: 10 }}>
+          {filterOption && <FilterButton style={{ marginLeft: 10 }}>
             {filterOption}
-          </FilterButton>
+          </FilterButton>}
           {optionAction && <OptionButton style={{ marginLeft: 10 }}>
             <MenuItem>
               <label htmlFor='file-upload' style={{ cursor: 'pointer' }}>
