@@ -71,6 +71,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     setTotalReceive({ KHR: 0, USD: 0, total: 0 })
     setTotalRemain({ KHR: 0, USD: 0 })
     setPayment(null)
+    setQueue(null)
     setPaymentMethod(null)
     setTotalPayment({ value: 0, currency: 'USD' })
     setExchangeRate(null)
@@ -182,7 +183,6 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       .then(() => {
         onClearPayment()
         onClear()
-        setQueue(null)
       })
       .catch(() => {})
   }
@@ -456,7 +456,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                         />{' '}
                         {language['PRINT']}
                       </CustomButton>
-                      <CustomButton
+                      {user?.privilege?.queue?.create && <CustomButton
                         onClick={handleAddToQueue}
                         styled={theme}
                         style={{
@@ -470,7 +470,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                           style={{ fontSize: 19, marginRight: 5 }}
                         />{' '}
                         {!!queue ? language['ADDED_TO_QUEUE'] : language['ADD_TO_QUEUE']}
-                      </CustomButton>
+                      </CustomButton>}
                     </>
                   ) : (
                     <CustomButton
