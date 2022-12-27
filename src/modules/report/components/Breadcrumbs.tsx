@@ -26,10 +26,6 @@ const ReportBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
     ],
     transaction: [
       {
-        title: language['SALE'],
-        path: '/sale',
-      },
-      {
         title: language['TRANSACTION'],
       },
     ],

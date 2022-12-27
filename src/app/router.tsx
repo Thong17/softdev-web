@@ -385,12 +385,6 @@ const routes: RouteObject[] = [
         element: <ReservationForm />,
       },
 
-      // Transaction
-      {
-        path: 'transaction',
-        element: <Transactions />,
-      },
-
       // Payment
       {
         path: 'payment',
@@ -447,6 +441,10 @@ const routes: RouteObject[] = [
       {
         path: 'staff',
         element: <StaffReport />,
+      },
+      {
+        path: 'transaction',
+        element: <Transactions />,
       },
     ],
   },
