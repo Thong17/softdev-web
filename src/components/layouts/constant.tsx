@@ -5,12 +5,27 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded'
+import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded'
 
 export const sideNav: any = [
   {
     route: '/home',
     title: 'HOME',
     icon: <HomeRoundedIcon />,
+  },
+  {
+    route: '/function',
+    title: 'FUNCTION',
+    icon: <ConfirmationNumberRoundedIcon />,
+    permission: 'function',
+    children: [
+      {
+        route: '/function/queue',
+        title: 'QUEUE',
+        icon: <ArrowRightAltRoundedIcon />,
+        permission: 'queue'
+      },
+    ]
   },
   {
     route: '/sale',

@@ -75,9 +75,6 @@ export const PaymentReceipt = ({ width = '100vw', payment }: any) => {
       }
     })
     setListTransactions(mappedTransactions)
-  }, [payment?.transactions])
-
-  useEffect(() => {
     setInfo(payment)
   }, [payment])
 

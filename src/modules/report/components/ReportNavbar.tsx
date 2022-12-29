@@ -10,6 +10,8 @@ const ReportNavbar = () => {
       {user?.privilege?.report?.sale && <NavLink to='/report/sale'>{language['SALE']}</NavLink>}
       {user?.privilege?.report?.product && <NavLink to='/report/product'>{language['PRODUCT']}</NavLink>}
       {user?.privilege?.report?.staff && <NavLink to='/report/staff'>{language['STAFF']}</NavLink>}
+      {user?.privilege?.operation?.transaction && <NavLink to='/report/transaction'>{language['TRANSACTION']}</NavLink>}
+      {/* {user?.privilege?.operation?.payment && <NavLink to='/sale/payment'>{language['PAYMENT']}</NavLink>} */}
     </>
   )
 }

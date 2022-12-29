@@ -77,16 +77,16 @@ export const calculateTransactionTotal = (
   if (discountCurrency === priceCurrency)
     return { total: (price - discount) * quantity, currency: priceCurrency }
 
-  const { sellRate = 4000, buyRate = 4100 } = exchangeRate
+  const { sellRate = 4000, buyRate = 4000 } = exchangeRate
   let totalExchange = 0
   if (discountCurrency === 'USD') {
-    totalExchange = discount * sellRate
+    totalExchange = discount * buyRate
     return {
       total: (price - totalExchange) * quantity,
       currency: priceCurrency,
     }
   } else {
-    totalExchange = discount / buyRate
+    totalExchange = discount / sellRate
     return {
       total: (price - totalExchange) * quantity,
       currency: priceCurrency,
@@ -112,9 +112,9 @@ export const calculatePaymentTotal = (
     type: voucherType,
     isFixed: voucherFixed,
   } = voucher
-  const { buyRate = 4100 } = exchangeRate
+  const { sellRate = 4000 } = exchangeRate
 
-  let total = subtotal.USD + subtotal.KHR / buyRate
+  let total = subtotal.USD + subtotal.KHR / sellRate
 
   const { total: discountedTotal } = calculateTransactionTotal(
     { value: total, currency: 'USD' },
@@ -134,7 +134,7 @@ export const calculatePaymentTotal = (
     1,
     exchangeRate
   )
-
+    
   return voucheredTotal
 }
 
@@ -846,7 +846,7 @@ export const InvoiceForm = forwardRef(({
                 <span>{language['SUBTOTAL']}</span>
                 <div style={{ display: 'flex', lineHeight: 1 }}>
                   <span>
-                    {currencyFormat(subtotal.USD + subtotal.KHR / 4000, 'USD')}
+                    {currencyFormat(subtotal.USD + (subtotal.KHR / (user?.drawer?.sellRate || 4000)), 'USD')}
                   </span>
                 </div>
               </div>

@@ -3,6 +3,8 @@ export const languages = {
     TEST: 'Test',
     HOME: 'Home',
     OPERATION: 'Operation',
+    FUNCTION: 'Function',
+    QUEUE: 'Queue',
     SCHOOL: 'School',
     ADMIN: 'Admin',
     REPORT: 'Report',
@@ -44,6 +46,8 @@ export const languages = {
     TOTAL_STOCK: 'Total\u00a0Stock',
     TOTAL_PROMOTION: 'Total\u00a0Promotion',
     CASHING: 'Cashing',
+    // Function
+    TOTAL_QUEUE: 'Total\u00a0Queue',
     // Organize
     CATEGORY: 'Category',
     BRAND: 'Brand',
@@ -104,6 +108,8 @@ export const languages = {
     // Product Form
     COLOR: 'Color',
     ADD_TO_CART: 'Add\u00a0To\u00a0Cart',
+    ADD_TO_QUEUE: 'Add\u00a0To\u00a0Queue',
+    ADDED_TO_QUEUE: 'Added\u00a0To\u00a0Queue',
     ADD_PROPERTY: 'Add\u00a0Section',
     // Drawer Form
     UNIT: 'Unit',
@@ -158,6 +164,8 @@ export const languages = {
     SEARCH: 'Search',
     CONFIRM: 'Confirm',
     SETUP: 'Setup',
+    CALL: 'Call',
+    COMPLETE: 'Complete',
     // Message
     TYPE_TO_SEARCH: 'Type to search...',
     CONFIRM_DELETE: 'Do you want to delete?',
@@ -187,6 +195,8 @@ export const languages = {
     TEST: 'សាកល្បង',
     HOME: 'ទំព័រដើម',
     OPERATION: 'ប្រតិបត្តិការ',
+    FUNCTION: 'មុខងារ',
+    QUEUE: 'ជួររងចាំ',
     SCHOOL: 'សាលា',
     ADMIN: 'គ្រប់គ្រង',
     REPORT: 'របាយការណ៍',
@@ -228,6 +238,8 @@ export const languages = {
     TOTAL_STOCK: 'ស្តុកសរុប',
     TOTAL_PROMOTION: 'ការផ្សព្វផ្សាយសរុប',
     CASHING: 'ការលក់',
+    // Function
+    TOTAL_QUEUE: 'ជួររងចាំសរុប',
     // Organize
     CATEGORY: 'ប្រភេទ',
     BRAND: 'ម៉ាក',
@@ -288,6 +300,8 @@ export const languages = {
     // Product Form
     COLOR: 'ពណ៌',
     ADD_TO_CART: 'បន្ថែមទៅរទេះ',
+    ADD_TO_QUEUE: 'បន្ថែមទៅជួររងចាំ',
+    ADDED_TO_QUEUE: 'បានបន្ថែមទៅជួររងចាំ',
     ADD_PROPERTY: 'បន្ថែមផ្នែក',
     // Drawer Form
     UNIT: 'ឯកតា',
@@ -342,6 +356,8 @@ export const languages = {
     SEARCH: 'ស្វែងរក',
     CONFIRM: 'យល់ព្រម',
     SETUP: 'រៀបចំ',
+    CALL: 'ហៅ',
+    COMPLETE: 'រួចរាល់',
     // Message
     TYPE_TO_SEARCH: 'វាយបញ្ចូលដើម្បីស្វែងរក...',
     CONFIRM_DELETE: 'តើអ្នកពិតជាចង់លុបមែនទេ?',

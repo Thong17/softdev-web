@@ -149,6 +149,17 @@ export const getAdminDashboard = createAsyncThunk(
   }
 )
 
+export const getQueueDashboard = createAsyncThunk(
+  'dashboard/queue',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/dashboard/queue'
+    })
+    return response?.data
+  }
+)
+
 export const getOrganizeDashboard = createAsyncThunk(
   'dashboard/organize',
   async () => {
