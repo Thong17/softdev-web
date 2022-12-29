@@ -995,10 +995,7 @@ export const InvoiceForm = forwardRef(
                   <span>{language['SUBTOTAL']}</span>
                   <div style={{ display: 'flex', lineHeight: 1 }}>
                     <span>
-                      {currencyFormat(
-                        subtotal.USD + subtotal.KHR / 4000,
-                        'USD'
-                      )}
+                      {currencyFormat(subtotal.USD + (subtotal.KHR / (user?.drawer?.sellRate || 4000)), 'USD')}
                     </span>
                   </div>
                 </div>
