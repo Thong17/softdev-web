@@ -1,14 +1,9 @@
 import Container from 'components/shared/Container'
 import { useEffect, useState } from 'react'
 import { StickyTable } from 'components/shared/table/StickyTable'
-import { useNavigate } from 'react-router'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListPayment, selectListPayment } from './redux'
-import useLanguage from 'hooks/useLanguage'
-import useWeb from 'hooks/useWeb'
-import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
-import useTheme from 'hooks/useTheme'
 import { Header } from './Header'
 import {
   Data,
@@ -17,20 +12,18 @@ import {
 } from './constant'
 import { currencyFormat, debounce } from 'utils'
 import { useSearchParams } from 'react-router-dom'
-import useAlert from 'hooks/useAlert'
+import Axios from 'constants/functions/Axios'
+import { Detail } from './Detail'
+import useTheme from 'hooks/useTheme'
 
 export const Payments = () => {
   const dispatch = useAppDispatch()
   const { data: payments, count, status } = useAppSelector(selectListPayment)
-  const { lang } = useLanguage()
-  const { device } = useWeb()
-  const { user } = useAuth()
-  const { theme } = useTheme()
   const { notify } = useNotify()
+  const { theme } = useTheme()
   const [rowData, setRowData] = useState<Data[]>([])
-  const navigate = useNavigate()
   const [queryParams, setQueryParams] = useSearchParams()
-  const confirm = useAlert()
+  const [paymentDialog, setPaymentDialog] = useState<any>({ open: false, payment: null })
 
   const updateQuery = debounce((value) => {
     handleQuery({ search: value })
@@ -69,20 +62,34 @@ export const Payments = () => {
   }, [dispatch, queryParams])
 
   useEffect(() => {
+    const handleView = (id) => {
+      Axios({
+        url: `/sale/payment/detail/${id}`,
+        method: 'GET'
+      })
+        .then(data => {
+          setPaymentDialog({ payment: data?.data?.data, open: true })
+        })
+        .catch(err => notify(err?.response?.data?.msg))
+    }
     const listPayments = payments.map((payment: any) => {
       return createData(
         payment._id,
         payment.invoice,
+        payment.paymentMethod?.toUpperCase(),
         currencyFormat(payment.subtotal.BOTH, 'USD'),
         currencyFormat(payment.discounts[0]?.value, payment.discounts[0]?.type),
         currencyFormat(payment.services[0]?.value, payment.services[0]?.type),
         currencyFormat(payment.vouchers[0]?.value, payment.vouchers[0]?.type),
         currencyFormat(payment.total.value, payment.total.currency),
+        payment.createdBy?.username,
+        handleView
       )
     })
 
     setRowData(listPayments)
-  }, [payments, lang, user, device, theme, navigate, confirm, dispatch, notify])
+    // eslint-disable-next-line
+  }, [payments, notify])
 
   return (
     <Container
@@ -93,6 +100,7 @@ export const Payments = () => {
         />
       }
     >
+      <Detail theme={theme} dialog={paymentDialog} setDialog={setPaymentDialog} />
       <StickyTable
         columns={columnData}
         rows={rowData}

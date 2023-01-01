@@ -3,61 +3,61 @@ import { RootState } from 'app/store'
 import Axios from 'constants/functions/Axios'
 import { initialState } from './constant'
 
-export const getListPayment = createAsyncThunk(
-  'payment/list',
+export const getListLoan = createAsyncThunk(
+  'loan/list',
   async () => {
     const response = await Axios({
       method: 'GET',
-      url: '/sale/payment',
+      url: '/sale/loan',
     })
     return response?.data
   }
 )
 
-export const getDetailPayment = createAsyncThunk(
-  'payment/detail',
+export const getDetailLoan = createAsyncThunk(
+  'loan/detail',
   async ({ id }: any) => {
     const response = await Axios({
       method: 'GET',
-      url: `/sale/payment/detail/${id}`,
+      url: `/sale/loan/detail/${id}`,
     })
     return response?.data
   }
 )
 
-export const paymentSlice = createSlice({
-  name: 'payment',
+export const loanSlice = createSlice({
+  name: 'loan',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // List payment
-      .addCase(getListPayment.pending, (state) => {
+      // List loan
+      .addCase(getListLoan.pending, (state) => {
         state.list.status = 'LOADING'
       })
-      .addCase(getListPayment.rejected, (state) => {
+      .addCase(getListLoan.rejected, (state) => {
         state.list.status = 'FAILED'
       })
-      .addCase(getListPayment.fulfilled, (state, action) => {
+      .addCase(getListLoan.fulfilled, (state, action) => {
         state.list.status = 'SUCCESS'
         state.list.data = action.payload.data
       })
 
-      // Detail payment
-      .addCase(getDetailPayment.pending, (state) => {
+      // Detail loan
+      .addCase(getDetailLoan.pending, (state) => {
         state.detail.status = 'LOADING'
       })
-      .addCase(getDetailPayment.rejected, (state) => {
+      .addCase(getDetailLoan.rejected, (state) => {
         state.detail.status = 'FAILED'
       })
-      .addCase(getDetailPayment.fulfilled, (state, action) => {
+      .addCase(getDetailLoan.fulfilled, (state, action) => {
         state.detail.status = 'SUCCESS'
         state.detail.data = action.payload.data
       })
   },
 })
 
-export const selectListPayment = (state: RootState) => state.payment.list
-export const selectDetailPayment = (state: RootState) => state.payment.detail
+export const selectListLoan = (state: RootState) => state.loan.list
+export const selectDetailLoan = (state: RootState) => state.loan.detail
 
-export default paymentSlice.reducer
+export default loanSlice.reducer

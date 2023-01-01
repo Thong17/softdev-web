@@ -583,6 +583,7 @@ export const CustomInvoiceContainer = styled('div')(
     font: string
   }) => ({
     padding: '40px 20px',
+    borderRadius: styled.radius.ternary,
     color: mode === 'preview' ? styled.text.secondary : '#222',
     backgroundColor:
       mode === 'preview' ? styled.background.secondary : '#ffffff',

@@ -8,5 +8,6 @@ export const initialState: PaymentState = {
   list: {
     data: [],
     status: 'INIT',
+    count: 0
   }
 }

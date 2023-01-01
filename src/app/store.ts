@@ -10,7 +10,8 @@ import queueReducer from 'modules/function/queue/redux'
 import roleReducer from 'modules/admin/role/redux'
 import userReducer from 'modules/admin/user/redux'
 import reservationReducer from 'modules/sale/reservation/redux'
-import paymentReducer from 'modules/sale/payment/redux'
+import paymentReducer from 'modules/report/payment/redux'
+import loanReducer from 'modules/sale/payment/redux'
 import sharedReducer from 'shared/redux'
 
 export const store = configureStore({
@@ -24,6 +25,7 @@ export const store = configureStore({
     transaction: transactionReducer,
     reservation: reservationReducer,
     payment: paymentReducer,
+    loan: loanReducer,
     role: roleReducer,
     queue: queueReducer,
     user: userReducer,

@@ -24,7 +24,7 @@ export const PreBorder = ({ styled }) => {
   )
 }
 
-export const PaymentInvoice = ({ width = '100vw', payment }: any) => {
+export const PaymentInvoice = ({ payment }: any) => {
   const dispatch = useAppDispatch()
   const { theme } = useTheme()
   const { device } = useWeb()
@@ -90,7 +90,7 @@ export const PaymentInvoice = ({ width = '100vw', payment }: any) => {
         overflowY: 'visible',
         height: 'fit-content',
         position: 'relative',
-        minWidth: width,
+        minWidth: '100%',
         boxSizing: 'border-box',
         padding: '35px 0',
         '& *': {
