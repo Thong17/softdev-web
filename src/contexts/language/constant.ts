@@ -46,6 +46,7 @@ export const languages = {
     TOTAL_STOCK: 'Total\u00a0Stock',
     TOTAL_PROMOTION: 'Total\u00a0Promotion',
     CASHING: 'Cashing',
+    INVOICE: 'Invoice',
     // Function
     TOTAL_QUEUE: 'Total\u00a0Queue',
     // Organize

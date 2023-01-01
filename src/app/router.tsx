@@ -54,7 +54,7 @@ import { SaleReport, Report } from 'modules/report'
 import { ProductReport } from 'modules/report/ProductReport'
 import { StaffReport } from 'modules/report/StaffReport'
 import { Transactions } from 'modules/report/transaction'
-import { Payments } from 'modules/sale/payment'
+import { Payments } from 'modules/report/payment'
 import { PaymentStore } from 'modules/organize/store/Payment'
 import { UserProfile } from 'modules/auth/UserProfile'
 import { UserChangePassword } from 'modules/auth/UserChangePassword'
@@ -445,6 +445,10 @@ const routes: RouteObject[] = [
       {
         path: 'transaction',
         element: <Transactions />,
+      },
+      {
+        path: 'payment',
+        element: <Payments />,
       },
     ],
   },
