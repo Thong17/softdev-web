@@ -3,7 +3,7 @@ import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumbe
 import { FC } from 'react'
 import useLanguage from 'hooks/useLanguage'
 
-declare type page = 'function' | 'queue'
+declare type page = 'function' | 'queue' | 'loan'
 
 interface IBreadcrumbs {
   page: page
@@ -25,6 +25,15 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
       },
       {
         title: language['QUEUE'],
+      },
+    ],
+    loan: [
+      {
+        title: language['FUNCTION'],
+        path: '/function',
+      },
+      {
+        title: language['LOAN'],
       },
     ],
   }

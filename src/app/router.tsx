@@ -60,6 +60,7 @@ import { UserProfile } from 'modules/auth/UserProfile'
 import { UserChangePassword } from 'modules/auth/UserChangePassword'
 import { HintButton } from 'components/shared/HintButton'
 import { Queue } from 'modules/function/queue'
+import { Loan } from 'modules/function/loan'
 
 const routes: RouteObject[] = [
   {
@@ -173,8 +174,17 @@ const routes: RouteObject[] = [
       {
         path: 'queue',
         element: (
-          <AuthGuard role={{ route: 'menu', action: 'queue' }}>
+          <AuthGuard role={{ route: 'function', action: 'queue' }}>
             <Queue />
+            <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'loan',
+        element: (
+          <AuthGuard role={{ route: 'function', action: 'loan' }}>
+            <Loan />
             <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
           </AuthGuard>
         ),
@@ -383,12 +393,6 @@ const routes: RouteObject[] = [
       {
         path: 'reservation/:id',
         element: <ReservationForm />,
-      },
-
-      // Payment
-      {
-        path: 'payment',
-        element: <Payments />,
       },
 
       // Promotion
