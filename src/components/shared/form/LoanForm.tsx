@@ -18,6 +18,8 @@ import { Section } from '../Section'
 import { presetCashes } from './CashForm'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 const initCash = { value: '0', currency: 'USD', quantity: 1 }
 const durationOptions = [
@@ -41,7 +43,7 @@ const durationOptions = [
 
 export const loanSchema = yup.object().shape({
   customer: yup.string().required(),
-  attachments: yup.mixed().optional(),
+  attachment: yup.mixed().optional(),
   duration: yup.object({
     value: yup.number().required('Duration is required'),
     time: yup.string().required('Time is required'),
@@ -112,8 +114,9 @@ const CastPreset = ({ theme, onClick }) => {
   )
 }
 
-export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
+export const LoanForm = ({ onChange, loanButtonRef }: any) => {
   const { theme } = useTheme()
+  const { notify } = useNotify()
   const { language } = useLanguage()
   const [cashForm, setCashForm] = useState(initCash)
   const [cashes, setCashes] = useState<any[]>([])
@@ -200,7 +203,24 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
   }
 
   const submitLoan = (data) => {
-    console.log(data)
+    const formData = new FormData()
+    Object.keys(data).forEach(item => {
+      if (item !== 'attachment') formData.append(item, JSON.stringify(data[item]))
+      const files = data[item]
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        formData.append('attachment', file)
+      }
+    })
+    Axios({
+      method: 'POST',
+      url: '/sale/loan/create',
+      body: formData
+    })
+      .then(resp => {
+        console.log(resp)
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
   }
 
   return (
@@ -339,6 +359,7 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
         </div>
         <div style={{ gridArea: 'attachment' }}>
           <TextField
+            multiple
             type='file'
             label={language['ATTACHMENT']}
             style={{ paddingTop: 7 }}
