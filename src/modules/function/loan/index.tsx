@@ -6,15 +6,15 @@ import { Header } from './Header'
 import { getListLoan, selectListLoan } from './redux'
 import { useEffect, useState } from 'react'
 import { ITableColumn, StickyTable } from 'components/shared/table/StickyTable'
-import { dateFormat } from 'utils/index'
+import { currencyFormat, dateFormat } from 'utils/index'
 import useAuth from 'hooks/useAuth'
 import { IconButton } from '@mui/material'
-import CallRoundedIcon from '@mui/icons-material/CallRounded'
+import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useAlert from 'hooks/useAlert'
-import { Detail } from './Detail'
+import { useNavigate } from 'react-router-dom'
 
 const columnData: ITableColumn<any>[] = [
   { id: 'invoice', label: 'Invoice' },
@@ -27,22 +27,8 @@ const columnData: ITableColumn<any>[] = [
   { id: 'action', label: 'ACTION', align: 'right' },
 ]
 
-const mappedItem = (data, privilege, theme, onCancel, onCall) => {
+const mappedItem = (data, privilege, theme, onCancel, onDetail) => {
   const action = <>
-    {privilege?.loan?.update && (
-      <IconButton
-        size='small'
-        onClick={() => onCall(data._id)}
-        style={{
-          backgroundColor: `${theme.color.info}22`,
-          borderRadius: theme.radius.primary,
-          marginLeft: 5,
-          color: theme.color.info,
-        }}
-      >
-        <CallRoundedIcon fontSize='small' />
-      </IconButton>
-    )}
     {privilege?.loan?.cancel && (
       <IconButton
         size='small'
@@ -57,18 +43,36 @@ const mappedItem = (data, privilege, theme, onCancel, onCall) => {
         <ClearRoundedIcon fontSize='small' />
       </IconButton>
     )}
+    {privilege?.loan?.update && (
+      <IconButton
+        size='small'
+        onClick={() => onDetail(data._id)}
+        style={{
+          backgroundColor: `${theme.color.info}22`,
+          borderRadius: theme.radius.primary,
+          marginLeft: 5,
+          color: theme.color.info,
+        }}
+      >
+        <ArrowRightAltRoundedIcon fontSize='small' />
+      </IconButton>
+    )}
   </>
   return {
     _id: data._id,
-    ticket: data.ticket?.toString().padStart(2, '0'),
     invoice: data.payment?.invoice,
-    createdAt: dateFormat(data.createdAt),
-    createdBy: data.createdBy?.username,
+    customer: data.customer?.displayName || '...',
+    contact: data.customer?.contact || '...',
+    actualPaid: currencyFormat(data.actualPaid.value, data.actualPaid.currency),
+    totalPaid: currencyFormat(data.totalPaid.total, 'USD'),
+    totalRemain: currencyFormat(data.totalRemain.USD, 'USD'),
+    dueDate: dateFormat(null),
     action
   }
 }
 
 export const Loan = () => {
+  const navigate = useNavigate()
   const confirm = useAlert()
   const { notify } = useNotify()
   const { user } = useAuth()
@@ -76,10 +80,6 @@ export const Loan = () => {
   const dispatch = useAppDispatch()
   const { data } = useAppSelector(selectListLoan)
   const [rowData, setRowData] = useState<any>([])
-  const [detailDialog, setDetailDialog] = useState({
-    open: false,
-    loanId: null
-  })
 
   useEffect(() => {
     dispatch(getListLoan({}))
@@ -104,17 +104,13 @@ export const Loan = () => {
        })
        .catch(() => {})
     }
-    const handleCall = (id) => {
-      setDetailDialog({ open: true, loanId: id })
+    const handleDetail = (id) => {
+      navigate(`/function/loan/${id}`)
     }
 
-    setRowData(data.map(item => mappedItem(item, user?.privilege, theme, handleCancel, handleCall)))
+    setRowData(data.map(item => mappedItem(item, user?.privilege, theme, handleCancel, handleDetail)))
     // eslint-disable-next-line
   }, [data])
-
-  const handleUpdateLoan = (id) => {
-    setRowData(data => data.filter(item => item._id !== id))
-  }
   
   return (
     <Container
@@ -124,13 +120,7 @@ export const Loan = () => {
         />
       }
     >
-      <Detail
-        dialog={detailDialog}
-        setDialog={setDetailDialog}
-        theme={theme}
-        onUpdate={handleUpdateLoan}
-      />
-      <StickyTable columns={columnData} rows={rowData} pagination={false} />
+      <StickyTable columns={columnData} rows={rowData} />
     </Container>
   )
 }

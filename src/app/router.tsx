@@ -61,6 +61,7 @@ import { UserChangePassword } from 'modules/auth/UserChangePassword'
 import { HintButton } from 'components/shared/HintButton'
 import { Queue } from 'modules/function/queue'
 import { Loan } from 'modules/function/loan'
+import { DetailLoan } from 'modules/function/loan/Detail'
 
 const routes: RouteObject[] = [
   {
@@ -185,6 +186,15 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'function', action: 'loan' }}>
             <Loan />
+            <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'loan/:id',
+        element: (
+          <AuthGuard role={{ route: 'loan', action: 'detail' }}>
+            <DetailLoan />
             <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
           </AuthGuard>
         ),
