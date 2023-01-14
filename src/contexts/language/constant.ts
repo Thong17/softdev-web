@@ -70,6 +70,7 @@ export const languages = {
     TAX: 'Tax',
     VOUCHER: 'Voucher',
     PAYMENT: 'Payment',
+    PROCEED: 'Proceed',
     GENERAL: 'General',
     START_NOW: 'Start\u00a0Now',
     // Table
@@ -262,6 +263,7 @@ export const languages = {
     TAX: 'ពន្ធ',
     VOUCHER: 'ប័ណ្ណទូទាត់',
     PAYMENT: 'ការទូទាត់',
+    PROCEED: 'បន្ត',
     GENERAL: 'ទូទៅ',
     START_NOW: 'ចាប់ផ្តើមឥឡូវនេះ',
     // Table

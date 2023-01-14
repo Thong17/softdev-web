@@ -199,6 +199,12 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     documentTitle: 'Ticket',
   })
 
+  const handleCheckoutLoan = (data) => {
+    setPayment(data)
+    reload()
+    onCheckout()
+  }
+
   const loanButtonRef = useRef(document.createElement('button'))
   const renderPaymentMethod = (method) => {
     switch (method) {
@@ -210,11 +216,21 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
         )
 
       case 'loan':
-        return <LoanForm onChange={handleChangeCashes} loanButtonRef={loanButtonRef} />
+        const body = {
+          receiveCashes,
+          totalPaid: totalReceive,
+          totalRemain: totalRemain,
+        }
+        return <LoanForm onChange={handleChangeCashes} loanButtonRef={loanButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} />
 
       default:
         return <CashForm onChange={handleChangeCashes} />
     }
+  }
+
+  const handlePrintLoanDoc = () => {
+    console.log('print loan');
+    
   }
 
   return (
@@ -402,17 +418,63 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                 </Box>
               </div>
               {paymentMethod === 'loan' ? (
-                <CustomButton
-                  onClick={() => loanButtonRef.current.click()}
-                  styled={theme}
-                  style={{
-                    backgroundColor: `${theme.color.info}22`,
-                    color: theme.color.info,
-                    width: '100%',
-                  }}
-                >
-                  PROCEED
-                </CustomButton>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  {payment?.status ? (
+                    <>
+                      <CustomButton
+                        onClick={handleClearPayment}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.error}22`,
+                          color: theme.color.error,
+                          width: '100%',
+                        }}
+                      >
+                        {language['CLOSE']}
+                      </CustomButton>
+                      <CustomButton
+                        onClick={handlePrintLoanDoc}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.info}22`,
+                          color: theme.color.info,
+                          width: '100%',
+                        }}
+                      >
+                        <PrintRoundedIcon
+                          style={{ fontSize: 19, marginRight: 5 }}
+                        />
+                        {language['PRINT']}
+                      </CustomButton>
+                    </>
+                  ) : (
+                    <>
+                      <CustomButton
+                        onClick={() => handleCloseDialog()}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.error}22`,
+                          color: theme.color.error,
+                          width: '100%',
+                        }}
+                      >
+                        {language['CLOSE']}
+                      </CustomButton>
+                      <CustomButton
+                        onClick={() => loanButtonRef.current.click()}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.info}22`,
+                          color: theme.color.info,
+                          width: '100%',
+                        }}
+                      >
+                        {language['PROCEED']}
+                      </CustomButton>
+                    </>
+                  )}
+                  
+                </div>
               ) : (
                 <div style={{ display: 'flex', gap: 10 }}>
                   {payment?.status ? (
