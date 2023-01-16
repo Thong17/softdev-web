@@ -5,71 +5,14 @@ import useTheme from 'hooks/useTheme'
 import { Header } from './Header'
 import { getListLoan, selectListLoan } from './redux'
 import { useEffect, useState } from 'react'
-import { ITableColumn, StickyTable } from 'components/shared/table/StickyTable'
-import { currencyFormat, dateFormat } from 'utils/index'
+import { StickyTable } from 'components/shared/table/StickyTable'
 import useAuth from 'hooks/useAuth'
-import { IconButton } from '@mui/material'
-import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
-import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useAlert from 'hooks/useAlert'
 import { useNavigate } from 'react-router-dom'
-
-const columnData: ITableColumn<any>[] = [
-  { id: 'invoice', label: 'Invoice' },
-  { id: 'customer', label: 'Customer' },
-  { id: 'contact', label: 'Contact' },
-  { id: 'actualPaid', label: 'Actual\u00a0Paid' },
-  { id: 'totalPaid', label: 'Total\u00a0Paid' },
-  { id: 'totalRemain', label: 'Total\u00a0Remain' },
-  { id: 'dueDate', label: 'Due\u00a0Date' },
-  { id: 'action', label: 'ACTION', align: 'right' },
-]
-
-const mappedItem = (data, privilege, theme, onCancel, onDetail) => {
-  const action = <>
-    {privilege?.loan?.cancel && (
-      <IconButton
-        size='small'
-        onClick={() => onCancel(data._id)}
-        style={{
-          backgroundColor: `${theme.color.error}22`,
-          borderRadius: theme.radius.primary,
-          marginLeft: 5,
-          color: theme.color.error,
-        }}
-      >
-        <ClearRoundedIcon fontSize='small' />
-      </IconButton>
-    )}
-    {privilege?.loan?.update && (
-      <IconButton
-        size='small'
-        onClick={() => onDetail(data._id)}
-        style={{
-          backgroundColor: `${theme.color.info}22`,
-          borderRadius: theme.radius.primary,
-          marginLeft: 5,
-          color: theme.color.info,
-        }}
-      >
-        <ArrowRightAltRoundedIcon fontSize='small' />
-      </IconButton>
-    )}
-  </>
-  return {
-    _id: data._id,
-    invoice: data.payment?.invoice,
-    customer: data.customer?.displayName || '...',
-    contact: data.customer?.contact || '...',
-    actualPaid: currencyFormat(data.actualPaid.value, data.actualPaid.currency),
-    totalPaid: currencyFormat(data.totalPaid.total, 'USD'),
-    totalRemain: currencyFormat(data.totalRemain.USD, 'USD'),
-    dueDate: dateFormat(null),
-    action
-  }
-}
+import { RequestLoanDialog } from './RequestLoanDialog'
+import { columnData, mappedItem } from './constant'
 
 export const Loan = () => {
   const navigate = useNavigate()
@@ -80,6 +23,7 @@ export const Loan = () => {
   const dispatch = useAppDispatch()
   const { data } = useAppSelector(selectListLoan)
   const [rowData, setRowData] = useState<any>([])
+  const [requestDialog, setRequestDialog] = useState({ open: false })
 
   useEffect(() => {
     dispatch(getListLoan({}))
@@ -117,9 +61,11 @@ export const Loan = () => {
       header={
         <Header
           styled={theme}
+          onOpenRequest={() => setRequestDialog({ open: true })}
         />
       }
     >
+      <RequestLoanDialog dialog={requestDialog} setDialog={setRequestDialog} />
       <StickyTable columns={columnData} rows={rowData} />
     </Container>
   )

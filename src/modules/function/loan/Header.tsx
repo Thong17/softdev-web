@@ -16,7 +16,7 @@ const RequestNotification = ({ qty }) => {
   )
 }
 
-export const Header = ({ styled }) => {
+export const Header = ({ styled, onOpenRequest }) => {
   const { language } = useLanguage()
   return (
     <Box
@@ -24,6 +24,7 @@ export const Header = ({ styled }) => {
     >
       <Breadcrumbs page='loan' />
       <CustomButton
+        onClick={() => onOpenRequest()}
         style={{
           marginLeft: 10,
           backgroundColor: styled.background.secondary,

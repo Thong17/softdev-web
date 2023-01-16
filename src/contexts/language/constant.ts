@@ -129,6 +129,8 @@ export const languages = {
     PRINT: 'Print',
     CHECKOUT: 'Checkout',
     CLOSE: 'Close',
+    APPROVE: 'Approve',
+    APPROVE_ALL: 'Approve\u00a0All',
     TRANSFER: 'Transfer',
     SELL: 'Sell',
     BUY: 'Buy',
@@ -194,6 +196,7 @@ export const languages = {
     SENT_AFTER_PAYMENT: 'Sent after payment',
     SENT_AFTER_OPEN_DRAWER: 'Sent after open drawer',
     SENT_AFTER_CLOSE_DRAWER: 'Sent after close drawer',
+    REQUEST_LOAN: 'Request\u00a0Loan'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -324,6 +327,8 @@ export const languages = {
     PRINT: 'បោះពុម្ព',
     CHECKOUT: 'បង់លុយ',
     CLOSE: 'បិទ',
+    APPROVE: 'យល់ព្រម',
+    APPROVE_ALL: 'យល់ព្រមទាំងអស់',
     TRANSFER: 'ផ្ទេរ',
     SELL: 'លក់',
     BUY: 'ទិញ',
@@ -389,5 +394,6 @@ export const languages = {
     SENT_AFTER_PAYMENT: 'ផ្ញើបន្ទាប់ពីការទូទាត់',
     SENT_AFTER_OPEN_DRAWER: 'ផ្ញើបន្ទាប់ពីបើកហិបប្រាក់',
     SENT_AFTER_CLOSE_DRAWER: 'ផ្ញើបន្ទាប់ពីបិទហិបប្រាក់',
+    REQUEST_LOAN: 'ស្នើសុំប្រាក់កម្ចី'
   }
 }
