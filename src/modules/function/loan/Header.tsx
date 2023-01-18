@@ -3,6 +3,9 @@ import { Box } from '@mui/material'
 import { CustomButton } from 'styles/index'
 import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
+import { useEffect } from 'react'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { getListRequestLoan, selectListRequestLoan } from './redux'
 
 const RequestNotification = ({ qty }) => {
   const { theme } = useTheme()
@@ -18,6 +21,12 @@ const RequestNotification = ({ qty }) => {
 
 export const Header = ({ styled, onOpenRequest }) => {
   const { language } = useLanguage()
+  const { data } = useAppSelector(selectListRequestLoan)
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    dispatch(getListRequestLoan({}))
+  }, [dispatch])
+  
   return (
     <Box
       sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
@@ -32,7 +41,7 @@ export const Header = ({ styled, onOpenRequest }) => {
         }}
         styled={styled}
       >
-        <RequestNotification qty={9} />
+        {data.length > 0 && <RequestNotification qty={data.length} />}
         {language['REQUEST']}
       </CustomButton>
     </Box>

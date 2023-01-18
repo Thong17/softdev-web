@@ -4,7 +4,7 @@ import { ITableColumn, StickyTable } from 'components/shared/table/StickyTable'
 import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import { useEffect, useState } from 'react'
-import { getListRequestLoan, selectListRequestLoan } from './redux'
+import { getListLoan, getListRequestLoan, selectListRequestLoan } from './redux'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import InsertLinkRoundedIcon from '@mui/icons-material/InsertLinkRounded'
@@ -13,6 +13,9 @@ import { currencyFormat, dateFormat } from 'utils/index'
 import { CustomButton } from 'styles/index'
 import useLanguage from 'hooks/useLanguage'
 import { AttachmentDialog } from './AttachmentDialog'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
+import useAlert from 'hooks/useAlert'
 
 const requestColumnData: ITableColumn<any>[] = [
   { id: 'invoice', label: 'Invoice' },
@@ -26,17 +29,19 @@ const requestColumnData: ITableColumn<any>[] = [
   { id: 'action', label: 'ACTION', align: 'right' },
 ]
 
-export const RequestLoanDialog = ({
-  dialog,
-  setDialog,
-}: any) => {
+export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
   const dispatch = useAppDispatch()
   const { data } = useAppSelector(selectListRequestLoan)
   const [rowData, setRowData] = useState<any>([])
   const { user } = useAuth()
   const { theme } = useTheme()
+  const { notify } = useNotify()
   const { language } = useLanguage()
-  const [attachmentDialog, setAttachmentDialog] = useState({ open: false, attachments: [] })
+  const confirm = useAlert()
+  const [attachmentDialog, setAttachmentDialog] = useState({
+    open: false,
+    attachments: [],
+  })
 
   useEffect(() => {
     dispatch(getListRequestLoan({}))
@@ -44,36 +49,81 @@ export const RequestLoanDialog = ({
 
   useEffect(() => {
     const handleReject = (id) => {
-      console.log(id);
-      
+      confirm({
+        title: 'Reject',
+        description: 'Reject loan will remove loan from the list.',
+        variant: 'error'
+      })
+        .then(() => {
+          Axios({
+            method: 'PUT',
+            url: `/function/loan/reject/${id}`,
+          })
+            .then(() => {
+              dispatch(getListRequestLoan({}))
+              dispatch(getListLoan({}))
+            })
+            .catch((err) => notify(err?.response?.data?.msg))
+        })
+        .catch(() => null)
     }
     const handleApprove = (id) => {
-      console.log('approve', id)
+      confirm({
+        title: 'Approve',
+        description: 'Are you sure you want to approve this loan?',
+        variant: 'info'
+      })
+        .then(() => {
+          Axios({
+            method: 'PUT',
+            url: `/function/loan/approve/${id}`,
+          })
+            .then(() => {
+              dispatch(getListRequestLoan({}))
+              dispatch(getListLoan({}))
+            })
+            .catch((err) => notify(err?.response?.data?.msg))
+        })
+        .catch(() => null)
+      
     }
     const handlePreview = (attachments) => {
       setAttachmentDialog({ open: true, attachments })
     }
 
-    setRowData(data.map(item => mappedItem(item, user?.privilege, theme, handleReject, handleApprove, handlePreview)))
+    setRowData(
+      data.map((item) =>
+        mappedItem(
+          item,
+          user?.privilege,
+          theme,
+          handleReject,
+          handleApprove,
+          handlePreview
+        )
+      )
+    )
     // eslint-disable-next-line
   }, [data, user?.privilege])
-  
+
   const handleCloseDialog = () => {
     setDialog({ open: false })
   }
 
-  const handleApproveAll = () => {
-
-  }
+  const handleApproveAll = () => {}
 
   return (
-    <AlertDialog
-      isOpen={dialog.open}
-      handleClose={handleCloseDialog}
-    >
-      <AttachmentDialog dialog={attachmentDialog} setDialog={setAttachmentDialog} />
+    <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
+      <AttachmentDialog
+        dialog={attachmentDialog}
+        setDialog={setAttachmentDialog}
+      />
       <Box sx={{ padding: '10px', minWidth: '90vw', minHeight: '75vh' }}>
-        <StickyTable columns={requestColumnData} rows={rowData} pagination={false} />
+        <StickyTable
+          columns={requestColumnData}
+          rows={rowData}
+          pagination={false}
+        />
       </Box>
       <div style={{ display: 'flex', gap: 10, padding: 10 }}>
         <CustomButton
@@ -125,7 +175,7 @@ const mappedItem = (data, privilege, theme, onReject, onApprove, onPreview) => {
       {privilege?.loan?.approve && (
         <IconButton
           size='small'
-          onClick={() => onApprove(data)}
+          onClick={() => onApprove(data._id)}
           style={{
             backgroundColor: `${theme.color.info}22`,
             borderRadius: theme.radius.primary,
@@ -139,18 +189,21 @@ const mappedItem = (data, privilege, theme, onReject, onApprove, onPreview) => {
     </>
   )
 
-  const attachment = <IconButton
-    size='small'
-    onClick={() => onPreview(data.attachments)}
-    style={{
-      backgroundColor: `${theme.color.info}22`,
-      borderRadius: theme.radius.primary,
-      marginLeft: 5,
-      color: theme.color.info,
-    }}
-  >
-    <InsertLinkRoundedIcon fontSize='small' />
-  </IconButton>
+  const attachment = (
+    <IconButton
+      disabled={data.attachments?.length === 0}
+      size='small'
+      onClick={() => onPreview(data.attachments)}
+      style={{
+        backgroundColor: data.attachments?.length === 0 ? `${theme.text.secondary}22` : `${theme.color.info}22`,
+        borderRadius: theme.radius.primary,
+        marginLeft: 5,
+        color: data.attachments?.length === 0 ? theme.text.secondary : theme.color.info,
+      }}
+    >
+      <InsertLinkRoundedIcon fontSize='small' />
+    </IconButton>
+  )
 
   return {
     _id: data._id,

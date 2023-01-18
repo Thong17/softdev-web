@@ -37,13 +37,7 @@ export const AttachmentDialog = ({ dialog, setDialog }: any) => {
           background: 'transparent',
           width: '80vw',
           height: '80vh',
-          '.img-container': {
-            'img': {
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain'
-            }
-          },
+          overflow: 'hidden',
           '& .navigationButton': {
             position: 'absolute',
             bottom: 20,
