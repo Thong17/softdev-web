@@ -42,7 +42,7 @@ export const Loan = () => {
           url: `/function/loan/cancel/${id}`
         })
           .then(() => {
-            setRowData(data => data.filter(item => item._id !== id))
+            dispatch(getListLoan({}))
           })
           .catch(err => notify(err?.response?.data?.msg))
        })

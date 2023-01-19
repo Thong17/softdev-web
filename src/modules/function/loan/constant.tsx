@@ -1,8 +1,8 @@
 import { IconButton } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { currencyFormat, dateFormat } from 'utils/index'
-import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
-import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
+import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 
 export const columnData: ITableColumn<any>[] = [
   { id: 'invoice', label: 'Invoice' },
@@ -29,7 +29,7 @@ export const mappedItem = (data, privilege, theme, onCancel, onDetail) => {
             color: theme.color.error,
           }}
         >
-          <ClearRoundedIcon fontSize='small' />
+          <DeleteRoundedIcon fontSize='small' />
         </IconButton>
       )}
       {privilege?.loan?.update && (
@@ -43,7 +43,7 @@ export const mappedItem = (data, privilege, theme, onCancel, onDetail) => {
             color: theme.color.info,
           }}
         >
-          <ArrowRightAltRoundedIcon fontSize='small' />
+          <AttachMoneyRoundedIcon fontSize='small' />
         </IconButton>
       )}
     </>
