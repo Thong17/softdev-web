@@ -14,7 +14,9 @@ import {
   DetailUser,
 } from 'modules/admin'
 import {
-  Function,
+  CreatePromotion,
+  DetailPromotion,
+  Function, Promotions, UpdatePromotion,
 } from 'modules/function'
 import {
   Organize,
@@ -37,15 +39,11 @@ import {
 } from 'modules/organize'
 import {
   Cashing,
-  CreatePromotion,
-  DetailPromotion,
-  Promotions,
   Reservation,
   ReservationForm,
   Sale,
   Stock,
   Stocks,
-  UpdatePromotion,
 } from 'modules/sale'
 import { Home } from 'modules/home'
 import Config from 'modules/config/Config'
@@ -60,8 +58,9 @@ import { UserProfile } from 'modules/auth/UserProfile'
 import { UserChangePassword } from 'modules/auth/UserChangePassword'
 import { HintButton } from 'components/shared/HintButton'
 import { Queue } from 'modules/function/queue'
-import { Loan } from 'modules/function/loan'
-import { DetailLoan } from 'modules/function/loan/Detail'
+import { Loan } from 'modules/sale/loan'
+import { DetailLoan } from 'modules/sale/loan/Detail'
+
 
 const routes: RouteObject[] = [
   {
@@ -181,21 +180,33 @@ const routes: RouteObject[] = [
           </AuthGuard>
         ),
       },
+
+      // Promotion
       {
-        path: 'loan',
+        path: 'promotion',
+        element: <Promotions />,
+      },
+      {
+        path: 'promotion/create',
         element: (
-          <AuthGuard role={{ route: 'function', action: 'loan' }}>
-            <Loan />
-            <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
+          <AuthGuard role={{ route: 'category', action: 'create' }}>
+            <CreatePromotion />
           </AuthGuard>
         ),
       },
       {
-        path: 'loan/:id',
+        path: 'promotion/update/:id',
         element: (
-          <AuthGuard role={{ route: 'loan', action: 'detail' }}>
-            <DetailLoan />
-            <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
+          <AuthGuard role={{ route: 'category', action: 'update' }}>
+            <UpdatePromotion />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'promotion/detail/:id',
+        element: (
+          <AuthGuard role={{ route: 'category', action: 'detail' }}>
+            <DetailPromotion />
           </AuthGuard>
         ),
       },
@@ -405,32 +416,22 @@ const routes: RouteObject[] = [
         element: <ReservationForm />,
       },
 
-      // Promotion
+      // Loan
       {
-        path: 'promotion',
-        element: <Promotions />,
-      },
-      {
-        path: 'promotion/create',
+        path: 'loan',
         element: (
-          <AuthGuard role={{ route: 'category', action: 'create' }}>
-            <CreatePromotion />
+          <AuthGuard role={{ route: 'function', action: 'loan' }}>
+            <Loan />
+            <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
           </AuthGuard>
         ),
       },
       {
-        path: 'promotion/update/:id',
+        path: 'loan/:id',
         element: (
-          <AuthGuard role={{ route: 'category', action: 'update' }}>
-            <UpdatePromotion />
-          </AuthGuard>
-        ),
-      },
-      {
-        path: 'promotion/detail/:id',
-        element: (
-          <AuthGuard role={{ route: 'category', action: 'detail' }}>
-            <DetailPromotion />
+          <AuthGuard role={{ route: 'loan', action: 'detail' }}>
+            <DetailLoan />
+            <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
           </AuthGuard>
         ),
       },

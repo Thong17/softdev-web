@@ -35,7 +35,7 @@ export const Header = ({
         navigate={navigate}
         handleSearch={handleSearch}
         breadcrumb={<StoreBreadcrumbs page='promotion' />}
-        createUrl='/sale/promotion/create'
+        createUrl='/function/promotion/create'
         filterOption={<FilterOption />}
       />
   )

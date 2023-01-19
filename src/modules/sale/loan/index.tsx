@@ -39,7 +39,7 @@ export const Loan = () => {
        .then(() => {
         Axios({
           method: 'DELETE',
-          url: `/function/loan/cancel/${id}`
+          url: `/sale/loan/cancel/${id}`
         })
           .then(() => {
             dispatch(getListLoan({}))
@@ -49,7 +49,7 @@ export const Loan = () => {
        .catch(() => {})
     }
     const handleDetail = (id) => {
-      navigate(`/function/loan/${id}`)
+      navigate(`/sale/loan/${id}`)
     }
 
     setRowData(data.map(item => mappedItem(item, user?.privilege, theme, handleCancel, handleDetail)))

@@ -57,7 +57,7 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
         .then(() => {
           Axios({
             method: 'PUT',
-            url: `/function/loan/reject/${id}`,
+            url: `/sale/loan/reject/${id}`,
           })
             .then(() => {
               dispatch(getListRequestLoan({}))
@@ -76,7 +76,7 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
         .then(() => {
           Axios({
             method: 'PUT',
-            url: `/function/loan/approve/${id}`,
+            url: `/sale/loan/approve/${id}`,
           })
             .then(() => {
               dispatch(getListRequestLoan({}))

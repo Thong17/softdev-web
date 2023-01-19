@@ -3,7 +3,13 @@ import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumbe
 import { FC } from 'react'
 import useLanguage from 'hooks/useLanguage'
 
-declare type page = 'function' | 'queue' | 'loan'
+declare type page =
+  | 'function'
+  | 'queue'
+  | 'loan'
+  | 'promotion'
+  | 'promotionCreate'
+  | 'promotionUpdate'
 
 interface IBreadcrumbs {
   page: page
@@ -27,17 +33,48 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
         title: language['QUEUE'],
       },
     ],
-    loan: [
+    promotion: [
       {
-        title: language['FUNCTION'],
-        path: '/function',
+        title: language['SALE'],
+        path: '/sale',
       },
       {
-        title: language['LOAN'],
+        title: language['PROMOTION'],
+      },
+    ],
+    promotionCreate: [
+      {
+        title: language['SALE'],
+        path: '/sale',
+      },
+      {
+        title: language['PROMOTION'],
+        path: '/sale/promotion',
+      },
+      {
+        title: language['CREATE'],
+      },
+    ],
+    promotionUpdate: [
+      {
+        title: language['SALE'],
+        path: '/sale',
+      },
+      {
+        title: language['PROMOTION'],
+        path: '/sale/promotion',
+      },
+      {
+        title: language['UPDATE'],
       },
     ],
   }
-  return <Breadcrumb stages={stages[page]} title={<ConfirmationNumberRoundedIcon />} />
+  return (
+    <Breadcrumb
+      stages={stages[page]}
+      title={<ConfirmationNumberRoundedIcon />}
+    />
+  )
 }
 
 export default Breadcrumbs

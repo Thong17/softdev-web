@@ -8,8 +8,8 @@ const Navbar = () => {
   const { language } = useLanguage()
   return (
     <>
-        {user?.privilege?.function?.queue && <NavLink to='/function/queue'>{language['QUEUE']}</NavLink>}
-        {user?.privilege?.function?.loan && <NavLink to='/function/loan'>{language['LOAN']}</NavLink>}
+      {user?.privilege?.function?.queue && <NavLink to='/function/queue'>{language['QUEUE']}</NavLink>}
+      {user?.privilege?.operation?.promotion && <NavLink to='/function/promotion'>{language['PROMOTION']}</NavLink>}
     </>
   )
 }

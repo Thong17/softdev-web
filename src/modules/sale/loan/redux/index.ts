@@ -8,7 +8,7 @@ export const getListLoan = createAsyncThunk(
   async ({ query }: { query?: URLSearchParams }) => {
     const response = await Axios({
       method: 'GET',
-      url: '/function/loan',
+      url: '/sale/loan',
       params: query
     })
     return response?.data
@@ -20,7 +20,7 @@ export const getListRequestLoan = createAsyncThunk(
   async ({ query }: { query?: URLSearchParams }) => {
     const response = await Axios({
       method: 'GET',
-      url: '/function/loan/listRequest',
+      url: '/sale/loan/listRequest',
       params: query
     })
     return response?.data

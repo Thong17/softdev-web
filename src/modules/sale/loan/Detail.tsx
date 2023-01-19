@@ -18,7 +18,7 @@ const Header = ({ stages }) => {
   )
 }
 
-export const DetailLoan = ({}: any) => {
+export const DetailLoan = () => {
   const { notify } = useNotify()
   const { id } = useParams()
   const [data, setData] = useState<any>(null)
@@ -26,12 +26,12 @@ export const DetailLoan = ({}: any) => {
 
   const stages = [
     {
-      title: language['FUNCTION'],
-      path: '/function',
+      title: language['SALE'],
+      path: '/sale',
     },
     {
       title: language['LOAN'],
-      path: '/function/loan'
+      path: '/sale/loan'
     },
     {
       title: data?.payment?.invoice
@@ -42,7 +42,7 @@ export const DetailLoan = ({}: any) => {
     if (!id) return
     Axios({
       method: 'GET',
-      url: `/function/loan/detail/${id}`,
+      url: `/sale/loan/detail/${id}`,
     })
       .then((data) => {        
         setData(data?.data?.data)

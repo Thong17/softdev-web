@@ -217,7 +217,7 @@ export const LoanForm = ({ onChange, loanButtonRef, paymentId, payment, onChecko
     })    
     Axios({
       method: 'POST',
-      url: '/function/loan/create',
+      url: '/sale/loan/create',
       body: formData
     })
       .then(data => {
