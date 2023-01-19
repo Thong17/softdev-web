@@ -9,7 +9,7 @@ const Navbar = () => {
   return (
     <>
       {user?.privilege?.function?.queue && <NavLink to='/function/queue'>{language['QUEUE']}</NavLink>}
-      {user?.privilege?.operation?.promotion && <NavLink to='/function/promotion'>{language['PROMOTION']}</NavLink>}
+      {user?.privilege?.function?.promotion && <NavLink to='/function/promotion'>{language['PROMOTION']}</NavLink>}
     </>
   )
 }
