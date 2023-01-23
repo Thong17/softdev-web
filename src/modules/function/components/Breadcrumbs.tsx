@@ -35,8 +35,8 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
     ],
     promotion: [
       {
-        title: language['SALE'],
-        path: '/sale',
+        title: language['FUNCTION'],
+        path: '/function',
       },
       {
         title: language['PROMOTION'],
@@ -44,12 +44,12 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
     ],
     promotionCreate: [
       {
-        title: language['SALE'],
-        path: '/sale',
+        title: language['FUNCTION'],
+        path: '/function',
       },
       {
         title: language['PROMOTION'],
-        path: '/sale/promotion',
+        path: '/function/promotion',
       },
       {
         title: language['CREATE'],
@@ -57,12 +57,12 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
     ],
     promotionUpdate: [
       {
-        title: language['SALE'],
-        path: '/sale',
+        title: language['FUNCTION'],
+        path: '/function',
       },
       {
         title: language['PROMOTION'],
-        path: '/sale/promotion',
+        path: '/function/promotion',
       },
       {
         title: language['UPDATE'],
