@@ -104,17 +104,19 @@ export const PaymentReceipt = ({ width = '100vw', payment }: any) => {
         >
           {store?.name}
         </h3>
-        {store?.address && <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <p
-            style={{
-              textAlign: 'center',
-              marginBottom: 10,
-              maxWidth: '80%',
-            }}
-          >
-            {store?.address}
-          </p>
-        </div>}
+        {store?.address && (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <p
+              style={{
+                textAlign: 'center',
+                marginBottom: 10,
+                maxWidth: '80%',
+              }}
+            >
+              {store?.address}
+            </p>
+          </div>
+        )}
         <p
           style={{
             textAlign: 'center',
@@ -123,6 +125,16 @@ export const PaymentReceipt = ({ width = '100vw', payment }: any) => {
         >
           {store?.contact}
         </p>
+        {info?.reservation?.structures?.length > 0 && (
+          <FlexBetween>
+            <span>
+              Room:{' '}
+              {info?.reservation?.structures
+                ?.map((item) => item.title)
+                .join(', ')}
+            </span>
+          </FlexBetween>
+        )}
         <FlexBetween>
           <PreDate date={info?.createdAt} />
           <PreTime date={info?.createdAt} />
@@ -145,14 +157,19 @@ export const PaymentReceipt = ({ width = '100vw', payment }: any) => {
           <div style={{ width: '50%' }}>
             <FlexBetween>
               <span>USD:</span>
-              <span style={{ lineHeight: 1 }}>{currencyFormat(info?.subtotal?.USD, 'USD')}</span>
+              <span style={{ lineHeight: 1 }}>
+                {currencyFormat(info?.subtotal?.USD, 'USD')}
+              </span>
             </FlexBetween>
             <FlexBetween>
               <span>KHR:</span>
-              <span style={{ lineHeight: 1 }}>{currencyFormat(info?.subtotal?.KHR, 'KHR')}</span>
+              <span style={{ lineHeight: 1 }}>
+                {currencyFormat(info?.subtotal?.KHR, 'KHR')}
+              </span>
             </FlexBetween>
             {info?.discounts?.map((prop, key) => {
-              if (parseFloat(prop.value) <= 0) return <span key={key} style={{ display: 'none' }}></span>
+              if (parseFloat(prop.value) <= 0)
+                return <span key={key} style={{ display: 'none' }}></span>
               return (
                 <FlexBetween key={key}>
                   <span>{prop.title}</span>
@@ -163,7 +180,8 @@ export const PaymentReceipt = ({ width = '100vw', payment }: any) => {
               )
             })}
             {info?.services?.map((prop, key) => {
-              if (parseFloat(prop.value) <= 0) return <span key={key} style={{ display: 'none' }}></span>
+              if (parseFloat(prop.value) <= 0)
+                return <span key={key} style={{ display: 'none' }}></span>
               return (
                 <FlexBetween key={key}>
                   <span>{prop.title}</span>
@@ -174,7 +192,8 @@ export const PaymentReceipt = ({ width = '100vw', payment }: any) => {
               )
             })}
             {info?.vouchers?.map((prop, key) => {
-              if (parseFloat(prop.value) <= 0) return <span key={key} style={{ display: 'none' }}></span>
+              if (parseFloat(prop.value) <= 0)
+                return <span key={key} style={{ display: 'none' }}></span>
               return (
                 <FlexBetween key={key}>
                   <span>{prop.title}</span>
@@ -187,16 +206,27 @@ export const PaymentReceipt = ({ width = '100vw', payment }: any) => {
             <PreBorder styled={theme} />
             <FlexBetween>
               <span>Total</span>
-              <span style={{ lineHeight: 1 }}>{currencyFormat(parseFloat(info?.total?.value), info?.total?.currency)}</span>
+              <span style={{ lineHeight: 1 }}>
+                {currencyFormat(
+                  parseFloat(info?.total?.value),
+                  info?.total?.currency
+                )}
+              </span>
             </FlexBetween>
             <PreBorder styled={theme} />
             <FlexBetween>
               <span>Receive</span>
-              <span style={{ lineHeight: 1 }}>{currencyFormat(parseFloat(info?.receiveTotal?.total), 'USD')}</span>
+              <span style={{ lineHeight: 1 }}>
+                {currencyFormat(parseFloat(info?.receiveTotal?.total), 'USD')}
+              </span>
             </FlexBetween>
             <FlexBetween>
-              <span>{parseFloat(info?.remainTotal?.USD) < 0 ? 'Return' : 'Remain'}</span>
-              <span style={{ lineHeight: 1 }}>{currencyFormat(parseFloat(info?.remainTotal?.USD), 'USD')}</span>
+              <span>
+                {parseFloat(info?.remainTotal?.USD) < 0 ? 'Return' : 'Remain'}
+              </span>
+              <span style={{ lineHeight: 1 }}>
+                {currencyFormat(parseFloat(info?.remainTotal?.USD), 'USD')}
+              </span>
             </FlexBetween>
           </div>
         </div>
