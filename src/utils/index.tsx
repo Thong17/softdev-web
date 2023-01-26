@@ -87,6 +87,35 @@ export const currencyFormat = (value, currency) => {
   )
 }
 
+export const durationFormat = (value, time) => {
+  let symbol
+
+  switch (true) {
+    case time === 'year':
+      symbol = 'year'
+      break
+
+    case time === 'month':
+      symbol = 'month'
+      break
+
+    case time === 'week':
+      symbol = 'week'
+      break
+  
+    default:
+      symbol = 'day'
+      break
+  }
+  if (!value || typeof value !== 'number') return <span>0{symbol}</span>
+  return (
+    <span>
+      {value || 0}
+      {symbol}
+    </span>
+  )
+}
+
 export const durationPriceFormat = (value, currency, duration) => {
   let symbol
   let decimal
