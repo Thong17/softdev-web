@@ -5,7 +5,7 @@ const LoanTable = ({ data }) => {
     console.log(data);
     
   return (
-    <Box sx={{ backgroundColor: 'red' }}>
+    <Box sx={{ backgroundColor: 'gray' }}>
         Hello
     </Box>
   )

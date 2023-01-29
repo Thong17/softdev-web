@@ -5,10 +5,9 @@ import React from 'react'
 import { currencyFormat, durationFormat } from 'utils/index'
 import { CircleIcon } from '../table/CustomIcon'
 import { TextEllipsis } from '../TextEllipsis'
+import { FlexBetween } from './FlexBetween'
 
 const LoanDetail = ({ data }) => {
-  console.log(data);
-  
   const { theme } = useTheme()
   const { language } = useLanguage()
   return (
@@ -47,32 +46,60 @@ const LoanDetail = ({ data }) => {
       <Box
         className='loan'
         sx={{
+          position: 'relative',
           padding: '20px',
           display: 'flex', 
           flexDirection: 'column',
-          gap: '10px'
+          gap: '10px',
+          '&::before': {
+            content: `''`,
+            borderBottom: theme.border.dashed,
+            position: 'absolute',
+            bottom: -1,
+            left: 10,
+            display: 'block',
+            width: 'calc(100% - 20px)',
+          },
         }}
       >
-        <Box display='flex'>
-          <span style={{ marginRight: '5px' }}>{language['INVOICE']}:</span>
-          <TextEllipsis>{data?.payment?.invoice}</TextEllipsis>
-        </Box>
-        <Box display='flex'>
-          <span style={{ marginRight: '5px' }}>{language['TOTAL_LOAN']}:</span>
-          <TextEllipsis>{currencyFormat(data?.totalLoan?.USD, 'USD')}</TextEllipsis>
-        </Box>
-        <Box display='flex'>
-          <span style={{ marginRight: '5px' }}>{language['TOTAL_PAID']}:</span>
-          <TextEllipsis>{currencyFormat(data?.totalPaid?.total, 'USD')}</TextEllipsis>
-        </Box>
-        <Box display='flex'>
-          <span style={{ marginRight: '5px' }}>{language['TOTAL_REMAIN']}:</span>
-          <TextEllipsis>{currencyFormat(data?.totalRemain?.USD, 'USD')}</TextEllipsis>
-        </Box>
-        <Box display='flex'>
+        <FlexBetween>
+          <span>{language['INVOICE']}:</span>
+          <span>{data?.payment?.invoice}</span>
+        </FlexBetween>
+        <FlexBetween>
           <span style={{ marginRight: '5px' }}>{language['DURATION']}:</span>
-          <TextEllipsis>{durationFormat(data?.duration?.value, data?.duration?.time)}</TextEllipsis>
-        </Box>
+          <span>{durationFormat(data?.duration?.value, data?.duration?.time)}</span>
+        </FlexBetween>
+        <FlexBetween>
+          <span style={{ marginRight: '5px' }}>{language['TOTAL_LOAN']}:</span>
+          <span>{currencyFormat(data?.totalLoan?.USD, 'USD')}</span>
+        </FlexBetween>
+        <FlexBetween>
+          <span style={{ marginRight: '5px' }}>{language['TOTAL_PAID']}</span>
+          <span>{currencyFormat(data?.totalPaid?.total, 'USD')}</span>
+        </FlexBetween>
+        <FlexBetween>
+          <span style={{ marginRight: '5px' }}>{language['TOTAL_REMAIN']}:</span>
+          <span>{currencyFormat(data?.totalRemain?.USD, 'USD')}</span>
+        </FlexBetween>
+      </Box>
+      <Box
+        className='loan'
+        sx={{
+          padding: '20px',
+          display: 'flex', 
+          flexDirection: 'column',
+          gap: '10px',
+        }}
+      >
+        <FlexBetween>
+          <span style={{ marginRight: '5px' }}>{language['PREPAYMENT_PENALTY']}:</span>
+          <span>{currencyFormat(data?.prepayment?.value, data?.prepayment?.currency)} / {durationFormat(data?.prepayment?.duration?.value, data?.prepayment?.duration?.time)}</span>
+        </FlexBetween>
+        <FlexBetween>
+          <span style={{ marginRight: '5px' }}>{language['OVERDUE_PENALTY']}:</span>
+          <span>{currencyFormat(data?.overdue?.value, data?.overdue?.currency)} / {durationFormat(data?.overdue?.duration?.value, data?.overdue?.duration?.time)}</span>
+        </FlexBetween>
       </Box>
     </Box>
   )

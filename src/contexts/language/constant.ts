@@ -165,8 +165,10 @@ export const languages = {
     CHANGE_PASSWORD: 'Change\u00a0Password',
     OVERDUE: 'Overdue',
     PREPAYMENT: 'Prepayment',
+    PREPAYMENT_PENALTY: 'Prepayment\u00a0Penalty',
     PREPAYMENT_DURATION: 'Prepayment\u00a0Duration',
     OVERDUE_DURATION: 'Overdue\u00a0Duration',
+    OVERDUE_PENALTY: 'Overdue\u00a0Penalty',
     SEARCH: 'Search',
     CONFIRM: 'Confirm',
     SETUP: 'Setup',
@@ -196,7 +198,11 @@ export const languages = {
     SENT_AFTER_PAYMENT: 'Sent after payment',
     SENT_AFTER_OPEN_DRAWER: 'Sent after open drawer',
     SENT_AFTER_CLOSE_DRAWER: 'Sent after close drawer',
-    REQUEST_LOAN: 'Request\u00a0Loan'
+    REQUEST_LOAN: 'Request\u00a0Loan',
+    // Loan Detail
+    TOTAL_LOAN: 'Total\u00a0Loan',
+    TOTAL_PAID: 'Total\u00a0Paid',
+    TOTAL_REMAIN: 'Total\u00a0Remain',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -363,8 +369,10 @@ export const languages = {
     CHANGE_PASSWORD: 'ផ្លាស់ប្តូរពាក្យសម្ងាត់',
     OVERDUE: 'ហួសកាលកំណត់',
     PREPAYMENT: 'ការបង់ប្រាក់ជាមុន',
+    PREPAYMENT_PENALTY: 'ពិន័យបង់ប្រាក់មុន',
     PREPAYMENT_DURATION: 'រយៈពេលមុន',
     OVERDUE_DURATION: 'រយៈពេលហួស',
+    OVERDUE_PENALTY: 'ពិន័យហួសកាលកំណត់',
     SEARCH: 'ស្វែងរក',
     CONFIRM: 'យល់ព្រម',
     SETUP: 'រៀបចំ',
@@ -394,6 +402,10 @@ export const languages = {
     SENT_AFTER_PAYMENT: 'ផ្ញើបន្ទាប់ពីការទូទាត់',
     SENT_AFTER_OPEN_DRAWER: 'ផ្ញើបន្ទាប់ពីបើកហិបប្រាក់',
     SENT_AFTER_CLOSE_DRAWER: 'ផ្ញើបន្ទាប់ពីបិទហិបប្រាក់',
-    REQUEST_LOAN: 'ស្នើសុំប្រាក់កម្ចី'
+    REQUEST_LOAN: 'ស្នើសុំប្រាក់កម្ចី',
+    // Loan Detail
+    TOTAL_LOAN: 'ប្រាក់កម្ចីសរុប',
+    TOTAL_PAID: 'បានបង់សរុប',
+    TOTAL_REMAIN: 'នៅសល់សរុប',
   }
 }

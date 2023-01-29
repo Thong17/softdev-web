@@ -92,19 +92,19 @@ export const durationFormat = (value, time) => {
 
   switch (true) {
     case time === 'year':
-      symbol = 'year'
+      symbol = value > 1 ? 'years' : 'year'
       break
 
     case time === 'month':
-      symbol = 'month'
+      symbol = value > 1 ? 'months' : 'month'
       break
 
     case time === 'week':
-      symbol = 'week'
+      symbol = value > 1 ? 'weeks' : 'week'
       break
   
     default:
-      symbol = 'day'
+      symbol = value > 1 ? 'days' : 'day'
       break
   }
   if (!value || typeof value !== 'number') return <span>0{symbol}</span>
