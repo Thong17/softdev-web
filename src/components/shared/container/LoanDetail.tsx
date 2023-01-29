@@ -71,12 +71,16 @@ const LoanDetail = ({ data }) => {
           <span>{durationFormat(data?.duration?.value, data?.duration?.time)}</span>
         </FlexBetween>
         <FlexBetween>
+          <span style={{ marginRight: '5px' }}>{language['INTEREST']}:</span>
+          <span>{currencyFormat(data?.interest?.value, data?.interest?.currency)}</span>
+        </FlexBetween>
+        <FlexBetween>
           <span style={{ marginRight: '5px' }}>{language['TOTAL_LOAN']}:</span>
           <span>{currencyFormat(data?.totalLoan?.USD, 'USD')}</span>
         </FlexBetween>
         <FlexBetween>
           <span style={{ marginRight: '5px' }}>{language['TOTAL_PAID']}</span>
-          <span>{currencyFormat(data?.totalPaid?.total, 'USD')}</span>
+          <span>{currencyFormat(data?.totalPaid?.total, 'USD', 2)}</span>
         </FlexBetween>
         <FlexBetween>
           <span style={{ marginRight: '5px' }}>{language['TOTAL_REMAIN']}:</span>
