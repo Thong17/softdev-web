@@ -12,6 +12,7 @@ import LoanTable from 'components/shared/table/LoanTable'
 import { CustomButton } from 'styles/index'
 import useTheme from 'hooks/useTheme'
 import { DepositDialog } from './DepositDialog'
+import { IPaymentInfo } from 'components/shared/form/PaymentForm'
 
 const Header = ({ stages, styled, language, onOpenDeposit }) => {
   return (
@@ -40,7 +41,7 @@ export const DetailLoan = () => {
   const [data, setData] = useState<any>(null)
   const { language } = useLanguage()
   const { theme } = useTheme()
-  const [depositDialog, setDepositDialog] = useState({ open: false })
+  const [depositDialog, setDepositDialog] = useState<any>({ open: false, payment: null })
 
   const stages = [
     {
@@ -70,7 +71,7 @@ export const DetailLoan = () => {
   }, [id])
 
   return (
-    <Container header={<Header stages={stages} styled={theme} language={language} onOpenDeposit={() => setDepositDialog({ open: true })} />}>
+    <Container header={<Header stages={stages} styled={theme} language={language} onOpenDeposit={() => setDepositDialog({ open: true, payment: mapPayment(data) })} />}>
       <Box
         sx={{
           display: 'grid',
@@ -84,4 +85,16 @@ export const DetailLoan = () => {
       </Box>
     </Container>
   )
+}
+
+const mapPayment = (data): IPaymentInfo => {
+  return {
+    _id: data._id,
+    rate: data.payment.rate,
+    customer: data.customer,
+    remainTotal: data.totalRemain,
+    returnCashes: [],
+    status: false,
+    total: { value: data.totalRemain.USD, currency: 'USD' }
+  }
 }

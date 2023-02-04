@@ -220,7 +220,7 @@ export const PaymentForm = forwardRef(
               gridGap: 20,
               display: 'grid',
               gridTemplateColumns:
-                width > 1024 ? 'calc(100% - 480px) auto' : '1fr',
+                width > 1024 ? 'calc(100% - 580px) auto' : '1fr',
               gridTemplateRows: width > 1024 ? '1fr 200px' : 'auto',
               gridTemplateAreas:
                 width > 1024

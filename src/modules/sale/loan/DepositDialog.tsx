@@ -14,7 +14,7 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
   }, [dialog?.payment])
 
   const handleCloseDialog = () => {
-    setDialog({ open: false })
+    setDialog({ open: false, payment: null })
   }
 
   const handleClearPayment = () => {
