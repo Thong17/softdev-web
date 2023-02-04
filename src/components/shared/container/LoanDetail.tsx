@@ -67,11 +67,11 @@ const LoanDetail = ({ data }) => {
           <span>{data?.payment?.invoice}</span>
         </FlexBetween>
         <FlexBetween>
-          <span style={{ marginRight: '5px' }}>{language['DURATION']}:</span>
+          <span style={{ marginRight: '5px' }}>{language['LOAN_DURATION']}:</span>
           <span>{durationFormat(data?.duration?.value, data?.duration?.time)}</span>
         </FlexBetween>
         <FlexBetween>
-          <span style={{ marginRight: '5px' }}>{language['INTEREST']}:</span>
+          <span style={{ marginRight: '5px' }}>{language['APPLY_RATE']}:</span>
           <span>{currencyFormat(data?.interest?.value, data?.interest?.currency)}</span>
         </FlexBetween>
         <FlexBetween>
