@@ -9,7 +9,7 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import InsertLinkRoundedIcon from '@mui/icons-material/InsertLinkRounded'
 import { Box, IconButton } from '@mui/material'
-import { currencyFormat, dateFormat } from 'utils/index'
+import { currencyFormat, durationFormat } from 'utils/index'
 import { CustomButton } from 'styles/index'
 import useLanguage from 'hooks/useLanguage'
 import { AttachmentDialog } from './AttachmentDialog'
@@ -24,7 +24,7 @@ const requestColumnData: ITableColumn<any>[] = [
   { id: 'actualPaid', label: 'Actual\u00a0Paid' },
   { id: 'totalPaid', label: 'Total\u00a0Paid' },
   { id: 'totalRemain', label: 'Total\u00a0Remain' },
-  { id: 'dueDate', label: 'Due\u00a0Date' },
+  { id: 'duration', label: 'Duration' },
   { id: 'attachment', label: 'Attachment' },
   { id: 'action', label: 'ACTION', align: 'right' },
 ]
@@ -213,7 +213,7 @@ const mappedItem = (data, privilege, theme, onReject, onApprove, onPreview) => {
     actualPaid: currencyFormat(data.actualPaid.value, data.actualPaid.currency),
     totalPaid: currencyFormat(data.totalPaid.total, 'USD'),
     totalRemain: currencyFormat(data.totalRemain.USD, 'USD'),
-    dueDate: dateFormat(null),
+    duration: durationFormat(data.duration.value, data.duration.time),
     attachment,
     action,
   }

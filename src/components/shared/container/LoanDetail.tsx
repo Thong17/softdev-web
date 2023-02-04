@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import React from 'react'
+import { CustomButton } from 'styles/index'
 import { currencyFormat, durationFormat } from 'utils/index'
 import { CircleIcon } from '../table/CustomIcon'
 import { TextEllipsis } from '../TextEllipsis'
@@ -13,77 +14,104 @@ const LoanDetail = ({ data }) => {
   return (
     <Box
       sx={{
-        '& .customer, & .loan': {
-          backgroundColor: `${theme.background.secondary}cc`,
-          borderRadius: theme.radius.ternary,
-          boxSizing: 'border-box',
-        },
+        display: 'flex',
+        width: '100%',
       }}
     >
       <Box
         className='customer'
         sx={{
-          position: 'relative',
-          padding: '10px',
+          padding: '20px',
           display: 'flex',
+          flex: '10%',
+          position: 'relative',
+          flexDirection: 'column',
+          gap: '10px',
           '&::before': {
             content: `''`,
-            borderBottom: theme.border.dashed,
+            borderRight: theme.border.dashed,
             position: 'absolute',
-            bottom: -1,
-            left: 10,
+            top: 10,
+            right: -1,
             display: 'block',
-            width: 'calc(100% - 20px)',
+            height: 'calc(100% - 20px)',
           },
         }}
       >
-        <CircleIcon width={50} height={50} icon={data?.customer?.picture?.filename} />
-        <Box sx={{ display: 'flex', flexDirection: 'column', boxSizing: 'border-box', padding: '10px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+          }}
+        >
+          <CircleIcon
+            width={50}
+            height={50}
+            icon={data?.customer?.picture?.filename}
+          />
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              boxSizing: 'border-box',
+              padding: '10px',
+            }}
+          >
             <TextEllipsis>{data?.customer?.displayName}</TextEllipsis>
-            <Box display='flex'><TextEllipsis>{data?.customer?.contact}</TextEllipsis></Box>
+            <Box display='flex'>
+              <TextEllipsis>{data?.customer?.contact}</TextEllipsis>
+            </Box>
+          </Box>
         </Box>
+        <CustomButton
+          styled={theme}
+          sx={{
+            backgroundColor: `${theme.color.info}22`,
+            color: theme.color.info,
+          }}
+        >
+          {language['VIEW_ATTACHMENT']}
+        </CustomButton>
       </Box>
       <Box
         className='loan'
         sx={{
           position: 'relative',
           padding: '20px',
-          display: 'flex', 
+          display: 'flex',
           flexDirection: 'column',
           gap: '10px',
+          flex: '20%',
           '&::before': {
             content: `''`,
-            borderBottom: theme.border.dashed,
+            borderRight: theme.border.dashed,
             position: 'absolute',
-            bottom: -1,
-            left: 10,
+            top: 10,
+            right: -1,
             display: 'block',
-            width: 'calc(100% - 20px)',
+            height: 'calc(100% - 20px)',
           },
         }}
       >
         <FlexBetween>
-          <span>{language['INVOICE']}:</span>
-          <span>{data?.payment?.invoice}</span>
-        </FlexBetween>
-        <FlexBetween>
-          <span style={{ marginRight: '5px' }}>{language['LOAN_DURATION']}:</span>
-          <span>{durationFormat(data?.duration?.value, data?.duration?.time)}</span>
-        </FlexBetween>
-        <FlexBetween>
-          <span style={{ marginRight: '5px' }}>{language['APPLY_RATE']}:</span>
-          <span>{currencyFormat(data?.interest?.value, data?.interest?.currency)}</span>
+          <span style={{ marginRight: '5px' }}>
+            {language['LOAN_DURATION']}:
+          </span>
+          <span>
+            {durationFormat(data?.duration?.value, data?.duration?.time)}
+          </span>
         </FlexBetween>
         <FlexBetween>
           <span style={{ marginRight: '5px' }}>{language['TOTAL_LOAN']}:</span>
           <span>{currencyFormat(data?.totalLoan?.USD, 'USD')}</span>
         </FlexBetween>
         <FlexBetween>
-          <span style={{ marginRight: '5px' }}>{language['TOTAL_PAID']}</span>
+          <span style={{ marginRight: '5px' }}>{language['TOTAL_PAID']}:</span>
           <span>{currencyFormat(data?.totalPaid?.total, 'USD', 2)}</span>
         </FlexBetween>
         <FlexBetween>
-          <span style={{ marginRight: '5px' }}>{language['TOTAL_REMAIN']}:</span>
+          <span style={{ marginRight: '5px' }}>
+            {language['TOTAL_REMAIN']}:
+          </span>
           <span>{currencyFormat(data?.totalRemain?.USD, 'USD')}</span>
         </FlexBetween>
       </Box>
@@ -91,18 +119,46 @@ const LoanDetail = ({ data }) => {
         className='loan'
         sx={{
           padding: '20px',
-          display: 'flex', 
+          display: 'flex',
           flexDirection: 'column',
           gap: '10px',
+          flex: '20%',
         }}
       >
         <FlexBetween>
-          <span style={{ marginRight: '5px' }}>{language['PREPAYMENT_PENALTY']}:</span>
-          <span>{currencyFormat(data?.prepayment?.value, data?.prepayment?.currency)} / {durationFormat(data?.prepayment?.duration?.value, data?.prepayment?.duration?.time)}</span>
+          <span style={{ marginRight: '5px' }}>{language['APPLY_RATE']}:</span>
+          <span>
+            {currencyFormat(data?.interest?.value, data?.interest?.currency)} /{' '}
+            {durationFormat(1, 'month')}
+          </span>
         </FlexBetween>
         <FlexBetween>
-          <span style={{ marginRight: '5px' }}>{language['OVERDUE_PENALTY']}:</span>
-          <span>{currencyFormat(data?.overdue?.value, data?.overdue?.currency)} / {durationFormat(data?.overdue?.duration?.value, data?.overdue?.duration?.time)}</span>
+          <span style={{ marginRight: '5px' }}>
+            {language['PREPAYMENT_PENALTY']}:
+          </span>
+          <span>
+            {currencyFormat(
+              data?.prepayment?.value,
+              data?.prepayment?.currency
+            )}{' '}
+            /{' '}
+            {durationFormat(
+              data?.prepayment?.duration?.value,
+              data?.prepayment?.duration?.time
+            )}
+          </span>
+        </FlexBetween>
+        <FlexBetween>
+          <span style={{ marginRight: '5px' }}>
+            {language['OVERDUE_PENALTY']}:
+          </span>
+          <span>
+            {currencyFormat(data?.overdue?.value, data?.overdue?.currency)} /{' '}
+            {durationFormat(
+              data?.overdue?.duration?.value,
+              data?.overdue?.duration?.time
+            )}
+          </span>
         </FlexBetween>
       </Box>
     </Box>
