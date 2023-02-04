@@ -72,6 +72,7 @@ export const currencyFormat = (value, currency, decimal = 0) => {
       break
   
     default:
+      decimal = value % 1 !== 0 ? 2 : decimal
       symbol = <>&#37;</>
       break
   }

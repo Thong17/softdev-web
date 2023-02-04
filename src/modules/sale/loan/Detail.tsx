@@ -9,13 +9,27 @@ import Breadcrumb from 'components/shared/Breadcrumbs'
 import useLanguage from 'hooks/useLanguage'
 import LoanDetail from 'components/shared/container/LoanDetail'
 import LoanTable from 'components/shared/table/LoanTable'
+import { CustomButton } from 'styles/index'
+import useTheme from 'hooks/useTheme'
+import { DepositDialog } from './DepositDialog'
 
-const Header = ({ stages }) => {
+const Header = ({ stages, styled, language, onOpenDeposit }) => {
   return (
     <Box
       sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
     >
       <Breadcrumb stages={stages} title={<ConfirmationNumberRoundedIcon />} />
+      <CustomButton
+        onClick={() => onOpenDeposit()}
+        style={{
+          marginLeft: 10,
+          backgroundColor: `${styled.color.success}22`,
+          color: styled.color.success,
+        }}
+        styled={styled}
+      >
+        {language['DEPOSIT']}
+      </CustomButton>
     </Box>
   )
 }
@@ -25,6 +39,8 @@ export const DetailLoan = () => {
   const { id } = useParams()
   const [data, setData] = useState<any>(null)
   const { language } = useLanguage()
+  const { theme } = useTheme()
+  const [depositDialog, setDepositDialog] = useState({ open: false })
 
   const stages = [
     {
@@ -54,7 +70,7 @@ export const DetailLoan = () => {
   }, [id])
 
   return (
-    <Container header={<Header stages={stages} />}>
+    <Container header={<Header stages={stages} styled={theme} language={language} onOpenDeposit={() => setDepositDialog({ open: true })} />}>
       <Box
         sx={{
           display: 'grid',
@@ -62,6 +78,7 @@ export const DetailLoan = () => {
           gridTemplateAreas: `'loanDetail''loanTable'`,
         }}
       >
+        <DepositDialog dialog={depositDialog} setDialog={setDepositDialog} />
         <Box sx={{ gridArea: 'loanDetail' }}><LoanDetail data={data} /></Box>
         <Box sx={{ gridArea: 'loanTable' }}><LoanTable data={data?.loanPayments} /></Box>
       </Box>
