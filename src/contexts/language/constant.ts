@@ -212,6 +212,7 @@ export const languages = {
     TOTAL_LOAN: 'Total\u00a0Loan',
     TOTAL_PAID: 'Total\u00a0Paid',
     TOTAL_REMAIN: 'Total\u00a0Remain',
+    DEPOSIT_LOAN: 'Deposit\u00a0Balance',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -425,5 +426,6 @@ export const languages = {
     TOTAL_LOAN: 'ប្រាក់កម្ចីសរុប',
     TOTAL_PAID: 'បានបង់សរុប',
     TOTAL_REMAIN: 'នៅសល់សរុប',
+    DEPOSIT_LOAN: 'ដាក់ប្រាក់ដើម',
   }
 }

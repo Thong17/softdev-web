@@ -4,6 +4,7 @@ import { currencyFormat, dateFormat } from 'utils/index'
 import { ITableColumn, StickyTable } from './StickyTable'
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
 import useTheme from 'hooks/useTheme'
+import { LoanStatus } from '../LoanStatus'
 
 const columnData: ITableColumn<any>[] = [
   { id: 'dueDate', label: 'DUE_DATE' },
@@ -11,6 +12,7 @@ const columnData: ITableColumn<any>[] = [
   { id: 'interestAmount', label: 'INTEREST_AMOUNT' },
   { id: 'totalAmount', label: 'TOTAL_AMOUNT' },
   { id: 'principalBalance', label: 'PRINCIPAL_BALANCE' },
+  { id: 'status', label: 'STATUS' },
   { id: 'action', label: 'ACTION', align: 'right' },
 ]
 
@@ -49,6 +51,7 @@ const mapData = (data, theme, onPayment) => {
       data.principalBalance.value,
       data.principalBalance.currency
     ),
+    status: <LoanStatus dueDate={data.dueDate} />,
     action,
   }
 }
