@@ -36,8 +36,8 @@ export const Header = ({ styled, onOpenRequest }) => {
         onClick={() => onOpenRequest()}
         style={{
           marginLeft: 10,
-          backgroundColor: styled.background.secondary,
-          color: styled.text.secondary,
+          backgroundColor: `${styled.color.info}22`,
+          color: styled.color.info,
         }}
         styled={styled}
       >
