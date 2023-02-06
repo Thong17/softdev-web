@@ -5,6 +5,7 @@ import { SelectTab } from 'components/shared/form/SelectTab'
 import useTheme from 'hooks/useTheme'
 import React, {
   forwardRef,
+  ReactChild,
   useEffect,
   useImperativeHandle,
   useRef,
@@ -54,6 +55,7 @@ declare type PaymentMethod = 'cash' | 'transfer' | 'loan'
 export interface IPaymentForm {
   paymentInfo: IPaymentInfo | null
   paymentType: Array<PaymentMethod>
+  children: ReactChild
   onClear: () => void
   onClose: () => void
   onCheckout: (data) => void
@@ -66,6 +68,7 @@ export const PaymentForm = forwardRef(
     {
       paymentInfo,
       paymentType,
+      children,
       onClear,
       onClose,
       onCheckout,
@@ -100,7 +103,7 @@ export const PaymentForm = forwardRef(
       { label: language['CASH'], value: 'cash' },
       { label: language['TRANSFER'], value: 'transfer' },
       { label: language['LOAN'], value: 'loan' },
-    ].filter(item => paymentType.includes(item.value as PaymentMethod))
+    ].filter((item) => paymentType.includes(item.value as PaymentMethod))
 
     useEffect(() => {
       dispatch(getListTransfer())
@@ -180,7 +183,7 @@ export const PaymentForm = forwardRef(
             />
           )
 
-        case 'loan':
+        case 'loan': {
           const body = {
             receiveCashes,
             totalPaid: totalReceive,
@@ -192,9 +195,10 @@ export const PaymentForm = forwardRef(
               loanButtonRef={loanButtonRef}
               paymentId={paymentInfo?._id}
               payment={body}
-              onCheckoutLoan={(data) => onCheckout({ ...data, type: 'loan' })}
+              onCheckoutLoan={(data) => onCheckout({ ...data, paymentMethod })}
             />
           )
+        }
 
         default:
           return <CashForm onChange={handleChangeCashes} />
@@ -202,247 +206,190 @@ export const PaymentForm = forwardRef(
     }
 
     return (
-      <>
+      <div
+        style={{
+          height: '100vh',
+          width: 'calc(100vw - 64px)',
+          boxSizing: 'border-box',
+          position: 'relative',
+          color: theme.text.secondary
+        }}
+      >
         <div
           style={{
-            height: '100vh',
-            width: 'calc(100vw - 64px)',
+            padding: '10px 20px 20px 20px',
             boxSizing: 'border-box',
-            position: 'relative',
-            color: theme.text.secondary,
+            height: '100%',
+            gridGap: 20,
+            display: 'grid',
+            gridTemplateColumns:
+              width > 1024 ? 'calc(100% - 480px) auto' : '1fr',
+            gridTemplateRows: width > 1024 ? '1fr 200px' : 'auto',
+            gridTemplateAreas:
+              width > 1024
+                ? `'payment preview''exchange preview'`
+                : `
+                                  'payment payment'
+                                  'exchange exchange'
+                                  'preview preview'
+                                  `,
           }}
         >
           <div
             style={{
-              padding: '10px 20px 20px 20px',
-              boxSizing: 'border-box',
+              gridArea: 'payment',
+              display: 'flex',
+              flexDirection: 'column',
               height: '100%',
-              gridGap: 20,
-              display: 'grid',
-              gridTemplateColumns:
-                width > 1024 ? 'calc(100% - 580px) auto' : '1fr',
-              gridTemplateRows: width > 1024 ? '1fr 200px' : 'auto',
-              gridTemplateAreas:
-                width > 1024
-                  ? `'payment preview''exchange preview'`
-                  : `
-                      'payment payment'
-                      'exchange exchange'
-                      'preview preview'
-                    `,
+              position: 'relative',
             }}
           >
             <div
               style={{
-                gridArea: 'payment',
+                height: 38,
                 display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-                position: 'relative',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0 5px',
               }}
             >
-              <div
-                style={{
-                  height: 38,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '0 5px',
-                }}
-              >
-                <SelectTab
-                  selected={paymentMethod || paymentMethods[0]?.value}
-                  options={paymentMethods}
-                  onChange={handleChangePaymentMethod}
-                />
-                <ExchangeRate />
-              </div>
-              <div
-                style={{
-                  border: theme.border.dashed,
-                  borderRadius: theme.radius.ternary,
-                  position: 'relative',
-                  boxSizing: 'border-box',
-                  padding: 10,
-                  height: width > 1024 ? '100%' : '40vh',
-                }}
-              >
-                {renderPaymentMethod(paymentMethod)}
-              </div>
+              <SelectTab
+                selected={paymentMethod || paymentMethods[0]?.value}
+                options={paymentMethods}
+                onChange={handleChangePaymentMethod}
+              />
+              <ExchangeRate />
             </div>
-            <Box
-              className='exchange'
-              sx={{
-                height: 200,
+            <div
+              style={{
+                border: theme.border.dashed,
                 borderRadius: theme.radius.ternary,
-                gridArea: 'exchange',
+                position: 'relative',
+                boxSizing: 'border-box',
+                padding: 10,
+                height: width > 1024 ? '100%' : '40vh',
+              }}
+            >
+              {renderPaymentMethod(paymentMethod)}
+            </div>
+          </div>
+          <Box
+            className='exchange'
+            sx={{
+              height: 200,
+              borderRadius: theme.radius.ternary,
+              gridArea: 'exchange',
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: `${theme.background.secondary}cc`,
+              boxSizing: 'border-box',
+              padding: '10px 10px 10px 10px',
+              '& .total-receive, & .total-payment': {
+                backgroundColor: `${theme.background.primary}99`,
+                width: '100%',
+                borderRadius: theme.radius.ternary,
+              },
+              '& .total-receive': {
+                height: 50,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '0 20px',
+                boxSizing: 'border-box',
+              },
+              '& .total-payment': {
+                padding: '10px 10px 10px 10px',
+                position: 'relative',
+                height: 'calc(100% - 50px)',
+                boxSizing: 'border-box',
                 display: 'flex',
                 flexDirection: 'column',
-                backgroundColor: `${theme.background.secondary}cc`,
-                boxSizing: 'border-box',
-                padding: '10px 10px 10px 10px',
-                '& .total-receive, & .total-payment': {
-                  backgroundColor: `${theme.background.primary}99`,
-                  width: '100%',
-                  borderRadius: theme.radius.ternary,
+                justifyContent: 'space-between',
+                gap: 0.8,
+                '&::before': {
+                  content: `''`,
+                  borderTop: theme.border.dashed,
+                  position: 'absolute',
+                  top: -1,
+                  left: 10,
+                  display: 'block',
+                  width: 'calc(100% - 20px)',
                 },
-                '& .total-receive': {
-                  height: 50,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '0 20px',
-                  boxSizing: 'border-box',
-                },
-                '& .total-payment': {
-                  padding: '10px 10px 10px 10px',
-                  position: 'relative',
-                  height: 'calc(100% - 50px)',
-                  boxSizing: 'border-box',
+              },
+            }}
+          >
+            <div className='total-receive'>
+              <span>{language['RECEIVE_TOTAL']}</span>
+              <div style={{ display: 'flex', lineHeight: 1 }}>
+                <span>
+                  {currencyFormat(totalReceive.USD, 'USD')} +{' '}
+                  {currencyFormat(totalReceive.KHR, 'KHR')} ={' '}
+                  {currencyFormat(totalReceive.total, 'USD')}
+                </span>
+              </div>
+            </div>
+            <div className='total-payment'>
+              <div
+                style={{
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  gap: 0.8,
-                  '&::before': {
-                    content: `''`,
-                    borderTop: theme.border.dashed,
-                    position: 'absolute',
-                    top: -1,
-                    left: 10,
-                    display: 'block',
-                    width: 'calc(100% - 20px)',
-                  },
-                },
-              }}
-            >
-              <div className='total-receive'>
-                <span>{language['RECEIVE_TOTAL']}</span>
-                <div style={{ display: 'flex', lineHeight: 1 }}>
-                  <span>
-                    {currencyFormat(totalReceive.USD, 'USD')} +{' '}
-                    {currencyFormat(totalReceive.KHR, 'KHR')} ={' '}
-                    {currencyFormat(totalReceive.total, 'USD')}
-                  </span>
-                </div>
-              </div>
-              <div className='total-payment'>
+                  padding: '5px 10px',
+                  boxSizing: 'border-box',
+                  height: '100%',
+                }}
+              >
                 <div
                   style={{
                     display: 'flex',
-                    flexDirection: 'column',
                     justifyContent: 'space-between',
-                    padding: '5px 10px',
-                    boxSizing: 'border-box',
-                    height: '100%',
+                    alignItems: 'center',
                   }}
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
+                  <span>
+                    {payment?.remainTotal?.USD
+                      ? payment?.remainTotal?.USD < 0
+                        ? language['RETURN']
+                        : language['REMAIN']
+                      : language['REMAIN']}{' '}
+                    {language['TOTAL']}
+                  </span>
+                  <div style={{ display: 'flex', lineHeight: 1 }}>
                     <span>
-                      {payment?.remainTotal?.USD
-                        ? payment?.remainTotal?.USD < 0
-                          ? language['RETURN']
-                          : language['REMAIN']
-                        : language['REMAIN']}{' '}
-                      {language['TOTAL']}
+                      {currencyFormat(totalRemain.USD, 'USD')} (
+                      {currencyFormat(totalRemain.KHR, 'KHR')})
                     </span>
-                    <div style={{ display: 'flex', lineHeight: 1 }}>
-                      <span>
-                        {currencyFormat(totalRemain.USD, 'USD')} (
-                        {currencyFormat(totalRemain.KHR, 'KHR')})
-                      </span>
-                    </div>
                   </div>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      height: 27,
-                      alignItems: 'center',
-                      justifyContent: 'end',
-                      gap: 1.5,
-                      overflowX: 'auto',
-                      '& .cash': {
-                        backgroundColor: `${theme.color.info}22`,
-                        height: 27,
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '0 10px',
-                        borderRadius: theme.radius.primary,
-                        color: theme.color.info,
-                        lineHeight: 1,
-                      },
-                    }}
-                  >
-                    {payment?.returnCashes.map((cash, key) => (
-                      <CashReturn cash={cash} key={key} />
-                    ))}
-                  </Box>
                 </div>
-                {paymentMethod === 'loan' ? (
-                  <div style={{ display: 'flex', gap: 10 }}>
-                    {payment?.status ? (
-                      <>
-                        <CustomButton
-                          onClick={() => onClear()}
-                          styled={theme}
-                          style={{
-                            backgroundColor: `${theme.color.error}22`,
-                            color: theme.color.error,
-                            width: '100%',
-                          }}
-                        >
-                          {language['CLOSE']}
-                        </CustomButton>
-                        <CustomButton
-                          onClick={() => onPrint({ ...payment, type: 'loan' })}
-                          styled={theme}
-                          style={{
-                            backgroundColor: `${theme.color.info}22`,
-                            color: theme.color.info,
-                            width: '100%',
-                          }}
-                        >
-                          <PrintRoundedIcon
-                            style={{ fontSize: 19, marginRight: 5 }}
-                          />
-                          {language['PRINT']}
-                        </CustomButton>
-                      </>
-                    ) : (
-                      <>
-                        <CustomButton
-                          onClick={() => onClose()}
-                          styled={theme}
-                          style={{
-                            backgroundColor: `${theme.color.error}22`,
-                            color: theme.color.error,
-                            width: '100%',
-                          }}
-                        >
-                          {language['CLOSE']}
-                        </CustomButton>
-                        <CustomButton
-                          onClick={() => loanButtonRef.current.click()}
-                          styled={theme}
-                          style={{
-                            backgroundColor: `${theme.color.info}22`,
-                            color: theme.color.info,
-                            width: '100%',
-                          }}
-                        >
-                          {language['PROCEED']}
-                        </CustomButton>
-                      </>
-                    )}
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', gap: 10 }}>
-                    {payment?.status ? (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    height: 27,
+                    alignItems: 'center',
+                    justifyContent: 'end',
+                    gap: 1.5,
+                    overflowX: 'auto',
+                    '& .cash': {
+                      backgroundColor: `${theme.color.info}22`,
+                      height: 27,
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '0 10px',
+                      borderRadius: theme.radius.primary,
+                      color: theme.color.info,
+                      lineHeight: 1,
+                    },
+                  }}
+                >
+                  {payment?.returnCashes.map((cash, key) => (
+                    <CashReturn cash={cash} key={key} />
+                  ))}
+                </Box>
+              </div>
+              {paymentMethod === 'loan' ? (
+                <div style={{ display: 'flex', gap: 10 }}>
+                  {payment?.status ? (
+                    <>
                       <CustomButton
                         onClick={() => onClear()}
                         styled={theme}
@@ -454,7 +401,23 @@ export const PaymentForm = forwardRef(
                       >
                         {language['CLOSE']}
                       </CustomButton>
-                    ) : (
+                      <CustomButton
+                        onClick={() => onPrint({ ...payment, type: 'loan' })}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.info}22`,
+                          color: theme.color.info,
+                          width: '100%',
+                        }}
+                      >
+                        <PrintRoundedIcon
+                          style={{ fontSize: 19, marginRight: 5 }}
+                        />
+                        {language['PRINT']}
+                      </CustomButton>
+                    </>
+                  ) : (
+                    <>
                       <CustomButton
                         onClick={() => onClose()}
                         styled={theme}
@@ -466,71 +429,125 @@ export const PaymentForm = forwardRef(
                       >
                         {language['CLOSE']}
                       </CustomButton>
-                    )}
-                    {payment?.status ? (
-                      <>
-                        <CustomButton
-                          onClick={() => onPrint(payment)}
-                          styled={theme}
-                          style={{
-                            backgroundColor: `${theme.color.info}22`,
-                            color: theme.color.info,
-                            width: '100%',
-                          }}
-                        >
-                          <PrintRoundedIcon
-                            style={{ fontSize: 19, marginRight: 5 }}
-                          />{' '}
-                          {language['PRINT']}
-                        </CustomButton>
-                        {user?.privilege?.queue?.create && (
-                          <CustomButton
-                            onClick={() => onAddToQueue(payment)}
-                            styled={theme}
-                            style={{
-                              backgroundColor: !!queue
-                                ? `${theme.text.secondary}22`
-                                : `${theme.color.info}22`,
-                              color: !!queue
-                                ? theme.text.secondary
-                                : theme.color.info,
-                              width: '100%',
-                            }}
-                            disabled={!!queue}
-                          >
-                            <ConfirmationNumberRoundedIcon
-                              style={{ fontSize: 19, marginRight: 5 }}
-                            />{' '}
-                            {!!queue
-                              ? language['ADDED_TO_QUEUE']
-                              : language['ADD_TO_QUEUE']}
-                          </CustomButton>
-                        )}
-                      </>
-                    ) : (
                       <CustomButton
-                        disabled={!payment}
-                        onClick={() => onCheckout(payment)}
+                        onClick={() => loanButtonRef.current.click()}
                         styled={theme}
                         style={{
-                          backgroundColor: payment ? `${theme.color.success}22` : `${theme.text.secondary}22`,
-                          color: payment ? theme.color.success : theme.text.secondary,
+                          backgroundColor: `${theme.color.info}22`,
+                          color: theme.color.info,
                           width: '100%',
                         }}
                       >
-                        <ReceiptRoundedIcon
-                          style={{ fontSize: 17, marginRight: 5 }}
-                        />{' '}
-                        {language['CHECKOUT']}
+                        {language['PROCEED']}
                       </CustomButton>
-                    )}
-                  </div>
-                )}
-              </div>
-            </Box>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div style={{ display: 'flex', gap: 10 }}>
+                  {payment?.status ? (
+                    <CustomButton
+                      onClick={() => onClear()}
+                      styled={theme}
+                      style={{
+                        backgroundColor: `${theme.color.error}22`,
+                        color: theme.color.error,
+                        width: '100%',
+                      }}
+                    >
+                      {language['CLOSE']}
+                    </CustomButton>
+                  ) : (
+                    <CustomButton
+                      onClick={() => onClose()}
+                      styled={theme}
+                      style={{
+                        backgroundColor: `${theme.color.error}22`,
+                        color: theme.color.error,
+                        width: '100%',
+                      }}
+                    >
+                      {language['CLOSE']}
+                    </CustomButton>
+                  )}
+                  {payment?.status ? (
+                    <>
+                      <CustomButton
+                        onClick={() => onPrint(payment)}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.info}22`,
+                          color: theme.color.info,
+                          width: '100%',
+                        }}
+                      >
+                        <PrintRoundedIcon
+                          style={{ fontSize: 19, marginRight: 5 }}
+                        />{' '}
+                        {language['PRINT']}
+                      </CustomButton>
+                      {user?.privilege?.queue?.create && (
+                        <CustomButton
+                          onClick={() => onAddToQueue(payment)}
+                          styled={theme}
+                          style={{
+                            backgroundColor: !!queue
+                              ? `${theme.text.secondary}22`
+                              : `${theme.color.info}22`,
+                            color: !!queue
+                              ? theme.text.secondary
+                              : theme.color.info,
+                            width: '100%',
+                          }}
+                          disabled={!!queue}
+                        >
+                          <ConfirmationNumberRoundedIcon
+                            style={{ fontSize: 19, marginRight: 5 }}
+                          />{' '}
+                          {!!queue
+                            ? language['ADDED_TO_QUEUE']
+                            : language['ADD_TO_QUEUE']}
+                        </CustomButton>
+                      )}
+                    </>
+                  ) : (
+                    <CustomButton
+                      disabled={!payment}
+                      onClick={() =>
+                        onCheckout({
+                          ...payment,
+                          receiveCashes,
+                          receiveTotal: totalReceive,
+                          remainTotal: totalRemain,
+                          paymentMethod,
+                        })
+                      }
+                      styled={theme}
+                      style={{
+                        backgroundColor: payment
+                          ? `${theme.color.success}22`
+                          : `${theme.text.secondary}22`,
+                        color: payment
+                          ? theme.color.success
+                          : theme.text.secondary,
+                        width: '100%',
+                      }}
+                    >
+                      <ReceiptRoundedIcon
+                        style={{ fontSize: 17, marginRight: 5 }}
+                      />{' '}
+                      {language['CHECKOUT']}
+                    </CustomButton>
+                  )}
+                </div>
+              )}
+            </div>
+          </Box>
+          <div style={{ gridArea: 'preview' }}>
+            {children}
           </div>
         </div>
-      </>
+      </div>
     )
   }
 )

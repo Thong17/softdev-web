@@ -41,7 +41,7 @@ export const DetailLoan = () => {
   const [data, setData] = useState<any>(null)
   const { language } = useLanguage()
   const { theme } = useTheme()
-  const [depositDialog, setDepositDialog] = useState<any>({ open: false, payment: null })
+  const [depositDialog, setDepositDialog] = useState<any>({ open: false, payment: null, detail: null })
 
   const stages = [
     {
@@ -71,7 +71,7 @@ export const DetailLoan = () => {
   }, [id])
 
   return (
-    <Container header={<Header stages={stages} styled={theme} language={language} onOpenDeposit={() => setDepositDialog({ open: true, payment: mapPayment(data) })} />}>
+    <Container header={<Header stages={stages} styled={theme} language={language} onOpenDeposit={() => setDepositDialog({ open: true, payment: mapPayment(data), detail: data })} />}>
       <Box
         sx={{
           display: 'grid',

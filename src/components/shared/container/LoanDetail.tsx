@@ -8,14 +8,38 @@ import { CircleIcon } from '../table/CustomIcon'
 import { TextEllipsis } from '../TextEllipsis'
 import { FlexBetween } from './FlexBetween'
 
-const LoanDetail = ({ data }) => {
+const LoanDetail = ({ data, direction = 'row', backgroundColor }: any) => {
   const { theme } = useTheme()
   const { language } = useLanguage()
+  const renderDirection = (direction): any => {
+    if (direction === 'row') {
+      return {
+        borderRight: theme.border.dashed,
+        position: 'absolute',
+        top: 10,
+        right: -1,
+        height: 'calc(100% - 20px)',
+      }
+    } else {
+      return {
+        borderBottom: theme.border.dashed,
+        position: 'absolute',
+        left: 10,
+        bottom: -1,
+        width: 'calc(100% - 20px)',
+      }
+    }
+  }
   return (
     <Box
       sx={{
         display: 'flex',
+        flexDirection: direction,
         width: '100%',
+        '& .customer, & .loan': {
+          backgroundColor: backgroundColor || theme.background.primary,
+          borderRadius: theme.radius.ternary
+        }
       }}
     >
       <Box
@@ -29,12 +53,8 @@ const LoanDetail = ({ data }) => {
           gap: '10px',
           '&::before': {
             content: `''`,
-            borderRight: theme.border.dashed,
-            position: 'absolute',
-            top: 10,
-            right: -1,
+            ...renderDirection(direction),
             display: 'block',
-            height: 'calc(100% - 20px)',
           },
         }}
       >
@@ -83,12 +103,8 @@ const LoanDetail = ({ data }) => {
           flex: '20%',
           '&::before': {
             content: `''`,
-            borderRight: theme.border.dashed,
-            position: 'absolute',
-            top: 10,
-            right: -1,
+            ...renderDirection(direction),
             display: 'block',
-            height: 'calc(100% - 20px)',
           },
         }}
       >
