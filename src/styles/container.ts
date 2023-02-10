@@ -4,8 +4,8 @@ import { IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
 
 export const CustomTableContainer = styled('div')(
-  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
-    backgroundColor: styled.background.primary,
+  ({ styled, device, color }: { styled: IThemeStyle; device: DeviceOptions, color }) => ({
+    backgroundColor: color === 'secondary' ? 'none' : styled.background.primary,
     '& .table-container': {
       maxWidth: '100%',
       position: 'relative',
@@ -26,7 +26,7 @@ export const CustomTableContainer = styled('div')(
         }
       },
       '& th': {
-        backgroundColor: styled.background.secondary,
+        backgroundColor: color === 'secondary' ? `${styled.background.primary}99` : styled.background.secondary,
         color: styled.text.primary,
         borderBottom: 0,
         fontWeight: styled.font.weight,

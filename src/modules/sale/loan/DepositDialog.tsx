@@ -8,12 +8,31 @@ import { useEffect, useState } from 'react'
 export const DepositDialog = ({ dialog, setDialog }: any) => {
   const [paymentInfo, setPaymentInfo] = useState<IPaymentInfo | null>(null)
   const [paymentDetail, setPaymentDetail] = useState<any>(null)
+  const [totalPenalty, setTotalPenalty] = useState(0)
+  const [totalRemain, setTotalRemain] = useState(0)
   const { language } = useLanguage()
 
   useEffect(() => {
+    if (!dialog?.detail?.loanPayments || !dialog?.detail?.prepayment || !dialog?.detail?.payment.rate) return
+    setTotalPenalty(
+      calculatePrepaymentPenalty(
+        dialog?.detail?.loanPayments,
+        dialog?.detail?.prepayment,
+        dialog?.detail?.payment.rate
+      )
+    )
+  }, [dialog?.detail?.loanPayments, dialog?.detail?.prepayment, dialog?.detail?.payment.rate])
+  
+  useEffect(() => {
+    setTotalRemain(dialog?.detail?.totalRemain.USD)
+  }, [dialog?.detail?.totalRemain.USD])
+
+  useEffect(() => {
     if (!dialog?.payment) return
-    setPaymentInfo(dialog?.payment)
-  }, [dialog?.payment])
+    const sellRate = dialog.payment.rate.sellRate
+    const remainTotal = totalRemain + totalPenalty
+    setPaymentInfo({ ...dialog?.payment, remainTotal: { USD: remainTotal, KHR: remainTotal * sellRate }, total: { value: remainTotal, currency: 'USD' } })
+  }, [dialog?.payment, totalPenalty, totalRemain])
 
   useEffect(() => {
     if (!dialog?.detail) return
@@ -59,8 +78,27 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
         onPrint={handlePrintPayment}
         onAddToQueue={handleAddToQueue}
       >
-        <LoanInvoice data={paymentDetail} />
+        <LoanInvoice data={paymentDetail} totalPenalty={totalPenalty} totalRemain={totalRemain} />
       </PaymentForm>
     </AlertDialog>
   )
+}
+
+const calculatePrepaymentPenalty = (loanPayments, penalty, rate) => {
+  switch (penalty.currency) {
+    case 'USD':
+      return penalty.value
+
+    case 'KHR':
+      return penalty.value / rate.sellRate
+
+    default:
+      let totalPenalty = 0
+      loanPayments
+        .filter((item) => !item.isPaid && !item.isDeleted)
+        .forEach((item) => {
+          totalPenalty += (item.principalBalance.value * penalty.value) / 100
+        })
+      return totalPenalty
+  }
 }
