@@ -124,7 +124,7 @@ const calculatePrepaymentPenalty = (loanPayments, penalty, rate) => {
       loanPayments
         .filter((item) => !item.isPaid && !item.isDeleted)
         .forEach((item) => {
-          totalPenalty += (item.totalAmount.value * penalty.value) / 100
+          totalPenalty += (item.principalBalance.value * penalty.value) / 100
         })
       return totalPenalty
   }
