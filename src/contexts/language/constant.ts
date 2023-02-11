@@ -72,6 +72,7 @@ export const languages = {
     VOUCHER: 'Voucher',
     PAYMENT: 'Payment',
     PROCEED: 'Proceed',
+    COMPLETED: 'Completed',
     GENERAL: 'General',
     START_NOW: 'Start\u00a0Now',
     // Table
@@ -288,6 +289,7 @@ export const languages = {
     VOUCHER: 'ប័ណ្ណទូទាត់',
     PAYMENT: 'ការទូទាត់',
     PROCEED: 'បន្ត',
+    COMPLETED: 'បានបញ្ចប់',
     GENERAL: 'ទូទៅ',
     START_NOW: 'ចាប់ផ្តើមឥឡូវនេះ',
     // Table

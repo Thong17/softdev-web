@@ -3,6 +3,7 @@ import { IBody } from 'shared/interface'
 export interface LoanState {
   list: IBody<Object[]>
   requestList: IBody<Object[]>
+  detail: IBody<any>
 }
 
 export const initialState: LoanState = {
@@ -13,6 +14,10 @@ export const initialState: LoanState = {
   },
   requestList: {
     data: [],
+    status: 'INIT',
+  },
+  detail: {
+    data: null,
     status: 'INIT',
   },
 }

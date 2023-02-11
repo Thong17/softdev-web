@@ -543,7 +543,7 @@ export const PaymentForm = forwardRef(
               )}
             </div>
           </Box>
-          <div style={{ gridArea: 'preview' }}>
+          <div style={{ gridArea: 'preview', minHeight: '500px' }}>
             {children}
           </div>
         </div>

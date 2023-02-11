@@ -17,7 +17,9 @@ const columnData: ITableColumn<any>[] = [
 ]
 
 const mapData = (data, theme, onPayment) => {
-  const action = (
+  const action = data.isPaid ? (
+    <></>
+  ) : (
     <>
       <IconButton
         size='small'
@@ -51,7 +53,7 @@ const mapData = (data, theme, onPayment) => {
       data.principalBalance.value,
       data.principalBalance.currency
     ),
-    status: <LoanStatus dueDate={data.dueDate} />,
+    status: <LoanStatus dueDate={data.dueDate} isPaid={data.isPaid} />,
     action,
   }
 }

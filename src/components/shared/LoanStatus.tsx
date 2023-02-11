@@ -3,12 +3,17 @@ import { useEffect, useState } from "react"
 import { compareDate } from "utils"
 import { TextEllipsis } from "./TextEllipsis"
 
-export const LoanStatus = ({ dueDate }: any) => {
+export const LoanStatus = ({ dueDate, isPaid }: any) => {
   const { theme } = useTheme()
   const [status, setStatus] = useState('success')
   const [text, setText] = useState('active')
 
   useEffect(() => {
+    if (isPaid) {
+      setText('Done')
+      setStatus('success')
+      return
+    }
     switch (true) {
       case !compareDate(Date.now(), new Date(dueDate)):
         setText('Pending')
@@ -25,7 +30,7 @@ export const LoanStatus = ({ dueDate }: any) => {
         setStatus('success')
         break
     }
-  }, [dueDate])
+  }, [dueDate, isPaid])
 
   return (
     <TextEllipsis

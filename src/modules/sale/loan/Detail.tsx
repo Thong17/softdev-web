@@ -1,7 +1,5 @@
 import { Box } from '@mui/material'
 import Container from 'components/shared/Container'
-import Axios from 'constants/functions/Axios'
-import useNotify from 'hooks/useNotify'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded'
@@ -13,8 +11,10 @@ import { CustomButton } from 'styles/index'
 import useTheme from 'hooks/useTheme'
 import { DepositDialog } from './DepositDialog'
 import { IPaymentInfo } from 'components/shared/form/PaymentForm'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { getDetailLoan, selectDetailLoan } from './redux'
 
-const Header = ({ stages, styled, language, onOpenDeposit }) => {
+const Header = ({ stages, status, styled, language, onOpenDeposit }) => {
   return (
     <Box
       sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
@@ -22,21 +22,23 @@ const Header = ({ stages, styled, language, onOpenDeposit }) => {
       <Breadcrumb stages={stages} title={<ConfirmationNumberRoundedIcon />} />
       <CustomButton
         onClick={() => onOpenDeposit()}
+        disabled={!status}
         style={{
           marginLeft: 10,
-          backgroundColor: `${styled.color.success}22`,
-          color: styled.color.success,
+          backgroundColor: !status ? `${styled.text.secondary}22` : `${styled.color.success}22`,
+          color: !status ? styled.text.secondary : styled.color.success,
         }}
         styled={styled}
       >
-        {language['DEPOSIT']}
+        {!status ? language['COMPLETED'] : language['CLEAR']}
       </CustomButton>
     </Box>
   )
 }
 
 export const DetailLoan = () => {
-  const { notify } = useNotify()
+  const dispatch = useAppDispatch()
+  const { data: loanDetail, status } = useAppSelector(selectDetailLoan)
   const { id } = useParams()
   const [data, setData] = useState<any>(null)
   const { language } = useLanguage()
@@ -58,20 +60,18 @@ export const DetailLoan = () => {
   ]
 
   useEffect(() => {
+    if (status !== 'SUCCESS') return
+    setData(loanDetail)
+  }, [loanDetail, status])
+
+  useEffect(() => {
     if (!id) return
-    Axios({
-      method: 'GET',
-      url: `/sale/loan/detail/${id}`,
-    })
-      .then((data) => {
-        setData(data?.data?.data)
-      })
-      .catch((err) => notify(err?.response?.data?.msg))
+    dispatch(getDetailLoan(id))
     // eslint-disable-next-line
   }, [id])
 
   return (
-    <Container header={<Header stages={stages} styled={theme} language={language} onOpenDeposit={() => setDepositDialog({ open: true, payment: mapPayment(data), detail: data })} />}>
+    <Container header={<Header status={data?.status === 'APPROVED'} stages={stages} styled={theme} language={language} onOpenDeposit={() => setDepositDialog({ open: true, payment: mapPayment(data), detail: data })} />}>
       <Box
         sx={{
           display: 'grid',

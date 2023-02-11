@@ -171,7 +171,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
             notify(err?.response?.data?.msg, 'error')
           })
       })
-      .catch(() => {})
+      .catch(() => null)
   }
 
   const handleClearPayment = () => {

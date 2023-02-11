@@ -27,6 +27,17 @@ export const getListRequestLoan = createAsyncThunk(
   }
 )
 
+export const getDetailLoan = createAsyncThunk(
+  'loan/detail',
+  async (id: string) => {
+    const response = await Axios({
+      method: 'GET',
+      url: `/sale/loan/detail/${id}`,
+    })
+    return response?.data
+  }
+)
+
 export const loanSlice = createSlice({
   name: 'loan',
   initialState,
@@ -57,10 +68,23 @@ export const loanSlice = createSlice({
         state.requestList.status = 'SUCCESS'
         state.requestList.data = action.payload.data
       })
+
+      // Detail Loan
+      .addCase(getDetailLoan.pending, (state) => {
+        state.detail.status = 'LOADING'
+      })
+      .addCase(getDetailLoan.rejected, (state) => {
+        state.detail.status = 'FAILED'
+      })
+      .addCase(getDetailLoan.fulfilled, (state, action) => {
+        state.detail.status = 'SUCCESS'
+        state.detail.data = action.payload.data
+      })
   },
 })
 
 export const selectListLoan = (state: RootState) => state.loan.list
 export const selectListRequestLoan = (state: RootState) => state.loan.requestList
+export const selectDetailLoan = (state: RootState) => state.loan.detail
 
 export default loanSlice.reducer
