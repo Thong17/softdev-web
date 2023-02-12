@@ -52,7 +52,7 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
       confirm({
         title: 'Reject',
         description: 'Reject loan will remove loan from the list.',
-        variant: 'error'
+        variant: 'error',
       })
         .then(() => {
           Axios({
@@ -71,7 +71,7 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
       confirm({
         title: 'Approve',
         description: 'Are you sure you want to approve this loan?',
-        variant: 'info'
+        variant: 'info',
       })
         .then(() => {
           Axios({
@@ -85,7 +85,6 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
             .catch((err) => notify(err?.response?.data?.msg))
         })
         .catch(() => null)
-      
     }
     const handlePreview = (attachments) => {
       setAttachmentDialog({ open: true, attachments })
@@ -114,7 +113,7 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
     confirm({
       title: 'Approve',
       description: 'Are you sure you want to approve all these loans?',
-      variant: 'info'
+      variant: 'info',
     })
       .then(() => {
         Axios({
@@ -136,7 +135,14 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
         dialog={attachmentDialog}
         setDialog={setAttachmentDialog}
       />
-      <Box sx={{ padding: '10px', minWidth: '90vw', minHeight: '75vh' }}>
+      <Box
+        sx={{
+          padding: '10px',
+          width: '90vw',
+          minHeight: '75vh',
+          overflowX: 'auto',
+        }}
+      >
         <StickyTable
           columns={requestColumnData}
           rows={rowData}
@@ -213,10 +219,16 @@ const mappedItem = (data, privilege, theme, onReject, onApprove, onPreview) => {
       size='small'
       onClick={() => onPreview(data.attachments)}
       style={{
-        backgroundColor: data.attachments?.length === 0 ? `${theme.text.secondary}22` : `${theme.color.info}22`,
+        backgroundColor:
+          data.attachments?.length === 0
+            ? `${theme.text.secondary}22`
+            : `${theme.color.info}22`,
         borderRadius: theme.radius.primary,
         marginLeft: 5,
-        color: data.attachments?.length === 0 ? theme.text.secondary : theme.color.info,
+        color:
+          data.attachments?.length === 0
+            ? theme.text.secondary
+            : theme.color.info,
       }}
     >
       <InsertLinkRoundedIcon fontSize='small' />
