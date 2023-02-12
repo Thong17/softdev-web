@@ -27,7 +27,7 @@ interface ILayout {
 export const Layout: FC<ILayout> = ({ children, navbar }) => {
   const { theme } = useTheme()
   const { sidebar } = useConfig()
-  const { device } = useWeb()
+  const { device, width } = useWeb()
 
   const SIDEBAR_WIDTH = sidebar ? 258 : 78
   const SPACE_TOP = device !== 'mobile' ? 20 : 10
@@ -41,7 +41,7 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
         fontSize: theme.responsive[device].text.primary,
       }}
     >
-      {device === 'mobile' || device === 'tablet' ? (
+      {width < 1024 ? (
         <Bottombar></Bottombar>
       ) : (
         <Sidebar></Sidebar>
@@ -49,9 +49,9 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
       <WrapContainer
         style={{
           marginLeft:
-            device === 'laptop' || device === 'desktop' ? SIDEBAR_WIDTH : '0',
+            width > 1024 ? SIDEBAR_WIDTH : '0',
           width:
-            device === 'laptop' || device === 'desktop'
+            width > 1024
               ? `calc(100% - ${SIDEBAR_WIDTH}px)`
               : '100%',
         }}
@@ -66,7 +66,7 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
         >
           {children}
         </ContentContainer>
-        <Footer></Footer>
+        {width > 1024 && <Footer></Footer>}
       </WrapContainer>
     </div>
   )

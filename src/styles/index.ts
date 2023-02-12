@@ -7,15 +7,12 @@ import { NAVBAR_HEIGHT } from './constant'
 export const CustomBottomNav = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
     width: '100%',
-    height: NAVBAR_HEIGHT - 20,
-    backgroundColor: styled.background.primary,
-    display: 'flex',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    height: NAVBAR_HEIGHT,
     position: 'fixed',
     bottom: 0,
     boxShadow: styled.shadow.primary,
-    paddingBottom: 20,
+    padding: '10px',
+    boxSizing: 'border-box',
     zIndex: 1000,
     '& a': {
       position: 'relative',
