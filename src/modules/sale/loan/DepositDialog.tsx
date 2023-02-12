@@ -51,10 +51,6 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
     setDialog({ open: false, payment: null })
   }
 
-  const handleClearPayment = () => {
-    console.log('clear payment')
-  }
-
   const handleCheckoutPayment = (data) => {
     const id = data?._id
     if (!id) return
@@ -97,10 +93,6 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
     console.log(data)
   }
 
-  const handleAddToQueue = (data) => {
-    console.log(data)
-  }
-
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
       <DialogTitle
@@ -110,11 +102,10 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
       <PaymentForm
         paymentInfo={paymentInfo}
         paymentType={['cash', 'transfer']}
-        onClear={handleClearPayment}
+        onClear={handleCloseDialog}
         onClose={handleCloseDialog}
         onCheckout={handleCheckoutPayment}
         onPrint={handlePrintPayment}
-        onAddToQueue={handleAddToQueue}
       >
         <LoanInvoice data={paymentDetail} totalPenalty={totalPenalty} totalRemain={totalRemain} />
       </PaymentForm>

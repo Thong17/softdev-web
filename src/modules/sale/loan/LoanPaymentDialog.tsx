@@ -25,10 +25,6 @@ export const LoanPaymentDialog = ({ dialog, setDialog }: any) => {
     setDialog({ open: false, payment: null })
   }
 
-  const handleClearPayment = () => {
-    console.log('clear payment')
-  }
-
   const handleCheckoutPayment = (data) => {
     const id = data?._id
     if (!id) return
@@ -80,7 +76,7 @@ export const LoanPaymentDialog = ({ dialog, setDialog }: any) => {
       <PaymentForm
         paymentInfo={paymentInfo}
         paymentType={['cash', 'transfer']}
-        onClear={handleClearPayment}
+        onClear={handleCloseDialog}
         onClose={handleCloseDialog}
         onCheckout={handleCheckoutPayment}
         onPrint={handlePrintPayment}

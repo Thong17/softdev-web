@@ -124,7 +124,7 @@ const LoanDetail = ({ data, direction = 'row', backgroundColor }: any) => {
         </FlexBetween>
         <FlexBetween>
           <span style={{ marginRight: '5px' }}>{language['TOTAL_PAID']}:</span>
-          <span>{currencyFormat(data?.totalPaid?.total, 'USD', 2)}</span>
+          <span>{currencyFormat(data?.totalPaid?.value, data?.totalPaid?.currency)}</span>
         </FlexBetween>
         <FlexBetween>
           <span style={{ marginRight: '5px' }}>
