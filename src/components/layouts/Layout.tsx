@@ -66,7 +66,7 @@ export const Layout: FC<ILayout> = ({ children, navbar }) => {
         >
           {children}
         </ContentContainer>
-        {width > 1024 && <Footer></Footer>}
+        <Footer showContent={width > 1024} />
       </WrapContainer>
     </div>
   )
