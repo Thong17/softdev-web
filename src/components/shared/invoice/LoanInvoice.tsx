@@ -94,7 +94,7 @@ const LoanInvoice = ({ data, totalRemain, totalPenalty }) => {
             <InvoiceDetail
               color={theme.text.secondary}
               label={language['TOTAL_REMAIN']}
-              value={currencyFormat(totalRemain, 'USD')}
+              value={currencyFormat(Math.max(0, totalRemain), 'USD')}
             />
           </Box>
           <Box
@@ -110,7 +110,7 @@ const LoanInvoice = ({ data, totalRemain, totalPenalty }) => {
           >
             <Box component='span'>{language['GRAND_TOTAL']}</Box>
             <Box component='span'>
-              {currencyFormat(totalRemain + totalPenalty, 'USD')}
+              {currencyFormat(Math.max(0, totalRemain + totalPenalty), 'USD')}
             </Box>
           </Box>
         </Box>

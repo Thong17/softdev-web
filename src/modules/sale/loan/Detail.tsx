@@ -24,11 +24,10 @@ const Header = ({ stages, status, styled, language, onOpenDeposit }) => {
       <Breadcrumb stages={stages} title={<ConfirmationNumberRoundedIcon />} />
       <CustomButton
         onClick={() => onOpenDeposit()}
-        disabled={!status}
         style={{
           marginLeft: 10,
-          backgroundColor: !status ? `${styled.text.secondary}22` : `${styled.color.success}22`,
-          color: !status ? styled.text.secondary : styled.color.success,
+          backgroundColor: !status ? `${styled.color.info}22` : `${styled.color.success}22`,
+          color: !status ? styled.color.info : styled.color.success,
         }}
         styled={styled}
       >
@@ -102,8 +101,8 @@ const mapPayment = (data, rate): IPaymentInfo => {
     rate,
     customer: data.customer,
     remainTotal: data.totalRemain,
-    returnCashes: [],
-    status: false,
-    total: { value: data.totalRemain.USD, currency: 'USD' }
+    returnCashes: data.paymentObj?.returnCashes || [],
+    status: data.paymentObj?.status || false,
+    total: data.paymentObj?.total
   }
 }

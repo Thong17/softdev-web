@@ -21,7 +21,12 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    if (!dialog?.detail?.loanPayments || !dialog?.detail?.prepayment || !dialog?.detail?.payment.rate) return
+    if (
+      !dialog?.detail?.loanPayments ||
+      !dialog?.detail?.prepayment ||
+      !dialog?.detail?.payment.rate
+    )
+      return
     setTotalPenalty(
       calculatePrepaymentPenalty(
         dialog?.detail?.loanPayments,
@@ -29,8 +34,12 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
         dialog?.detail?.payment.rate
       )
     )
-  }, [dialog?.detail?.loanPayments, dialog?.detail?.prepayment, dialog?.detail?.payment.rate])
-  
+  }, [
+    dialog?.detail?.loanPayments,
+    dialog?.detail?.prepayment,
+    dialog?.detail?.payment.rate,
+  ])
+
   useEffect(() => {
     setTotalRemain(dialog?.detail?.totalRemain.USD)
   }, [dialog?.detail?.totalRemain.USD])
@@ -39,7 +48,11 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
     if (!dialog?.payment) return
     const sellRate = dialog.payment.rate.sellRate
     const remainTotal = totalRemain + totalPenalty
-    setPaymentInfo({ ...dialog?.payment, remainTotal: { USD: remainTotal, KHR: remainTotal * sellRate }, total: { value: remainTotal, currency: 'USD' } })
+    setPaymentInfo({
+      ...dialog?.payment,
+      remainTotal: { USD: remainTotal, KHR: remainTotal * sellRate },
+      total: { value: remainTotal, currency: 'USD' },
+    })
   }, [dialog?.payment, totalPenalty, totalRemain])
 
   useEffect(() => {
@@ -90,7 +103,7 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
   }
 
   const handlePrintPayment = (data) => {
-    console.log(data)
+    // TODO: add print loan payment
   }
 
   return (
@@ -107,7 +120,11 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
         onCheckout={handleCheckoutPayment}
         onPrint={handlePrintPayment}
       >
-        <LoanInvoice data={paymentDetail} totalPenalty={totalPenalty} totalRemain={totalRemain} />
+        <LoanInvoice
+          data={paymentDetail}
+          totalPenalty={totalPenalty}
+          totalRemain={totalRemain}
+        />
       </PaymentForm>
     </AlertDialog>
   )

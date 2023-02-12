@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { currencyFormat, dateFormat } from 'utils/index'
 import { ITableColumn, StickyTable } from './StickyTable'
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
+import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import useTheme from 'hooks/useTheme'
 import { LoanStatus } from '../LoanStatus'
 import { LoanPaymentDialog } from 'modules/sale/loan/LoanPaymentDialog'
@@ -20,24 +21,33 @@ const columnData: ITableColumn<any>[] = [
   { id: 'action', label: 'ACTION', align: 'right' },
 ]
 
-const mapData = (data, theme, onPayment) => {
+const mapData = (data, theme, onPayment, onPrint) => {
   const action = data.isPaid ? (
-    <></>
+    <IconButton
+      size='small'
+      onClick={() => onPrint(data)}
+      style={{
+        backgroundColor: `${theme.color.info}22`,
+        borderRadius: theme.radius.primary,
+        marginLeft: 5,
+        color: theme.color.info,
+      }}
+    >
+      <PrintRoundedIcon fontSize='small' />
+    </IconButton>
   ) : (
-    <>
-      <IconButton
-        size='small'
-        onClick={() => onPayment(data)}
-        style={{
-          backgroundColor: `${theme.color.info}22`,
-          borderRadius: theme.radius.primary,
-          marginLeft: 5,
-          color: theme.color.info,
-        }}
-      >
-        <AttachMoneyRoundedIcon fontSize='small' />
-      </IconButton>
-    </>
+    <IconButton
+      size='small'
+      onClick={() => onPayment(data)}
+      style={{
+        backgroundColor: `${theme.color.info}22`,
+        borderRadius: theme.radius.primary,
+        marginLeft: 5,
+        color: theme.color.info,
+      }}
+    >
+      <AttachMoneyRoundedIcon fontSize='small' />
+    </IconButton>
   )
   return {
     dueDate: dateFormat(data.dueDate),
@@ -65,7 +75,10 @@ const mapData = (data, theme, onPayment) => {
 const LoanTable = ({ data }) => {
   const [rowData, setRowData] = useState<any>([])
   const { theme } = useTheme()
-  const [depositDialog, setDepositDialog] = useState<any>({ open: false, payment: null })
+  const [depositDialog, setDepositDialog] = useState<any>({
+    open: false,
+    payment: null,
+  })
   const { user } = useAuth()
   const { notify } = useNotify()
 
@@ -74,10 +87,18 @@ const LoanTable = ({ data }) => {
     if (!user?.drawer) return notify('No drawer opened', 'error')
 
     const handlePayment = (data) => {
-      setDepositDialog({ open: true, payment: mapPayment(data, user?.drawer), detail: data })
+      setDepositDialog({
+        open: true,
+        payment: mapPayment(data, user?.drawer),
+        detail: data,
+      })
     }
 
-    setRowData(data.map((item) => mapData(item, theme, handlePayment)))
+    const handlePrint = () => {
+      // TODO: add print loan payment
+    }
+
+    setRowData(data.map((item) => mapData(item, theme, handlePayment, handlePrint)))
     // eslint-disable-next-line
   }, [data])
 
@@ -94,10 +115,16 @@ const mapPayment = (data, rate): IPaymentInfo => {
     _id: data._id,
     rate,
     customer: data.customer,
-    remainTotal: { USD: data.totalAmount.value, KHR: data.totalAmount.value * rate.sellRate },
+    remainTotal: {
+      USD: data.totalAmount.value,
+      KHR: data.totalAmount.value * rate.sellRate,
+    },
     returnCashes: [],
     status: false,
-    total: { value: data.totalAmount.value, currency: data.totalAmount.currency }
+    total: {
+      value: data.totalAmount.value,
+      currency: data.totalAmount.currency,
+    },
   }
 }
 
