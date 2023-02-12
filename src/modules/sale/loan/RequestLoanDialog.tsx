@@ -110,7 +110,25 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
     setDialog({ open: false })
   }
 
-  const handleApproveAll = () => {}
+  const handleApproveAll = () => {
+    confirm({
+      title: 'Approve',
+      description: 'Are you sure you want to approve all these loans?',
+      variant: 'info'
+    })
+      .then(() => {
+        Axios({
+          method: 'PUT',
+          url: `/sale/loan/approveAll`,
+        })
+          .then(() => {
+            dispatch(getListRequestLoan({}))
+            dispatch(getListLoan({}))
+          })
+          .catch((err) => notify(err?.response?.data?.msg))
+      })
+      .catch(() => null)
+  }
 
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>

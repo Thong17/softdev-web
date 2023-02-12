@@ -47,7 +47,7 @@ export interface IPaymentInfo {
     USD: number
     KHR: number
   }
-  customer: ICustomerInfo
+  customer?: ICustomerInfo
 }
 
 declare type PaymentMethod = 'cash' | 'transfer' | 'loan'
@@ -60,7 +60,7 @@ export interface IPaymentForm {
   onClose: () => void
   onCheckout: (data) => void
   onPrint: (data) => void
-  onAddToQueue: (data) => void
+  onAddToQueue?: (data) => void
 }
 
 export const PaymentForm = forwardRef(
@@ -486,7 +486,7 @@ export const PaymentForm = forwardRef(
                         />{' '}
                         {language['PRINT']}
                       </CustomButton>
-                      {user?.privilege?.queue?.create && (
+                      {user?.privilege?.queue?.create && onAddToQueue && (
                         <CustomButton
                           onClick={() => onAddToQueue(payment)}
                           styled={theme}

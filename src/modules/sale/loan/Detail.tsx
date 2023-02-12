@@ -13,6 +13,8 @@ import { DepositDialog } from './DepositDialog'
 import { IPaymentInfo } from 'components/shared/form/PaymentForm'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getDetailLoan, selectDetailLoan } from './redux'
+import useAuth from 'hooks/useAuth'
+import useNotify from 'hooks/useNotify'
 
 const Header = ({ stages, status, styled, language, onOpenDeposit }) => {
   return (
@@ -44,6 +46,8 @@ export const DetailLoan = () => {
   const { language } = useLanguage()
   const { theme } = useTheme()
   const [depositDialog, setDepositDialog] = useState<any>({ open: false, payment: null, detail: null })
+  const { user } = useAuth()
+  const { notify } = useNotify()
 
   const stages = [
     {
@@ -70,8 +74,13 @@ export const DetailLoan = () => {
     // eslint-disable-next-line
   }, [id])
 
+  const handleOpenDeposit = () => {
+    if (!user?.drawer) return notify('No drawer opened', 'error')
+    setDepositDialog({ open: true, payment: mapPayment(data, user?.drawer), detail: data })
+  }
+
   return (
-    <Container header={<Header status={data?.status === 'APPROVED'} stages={stages} styled={theme} language={language} onOpenDeposit={() => setDepositDialog({ open: true, payment: mapPayment(data), detail: data })} />}>
+    <Container header={<Header status={data?.status === 'APPROVED'} stages={stages} styled={theme} language={language} onOpenDeposit={handleOpenDeposit} />}>
       <Box
         sx={{
           display: 'grid',
@@ -87,10 +96,10 @@ export const DetailLoan = () => {
   )
 }
 
-const mapPayment = (data): IPaymentInfo => {
+const mapPayment = (data, rate): IPaymentInfo => {
   return {
     _id: data._id,
-    rate: data.payment.rate,
+    rate,
     customer: data.customer,
     remainTotal: data.totalRemain,
     returnCashes: [],

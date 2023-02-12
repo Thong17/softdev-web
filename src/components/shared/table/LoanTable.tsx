@@ -5,6 +5,10 @@ import { ITableColumn, StickyTable } from './StickyTable'
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
 import useTheme from 'hooks/useTheme'
 import { LoanStatus } from '../LoanStatus'
+import { LoanPaymentDialog } from 'modules/sale/loan/LoanPaymentDialog'
+import useAuth from 'hooks/useAuth'
+import { IPaymentInfo } from '../form/PaymentForm'
+import useNotify from 'hooks/useNotify'
 
 const columnData: ITableColumn<any>[] = [
   { id: 'dueDate', label: 'DUE_DATE' },
@@ -61,21 +65,40 @@ const mapData = (data, theme, onPayment) => {
 const LoanTable = ({ data }) => {
   const [rowData, setRowData] = useState<any>([])
   const { theme } = useTheme()
+  const [depositDialog, setDepositDialog] = useState<any>({ open: false, payment: null })
+  const { user } = useAuth()
+  const { notify } = useNotify()
 
   useEffect(() => {
     if (!data) return
+    if (!user?.drawer) return notify('No drawer opened', 'error')
+
     const handlePayment = (data) => {
-      console.log(data)
+      setDepositDialog({ open: true, payment: mapPayment(data, user?.drawer), detail: data })
     }
+
     setRowData(data.map((item) => mapData(item, theme, handlePayment)))
     // eslint-disable-next-line
   }, [data])
 
   return (
     <Box>
+      <LoanPaymentDialog dialog={depositDialog} setDialog={setDepositDialog} />
       <StickyTable columns={columnData} rows={rowData} pagination={false} />
     </Box>
   )
+}
+
+const mapPayment = (data, rate): IPaymentInfo => {
+  return {
+    _id: data._id,
+    rate,
+    customer: data.customer,
+    remainTotal: { USD: data.totalAmount.value, KHR: data.totalAmount.value * rate.sellRate },
+    returnCashes: [],
+    status: false,
+    total: { value: data.totalAmount.value, currency: data.totalAmount.currency }
+  }
 }
 
 export default LoanTable
