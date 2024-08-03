@@ -136,10 +136,12 @@ export const SideNavContainer = styled('div')(
       overflow: 'visible',
     },
     '& div .link:hover .toggle': {
-      display: 'block',
+      opacity: '1',
     },
     '& .toggle': {
-      display: open ? 'block' : 'none',
+      opacity: open ? '1' : '0',
+      transition: open ? 'opacity 0.3s ease' : '0',
+      transitionDelay: open ? '0.1s' : '0'
     }
   })
 )
