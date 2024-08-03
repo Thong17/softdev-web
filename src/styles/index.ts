@@ -57,33 +57,41 @@ export const CustomSideNav = styled(Stack)(
   ({ styled }: { styled: IThemeStyle }) => ({
     height: '100%',
     width: '100%',
-    paddingTop: 20,
+    padding: '20px 10px',
     boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
     backgroundColor: styled.background.secondary,
     boxShadow: styled.shadow.secondary,
     borderRadius: styled.radius.ternary,
+    '& .link': {
+      width: '100%',
+      borderRadius: styled.radius.secondary,
+      '&:has(.active)': {
+        boxShadow: styled.shadow.container,
+        backgroundColor: styled.active.secondary,
+        backdropFilter: 'blur(2px)',
+      },
+      '&:hover': {
+        backgroundColor: styled.active.secondary,
+        boxShadow: styled.shadow.container,
+        backdropFilter: 'blur(2px)',
+      }
+    },
     '& a': {
       color: styled.text.primary,
-      borderRadius: styled.radius.secondary,
       marginLeft: 11,
-      width: 'calc(100% - 22px)',
-      padding: '9px 0',
+      width: 'calc(100% - 12px)',
+      padding: '11px 0',
       display: 'flex',
       alignItem: 'center',
-      marginBottom: 20
-    },
-    '& a:hover': {
-      boxShadow: styled.shadow.container,
-      backgroundColor: styled.active.secondary,
     },
     '& a.active': {
-      boxShadow: styled.shadow.container,
-      backgroundColor: `${styled.color.info}11`,
       color: styled.color.info,
       position: 'relative',
       '&::before': {
         content: `''`,
-        backgroundColor: styled.color.info,
         position: 'absolute',
         bottom: 0,
         left: '30%',
@@ -93,11 +101,8 @@ export const CustomSideNav = styled(Stack)(
       }
     },
     '& a svg': {
-      marginLeft: 12,
+      marginLeft: 2,
     },
-    '& .link': {
-      width: '100%',
-    }
   })
 )
 
@@ -106,31 +111,31 @@ export const SideNavContainer = styled('div')(
     position: 'fixed',
     height: 'calc(100vh - 16px)',
     width: open ? 250 : 70,
-    transition: '0.3s ease',
     zIndex: 1001,
     padding: '8px 0 8px 8px',
+    transition: '0.3s ease',
     '& div a': {
       textDecoration: 'none !important',
     },
-    '& div a span': {
-      transition: open ? '0.3s 0.1s ease' : '0',
+    '& div .link span': {
       opacity: open ? '1' : '0',
       overflow: !open && 'hidden',
       alignSelf: 'center',
       marginLeft: 10,
       lineHeight: 0,
+      transition: 'opacity 0.3s ease',
+      transitionDelay: open ? '0.1s' : '0'
     },
-    '& div a:hover': {
-      transition: '0.3s ease',
+    '& div .link:hover': {
       width: !open && 'max-content !important',
-      paddingRight: !open && 15,
+      paddingRight: !open && 0,
     },
-    '& div a:hover span': {
-      transition: '0.3s ease',
+
+    '& div .link:hover span': {
       opacity: '1',
       overflow: 'visible',
     },
-    '& div a:hover .toggle': {
+    '& div .link:hover .toggle': {
       display: 'block',
     },
     '& .toggle': {

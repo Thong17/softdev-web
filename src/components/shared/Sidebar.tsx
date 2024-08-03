@@ -8,6 +8,7 @@ import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded'
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded'
 import { useState } from 'react'
 import useAuth from 'hooks/useAuth'
+import { Box } from '@mui/material'
 
 const Sidebar = () => {
   const { user } = useAuth()
@@ -46,20 +47,22 @@ const Sidebar = () => {
           if (permission) {
             if (!nav.children) {
               return (
-                <NavLink key={index} to={nav.route}>
-                  {nav.icon}
-                  <span>{language?.[nav.title] || nav.title}</span>
-                </NavLink>
+                <Box className="link">
+                  <NavLink key={index} to={nav.route}>
+                    {nav.icon}
+                    <span style={{ paddingRight: '15px' }}>{language?.[nav.title] || nav.title}</span>
+                  </NavLink>
+                </Box>
               )
             }
 
             return (
-              <div key={index} className='link'>
+              <Box key={index} className='link'>
                 <NavLink
                   key={index}
                   to={nav.route}
                   style={{
-                    width: 'calc(100% - 22px)',
+                    width: 'calc(100% - 12px)',
                     paddingRight: 7,
                     display: 'flex',
                     alignItems: 'center',
@@ -69,7 +72,7 @@ const Sidebar = () => {
                 >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     {nav.icon}
-                    <span>{language?.[nav.title] || nav.title}</span>
+                    <span style={{ paddingRight: '10px' }}>{language?.[nav.title] || nav.title}</span>
                   </div>
                   {expandTabs.includes(nav.title) ? (
                     <ExpandLessRoundedIcon
@@ -88,7 +91,7 @@ const Sidebar = () => {
                   )}
                 </NavLink>
                 {expandTabs.includes(nav.title) && (
-                  <div style={{ paddingLeft: 10, boxSizing: 'border-box' }}>
+                  <div style={{ paddingLeft: 10, paddingBottom: 10, boxSizing: 'border-box' }}>
                     {nav.children.map((sub, subIndex) => {
                       const permission = sub.permission
                         ? user?.privilege.menu?.[sub.permission]
@@ -104,7 +107,7 @@ const Sidebar = () => {
                     })}
                   </div>
                 )}
-              </div>
+              </Box>
             )
           } else {
             return <span key={index} style={{ display: 'none' }}></span>
