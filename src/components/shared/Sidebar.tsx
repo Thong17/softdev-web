@@ -91,7 +91,7 @@ const Sidebar = () => {
                   )}
                 </NavLink>
                 {expandTabs.includes(nav.title) && (
-                  <div style={{ paddingLeft: 10, paddingBottom: 10, boxSizing: 'border-box' }}>
+                  <div style={{ paddingLeft: 7, paddingBottom: 10, boxSizing: 'border-box' }}>
                     {nav.children.map((sub, subIndex) => {
                       const permission = sub.permission
                         ? user?.privilege.menu?.[sub.permission]

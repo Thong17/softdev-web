@@ -119,7 +119,7 @@ export const CustomGridContainer = styled('div')(
         },
         '& .action': {
           transition: '0.3s ease',
-          opacity: 0,
+          opacity: 1,
           position: 'absolute',
           right: 7,
           top: 7,
