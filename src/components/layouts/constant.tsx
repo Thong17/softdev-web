@@ -25,6 +25,12 @@ export const sideNav: any = [
         icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'queue'
       },
+      {
+        route: '/function/promotion',
+        title: 'PROMOTION',
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
+        permission: 'promotion'
+      },
     ]
   },
   {
