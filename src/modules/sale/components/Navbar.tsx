@@ -11,7 +11,7 @@ const Navbar = () => {
       {user?.privilege?.operation?.cashing && <NavLink to='/sale/cashing'>{language['CASHING']}</NavLink>}
       {user?.privilege?.operation?.reservation && <NavLink to='/sale/reservation'>{language['RESERVATION']}</NavLink>}
       {user?.privilege?.operation?.stock && <NavLink to='/sale/stock'>{language['STOCK']}</NavLink>}
-      {user?.privilege?.operation?.promotion && <NavLink to='/sale/promotion'>{language['PROMOTION']}</NavLink>}
+      {user?.privilege?.operation?.loan && <NavLink to='/sale/loan'>{language['LOAN']}</NavLink>}
     </>
   )
 }

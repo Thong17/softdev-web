@@ -16,6 +16,7 @@ export const columnData: ITableColumn<any>[] = [
   { id: 'status', label: 'STATUS' },
   { id: 'note', label: 'NOTE' },
   { id: 'createdBy', label: 'CREATED_BY' },
+  { id: 'createdAt', label: 'CREATED_AT' },
   { id: 'action', label: 'ACTION', align: 'center' },
 ]
 export interface Data {
@@ -27,6 +28,7 @@ export interface Data {
   total: any
   note: string
   createdBy: string
+  createdAt: string
   action: ReactElement
 }
 
@@ -41,6 +43,7 @@ export const createData = (
   status: string,
   note: string,
   createdBy: string,
+  createdAt: string,
   privilege: any,
   theme: IThemeStyle,
   onReverse: Function
@@ -62,6 +65,7 @@ export const createData = (
     status: <TextHighlight text={status ? 'Completed' : 'Pending'} color={status ? theme.color.success : theme.color.warning} />,
     note,
     createdBy,
+    createdAt,
     action,
   }
 }

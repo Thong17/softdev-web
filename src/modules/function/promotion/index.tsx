@@ -68,7 +68,7 @@ export const Promotions = () => {
   const handleConfirm = (id) => {
     const response = Axios({
       method: 'DELETE',
-      url: `/sale/promotion/disable/${id}`,
+      url: `/function/promotion/disable/${id}`,
     })
     loadify(response)
     response.then(() => dispatch(getListPromotion({})))

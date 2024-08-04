@@ -1,37 +1,29 @@
 import Container from 'components/shared/Container'
 import { useEffect, useState } from 'react'
 import { StickyTable } from 'components/shared/table/StickyTable'
-import { useNavigate } from 'react-router'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getListTransaction, selectListTransaction } from './redux'
-import useLanguage from 'hooks/useLanguage'
-import useWeb from 'hooks/useWeb'
-import useAuth from 'hooks/useAuth'
+import { getListPayment, selectListPayment } from './redux'
 import useNotify from 'hooks/useNotify'
-import Axios from 'constants/functions/Axios'
-import useTheme from 'hooks/useTheme'
 import { Header } from './Header'
 import {
   Data,
   createData,
   columnData,
 } from './constant'
-import { timeFormat, debounce } from 'utils'
+import { currencyFormat, debounce } from 'utils'
 import { useSearchParams } from 'react-router-dom'
-import useAlert from 'hooks/useAlert'
+import Axios from 'constants/functions/Axios'
+import { Detail } from './Detail'
+import useTheme from 'hooks/useTheme'
 
-export const Transactions = () => {
+export const Payments = () => {
   const dispatch = useAppDispatch()
-  const { data: transactions, count, status } = useAppSelector(selectListTransaction)
-  const { lang } = useLanguage()
-  const { device } = useWeb()
-  const { user } = useAuth()
-  const { theme } = useTheme()
+  const { data: payments, count, status } = useAppSelector(selectListPayment)
   const { notify } = useNotify()
+  const { theme } = useTheme()
   const [rowData, setRowData] = useState<Data[]>([])
-  const navigate = useNavigate()
   const [queryParams, setQueryParams] = useSearchParams()
-  const confirm = useAlert()
+  const [paymentDialog, setPaymentDialog] = useState<any>({ open: false, payment: null })
 
   const updateQuery = debounce((value) => {
     handleQuery({ search: value })
@@ -66,49 +58,40 @@ export const Transactions = () => {
   }
 
   useEffect(() => {
-    dispatch(getListTransaction({ query: queryParams }))
+    dispatch(getListPayment({ query: queryParams }))
   }, [dispatch, queryParams])
 
   useEffect(() => {
-    const handleReverseTransaction = (id) => {
-      confirm({
-        title: 'Are you sure you want to reverse this transaction',
-        description: 'Reverse the transaction will reset stock.',
-        variant: 'error'
+    const handleView = (id) => {
+      Axios({
+        url: `/sale/payment/detail/${id}`,
+        method: 'GET'
       })
-        .then(() => {
-          Axios({
-            method: 'DELETE',
-            url: `/sale/transaction/remove/${id}`,
-          })
-            .then(() => {
-              dispatch(getListTransaction({}))
-            })
-            .catch(err => notify(err?.response?.data?.msg, 'error'))
+        .then(data => {
+          setPaymentDialog({ payment: data?.data?.data, open: true })
         })
-        .catch(() => {})
+        .catch(err => notify(err?.response?.data?.msg))
     }
-    const listTransactions = transactions.map((transaction: any) => {
+    const listPayments = payments.map((payment: any) => {
       return createData(
-        transaction._id,
-        transaction.description,
-        transaction.price,
-        transaction.currency,
-        transaction.quantity,
-        transaction.discount,
-        transaction.total,
-        transaction.status,
-        transaction.note,
-        transaction.createdBy?.username || '...',
-        timeFormat(transaction.createdAt, 'DD-MMM-YYYY HH:mm'),
-        user?.privilege,
-        theme,
-        handleReverseTransaction
+        payment._id,
+        payment.invoice,
+        payment.paymentMethod?.toUpperCase(),
+        currencyFormat(payment.subtotal.BOTH, 'USD'),
+        currencyFormat(payment.discounts[0]?.value, payment.discounts[0]?.type),
+        currencyFormat(payment.services[0]?.value, payment.services[0]?.type),
+        currencyFormat(payment.vouchers[0]?.value, payment.vouchers[0]?.type),
+        currencyFormat(payment.total.value, payment.total.currency),
+        payment.status,
+        payment.createdBy?.username,
+        handleView,
+        theme
       )
     })
 
-    setRowData(listTransactions)
-  }, [transactions, lang, user, device, theme, navigate, confirm, dispatch, notify])
+    setRowData(listPayments)
+    // eslint-disable-next-line
+  }, [payments, notify])
 
   return (
     <Container
@@ -119,6 +102,7 @@ export const Transactions = () => {
         />
       }
     >
+      <Detail theme={theme} dialog={paymentDialog} setDialog={setPaymentDialog} />
       <StickyTable
         columns={columnData}
         rows={rowData}

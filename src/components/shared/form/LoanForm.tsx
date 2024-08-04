@@ -18,6 +18,8 @@ import { Section } from '../Section'
 import { presetCashes } from './CashForm'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 const initCash = { value: '0', currency: 'USD', quantity: 1 }
 const durationOptions = [
@@ -41,7 +43,7 @@ const durationOptions = [
 
 export const loanSchema = yup.object().shape({
   customer: yup.string().required(),
-  attachments: yup.mixed().optional(),
+  attachment: yup.mixed().optional(),
   duration: yup.object({
     value: yup.number().required('Duration is required'),
     time: yup.string().required('Time is required'),
@@ -65,7 +67,7 @@ export const loanSchema = yup.object().shape({
       value: yup.number().required('Duration is required'),
       time: yup.string().required('Time is required'),
     }),
-  })
+  }),
 })
 
 const defaultValues = {
@@ -112,8 +114,9 @@ const CastPreset = ({ theme, onClick }) => {
   )
 }
 
-export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
+export const LoanForm = ({ onChange, loanButtonRef, paymentId, payment, onCheckoutLoan }: any) => {
   const { theme } = useTheme()
+  const { notify } = useNotify()
   const { language } = useLanguage()
   const [cashForm, setCashForm] = useState(initCash)
   const [cashes, setCashes] = useState<any[]>([])
@@ -200,7 +203,28 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
   }
 
   const submitLoan = (data) => {
-    console.log(data)
+    if (!payment) return
+    const body = { ...data, ...payment, payment: paymentId }
+    const formData = new FormData()
+    Object.keys(body).forEach(item => {
+      if (item !== 'attachment') return formData.append(item, JSON.stringify(body[item]))
+      const files = body[item]      
+      if (!files) return
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        formData.append('attachment', file)
+      }
+    })    
+    Axios({
+      method: 'POST',
+      url: '/sale/loan/create',
+      body: formData
+    })
+      .then(data => {
+        onCheckoutLoan(data?.data?.data)
+        notify(data?.data?.msg, 'success')
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
   }
 
   return (
@@ -339,6 +363,7 @@ export const LoanForm = ({ onChange, customer, loanButtonRef }: any) => {
         </div>
         <div style={{ gridArea: 'attachment' }}>
           <TextField
+            multiple
             type='file'
             label={language['ATTACHMENT']}
             style={{ paddingTop: 7 }}

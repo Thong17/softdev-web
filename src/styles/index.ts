@@ -7,15 +7,12 @@ import { NAVBAR_HEIGHT } from './constant'
 export const CustomBottomNav = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({
     width: '100%',
-    height: NAVBAR_HEIGHT - 20,
-    backgroundColor: styled.background.primary,
-    display: 'flex',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    height: NAVBAR_HEIGHT,
     position: 'fixed',
     bottom: 0,
     boxShadow: styled.shadow.primary,
-    paddingBottom: 20,
+    padding: '10px',
+    boxSizing: 'border-box',
     zIndex: 1000,
     '& a': {
       position: 'relative',
@@ -60,33 +57,41 @@ export const CustomSideNav = styled(Stack)(
   ({ styled }: { styled: IThemeStyle }) => ({
     height: '100%',
     width: '100%',
-    paddingTop: 20,
+    padding: '20px 10px',
     boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
     backgroundColor: styled.background.secondary,
     boxShadow: styled.shadow.secondary,
     borderRadius: styled.radius.ternary,
+    '& .link': {
+      width: '100%',
+      borderRadius: styled.radius.secondary,
+      '&:has(.active)': {
+        boxShadow: styled.shadow.container,
+        backgroundColor: styled.active.secondary,
+        backdropFilter: 'blur(2px)',
+      },
+      '&:hover': {
+        backgroundColor: styled.active.secondary,
+        boxShadow: styled.shadow.container,
+        backdropFilter: 'blur(2px)',
+      }
+    },
     '& a': {
       color: styled.text.primary,
-      borderRadius: styled.radius.secondary,
       marginLeft: 11,
-      width: 'calc(100% - 22px)',
-      padding: '9px 0',
+      width: 'calc(100% - 12px)',
+      padding: '11px 0',
       display: 'flex',
       alignItem: 'center',
-      marginBottom: 20
-    },
-    '& a:hover': {
-      boxShadow: styled.shadow.container,
-      backgroundColor: styled.active.secondary,
     },
     '& a.active': {
-      boxShadow: styled.shadow.container,
-      backgroundColor: `${styled.color.info}11`,
       color: styled.color.info,
       position: 'relative',
       '&::before': {
         content: `''`,
-        backgroundColor: styled.color.info,
         position: 'absolute',
         bottom: 0,
         left: '30%',
@@ -96,11 +101,8 @@ export const CustomSideNav = styled(Stack)(
       }
     },
     '& a svg': {
-      marginLeft: 12,
+      marginLeft: 2,
     },
-    '& .link': {
-      width: '100%',
-    }
   })
 )
 
@@ -109,35 +111,37 @@ export const SideNavContainer = styled('div')(
     position: 'fixed',
     height: 'calc(100vh - 16px)',
     width: open ? 250 : 70,
-    transition: '0.3s ease',
     zIndex: 1001,
     padding: '8px 0 8px 8px',
+    transition: '0.3s ease',
     '& div a': {
       textDecoration: 'none !important',
     },
-    '& div a span': {
-      transition: open ? '0.3s 0.1s ease' : '0',
+    '& div .link span': {
       opacity: open ? '1' : '0',
       overflow: !open && 'hidden',
       alignSelf: 'center',
       marginLeft: 10,
       lineHeight: 0,
+      transition: 'opacity 0.3s ease',
+      transitionDelay: open ? '0.1s' : '0'
     },
-    '& div a:hover': {
-      transition: '0.3s ease',
+    '& div .link:hover': {
       width: !open && 'max-content !important',
-      paddingRight: !open && 15,
+      paddingRight: !open && 0,
     },
-    '& div a:hover span': {
-      transition: '0.3s ease',
+
+    '& div .link:hover span': {
       opacity: '1',
       overflow: 'visible',
     },
-    '& div a:hover .toggle': {
-      display: 'block',
+    '& div .link:hover .toggle': {
+      opacity: '1',
     },
     '& .toggle': {
-      display: open ? 'block' : 'none',
+      opacity: open ? '1' : '0',
+      transition: open ? 'opacity 0.3s ease' : '0',
+      transitionDelay: open ? '0.1s' : '0'
     }
   })
 )
@@ -449,7 +453,7 @@ export const CustomSearchField = styled('div')(
     alignItems: 'center',
     transition: '0.2s ease',
     padding: '1px 4px 1px 5px',
-    backgroundColor: styled.background.secondary,
+    backgroundColor: `${styled.color.info}22`,
     borderRadius: styled.radius.primary,
     height: 34,
     width: active === 'active' ? 270 : 32,
@@ -470,7 +474,7 @@ export const CustomSearchField = styled('div')(
       height: 36,
       width: 36,
       right: 2,
-      color: styled.text.secondary,
+      color: styled.color.info,
     },
     '& button': {
       color: styled.text.secondary,
@@ -525,12 +529,12 @@ export const CustomFilterButton = styled('div')(
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: styled.background.secondary,
+    backgroundColor: `${styled.color.info}22`,
     borderRadius: styled.radius.primary,
     height: 36,
     width: 40,
     '& button': {
-      color: styled.text.secondary,
+      color: styled.color.info,
     },
   })
 )
@@ -554,12 +558,12 @@ export const CustomOptionButton = styled('div')(
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: styled.background.secondary,
+    backgroundColor: `${styled.color.info}22`,
     borderRadius: styled.radius.primary,
     height: 36,
     width: 40,
     '& button': {
-      color: styled.text.secondary,
+      color: styled.color.info,
     },
   })
 )
@@ -578,12 +582,12 @@ export const CustomHeaderButton = styled('div')(
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: styled.background.secondary,
+    backgroundColor: `${styled.color.info}22`,
     borderRadius: styled.radius.primary,
     height: 36,
     width: 40,
     '& button': {
-      color: styled.text.secondary,
+      color: styled.color.info,
     },
   })
 )

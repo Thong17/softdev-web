@@ -5,16 +5,23 @@ import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
 import useLanguage from 'hooks/useLanguage'
 
 declare type page =
+  | 'loan'
   | 'sale'
   | 'stock'
   | 'transaction'
-  | 'promotion'
-  | 'promotionCreate'
-  | 'promotionUpdate'
 
 const SaleBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
   const { language } = useLanguage()
   const stages = {
+    loan: [
+      {
+        title: language['SALE'],
+        path: '/sale',
+      },
+      {
+        title: language['LOAN'],
+      },
+    ],
     sale: [
       {
         title: language['SALE'],
@@ -27,41 +34,6 @@ const SaleBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
       },
       {
         title: language['STOCK'],
-      },
-    ],
-    promotion: [
-      {
-        title: language['SALE'],
-        path: '/sale',
-      },
-      {
-        title: language['PROMOTION'],
-      },
-    ],
-    promotionCreate: [
-      {
-        title: language['SALE'],
-        path: '/sale',
-      },
-      {
-        title: language['PROMOTION'],
-        path: '/sale/promotion',
-      },
-      {
-        title: language['CREATE'],
-      },
-    ],
-    promotionUpdate: [
-      {
-        title: language['SALE'],
-        path: '/sale',
-      },
-      {
-        title: language['PROMOTION'],
-        path: '/sale/promotion',
-      },
-      {
-        title: language['UPDATE'],
       },
     ],
   }

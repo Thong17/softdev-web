@@ -4,13 +4,14 @@ import brandReducer from 'modules/organize/brand/redux'
 import productReducer from 'modules/organize/product/redux'
 import storeReducer from 'modules/organize/store/redux'
 import stockReducer from 'modules/sale/stock/redux'
-import promotionReducer from 'modules/sale/promotion/redux'
+import promotionReducer from 'modules/function/promotion/redux'
 import transactionReducer from 'modules/report/transaction/redux'
 import queueReducer from 'modules/function/queue/redux'
 import roleReducer from 'modules/admin/role/redux'
 import userReducer from 'modules/admin/user/redux'
 import reservationReducer from 'modules/sale/reservation/redux'
-import paymentReducer from 'modules/sale/payment/redux'
+import paymentReducer from 'modules/report/payment/redux'
+import loanReducer from 'modules/sale/loan/redux'
 import sharedReducer from 'shared/redux'
 
 export const store = configureStore({
@@ -24,6 +25,7 @@ export const store = configureStore({
     transaction: transactionReducer,
     reservation: reservationReducer,
     payment: paymentReducer,
+    loan: loanReducer,
     role: roleReducer,
     queue: queueReducer,
     user: userReducer,

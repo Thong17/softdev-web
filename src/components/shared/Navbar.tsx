@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom'
 import Profile from './Profile'
 import useConfig from 'hooks/useConfig'
 import {
-  CustomMenubar,
   ListNavbar,
   RowNavbar,
   CustomNavbar,
@@ -15,14 +14,14 @@ import useWeb from 'hooks/useWeb'
 import { useEffect, useRef, useState } from 'react'
 import Footer from './Footer'
 import useLanguage from 'hooks/useLanguage'
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
+import { Box } from '@mui/material'
 
-export const MenuBar = ({ theme, open, toggleSidebar }) => {
+export const MenuBar = ({ toggleSidebar, theme }) => {
   return (
-    <CustomMenubar styled={theme} open={open} onClick={() => toggleSidebar()}>
-      <div></div>
-      <div></div>
-      <div></div>
-    </CustomMenubar>
+    <Box sx={{ cursor: 'pointer', color: theme.text.secondary }} onClick={() => toggleSidebar()}>
+      <MenuRoundedIcon />
+    </Box>
   )
 }
 
@@ -71,7 +70,6 @@ const Navbar = ({ children }) => {
         <div style={{ display: 'flex' }}>
           <MenuBar
             theme={theme}
-            open={navbar}
             toggleSidebar={openNavbar}
           ></MenuBar>
         </div>
@@ -79,7 +77,6 @@ const Navbar = ({ children }) => {
         <div style={{ display: 'flex' }}>
           <MenuBar
             theme={theme}
-            open={sidebar}
             toggleSidebar={toggleSidebar}
           ></MenuBar>
         </div>

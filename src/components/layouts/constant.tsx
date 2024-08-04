@@ -4,7 +4,7 @@ import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded'
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
-import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded'
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded'
 
 export const sideNav: any = [
@@ -22,8 +22,14 @@ export const sideNav: any = [
       {
         route: '/function/queue',
         title: 'QUEUE',
-        icon: <ArrowRightAltRoundedIcon />,
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'queue'
+      },
+      {
+        route: '/function/promotion',
+        title: 'PROMOTION',
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
+        permission: 'promotion'
       },
     ]
   },
@@ -36,19 +42,19 @@ export const sideNav: any = [
       {
         route: '/sale/stock',
         title: 'STOCK',
-        icon: <ArrowRightAltRoundedIcon />,
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'stock'
       },
       {
         route: '/sale/cashing',
         title: 'CASHING',
-        icon: <ArrowRightAltRoundedIcon />,
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'cashing'
       },
       {
         route: '/sale/reservation',
         title: 'RESERVATION',
-        icon: <ArrowRightAltRoundedIcon />,
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'reservation'
       },
     ]
@@ -62,19 +68,19 @@ export const sideNav: any = [
       {
         route: '/organize/brand',
         title: 'BRAND',
-        icon: <ArrowRightAltRoundedIcon />,
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'brand'
       },
       {
         route: '/organize/category',
         title: 'CATEGORY',
-        icon: <ArrowRightAltRoundedIcon />,
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'category'
       },
       {
         route: '/organize/product',
         title: 'PRODUCT',
-        icon: <ArrowRightAltRoundedIcon />,
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'product'
       },
     ]

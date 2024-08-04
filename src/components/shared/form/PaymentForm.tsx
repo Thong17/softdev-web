@@ -1,12 +1,16 @@
 import { Box } from '@mui/system'
-import { AlertContainer } from 'components/shared/container/AlertContainer'
-import { DialogTitle } from 'components/shared/DialogTitle'
 import { ExchangeRate } from 'components/shared/ExchangeRate'
 import { CashForm } from 'components/shared/form/CashForm'
 import { SelectTab } from 'components/shared/form/SelectTab'
-import { InvoicePreview } from 'components/shared/preview/InvoicePreview'
 import useTheme from 'hooks/useTheme'
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import React, {
+  forwardRef,
+  ReactChild,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 import { CustomButton } from 'styles'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import ReceiptRoundedIcon from '@mui/icons-material/ReceiptRounded'
@@ -14,11 +18,6 @@ import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumbe
 import { currencyFormat } from 'utils'
 import useAuth from 'hooks/useAuth'
 import { IDrawer } from 'contexts/auth/interface'
-import Axios from 'constants/functions/Axios'
-import useNotify from 'hooks/useNotify'
-import useAlert from 'hooks/useAlert'
-import { useReactToPrint } from 'react-to-print'
-import { PaymentReceipt } from 'components/shared/invoice/PaymentReceipt'
 import useWeb from 'hooks/useWeb'
 import { CarouselContainer } from 'components/shared/container/CarouselContainer'
 import {
@@ -28,231 +27,199 @@ import {
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
 import { LoanForm } from 'components/shared/form/LoanForm'
-import { QueueReceipt } from 'components/shared/invoice/QueueReceipt'
 
-export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout }: any, ref) => {
-  const confirm = useAlert()
-  const { theme } = useTheme()
-  const { language } = useLanguage()
-  const { notify } = useNotify()
-  const { width } = useWeb()
-  const { user, reload } = useAuth()
-  const [totalReceive, setTotalReceive] = useState({ KHR: 0, USD: 0, total: 0 })
-  const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
-  const [payment, setPayment] = useState<any>(null)
-  const [queue, setQueue] = useState<any>(null)
-  const [paymentMethod, setPaymentMethod] = useState(null)
-  const [totalPayment, setTotalPayment] = useState({
-    value: 0,
-    currency: 'USD',
-  })
-  const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
-  const [receiveCashes, setReceiveCashes] = useState([])
-  const { data: listTransfer } = useAppSelector(selectListTransfer)
-  const dispatch = useAppDispatch()
+export interface ICustomerInfo {
+  id: string
+  username: string
+  phone?: string
+}
 
-  const paymentMethods = [
-    { label: language['CASH'], value: 'cash' },
-    { label: language['TRANSFER'], value: 'transfer' },
-    { label: language['LOAN'], value: 'loan' },
-  ]
-
-  useEffect(() => {
-    dispatch(getListTransfer())
-  }, [dispatch])
-
-  useImperativeHandle(ref, () => ({
-    callClearPayment() {
-      onClearPayment()
-    }
-  }))
-
-  const onClearPayment = () => {
-    setTotalReceive({ KHR: 0, USD: 0, total: 0 })
-    setTotalRemain({ KHR: 0, USD: 0 })
-    setPayment(null)
-    setQueue(null)
-    setPaymentMethod(null)
-    setTotalPayment({ value: 0, currency: 'USD' })
-    setExchangeRate(null)
-    setReceiveCashes([])
+export interface IPaymentInfo {
+  _id: string
+  total: {
+    value: number
+    currency: string
   }
-
-  useEffect(() => {
-    setPayment(dialog.payment)
-
-    const value =
-      dialog.payment?.total.currency === 'KHR'
-        ? dialog.payment?.total.value / dialog.payment?.rate.sellRate
-        : dialog.payment?.total.value
-    setTotalPayment((prev) => ({ ...prev, value: value || 0 }))
-    setExchangeRate(dialog.payment?.rate)
-  }, [dialog.payment])
-
-  useEffect(() => {
-    const remainUSD = totalPayment.value - totalReceive.total
-    const sellRate = exchangeRate?.sellRate || 4000
-    setTotalRemain({ USD: remainUSD, KHR: remainUSD * sellRate })
-  }, [totalPayment, exchangeRate, totalReceive.total])
-
-  const handleCloseDialog = () => {
-    setDialog({ ...dialog, open: false })
+  rate: IDrawer
+  status: boolean
+  returnCashes: any[]
+  remainTotal: {
+    USD: number
+    KHR: number
   }
+  customer?: ICustomerInfo
+}
 
-  const handleChangePaymentMethod = (value) => {
-    if (value === 'transfer') {
-      const buyRate = exchangeRate?.buyRate || 4000
-      setTotalReceive({
-        KHR: totalPayment.currency === 'KHR' ? totalPayment.value : 0,
-        USD: totalPayment.currency === 'USD' ? totalPayment.value : 0,
-        total:
-          totalPayment.currency === 'KHR'
-            ? totalPayment.value / buyRate
-            : totalPayment.value,
-      })
-    } else setTotalReceive({ KHR: 0, USD: 0, total: 0 })
-    setPaymentMethod(value)
-  }
+declare type PaymentMethod = 'cash' | 'transfer' | 'loan'
 
-  const handleChangeCashes = (cashes) => {
-    let totalUSD = 0
-    let totalKHR = 0
-    setReceiveCashes(cashes)
-    cashes?.forEach((cash) => {
-      if (cash.currency === 'USD') totalUSD += cash.value * cash.quantity
-      else totalKHR += cash.value * cash.quantity
+export interface IPaymentForm {
+  paymentInfo: IPaymentInfo | null
+  paymentType: Array<PaymentMethod>
+  children: ReactChild
+  onClear: () => void
+  onClose: () => void
+  onCheckout: (data) => void
+  onPrint: (data) => void
+  onAddToQueue?: (data) => void
+}
+
+export const PaymentForm = forwardRef(
+  (
+    {
+      paymentInfo,
+      paymentType,
+      children,
+      onClear,
+      onClose,
+      onCheckout,
+      onPrint,
+      onAddToQueue,
+    }: IPaymentForm,
+    ref
+  ) => {
+    const { theme } = useTheme()
+    const { language } = useLanguage()
+    const { width } = useWeb()
+    const { user } = useAuth()
+    const [totalReceive, setTotalReceive] = useState({
+      KHR: 0,
+      USD: 0,
+      total: 0,
     })
-    const sellRate = user?.drawer?.sellRate || 4000
-    setTotalReceive({
-      KHR: totalKHR,
-      USD: totalUSD,
-      total: totalUSD + totalKHR / sellRate,
+    const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
+    const [payment, setPayment] = useState<IPaymentInfo | null>(null)
+    const [queue, setQueue] = useState<any>(null)
+    const [paymentMethod, setPaymentMethod] = useState(null)
+    const [totalPayment, setTotalPayment] = useState({
+      value: 0,
+      currency: 'USD',
     })
-  }
+    const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
+    const [receiveCashes, setReceiveCashes] = useState([])
+    const { data: listTransfer } = useAppSelector(selectListTransfer)
+    const dispatch = useAppDispatch()
 
-  const handleAddToQueue = () => {
-    Axios({
-      method: 'POST',
-      url: '/function/queue/create',
-      body: { payment: dialog?.payment?._id }
-    })
-      .then(data => {
-        setQueue(data?.data?.data)
-        handlePrintTicket()
-      })
-      .catch(err => notify(err?.response?.data?.msg, 'error'))
-  }
+    const paymentMethods = [
+      { label: language['CASH'], value: 'cash' },
+      { label: language['TRANSFER'], value: 'transfer' },
+      { label: language['LOAN'], value: 'loan' },
+    ].filter((item) => paymentType.includes(item.value as PaymentMethod))
 
-  const handleCheckout = () => {
-    confirm({
-      title: 'Are you sure you want to check out?',
-      description: 'Checkout the payment will update the status to complete.',
-      variant: 'info',
-    })
-      .then(() => {
-        const body = {
-          receiveCashes,
-          receiveTotal: totalReceive,
-          remainTotal: totalRemain,
-          customer: dialog.customer?.id,
-          paymentMethod,
-        }
-        Axios({
-          method: 'PUT',
-          url: `/sale/payment/checkout/${dialog.payment?._id}`,
-          body,
-        })
-          .then((data) => {
-            setPayment(data?.data?.data)
-            reload()
-            onCheckout()
-          })
-          .catch((err) => {
-            notify(err?.response?.data?.msg, 'error')
-          })
-      })
-      .catch(() => null)
-  }
+    useEffect(() => {
+      dispatch(getListTransfer())
+    }, [dispatch])
 
-  const handleClearPayment = () => {
-    confirm({
-      title: 'Are you sure you want to clear the payment?',
-      description: 'The payment will be clear.',
-      variant: 'error',
-    })
-      .then(() => {
+    useImperativeHandle(ref, () => ({
+      callClearPayment() {
         onClearPayment()
-        onClear()
-      })
-      .catch(() => {})
-  }
+      },
+    }))
 
-  const invoiceRef = useRef(document.createElement('div'))
-  const handlePrintInvoice = useReactToPrint({
-    content: () => invoiceRef?.current,
-    documentTitle: 'Invoice',
-  })
-
-  const ticketRef = useRef(document.createElement('div'))
-  const handlePrintTicket = useReactToPrint({
-    content: () => ticketRef?.current,
-    documentTitle: 'Ticket',
-  })
-
-  const handleCheckoutLoan = (data) => {
-    setPayment(data)
-    reload()
-    onCheckout()
-  }
-
-  const loanButtonRef = useRef(document.createElement('button'))
-  const renderPaymentMethod = (method) => {
-    switch (method) {
-      case 'transfer':
-        return (
-          <CarouselContainer
-            images={listTransfer?.map((item) => item.image) || []}
-          />
-        )
-
-      case 'loan':
-        const body = {
-          receiveCashes,
-          totalPaid: totalReceive,
-          totalRemain: totalRemain,
-        }
-        return <LoanForm onChange={handleChangeCashes} loanButtonRef={loanButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} />
-
-      default:
-        return <CashForm onChange={handleChangeCashes} />
+    const onClearPayment = () => {
+      setTotalReceive({ KHR: 0, USD: 0, total: 0 })
+      setTotalRemain({ KHR: 0, USD: 0 })
+      setPayment(null)
+      setQueue(null)
+      setPaymentMethod(null)
+      setTotalPayment({ value: 0, currency: 'USD' })
+      setExchangeRate(null)
+      setReceiveCashes([])
     }
-  }
 
-  const handlePrintLoanDoc = () => {
-    console.log('print loan');
-    
-  }
+    useEffect(() => {
+      setPayment(paymentInfo)
+      const value =
+        paymentInfo?.total.currency === 'KHR'
+          ? paymentInfo?.total.value / paymentInfo?.rate.sellRate
+          : paymentInfo?.total.value
+      setTotalPayment((prev) => ({ ...prev, value: value || 0 }))
+      setExchangeRate(paymentInfo?.rate || null)
+    }, [paymentInfo])
 
-  return (
-    <AlertContainer
-      justify='center'
-      isOpen={dialog.open}
-      handleClose={handleCloseDialog}
-    >
+    useEffect(() => {
+      const remainUSD = totalPayment.value - totalReceive.total
+      const sellRate = exchangeRate?.sellRate || 4000
+      setTotalRemain({ USD: remainUSD, KHR: remainUSD * sellRate })
+    }, [totalPayment, exchangeRate, totalReceive.total])
+
+    const handleChangePaymentMethod = (value) => {
+      if (value === 'transfer') {
+        const buyRate = exchangeRate?.buyRate || 4000
+        setTotalReceive({
+          KHR: totalPayment.currency === 'KHR' ? totalPayment.value : 0,
+          USD: totalPayment.currency === 'USD' ? totalPayment.value : 0,
+          total:
+            totalPayment.currency === 'KHR'
+              ? totalPayment.value / buyRate
+              : totalPayment.value,
+        })
+      } else setTotalReceive({ KHR: 0, USD: 0, total: 0 })
+      setPaymentMethod(value)
+    }
+
+    const handleChangeCashes = (cashes) => {
+      let totalUSD = 0
+      let totalKHR = 0
+      setReceiveCashes(cashes)
+      cashes?.forEach((cash) => {
+        if (cash.currency === 'USD') totalUSD += cash.value * cash.quantity
+        else totalKHR += cash.value * cash.quantity
+      })
+      const sellRate = user?.drawer?.sellRate || 4000
+      setTotalReceive({
+        KHR: totalKHR,
+        USD: totalUSD,
+        total: totalUSD + totalKHR / sellRate,
+      })
+    }
+
+    const loanButtonRef = useRef(document.createElement('button'))
+    const renderPaymentMethod = (method) => {
+      switch (method) {
+        case 'transfer':
+          return (
+            <CarouselContainer
+              images={listTransfer?.map((item) => item.image) || []}
+            />
+          )
+
+        case 'loan': {
+          const body = {
+            receiveCashes,
+            totalPaid: totalReceive,
+            totalRemain: totalRemain,
+          }
+          return (
+            <LoanForm
+              onChange={handleChangeCashes}
+              loanButtonRef={loanButtonRef}
+              paymentId={paymentInfo?._id}
+              payment={body}
+              onCheckoutLoan={(data) => onCheckout({ ...data, paymentMethod })}
+            />
+          )
+        }
+
+        default:
+          return <CashForm onChange={handleChangeCashes} />
+      }
+    }
+
+    return (
       <div
         style={{
           height: '100vh',
           width: 'calc(100vw - 64px)',
           boxSizing: 'border-box',
           position: 'relative',
+          color: theme.text.secondary
         }}
       >
-        <DialogTitle title={language['PAYMENT']} onClose={handleCloseDialog} />
         <div
           style={{
             padding: '10px 20px 20px 20px',
             boxSizing: 'border-box',
-            height: 'calc(100% - 69.98px)',
+            height: '100%',
             gridGap: 20,
             display: 'grid',
             gridTemplateColumns:
@@ -380,8 +347,10 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                   }}
                 >
                   <span>
-                    {payment?.remainTotal?.USD < 0
-                      ? language['RETURN']
+                    {payment?.remainTotal?.USD
+                      ? payment?.remainTotal?.USD < 0
+                        ? language['RETURN']
+                        : language['REMAIN']
                       : language['REMAIN']}{' '}
                     {language['TOTAL']}
                   </span>
@@ -422,7 +391,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                   {payment?.status ? (
                     <>
                       <CustomButton
-                        onClick={handleClearPayment}
+                        onClick={() => onClear()}
                         styled={theme}
                         style={{
                           backgroundColor: `${theme.color.error}22`,
@@ -433,7 +402,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                         {language['CLOSE']}
                       </CustomButton>
                       <CustomButton
-                        onClick={handlePrintLoanDoc}
+                        onClick={() => onPrint({ ...payment, type: 'loan' })}
                         styled={theme}
                         style={{
                           backgroundColor: `${theme.color.info}22`,
@@ -450,7 +419,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                   ) : (
                     <>
                       <CustomButton
-                        onClick={() => handleCloseDialog()}
+                        onClick={() => onClose()}
                         styled={theme}
                         style={{
                           backgroundColor: `${theme.color.error}22`,
@@ -473,13 +442,12 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                       </CustomButton>
                     </>
                   )}
-                  
                 </div>
               ) : (
                 <div style={{ display: 'flex', gap: 10 }}>
                   {payment?.status ? (
                     <CustomButton
-                      onClick={handleClearPayment}
+                      onClick={() => onClear()}
                       styled={theme}
                       style={{
                         backgroundColor: `${theme.color.error}22`,
@@ -491,7 +459,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                     </CustomButton>
                   ) : (
                     <CustomButton
-                      onClick={() => handleCloseDialog()}
+                      onClick={() => onClose()}
                       styled={theme}
                       style={{
                         backgroundColor: `${theme.color.error}22`,
@@ -505,7 +473,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                   {payment?.status ? (
                     <>
                       <CustomButton
-                        onClick={handlePrintInvoice}
+                        onClick={() => onPrint(payment)}
                         styled={theme}
                         style={{
                           backgroundColor: `${theme.color.info}22`,
@@ -518,29 +486,50 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                         />{' '}
                         {language['PRINT']}
                       </CustomButton>
-                      {user?.privilege?.queue?.create && <CustomButton
-                        onClick={handleAddToQueue}
-                        styled={theme}
-                        style={{
-                          backgroundColor: !!queue ? `${theme.text.secondary}22` : `${theme.color.info}22`,
-                          color: !!queue ? theme.text.secondary : theme.color.info,
-                          width: '100%',
-                        }}
-                        disabled={!!queue}
-                      >
-                        <ConfirmationNumberRoundedIcon
-                          style={{ fontSize: 19, marginRight: 5 }}
-                        />{' '}
-                        {!!queue ? language['ADDED_TO_QUEUE'] : language['ADD_TO_QUEUE']}
-                      </CustomButton>}
+                      {user?.privilege?.queue?.create && onAddToQueue && (
+                        <CustomButton
+                          onClick={() => onAddToQueue(payment)}
+                          styled={theme}
+                          style={{
+                            backgroundColor: !!queue
+                              ? `${theme.text.secondary}22`
+                              : `${theme.color.info}22`,
+                            color: !!queue
+                              ? theme.text.secondary
+                              : theme.color.info,
+                            width: '100%',
+                          }}
+                          disabled={!!queue}
+                        >
+                          <ConfirmationNumberRoundedIcon
+                            style={{ fontSize: 19, marginRight: 5 }}
+                          />{' '}
+                          {!!queue
+                            ? language['ADDED_TO_QUEUE']
+                            : language['ADD_TO_QUEUE']}
+                        </CustomButton>
+                      )}
                     </>
                   ) : (
                     <CustomButton
-                      onClick={handleCheckout}
+                      disabled={!payment}
+                      onClick={() =>
+                        onCheckout({
+                          ...payment,
+                          receiveCashes,
+                          receiveTotal: totalReceive,
+                          remainTotal: totalRemain,
+                          paymentMethod,
+                        })
+                      }
                       styled={theme}
                       style={{
-                        backgroundColor: `${theme.color.success}22`,
-                        color: theme.color.success,
+                        backgroundColor: payment
+                          ? `${theme.color.success}22`
+                          : `${theme.text.secondary}22`,
+                        color: payment
+                          ? theme.color.success
+                          : theme.text.secondary,
                         width: '100%',
                       }}
                     >
@@ -554,22 +543,14 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
               )}
             </div>
           </Box>
-          <div style={{ gridArea: 'preview' }}>
-            <InvoicePreview payment={payment} customer={dialog.customer} />
+          <div style={{ gridArea: 'preview', minHeight: '500px' }}>
+            {children}
           </div>
         </div>
       </div>
-      <div style={{ position: 'absolute', top: '-200%' }}>
-        <div ref={invoiceRef}>
-          <PaymentReceipt payment={payment} />
-        </div>
-        <div ref={ticketRef}>
-          <QueueReceipt info={queue} />
-        </div>
-      </div>
-    </AlertContainer>
-  )
-})
+    )
+  }
+)
 
 const CashReturn = ({ cash }) => (
   <div className='cash'>
