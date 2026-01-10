@@ -14,7 +14,7 @@ export const NotificationLabel = ({ value }) => {
         display: 'gird',
         placeItems: 'center',
         fontSize: 11,
-        color: theme.text.secondary
+        color: 'white'
       }}
     >
       {value}
