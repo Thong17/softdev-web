@@ -241,7 +241,7 @@ const mappedItem = (data, privilege, theme, onReject, onApprove, onPreview) => {
     customer: data.customer?.displayName || '...',
     contact: data.customer?.contact || '...',
     actualPaid: currencyFormat(data.actualPaid.value, data.actualPaid.currency),
-    totalPaid: currencyFormat(data.totalPaid.total, 'USD'),
+    totalPaid: currencyFormat(data.totalPaid.value, data.totalPaid.currency),
     totalRemain: currencyFormat(data.totalRemain.USD, 'USD'),
     duration: durationFormat(data.duration.value, data.duration.time),
     attachment,

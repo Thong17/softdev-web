@@ -420,7 +420,7 @@ const routes: RouteObject[] = [
       {
         path: 'loan',
         element: (
-          <AuthGuard role={{ route: 'function', action: 'loan' }}>
+          <AuthGuard role={{ route: 'operation', action: 'loan' }}>
             <Loan />
             <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
           </AuthGuard>

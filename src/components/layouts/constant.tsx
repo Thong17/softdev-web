@@ -40,12 +40,6 @@ export const sideNav: any = [
     permission: 'operation',
     children: [
       {
-        route: '/sale/stock',
-        title: 'STOCK',
-        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
-        permission: 'stock'
-      },
-      {
         route: '/sale/cashing',
         title: 'CASHING',
         icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
@@ -56,6 +50,18 @@ export const sideNav: any = [
         title: 'RESERVATION',
         icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'reservation'
+      },
+      {
+        route: '/sale/stock',
+        title: 'STOCK',
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
+        permission: 'stock'
+      },
+      {
+        route: '/sale/loan',
+        title: 'LOAN',
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
+        permission: 'loan'
       },
     ]
   },

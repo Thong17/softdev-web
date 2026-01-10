@@ -54,7 +54,7 @@ export const mappedItem = (data, privilege, theme, onCancel, onDetail) => {
     customer: data.customer?.displayName || '...',
     contact: data.customer?.contact || '...',
     totalLoan: currencyFormat(data.totalLoan.USD, 'USD'),
-    totalPaid: currencyFormat(data.totalPaid.total, 'USD'),
+    totalPaid: currencyFormat(data.totalPaid.value, data.totalPaid.currency),
     totalRemain: currencyFormat(data.totalRemain.USD, 'USD'),
     dueDate: dateFormat(null),
     action,
