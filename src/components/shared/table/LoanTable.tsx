@@ -15,13 +15,13 @@ const columnData: ITableColumn<any>[] = [
   { id: 'dueDate', label: 'DUE_DATE' },
   { id: 'principalAmount', label: 'PRINCIPAL_AMOUNT' },
   { id: 'interestAmount', label: 'INTEREST_AMOUNT' },
-  { id: 'totalAmount', label: 'TOTAL_AMOUNT' },
   { id: 'principalBalance', label: 'PRINCIPAL_BALANCE' },
+  { id: 'totalAmount', label: 'TOTAL_AMOUNT' },
   { id: 'status', label: 'STATUS' },
   { id: 'action', label: 'ACTION', align: 'right' },
 ]
 
-const mapData = (data, theme, onPayment, onPrint) => {
+const mapData = (data, theme, allowPayment, onPayment, onPrint) => {
   const action = data.isPaid ? (
     <IconButton
       size='small'
@@ -39,11 +39,12 @@ const mapData = (data, theme, onPayment, onPrint) => {
     <IconButton
       size='small'
       onClick={() => onPayment(data)}
+      disabled={!allowPayment}
       style={{
-        backgroundColor: `${theme.color.info}22`,
+        backgroundColor: allowPayment ? `${theme.color.info}22` : `${theme.text.quaternary}22`,
         borderRadius: theme.radius.primary,
         marginLeft: 5,
-        color: theme.color.info,
+        color: allowPayment ? theme.color.info : theme.text.quaternary,
       }}
     >
       <AttachMoneyRoundedIcon fontSize='small' />
@@ -86,6 +87,9 @@ const LoanTable = ({ data }) => {
     if (!data) return
     if (!user?.drawer) return notify('No drawer opened', 'error')
 
+    const nextDueId = data.filter(item => !item.isPaid)
+      .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())?.[0]?._id
+
     const handlePayment = (data) => {
       setDepositDialog({
         open: true,
@@ -98,7 +102,7 @@ const LoanTable = ({ data }) => {
       // TODO: add print loan payment
     }
 
-    setRowData(data.map((item) => mapData(item, theme, handlePayment, handlePrint)))
+    setRowData(data.map((item) => mapData(item, theme, item._id === nextDueId, handlePayment, handlePrint)))
     // eslint-disable-next-line
   }, [data])
 

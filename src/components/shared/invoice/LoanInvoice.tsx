@@ -119,7 +119,7 @@ const LoanInvoice = ({ data, totalRemain, totalPenalty }) => {
   )
 }
 
-const InvoiceDetail = ({ label, value, color }) => {
+export const InvoiceDetail = ({ label, value, color }) => {
   return (
     <Box
       sx={{

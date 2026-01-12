@@ -8,10 +8,23 @@ import useLanguage from 'hooks/useLanguage'
 import useNotify from 'hooks/useNotify'
 import { useEffect, useState } from 'react'
 import { getDetailLoan } from './redux'
+import { Box } from '@mui/material'
+import useTheme from 'hooks/useTheme'
+import { ITableColumn, StickyTable } from 'components/shared/table/StickyTable'
+import { InvoiceDetail } from 'components/shared/invoice/LoanInvoice'
+import { renderDirection } from 'components/shared/container/LoanDetail'
+import { currencyFormat } from 'utils/index'
+
+const columnData: ITableColumn<any>[] = [
+  { id: 'principalBalance', label: 'PRINCIPAL_BALANCE' },
+  { id: 'prepaymentInterest', label: 'INTEREST' },
+  { id: 'totalInterest', label: 'TOTAL', align: 'right' },
+]
 
 export const LoanPaymentDialog = ({ dialog, setDialog }: any) => {
   const [paymentInfo, setPaymentInfo] = useState<IPaymentInfo | null>(null)
   const { language } = useLanguage()
+  const {theme} = useTheme()
   const confirm = useAlert()
   const { notify } = useNotify()
   const dispatch = useAppDispatch()
@@ -81,7 +94,91 @@ export const LoanPaymentDialog = ({ dialog, setDialog }: any) => {
         onCheckout={handleCheckoutPayment}
         onPrint={handlePrintPayment}
       >
-        <div>Hello</div>
+        <Box
+          sx={{
+            width: '100%',
+            height: '100%',
+            paddingTop: '30px',
+            boxSizing: 'border-box',
+          }}
+        >
+          <Box
+            sx={{
+              backgroundColor: `${theme.background.secondary}cc`,
+              gap: '10px',
+              display: 'flex',
+              flexDirection: 'column-reverse',
+              width: '100%',
+              height: '100%',
+              borderRadius: theme.radius.ternary,
+              padding: '10px',
+              boxSizing: 'border-box',
+              position: 'relative',
+            }}
+          >
+            <Box sx={{
+              boxSizing: 'border-box',
+              marginTop: '11px',
+              padding: '0 10px 30px 10px',
+              width: '100%',
+              height: 'calc(100% - 150px)',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              overflowY: 'auto',
+            }}>
+              <StickyTable backgroundColor='secondary' columns={columnData} rows={[]} pagination={false} />
+            </Box>
+            <Box sx={{ width: '100%', height: '130px' }}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  backgroundColor: `${theme.background.primary}99`,
+                  height: '65%',
+                  borderRadius: theme.radius.ternary,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '10px 20px',
+                  boxSizing: 'border-box',
+                  '&::before': {
+                    content: `''`,
+                    ...renderDirection('column', theme),
+                    display: 'block',
+                  },
+                }}
+              >
+                <div>
+                  <InvoiceDetail
+                    color={theme.color.error}
+                    label={language['TOTAL_PENALTY']}
+                    value={0}
+                  />
+                  <InvoiceDetail
+                    color={theme.text.secondary}
+                    label={language['TOTAL_REMAIN']}
+                    value={0}
+                  />
+                </div>
+              </Box>
+              <Box
+                sx={{
+                  backgroundColor: `${theme.background.primary}99`,
+                  height: '35%',
+                  borderRadius: theme.radius.ternary,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '0 20px',
+                }}
+              >
+                <Box component='span'>{language['GRAND_TOTAL']}</Box>
+                <Box component='span'>
+                  {0}
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
       </PaymentForm>
     </AlertDialog>
   )
