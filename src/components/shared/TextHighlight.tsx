@@ -1,6 +1,8 @@
+import useLanguage from "hooks/useLanguage"
 import { TextEllipsis } from "./TextEllipsis"
 
 export const TextHighlight = ({ text, color, size }: any) => {
+  const { language } = useLanguage()
   return (
     <TextEllipsis
       style={{
@@ -15,7 +17,7 @@ export const TextHighlight = ({ text, color, size }: any) => {
         fontSize: size || 13
       }}
     >
-      {text}
+      {language[text] ?? text}
     </TextEllipsis>
   )
 }

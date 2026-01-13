@@ -217,6 +217,11 @@ export const languages = {
     TOTAL_PENALTY: 'Total\u00a0Penalty',
     DEPOSIT_LOAN: 'Deposit\u00a0Balance',
     GRAND_TOTAL: 'Grand\u00a0Total',
+    IN_PROGRESS: 'In\u00a0Progress',
+    CLEARED: 'Cleared',
+    APPROVED: 'Approved',
+    REJECTED: 'Rejected',
+    PENDING: 'Pending',
   },
   Khmer: {
     TEST: 'សាកល្បង',
