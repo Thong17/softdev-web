@@ -130,7 +130,7 @@ export const DepositDialog = ({ dialog, setDialog }: any) => {
   )
 }
 
-const calculatePrepaymentPenalty = (loanPayments, penalty, rate) => {
+export const calculatePrepaymentPenalty = (loanPayments, penalty, rate) => {
   switch (penalty.currency) {
     case 'USD':
       return penalty.value

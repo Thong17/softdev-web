@@ -222,6 +222,7 @@ export const languages = {
     APPROVED: 'Approved',
     REJECTED: 'Rejected',
     PENDING: 'Pending',
+    PRINCIPLE_AMOUNT: 'Principle Amount'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -440,5 +441,11 @@ export const languages = {
     TOTAL_PENALTY: 'ពិន័យសរុប',
     DEPOSIT_LOAN: 'ដាក់ប្រាក់ដើម',
     GRAND_TOTAL: 'តម្លៃ​សរុប',
+    IN_PROGRESS: 'In\u00a0Progress',
+    CLEARED: 'Cleared',
+    APPROVED: 'Approved',
+    REJECTED: 'Rejected',
+    PENDING: 'Pending', 
+    PRINCIPLE_AMOUNT: 'Principle Amount'
   }
 }

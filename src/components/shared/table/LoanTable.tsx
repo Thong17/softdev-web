@@ -1,6 +1,6 @@
 import { Box, IconButton } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { currencyFormat, dateFormat } from 'utils/index'
+import { compareDate, currencyFormat, dateFormat } from 'utils/index'
 import { ITableColumn, StickyTable } from './StickyTable'
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
@@ -10,6 +10,7 @@ import { LoanPaymentDialog } from 'modules/sale/loan/LoanPaymentDialog'
 import useAuth from 'hooks/useAuth'
 import { IPaymentInfo } from '../form/PaymentForm'
 import useNotify from 'hooks/useNotify'
+import { calculatePrepaymentPenalty } from 'modules/sale/loan/DepositDialog'
 
 const columnData: ITableColumn<any>[] = [
   { id: 'dueDate', label: 'DUE_DATE' },
@@ -73,7 +74,7 @@ const mapData = (data, theme, allowPayment, onPayment, onPrint) => {
   }
 }
 
-const LoanTable = ({ data }) => {
+const LoanTable = ({ data, detail }) => {
   const [rowData, setRowData] = useState<any>([])
   const { theme } = useTheme()
   const [depositDialog, setDepositDialog] = useState<any>({
@@ -93,7 +94,7 @@ const LoanTable = ({ data }) => {
     const handlePayment = (data) => {
       setDepositDialog({
         open: true,
-        payment: mapPayment(data, user?.drawer),
+        payment: mapPayment(data, detail, user?.drawer),
         detail: data,
       })
     }
@@ -114,8 +115,8 @@ const LoanTable = ({ data }) => {
   )
 }
 
-const mapPayment = (data, rate): IPaymentInfo => {
-  return {
+const mapPayment = (data, detail, rate): IPaymentInfo => {
+  const mappedData = {
     _id: data._id,
     rate,
     customer: data.customer,
@@ -130,6 +131,21 @@ const mapPayment = (data, rate): IPaymentInfo => {
       currency: data.totalAmount.currency,
     },
   }
+
+  const isOverdue = compareDate(Date.now(), new Date(data.dueDate))
+  // TODO: calculate overdue penalty
+  if (isOverdue) {
+    const penalty = calculatePrepaymentPenalty(
+        [data],
+        detail?.overdue,
+        detail?.payment.rate
+      )
+    mappedData.total.value += penalty
+    mappedData.remainTotal.USD += penalty
+    mappedData.remainTotal.KHR += penalty * rate.sellRate
+    mappedData['penalty'] = { USD: penalty, KHR: penalty * rate.sellRate }
+  }
+  return mappedData
 }
 
 export default LoanTable

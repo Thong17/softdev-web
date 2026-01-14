@@ -17,7 +17,7 @@ export const columnData: ITableColumn<any>[] = [
   { id: 'action', label: 'ACTION', align: 'right' },
 ]
 
-const renderStatus = (status: string, theme: any) => {
+export const renderStatus = (status: string, theme: any) => {
   switch (status) {
     case 'REJECTED':
       return theme.color.error

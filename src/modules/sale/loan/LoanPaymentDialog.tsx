@@ -129,12 +129,11 @@ export const LoanPaymentDialog = ({ dialog, setDialog }: any) => {
             }}>
               <StickyTable backgroundColor='secondary' columns={columnData} rows={[]} pagination={false} />
             </Box>
-            <Box sx={{ width: '100%', height: '130px' }}>
+            <Box sx={{ width: '100%', height: '180px' }}>
               <Box
                 sx={{
                   position: 'relative',
                   backgroundColor: `${theme.background.primary}99`,
-                  height: '65%',
                   borderRadius: theme.radius.ternary,
                   display: 'flex',
                   flexDirection: 'column',
@@ -149,21 +148,26 @@ export const LoanPaymentDialog = ({ dialog, setDialog }: any) => {
               >
                 <div>
                   <InvoiceDetail
-                    color={theme.color.error}
-                    label={language['TOTAL_PENALTY']}
-                    value={0}
+                    color={theme.text.secondary}
+                    label={language['PRINCIPLE_AMOUNT']}
+                    value={currencyFormat(dialog.detail?.principalAmount?.value, dialog.detail?.principalAmount?.currency)}
                   />
                   <InvoiceDetail
                     color={theme.text.secondary}
-                    label={language['TOTAL_REMAIN']}
-                    value={0}
+                    label={language['INTEREST_AMOUNT']}
+                    value={currencyFormat(dialog.detail?.interestAmount?.value, dialog.detail?.interestAmount?.currency)}
+                  />
+                  <InvoiceDetail
+                    color={theme.color.error}
+                    label={language['TOTAL_PENALTY']}
+                    value={currencyFormat(dialog.payment?.penalty?.USD, 'USD')}
                   />
                 </div>
               </Box>
               <Box
                 sx={{
                   backgroundColor: `${theme.background.primary}99`,
-                  height: '35%',
+                  height: '50px',
                   borderRadius: theme.radius.ternary,
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -173,7 +177,7 @@ export const LoanPaymentDialog = ({ dialog, setDialog }: any) => {
               >
                 <Box component='span'>{language['GRAND_TOTAL']}</Box>
                 <Box component='span'>
-                  {0}
+                  {currencyFormat(Math.max(0, dialog.payment?.total.value), dialog.payment?.total.currency)}
                 </Box>
               </Box>
             </Box>

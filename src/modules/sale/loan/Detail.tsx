@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getDetailLoan, selectDetailLoan } from './redux'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
+import { renderStatus } from './constant'
 
 const Header = ({ stages, status, styled, language, onOpenDeposit }) => {
   return (
@@ -26,12 +27,12 @@ const Header = ({ stages, status, styled, language, onOpenDeposit }) => {
         onClick={() => onOpenDeposit()}
         style={{
           marginLeft: 10,
-          backgroundColor: !status ? `${styled.color.info}22` : `${styled.color.success}22`,
-          color: !status ? styled.color.info : styled.color.success,
+          backgroundColor: `${renderStatus('CLEARED', styled)}22`,
+          color: renderStatus('CLEARED', styled),
         }}
         styled={styled}
       >
-        {!status ? language['COMPLETED'] : language['CLEAR']}
+        {language['CLEARED']}
       </CustomButton>
     </Box>
   )
@@ -79,7 +80,7 @@ export const DetailLoan = () => {
   }
 
   return (
-    <Container header={<Header status={data?.status === 'APPROVED'} stages={stages} styled={theme} language={language} onOpenDeposit={handleOpenDeposit} />}>
+    <Container header={<Header status={data?.status} stages={stages} styled={theme} language={language} onOpenDeposit={handleOpenDeposit} />}>
       <Box
         sx={{
           display: 'grid',
@@ -89,7 +90,7 @@ export const DetailLoan = () => {
       >
         <DepositDialog dialog={depositDialog} setDialog={setDepositDialog} />
         <Box sx={{ gridArea: 'loanDetail' }}><LoanDetail data={data} /></Box>
-        <Box sx={{ gridArea: 'loanTable' }}><LoanTable data={data?.loanPayments} /></Box>
+        <Box sx={{ gridArea: 'loanTable' }}><LoanTable data={data?.loanPayments} detail={data} /></Box>
       </Box>
     </Container>
   )
