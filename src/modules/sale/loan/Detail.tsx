@@ -23,18 +23,30 @@ const Header = ({ stages, status, styled, language, onOpenDeposit }) => {
       sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
     >
       <Breadcrumb stages={stages} title={<ConfirmationNumberRoundedIcon />} />
-      <CustomButton
-        onClick={() => onOpenDeposit()}
-        disabled={status === 'CLEARED'}
-        style={{
-          marginLeft: 10,
-          backgroundColor: `${renderStatus('CLEARED', styled)}22`,
-          color: renderStatus('CLEARED', styled),
-        }}
-        styled={styled}
-      >
-        {language['CLEARED']}
-      </CustomButton>
+      <div>
+        {status === 'IN_PROGRESS' && <CustomButton
+          style={{
+            marginLeft: 10,
+            backgroundColor: `${styled.color.error}22`,
+            color: styled.color.error,
+          }}
+          styled={styled}
+        >
+          {language['TERMINATE']}
+        </CustomButton>}
+        <CustomButton
+          onClick={() => onOpenDeposit()}
+          disabled={status === 'CLEARED'}
+          style={{
+            marginLeft: 10,
+            backgroundColor: `${renderStatus(status, styled)}22`,
+            color: renderStatus(status, styled),
+          }}
+          styled={styled}
+        >
+          {status === 'CLEARED' ? language['PAID_OFF'] : language['PAY_OFF']}
+        </CustomButton>
+      </div>
     </Box>
   )
 }

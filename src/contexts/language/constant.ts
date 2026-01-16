@@ -222,7 +222,10 @@ export const languages = {
     APPROVED: 'Approved',
     REJECTED: 'Rejected',
     PENDING: 'Pending',
-    PRINCIPLE_AMOUNT: 'Principle Amount'
+    PRINCIPLE_AMOUNT: 'Principle Amount',
+    PAY_OFF: 'Pay Off',
+    PAID_OFF: 'Paid Off',
+    TERMINATE: 'Terminate'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -446,6 +449,9 @@ export const languages = {
     APPROVED: 'Approved',
     REJECTED: 'Rejected',
     PENDING: 'Pending', 
-    PRINCIPLE_AMOUNT: 'Principle Amount'
+    PRINCIPLE_AMOUNT: 'Principle Amount',
+    PAY_OFF: 'Pay Off',
+    PAID_OFF: 'Paid Off',
+    TERMINATE: 'Terminate'
   }
 }
