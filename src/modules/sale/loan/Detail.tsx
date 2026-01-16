@@ -25,6 +25,7 @@ const Header = ({ stages, status, styled, language, onOpenDeposit }) => {
       <Breadcrumb stages={stages} title={<ConfirmationNumberRoundedIcon />} />
       <CustomButton
         onClick={() => onOpenDeposit()}
+        disabled={status === 'CLEARED'}
         style={{
           marginLeft: 10,
           backgroundColor: `${renderStatus('CLEARED', styled)}22`,

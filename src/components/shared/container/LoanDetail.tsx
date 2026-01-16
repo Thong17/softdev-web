@@ -1,12 +1,14 @@
 import { Box } from '@mui/material'
 import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
-import React from 'react'
+import React, { useState } from 'react'
 import { CustomButton } from 'styles/index'
 import { currencyFormat, durationFormat } from 'utils/index'
 import { CircleIcon } from '../table/CustomIcon'
 import { TextEllipsis } from '../TextEllipsis'
 import { FlexBetween } from './FlexBetween'
+import { NotificationLabel } from '../NotificationLabel'
+import { AttachmentDialog } from 'modules/sale/loan/AttachmentDialog'
 
 export const renderDirection = (direction, theme): any => {
   if (direction === 'row') {
@@ -31,7 +33,11 @@ export const renderDirection = (direction, theme): any => {
 const LoanDetail = ({ data, direction = 'row', backgroundColor }: any) => {
   const { theme } = useTheme()
   const { language } = useLanguage()
-  
+  const [attachmentDialog, setAttachmentDialog] = useState({
+    open: false,
+    attachments: [],
+  })
+
   return (
     <Box
       sx={{
@@ -84,15 +90,21 @@ const LoanDetail = ({ data, direction = 'row', backgroundColor }: any) => {
             </Box>
           </Box>
         </Box>
-        <CustomButton
-          styled={theme}
-          sx={{
-            backgroundColor: `${theme.color.info}22`,
-            color: theme.color.info,
-          }}
-        >
-          {language['VIEW_ATTACHMENT']}
-        </CustomButton>
+        <div style={{position: 'relative'}}>
+          <CustomButton
+            onClick={() => setAttachmentDialog({ open: true, attachments: data?.attachments || [] })}
+            disabled={!data?.attachments?.length}
+            styled={theme}
+            sx={{
+              backgroundColor: `${theme.color.info}22`,
+              color: theme.color.info,
+              width: '100%',
+            }}
+          >
+            {language['VIEW_ATTACHMENT']}
+          </CustomButton>
+          {data?.attachments?.length > 0 && <NotificationLabel value={data?.attachments?.length || 0} top={-5} right={-5} borderRadius={'50%'} />}
+        </div>
       </Box>
       <Box
         className='loan'
@@ -178,6 +190,10 @@ const LoanDetail = ({ data, direction = 'row', backgroundColor }: any) => {
             )}
           </span>
         </FlexBetween>
+          <AttachmentDialog
+            dialog={attachmentDialog}
+            setDialog={setAttachmentDialog}
+          />
       </Box>
     </Box>
   )

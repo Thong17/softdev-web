@@ -2,6 +2,7 @@ import { IconButton } from '@mui/material'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { currencyFormat, dateFormat } from 'utils/index'
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
+import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { TextHighlight } from 'components/shared/TextHighlight'
 
@@ -34,10 +35,36 @@ export const renderStatus = (status: string, theme: any) => {
   }
 }
 
+const renderDueDateStatus = (
+  dueDate: string,
+  overdue: {
+    value: number
+    currency: string
+    duration: { value: number; time: string }
+  },
+  theme: any
+) => {
+  const now = Date.now()
+  const dueTime = new Date(dueDate).getTime()
+
+  const overdueMs = overdue.duration.value * 24 * 60 * 60 * 1000
+  const overdueDeadline = dueTime + overdueMs
+
+  if (now > overdueDeadline) {
+    return theme.color.error
+  }
+
+  if (now > dueTime) {
+    return theme.color.warning
+  }
+
+  return theme.color.success
+}
+
 export const mappedItem = (data, privilege, theme, onCancel, onDetail) => {
   const action = (
     <>
-      {privilege?.loan?.cancel && (
+      {(privilege?.loan?.cancel && data.status === 'IN_PROGRESS') && (
         <IconButton
           size='small'
           onClick={() => onCancel(data._id)}
@@ -56,13 +83,13 @@ export const mappedItem = (data, privilege, theme, onCancel, onDetail) => {
           size='small'
           onClick={() => onDetail(data._id)}
           style={{
-            backgroundColor: `${theme.color.info}22`,
+            backgroundColor: data.status === 'CLEARED' ? `${theme.color.success}22` : `${theme.color.info}22`,
             borderRadius: theme.radius.primary,
             marginLeft: 5,
-            color: theme.color.info,
+            color: data.status === 'CLEARED' ? theme.color.success : theme.color.info,
           }}
         >
-          <AttachMoneyRoundedIcon fontSize='small' />
+          {data.status === 'CLEARED' ? <PrintRoundedIcon fontSize='small' /> : <AttachMoneyRoundedIcon fontSize='small' />}
         </IconButton>
       )}
     </>
@@ -75,7 +102,7 @@ export const mappedItem = (data, privilege, theme, onCancel, onDetail) => {
     totalLoan: currencyFormat(data.totalLoan.USD, 'USD'),
     totalPaid: currencyFormat(data.totalPaid.value, data.totalPaid.currency),
     totalRemain: currencyFormat(data.totalRemain.USD, 'USD'),
-    dueDate: dateFormat(null),
+    dueDate: <TextHighlight text={dateFormat(data.dueDate)} color={renderDueDateStatus(data.dueDate, data.overdue, theme)} />,
     status: <TextHighlight text={data.status} color={renderStatus(data.status,theme)} />,
     action,
   }
