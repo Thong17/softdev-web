@@ -93,7 +93,6 @@ const LoanDetail = ({ data, direction = 'row', backgroundColor }: any) => {
         <div style={{position: 'relative'}}>
           <CustomButton
             onClick={() => setAttachmentDialog({ open: true, attachments: data?.attachments || [] })}
-            disabled={!data?.attachments?.length}
             styled={theme}
             sx={{
               backgroundColor: `${theme.color.info}22`,
@@ -190,10 +189,10 @@ const LoanDetail = ({ data, direction = 'row', backgroundColor }: any) => {
             )}
           </span>
         </FlexBetween>
-          <AttachmentDialog
-            dialog={attachmentDialog}
-            setDialog={setAttachmentDialog}
-          />
+        <AttachmentDialog
+          dialog={attachmentDialog}
+          setDialog={setAttachmentDialog}
+        />
       </Box>
     </Box>
   )

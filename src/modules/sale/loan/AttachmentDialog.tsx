@@ -2,33 +2,74 @@ import { Box } from '@mui/material'
 import { IImage } from 'components/shared/form/UploadField'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import useTheme from 'hooks/useTheme'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Carousel from 'react-spring-3d-carousel'
+import Axios from 'constants/functions/Axios'
+import { useParams } from 'react-router-dom'
 
 export const AttachmentDialog = ({ dialog, setDialog }: any) => {
   const [toSlide, setToSlide] = useState(0)
+  const [slides, setSlides] = useState<any[]>([]);
   const { theme } = useTheme()
+  const { id } = useParams()
 
   const handleCloseDialog = () => {
     setToSlide(0)
     setDialog({ open: false, attachments: [] })
   }
 
-  let slides = dialog.attachments.map((image: IImage, key) => {
-    return {
-      key: key,
-      content: (
-        <div className='img-container' key={key}>
-          <img
-            src={`${process.env.REACT_APP_API_UPLOADS}${image?.filename}`}
-            alt='file upload'
-            loading='lazy'
-          />
-        </div>
-      ),
-      onClick: () => setToSlide(key),
+  const mapSlides = (attachments: IImage[]) => {
+    return attachments.map((image: IImage, key) => {
+      const isPdf = image?.filename?.toLowerCase().endsWith('.pdf');
+      return {
+        key: key,
+        content: (
+          <div className='img-container' key={key}>
+            {isPdf ? (
+              <iframe
+                src={`${process.env.REACT_APP_API_UPLOADS}${image?.filename}`}
+                title='PDF file'
+                style={{ width: '50vw', height: '65vh', border: 'none' }}
+              />
+            ) : (
+              <img
+                src={`${process.env.REACT_APP_API_UPLOADS}${image?.filename}`}
+                alt='file upload'
+                loading='lazy'
+              />
+            )}
+          </div>
+        ),
+        onClick: () => setToSlide(key),
+      }
+    })
+  }
+
+  useEffect(() => {
+    setSlides(mapSlides(dialog.attachments));
+  }, [dialog.attachments]);
+
+  const handleAddUpload = (e) => {
+    const files = e.target.files
+    const formData = new FormData()
+    if (!files) return
+    for (const element of files) {
+      const file = element;
+      formData.append('attachment', file)
     }
-  })
+    const response = Axios({
+      method: 'POST',
+      url: `/sale/loan/uploadAttachment/${id}`,
+      body: formData,
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    })
+    response.then((resp) => {
+      setSlides(mapSlides(resp.data.data.attachments))
+    }).catch(console.error)
+    e.target.value = ''
+  }
 
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
@@ -73,6 +114,12 @@ export const AttachmentDialog = ({ dialog, setDialog }: any) => {
           },
         }}
       >
+        <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 10 }}>
+          <label style={{ cursor: 'pointer', color: theme.color.info }}>
+            Add Attachment
+            <input type='file' accept='image/*,application/pdf' style={{ display: 'none' }} onChange={(e) => handleAddUpload(e)} multiple />
+          </label>
+        </div>
         <Carousel
           slides={slides}
           goToSlide={toSlide}
