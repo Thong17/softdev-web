@@ -16,6 +16,7 @@ import { IconButton } from '@mui/material'
 export interface IImage {
   filename: string
   _id: string
+  id?: string
 }
 
 interface IUploadField extends InputHTMLAttributes<HTMLInputElement> {
