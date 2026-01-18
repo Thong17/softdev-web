@@ -16,8 +16,9 @@ import { getDetailLoan, selectDetailLoan } from './redux'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
 import { renderStatus } from './constant'
+import { WriteOffDialog } from './WriteOffDialog'
 
-const Header = ({ stages, status, styled, language, onOpenDeposit }) => {
+const Header = ({ stages, status, styled, language, onOpenDeposit, onOpenWriteOff }) => {
   return (
     <Box
       sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
@@ -25,6 +26,7 @@ const Header = ({ stages, status, styled, language, onOpenDeposit }) => {
       <Breadcrumb stages={stages} title={<ConfirmationNumberRoundedIcon />} />
       <div>
         {status === 'IN_PROGRESS' && <CustomButton
+          onClick={() => onOpenWriteOff()}
           style={{
             marginLeft: 10,
             backgroundColor: `${styled.color.error}22`,
@@ -32,7 +34,7 @@ const Header = ({ stages, status, styled, language, onOpenDeposit }) => {
           }}
           styled={styled}
         >
-          {language['TERMINATE']}
+          {language['WRITE_OFF']}
         </CustomButton>}
         <CustomButton
           onClick={() => onOpenDeposit()}
@@ -59,6 +61,7 @@ export const DetailLoan = () => {
   const { language } = useLanguage()
   const { theme } = useTheme()
   const [depositDialog, setDepositDialog] = useState<any>({ open: false, payment: null, detail: null })
+  const [writeOffDialog, setWriteOffDialog] = useState({ open: false });
   const { user } = useAuth()
   const { notify } = useNotify()
 
@@ -93,7 +96,7 @@ export const DetailLoan = () => {
   }
 
   return (
-    <Container header={<Header status={data?.status} stages={stages} styled={theme} language={language} onOpenDeposit={handleOpenDeposit} />}>
+    <Container header={<Header status={data?.status} stages={stages} styled={theme} language={language} onOpenDeposit={handleOpenDeposit} onOpenWriteOff={() => setWriteOffDialog({ open: true })} />}>
       <Box
         sx={{
           display: 'grid',
@@ -102,6 +105,7 @@ export const DetailLoan = () => {
         }}
       >
         <DepositDialog dialog={depositDialog} setDialog={setDepositDialog} />
+        <WriteOffDialog dialog={writeOffDialog} setDialog={setWriteOffDialog} data={data} />
         <Box sx={{ gridArea: 'loanDetail' }}><LoanDetail data={data} /></Box>
         <Box sx={{ gridArea: 'loanTable' }}><LoanTable data={data?.loanPayments} detail={data} /></Box>
       </Box>

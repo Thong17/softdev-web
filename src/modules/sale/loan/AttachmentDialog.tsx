@@ -26,7 +26,7 @@ export const AttachmentDialog = ({ dialog, setDialog }: any) => {
       return {
         key: key,
         content: (
-          <div className='img-container' key={key} style={{ width: '50vw', height: '80vh' }}>
+          <div className='img-container' key={key} style={{ width: '50vw', height: '80vh', backgroundColor: `${theme.background.secondary}22`, backdropFilter: 'blur(5px)' }}>
             <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 10 }}>
               <IconButton
                 onClick={() => handleRemoveAttachment(image.id as string)}
@@ -53,7 +53,7 @@ export const AttachmentDialog = ({ dialog, setDialog }: any) => {
                 src={`${process.env.REACT_APP_API_UPLOADS}${image?.filename}`}
                 alt='file upload'
                 loading='lazy'
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             )}
           </div>

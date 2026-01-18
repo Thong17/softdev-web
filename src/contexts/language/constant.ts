@@ -225,7 +225,9 @@ export const languages = {
     PRINCIPLE_AMOUNT: 'Principle Amount',
     PAY_OFF: 'Pay Off',
     PAID_OFF: 'Paid Off',
-    TERMINATE: 'Terminate'
+    TERMINATE: 'Terminate',
+    WRITE_OFF: 'Write Off',
+    WRITE_OFF_LOAN: 'Write Off Loan',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -452,6 +454,8 @@ export const languages = {
     PRINCIPLE_AMOUNT: 'Principle Amount',
     PAY_OFF: 'Pay Off',
     PAID_OFF: 'Paid Off',
-    TERMINATE: 'Terminate'
+    TERMINATE: 'Terminate',
+    WRITE_OFF: 'Write Off',
+    WRITE_OFF_LOAN: 'Write Off Loan',
   }
 }
