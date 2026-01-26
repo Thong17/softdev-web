@@ -105,7 +105,16 @@ export const DetailLoan = () => {
         }}
       >
         <DepositDialog dialog={depositDialog} setDialog={setDepositDialog} />
-        <WriteOffDialog dialog={writeOffDialog} setDialog={setWriteOffDialog} data={data} />
+        {data?.payment?.transactions && <WriteOffDialog dialog={writeOffDialog} setDialog={setWriteOffDialog} data={data} defaultValues={{ transactions: data?.payment?.transactions?.map(item => ({
+          writeOffType: 'REPOSSESS',
+          remainingCostCurrency: 'USD',
+          remainingCost: 0,
+          newPrice: 0,
+          newPriceCurrency: 'USD',
+          condition: 'USED',
+          reason: '',
+          note: '',
+        })) }} />}
         <Box sx={{ gridArea: 'loanDetail' }}><LoanDetail data={data} /></Box>
         <Box sx={{ gridArea: 'loanTable' }}><LoanTable data={data?.loanPayments} detail={data} /></Box>
       </Box>

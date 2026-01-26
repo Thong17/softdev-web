@@ -6,63 +6,47 @@ import { AlertDialog } from 'components/shared/table/AlertDialog'
 import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useFieldArray, useForm } from 'react-hook-form'
 import { writeOffSchema } from './schema'
 import { conditionOptions, writeOffTypeOptions } from './constants'
-import { currencyOptions, currencySymbolOptions } from 'constants/variables'
+import { currencySymbolOptions } from 'constants/variables'
+import Axios from 'constants/functions/Axios'
+import useNotify from 'hooks/useNotify'
 
 export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) => {
   const { language } = useLanguage()
   const { theme } = useTheme()
   const { width } = useWeb()
+  const { notify } = useNotify()
   const {
-    watch,
+    control,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(writeOffSchema), defaultValues })
 
-  const [writeOffType, setWriteOffType] = useState(defaultValues?.writeOffType)
-  const writeOffTypeValue = watch('writeOffType')
-
-  useEffect(() => {
-    const selectedWriteOffType = writeOffTypeOptions.find(
-      (key) => key.value === writeOffTypeValue
-    )
-
-    setWriteOffType(selectedWriteOffType?.value || 'repossess')
-  }, [writeOffTypeValue])
-
-  const [currency, setCurrency] = useState(defaultValues?.currency)
-  const currencyValue = watch('currency')
-
-  useEffect(() => {
-      const selectedCurrency = currencyOptions.find(
-        (key) => key.value === currencyValue
-      )
-  
-      setCurrency(selectedCurrency?.value || 'USD')
-    }, [currencyValue])
-
-  const [condition, setCondition] = useState(defaultValues?.condition)
-  const conditionValue = watch('condition')
-
-  useEffect(() => {
-      const selectedCondition = conditionOptions.find(
-        (key) => key.value === conditionValue
-      )
-  
-      setCondition(selectedCondition?.value || 'USED')
-    }, [conditionValue])
+  const { fields } = useFieldArray({
+    control,
+    name: 'transactions'
+  })
 
   const handleCloseDialog = () => {
     setDialog({ open: false })
   }
 
-  const submit = (data: any) => {
-    console.log('Write off data:', data);
+  const submit = (payload: any) => {
     // Implement write-off logic here 
+    Axios({
+      method: 'PUT',
+      url: `/sale/loan/writeOff/${data.payment?._id}`,
+      body: payload,
+    })
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
   }
 
   return (
@@ -71,12 +55,11 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) 
         title={language['WRITE_OFF_LOAN']}
         onClose={handleCloseDialog}
       />
-      <form>
-        <div>
+      <form onSubmit={handleSubmit(submit)}>
+        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {
-            data?.payment?.transactions?.map((item, key) => (
+            fields?.map((item: any, key) => (
               <div key={key} style={{
-                borderTop: theme.border.quaternary,
                 fontFamily: theme.font.family,
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr 1fr',
@@ -84,37 +67,41 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) 
                 padding: 20,
                 gridColumnGap: 20,
                 gridTemplateAreas: `
-                                  'writeOffType cost currency'
+                                  'writeOffType remainingCost newPrice'
                                   'condition note note'
                                   'reason reason reason'
                                   'action action action'
                               `,
+                borderRadius: theme.radius.ternary, 
+                backgroundColor: theme.background.secondary,
+                boxSizing: 'border-box'
+
               }}>
                 <div style={{ gridArea: 'writeOffType' }}>
                   <SelectField
-                    value={writeOffType}
+                    defaultValue={(fields[key] as any)?.writeOffType}
+                    label='Write Off Type'
                     options={writeOffTypeOptions}
-                    label={item.description}
                     err={errors?.writeOffType?.message}
-                    {...register('writeOffType')}
+                    {...register(`transactions.${key}.writeOffType`)}
                   />
                 </div>
-                <div style={{ gridArea: 'cost' }}>
+                <div style={{ gridArea: 'remainingCost' }}>
                   <TextField
                     type='number'
                     step='any'
                     label='Remaining Cost'
-                    err={errors?.cost?.message}
-                    {...register('cost')}
+                    err={errors?.remainingCost?.message}
+                    {...register(`transactions.${key}.remainingCost`)}
                     icon={
                       <div
                         style={{ position: 'absolute', right: 0, display: 'flex' }}
                       >
                         <MiniSelectField
-                          value={currency}
+                          defaultValue={(fields[key] as any)?.remainingCostCurrency}
                           options={currencySymbolOptions}
                           width={33}
-                          {...register('currency')}
+                          {...register(`transactions.${key}.remainingCostCurrency`)}
                           sx={{
                             position: 'absolute',
                             top: -1,
@@ -137,22 +124,22 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) 
                     }
                   />
                 </div>
-                <div style={{ gridArea: 'currency' }}>
+                <div style={{ gridArea: 'newPrice' }}>
                   <TextField
                     type='number'
                     step='any'
                     label='New Price'
-                    err={errors?.cost?.message}
-                    {...register('cost')}
+                    err={errors?.newPrice?.message}
+                    {...register(`transactions.${key}.newPrice`)}
                     icon={
                       <div
                         style={{ position: 'absolute', right: 0, display: 'flex' }}
                       >
                         <MiniSelectField
-                          value={currency}
+                          defaultValue={(fields[key] as any)?.newPriceCurrency}
                           options={currencySymbolOptions}
                           width={33}
-                          {...register('currency')}
+                          {...register(`transactions.${key}.newPriceCurrency`)}
                           sx={{
                             position: 'absolute',
                             top: -1,
@@ -177,25 +164,25 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) 
                 </div>
                 <div style={{ gridArea: 'condition' }}>
                   <SelectField
-                    value={condition}
+                    defaultValue={(fields[key] as any)?.condition}
                     options={conditionOptions}
                     label='Condition'
                     err={errors?.condition?.message}
-                    {...register('condition')}
+                    {...register(`transactions.${key}.condition`)}
                   />
                 </div>
                 <div style={{ gridArea: 'note' }}>
                   <TextField
                     label='Note'
                     err={errors?.note?.message}
-                    {...register('note')}
+                    {...register(`transactions.${key}.note`)}
                   />
                 </div>
                 <div style={{ gridArea: 'reason' }}>
                   <TextField
                     label='Reason'
                     err={errors?.reason?.message}
-                    {...register('reason')}
+                    {...register(`transactions.${key}.reason`)}
                   />
                 </div>
               </div>

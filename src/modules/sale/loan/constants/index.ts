@@ -2,11 +2,11 @@ import { IOptions } from "components/shared/form/SelectField";
 
 export const writeOffTypeOptions: IOptions[] = [
   {
-    value: 'repossess',
+    value: 'REPOSSESS',
     label: 'Repossess',
   },
   {
-    value: 'clear',
+    value: 'CLEAR',
     label: 'Clear',
   },
 ]
