@@ -114,6 +114,7 @@ export const DetailLoan = () => {
           condition: 'USED',
           reason: '',
           note: '',
+          id: item._id,
         })) }} />}
         <Box sx={{ gridArea: 'loanDetail' }}><LoanDetail data={data} /></Box>
         <Box sx={{ gridArea: 'loanTable' }}><LoanTable data={data?.loanPayments} detail={data} /></Box>

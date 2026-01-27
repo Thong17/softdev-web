@@ -38,7 +38,7 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) 
     // Implement write-off logic here 
     Axios({
       method: 'PUT',
-      url: `/sale/loan/writeOff/${data.payment?._id}`,
+      url: `/sale/loan/writeOff/${data?._id}`,
       body: payload,
     })
       .then((data) => {
