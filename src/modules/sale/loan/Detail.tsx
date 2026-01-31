@@ -111,6 +111,7 @@ export const DetailLoan = () => {
           remainingCost: 0,
           newPrice: 0,
           newPriceCurrency: 'USD',
+          currency: 'USD',
           condition: 'USED',
           reason: '',
           note: '',

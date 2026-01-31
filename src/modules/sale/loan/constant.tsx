@@ -21,6 +21,7 @@ export const columnData: ITableColumn<any>[] = [
 export const renderStatus = (status: string, theme: any) => {
   switch (status) {
     case 'REJECTED':
+    case 'WRITTEN_OFF':
       return theme.color.error
     case 'IN_PROGRESS':
     case 'PENDING':

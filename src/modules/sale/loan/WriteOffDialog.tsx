@@ -22,6 +22,7 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) 
     control,
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({ resolver: yupResolver(writeOffSchema), defaultValues })
 
@@ -36,10 +37,37 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) 
 
   const submit = (payload: any) => {
     // Implement write-off logic here 
+    let body = {
+      transactions: payload?.transactions?.map((item: any) => {
+        if (item.writeOffType === 'REPOSSESS') {
+          return {
+            id: item.id,
+            writeOffType: item.writeOffType,
+            remainingCostCurrency: item.remainingCostCurrency,
+            remainingCost: item.remainingCost,
+            newPrice: item.newPrice,
+            newPriceCurrency: item.newPriceCurrency,
+            condition: item.condition,
+            reason: item.reason,
+            note: item.note,
+          }
+        } else {
+          return {
+            id: item.id,
+            writeOffType: item.writeOffType,
+            amount: item.amount,
+            currency: item.currency,
+            condition: item.condition,
+            reason: item.reason,
+            note: item.note,
+          }
+        }
+      })
+    }
     Axios({
       method: 'PUT',
       url: `/sale/loan/writeOff/${data?._id}`,
-      body: payload,
+      body,
     })
       .then((data) => {
         console.log(data)
@@ -66,9 +94,14 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) 
                 width: width < 1024 ? '80vw' : '60vw',
                 padding: 20,
                 gridColumnGap: 20,
-                gridTemplateAreas: `
+                gridTemplateAreas: watch(`transactions.${key}.writeOffType`) === 'REPOSSESS' ? `
                                   'writeOffType remainingCost newPrice'
                                   'condition note note'
+                                  'reason reason reason'
+                                  'action action action'
+                              ` : `
+                                  'writeOffType amount condition'
+                                  'note note note'
                                   'reason reason reason'
                                   'action action action'
                               `,
@@ -86,82 +119,122 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) 
                     {...register(`transactions.${key}.writeOffType`)}
                   />
                 </div>
-                <div style={{ gridArea: 'remainingCost' }}>
-                  <TextField
-                    type='number'
-                    step='any'
-                    label='Remaining Cost'
-                    err={errors?.remainingCost?.message}
-                    {...register(`transactions.${key}.remainingCost`)}
-                    icon={
-                      <div
-                        style={{ position: 'absolute', right: 0, display: 'flex' }}
-                      >
-                        <MiniSelectField
-                          defaultValue={(fields[key] as any)?.remainingCostCurrency}
-                          options={currencySymbolOptions}
-                          width={33}
-                          {...register(`transactions.${key}.remainingCostCurrency`)}
-                          sx={{
-                            position: 'absolute',
-                            top: -1,
-                            right: -5,
-                            height: 23,
-                            '& div': {
-                              paddingRight: '0 !important',
-                            },
-                            '& .MuiSelect-select': {
+                {watch(`transactions.${key}.writeOffType`) === 'REPOSSESS' ? <>
+                  <div style={{ gridArea: 'remainingCost' }}>
+                    <TextField
+                      type='number'
+                      step='any'
+                      label='Remaining Cost'
+                      err={errors?.remainingCost?.message}
+                      {...register(`transactions.${key}.remainingCost`)}
+                      icon={
+                        <div
+                          style={{ position: 'absolute', right: 0, display: 'flex' }}
+                        >
+                          <MiniSelectField
+                            defaultValue={(fields[key] as any)?.remainingCostCurrency}
+                            options={currencySymbolOptions}
+                            width={33}
+                            {...register(`transactions.${key}.remainingCostCurrency`)}
+                            sx={{
                               position: 'absolute',
-                              top: -2,
-                            },
-                            '& .MuiSvgIcon-root': {
                               top: -1,
-                              right: 0,
-                            },
-                          }}
-                        />
-                      </div>
-                    }
-                  />
-                </div>
-                <div style={{ gridArea: 'newPrice' }}>
-                  <TextField
-                    type='number'
-                    step='any'
-                    label='New Price'
-                    err={errors?.newPrice?.message}
-                    {...register(`transactions.${key}.newPrice`)}
-                    icon={
-                      <div
-                        style={{ position: 'absolute', right: 0, display: 'flex' }}
-                      >
-                        <MiniSelectField
-                          defaultValue={(fields[key] as any)?.newPriceCurrency}
-                          options={currencySymbolOptions}
-                          width={33}
-                          {...register(`transactions.${key}.newPriceCurrency`)}
-                          sx={{
-                            position: 'absolute',
-                            top: -1,
-                            right: -5,
-                            height: 23,
-                            '& div': {
-                              paddingRight: '0 !important',
-                            },
-                            '& .MuiSelect-select': {
+                              right: -5,
+                              height: 23,
+                              '& div': {
+                                paddingRight: '0 !important',
+                              },
+                              '& .MuiSelect-select': {
+                                position: 'absolute',
+                                top: -2,
+                              },
+                              '& .MuiSvgIcon-root': {
+                                top: -1,
+                                right: 0,
+                              },
+                            }}
+                          />
+                        </div>
+                      }
+                    />
+                  </div>
+                  <div style={{ gridArea: 'newPrice' }}>
+                    <TextField
+                      type='number'
+                      step='any'
+                      label='New Price'
+                      err={errors?.newPrice?.message}
+                      {...register(`transactions.${key}.newPrice`)}
+                      icon={
+                        <div
+                          style={{ position: 'absolute', right: 0, display: 'flex' }}
+                        >
+                          <MiniSelectField
+                            defaultValue={(fields[key] as any)?.newPriceCurrency}
+                            options={currencySymbolOptions}
+                            width={33}
+                            {...register(`transactions.${key}.newPriceCurrency`)}
+                            sx={{
                               position: 'absolute',
-                              top: -2,
-                            },
-                            '& .MuiSvgIcon-root': {
                               top: -1,
-                              right: 0,
-                            },
-                          }}
-                        />
-                      </div>
-                    }
-                  />
-                </div>
+                              right: -5,
+                              height: 23,
+                              '& div': {
+                                paddingRight: '0 !important',
+                              },
+                              '& .MuiSelect-select': {
+                                position: 'absolute',
+                                top: -2,
+                              },
+                              '& .MuiSvgIcon-root': {
+                                top: -1,
+                                right: 0,
+                              },
+                            }}
+                          />
+                        </div>
+                      }
+                    />
+                  </div>
+                </> : <div style={{ gridArea: 'amount' }}>
+                    <TextField
+                      type='number'
+                      step='any'
+                      label='Amount'
+                      err={errors?.amount?.message}
+                      {...register(`transactions.${key}.amount`)}
+                      icon={
+                        <div
+                          style={{ position: 'absolute', right: 0, display: 'flex' }}
+                        >
+                          <MiniSelectField
+                            defaultValue={(fields[key] as any)?.currency}
+                            options={currencySymbolOptions}
+                            width={33}
+                            {...register(`transactions.${key}.currency`)}
+                            sx={{
+                              position: 'absolute',
+                              top: -1,
+                              right: -5,
+                              height: 23,
+                              '& div': {
+                                paddingRight: '0 !important',
+                              },
+                              '& .MuiSelect-select': {
+                                position: 'absolute',
+                                top: -2,
+                              },
+                              '& .MuiSvgIcon-root': {
+                                top: -1,
+                                right: 0,
+                              },
+                            }}
+                          />
+                        </div>
+                      }
+                    />
+                  </div>
+                }
                 <div style={{ gridArea: 'condition' }}>
                   <SelectField
                     defaultValue={(fields[key] as any)?.condition}
