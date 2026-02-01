@@ -75,7 +75,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
   const submit = async (data) => {
     Axios({
       method: id ? 'PUT' : 'POST',
-      url: id ? `/sale/promotion/update/${id}` : `/sale/promotion/create`,
+      url: id ? `/function/promotion/update/${id}` : `/function/promotion/create`,
       body: data,
     })
       .then((data) => {

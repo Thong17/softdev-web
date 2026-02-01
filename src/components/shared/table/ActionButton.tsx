@@ -13,6 +13,7 @@ import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded'
 import EscalatorRoundedIcon from '@mui/icons-material/EscalatorRounded'
 import TrendingFlatRoundedIcon from '@mui/icons-material/TrendingFlatRounded'
 import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded'
+import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import useTheme from 'hooks/useTheme'
 import { FC } from 'react'
 
@@ -109,9 +110,17 @@ export const RejectButton: FC<ButtonProps> = ({ ...prop }) => {
 export const ViewButton: FC<ButtonProps> = ({ ...prop }) => {
   const { theme } = useTheme()
   return (
-    <span style={{ color: theme.text.secondary }} {...prop}>
+    <IconButton 
+      size='small'
+      style={{
+        backgroundColor: `${theme.color.info}22`,
+        borderRadius: theme.radius.primary,
+        marginLeft: 5,
+        color: theme.color.info,
+      }} 
+      {...prop}>
       <MoreVertRoundedIcon fontSize='small' />
-    </span>
+    </IconButton>
   )
 }
 
@@ -240,6 +249,25 @@ export const ResetButton: FC<ButtonProps> = ({ title, ...prop }) => {
       {...prop}
     >
       <RestartAltRoundedIcon fontSize='small' />
+      {title && <span style={{ marginLeft: 5, fontSize: 13 }}>{title}</span>}
+    </IconButton>
+  )
+}
+
+export const PrintButton: FC<ButtonProps> = ({ title, ...prop }) => {
+  const { theme } = useTheme()
+  return (
+    <IconButton
+      size='small'
+      style={{
+        backgroundColor: `${theme.color.info}33`,
+        borderRadius: theme.radius.primary,
+        color: theme.color.info,
+        marginLeft: 5,
+      }}
+      {...prop}
+    >
+      <PrintRoundedIcon fontSize='small' />
       {title && <span style={{ marginLeft: 5, fontSize: 13 }}>{title}</span>}
     </IconButton>
   )

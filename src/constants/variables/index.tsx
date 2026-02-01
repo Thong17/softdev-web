@@ -12,6 +12,17 @@ export const currencyOptions: IOptions[] = [
   },
 ]
 
+export const currencySymbolOptions: IOptions[] = [
+  {
+    value: 'USD',
+    label: <>&#36;</>,
+  },
+  {
+    value: 'KHR',
+    label: <>&#6107;</>,
+  },
+]
+
 export const invoiceColumns: ITableColumn<string>[] = [
   { id: 'description', label: 'Description' },
   { id: 'qty', label: 'Qty' },

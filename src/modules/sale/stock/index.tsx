@@ -270,6 +270,7 @@ export const Stocks = () => {
                           <QuantityStatus
                             qty={obj.stock}
                             min={obj.alertAt}
+                            onClick={() => navigate(`/sale/stock/item/${obj.id}`)}
                           />
                         ) : (
                           <span style={{ color: theme.color.success }}>{language['AVAILABLE']}</span>
@@ -293,6 +294,7 @@ export const Stocks = () => {
                           <QuantityStatus
                             qty={obj.stock}
                             min={obj.alertAt}
+                            onClick={() => navigate(`/sale/stock/item/${obj.id}`)}
                           />
                         ) : (
                           <span style={{ color: theme.color.success }}>{language['AVAILABLE']}</span>

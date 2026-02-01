@@ -1,7 +1,7 @@
 import useTheme from 'hooks/useTheme'
 import { CustomFooter } from 'styles'
 
-const Footer = ({ ...props }) => {
+const Footer = ({ showContent = true, ...props }) => {
   const { theme } = useTheme()
 
   return (
@@ -12,9 +12,9 @@ const Footer = ({ ...props }) => {
       styled={theme}
       {...props}
     >
-      <p style={{ color: theme.text.tertiary }}>
+      {showContent && <p style={{ color: theme.text.tertiary }}>
         Copyright &copy; 2022 All Rights Reserved by <span style={{ color: theme.text.primary }}>SoftDev</span>
-      </p>
+      </p>}
     </CustomFooter>
   )
 }

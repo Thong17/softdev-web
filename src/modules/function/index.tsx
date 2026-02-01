@@ -53,3 +53,10 @@ export const Function = () => {
     </Layout>
   )
 }
+
+export {
+  Promotions,
+  CreatePromotion,
+  UpdatePromotion,
+  DetailPromotion,
+} from './promotion'

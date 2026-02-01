@@ -25,6 +25,7 @@ export interface ITableColumn<Column> {
 }
 
 interface ITable {
+  backgroundColor?: string
   pagination?: Boolean
   columns: ITableColumn<string>[]
   rows: any[]
@@ -39,6 +40,7 @@ interface ITable {
 }
 
 export const StickyTable = ({
+  backgroundColor = 'primary',
   pagination = true,
   columns,
   rows,
@@ -80,7 +82,7 @@ export const StickyTable = ({
   }
   
   return (
-    <CustomTableContainer styled={theme} device={device} style={style}>
+    <CustomTableContainer color={backgroundColor} styled={theme} device={device} style={style}>
       {loading && <Loading />}
       <div className='table-container'>
         <TableContainer className='table'>

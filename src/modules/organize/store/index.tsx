@@ -26,7 +26,7 @@ export const Store = () => {
   const { theme } = useTheme()
   const { language } = useLanguage()
   const { data } = useAppSelector(selectInfoStore)
-  
+
   useEffect(() => {
     dispatch(getInfoStore())
   }, [dispatch])
@@ -50,9 +50,9 @@ export const Store = () => {
       <DetailStore id={data?._id} detail={data?.address} name={data?.name} icon={data?.logo?.filename} type={data?.type} onEdit={handleEditStore}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
-          <DetailTitle title='Floor' value={7} />
-          <DetailTitle title='Room' value={13} />
-          <DetailTitle title='Table' value={27} />
+          <DetailTitle title='Floor' value={data?.floorCount} />
+          <DetailTitle title='Room' value={data?.roomCount} />
+          <DetailTitle title='Table' value={data?.tableCount} />
           </div>
           <Button fullWidth style={{ backgroundColor: `${theme.color.info}22`, color: theme.color.info }} onClick={() => navigate(`/organize/store/${data?._id}/layout`)}>{language['EDIT']}</Button>
         </div>

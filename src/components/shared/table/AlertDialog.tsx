@@ -1,7 +1,7 @@
 import Dialog from '@mui/material/Dialog'
 import useTheme from 'hooks/useTheme';
 
-export const AlertDialog = ({ isOpen, handleClose, children }) => {
+export const AlertDialog = ({ isOpen, handleClose, children, hasTransparent }: any) => {
   const { theme } = useTheme()
 
   return (
@@ -10,7 +10,7 @@ export const AlertDialog = ({ isOpen, handleClose, children }) => {
         sx={{
           '& .MuiDialog-paper': {
             borderRadius: theme.radius.quaternary,
-            backgroundColor: theme.background.primary,
+            backgroundColor: hasTransparent ? 'transparent' : theme.background.primary,
             minWidth: 'fit-content'
           }
         }}

@@ -37,7 +37,7 @@ export const themeMode = {
       bottom: '0 5px 5px rgba(0, 0, 0, 0.18)',
     },
   },
-  Grey: {
+  Gray: {
     background: {
       primary: '#222831',
       secondary: '#393E46',

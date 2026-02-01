@@ -4,8 +4,8 @@ import { IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
 
 export const CustomTableContainer = styled('div')(
-  ({ styled, device }: { styled: IThemeStyle; device: DeviceOptions }) => ({
-    backgroundColor: styled.background.primary,
+  ({ styled, device, color }: { styled: IThemeStyle; device: DeviceOptions, color }) => ({
+    backgroundColor: color === 'secondary' ? 'none' : styled.background.primary,
     '& .table-container': {
       maxWidth: '100%',
       position: 'relative',
@@ -26,7 +26,7 @@ export const CustomTableContainer = styled('div')(
         }
       },
       '& th': {
-        backgroundColor: styled.background.secondary,
+        backgroundColor: color === 'secondary' ? `${styled.background.primary}99` : styled.background.secondary,
         color: styled.text.primary,
         borderBottom: 0,
         fontWeight: styled.font.weight,
@@ -119,7 +119,7 @@ export const CustomGridContainer = styled('div')(
         },
         '& .action': {
           transition: '0.3s ease',
-          opacity: 0,
+          opacity: 1,
           position: 'absolute',
           right: 7,
           top: 7,
@@ -583,6 +583,7 @@ export const CustomInvoiceContainer = styled('div')(
     font: string
   }) => ({
     padding: '40px 20px',
+    borderRadius: styled.radius.ternary,
     color: mode === 'preview' ? styled.text.secondary : '#222',
     backgroundColor:
       mode === 'preview' ? styled.background.secondary : '#ffffff',

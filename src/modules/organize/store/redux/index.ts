@@ -103,8 +103,9 @@ export const storeSlice = createSlice({
         state.store.status = 'FAILED'
       })
       .addCase(getInfoStore.fulfilled, (state, action) => {
+        const { data, floorCount, roomCount, tableCount } = action.payload
         state.store.status = 'SUCCESS'
-        state.store.data = action.payload.data
+        state.store.data = { ...data, floorCount, roomCount, tableCount }
       })
 
       // Layout store

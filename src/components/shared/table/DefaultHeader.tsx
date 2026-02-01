@@ -57,8 +57,8 @@ export const DefaultHeader = ({ optionAction, exportUrl, styled, navigate, handl
           { createUrl && <CustomButton
               style={{
                 marginLeft: 10,
-                backgroundColor: styled.background.secondary,
-                color: styled.text.secondary,
+                backgroundColor: `${styled.color.success}22`,
+                color: styled.color.success,
               }}
               styled={styled}
               onClick={() => navigate(createUrl)}

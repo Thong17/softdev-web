@@ -16,7 +16,7 @@ import {
   createData,
   columnData,
 } from './constant'
-import { debounce } from 'utils'
+import { timeFormat, debounce } from 'utils'
 import { useSearchParams } from 'react-router-dom'
 import useAlert from 'hooks/useAlert'
 
@@ -100,6 +100,7 @@ export const Transactions = () => {
         transaction.status,
         transaction.note,
         transaction.createdBy?.username || '...',
+        timeFormat(transaction.createdAt, 'DD-MMM-YYYY HH:mm'),
         user?.privilege,
         theme,
         handleReverseTransaction
