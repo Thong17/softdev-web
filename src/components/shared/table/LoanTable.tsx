@@ -71,8 +71,8 @@ const mapData = (data, theme, allowPayment, onPayment, onPrint) => {
       data.principalBalance.value,
       data.principalBalance.currency
     ),
-    status: <LoanStatus dueDate={data.dueDate} isPaid={data.isPaid} />,
-    action,
+    status: <LoanStatus dueDate={data.dueDate} isPaid={data.isPaid} isClosed={data.isClosed} />,
+    action: data.isClosed ? <></> : action,
   }
 }
 

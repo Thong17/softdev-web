@@ -36,7 +36,7 @@ const Header = ({ stages, status, styled, language, onOpenDeposit, onOpenWriteOf
         >
           {language['WRITE_OFF']}
         </CustomButton>}
-        <CustomButton
+        {status === 'IN_PROGRESS' && <CustomButton
           onClick={() => onOpenDeposit()}
           disabled={status === 'CLEARED'}
           style={{
@@ -47,7 +47,7 @@ const Header = ({ stages, status, styled, language, onOpenDeposit, onOpenWriteOf
           styled={styled}
         >
           {status === 'CLEARED' ? language['PAID_OFF'] : language['PAY_OFF']}
-        </CustomButton>
+        </CustomButton>}
       </div>
     </Box>
   )
