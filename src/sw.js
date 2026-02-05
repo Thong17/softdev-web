@@ -7,14 +7,37 @@ self.addEventListener("activate", () => {
 });
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.open("app-cache").then((cache) =>
-      cache.match(event.request).then((response) =>
-        response || fetch(event.request).then((res) => {
-          cache.put(event.request, res.clone());
+  const request = event.request;
+
+  if (request.method !== "GET") return;
+
+  if (request.url.includes("/backend")) {
+    event.respondWith(
+      fetch(request)
+        .then((res) => {
+          const clone = res.clone();
+          caches.open("api-cache").then((cache) => {
+            cache.put(request, clone);
+          });
           return res;
         })
-      )
-    )
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // ✅ Static assets = cache first
+  event.respondWith(
+    caches.match(request).then((cached) => {
+      if (cached) return cached;
+
+      return fetch(request).then((res) => {
+        caches.open("app-cache").then((cache) => {
+          cache.put(request, res.clone());
+        });
+        return res;
+      });
+    })
   );
 });
+
