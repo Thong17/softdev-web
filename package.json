@@ -63,8 +63,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "serve": "serve -s build",
-    "dockerBuild": "docker build -t thonggee/softdev-web:prod-putin-ktv .",
-    "dockerPush": "docker push thonggee/softdev-web:prod-putin-ktv"
+    "dockerBuild": "docker build -t thonggee/softdev-web:kara-cafe .",
+    "dockerPush": "docker push thonggee/softdev-web:kara-cafe"
   },
   "eslintConfig": {
     "extends": "react-app"
