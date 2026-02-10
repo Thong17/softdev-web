@@ -105,7 +105,7 @@ export const DetailLoan = () => {
         }}
       >
         <DepositDialog dialog={depositDialog} setDialog={setDepositDialog} />
-        {data?.payment?.transactions && <WriteOffDialog dialog={writeOffDialog} setDialog={setWriteOffDialog} data={data} defaultValues={{ transactions: data?.payment?.transactions?.map(item => ({
+        {data?.payment?.transactions && <WriteOffDialog dialog={writeOffDialog} setDialog={setWriteOffDialog} onReload={() => dispatch(getDetailLoan(id as string))} data={data} defaultValues={{ transactions: data?.payment?.transactions?.map(item => ({
           writeOffType: 'REPOSSESS',
           remainingCostCurrency: 'USD',
           remainingCost: 0,

@@ -13,7 +13,7 @@ import { currencySymbolOptions } from 'constants/variables'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 
-export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) => {
+export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReload }: any) => {
   const { language } = useLanguage()
   const { theme } = useTheme()
   const { width } = useWeb()
@@ -70,7 +70,9 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data }: any) 
       body,
     })
       .then((data) => {
-        console.log(data)
+        notify('Write off successful', 'success')
+        onReload()
+        handleCloseDialog()
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
