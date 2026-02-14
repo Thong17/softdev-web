@@ -455,8 +455,11 @@ export const InvoiceForm = forwardRef(({
       .catch(msg => notify(msg, 'error'))    
   }
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleClickPayment = () => {
-    onPayment({ transactions, discount, tax, voucher })
+    setIsLoading(true)
+    onPayment({ transactions, discount, tax, voucher }, () => setIsLoading(false))
   }
 
   const handleClickCustomer = () => {
@@ -1000,6 +1003,7 @@ export const InvoiceForm = forwardRef(({
                   {language['CLEAR']}
                 </CustomButton>
                 <CustomButton
+                  isLoading={isLoading}
                   styled={theme}
                   fullWidth
                   onClick={handleClickPayment}

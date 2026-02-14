@@ -114,7 +114,7 @@ const CastPreset = ({ theme, onClick }) => {
   )
 }
 
-export const LoanForm = ({ onChange, loanButtonRef, paymentId, payment, onCheckoutLoan }: any) => {
+export const LoanForm = ({ onChange, loanButtonRef, paymentId, payment, onCheckoutLoan, onLoading }: any) => {
   const { theme } = useTheme()
   const { notify } = useNotify()
   const { language } = useLanguage()
@@ -214,7 +214,8 @@ export const LoanForm = ({ onChange, loanButtonRef, paymentId, payment, onChecko
         const file = files[i];
         formData.append('attachment', file)
       }
-    })    
+    })
+    onLoading(true)
     Axios({
       method: 'POST',
       url: '/sale/loan/create',
@@ -225,6 +226,7 @@ export const LoanForm = ({ onChange, loanButtonRef, paymentId, payment, onChecko
         notify(data?.data?.msg, 'success')
       })
       .catch(err => notify(err?.response?.data?.msg, 'error'))
+      .finally(() => onLoading(false))
   }
 
   return (

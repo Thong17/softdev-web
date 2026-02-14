@@ -54,10 +54,13 @@ export const Cashing = () => {
     setProductDialog({ ...productDialog, productId: id })
   }
 
-  const handlePayment = (data) => {
-    if (data.transactions.length < 1)
+  const handlePayment = (data, callback) => {
+    if (data.transactions.length < 1) {
+      callback()
       return notify('No transaction added', 'error')
+    }
     if (paymentDialog.payment) {
+      callback()
       return setPaymentDialog({ ...paymentDialog, open: true })
     }
     const body = {
@@ -83,6 +86,9 @@ export const Cashing = () => {
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
+      })
+      .finally(() => {
+        callback()
       })
   }
 

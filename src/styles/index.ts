@@ -1,8 +1,9 @@
 import { styled } from '@mui/system'
-import { Button, Menu, Stack } from '@mui/material'
+import { Menu, Stack } from '@mui/material'
 import { IThemeMode, IThemeStyle } from 'contexts/theme/interface'
 import { DeviceOptions } from 'contexts/web/interface'
 import { NAVBAR_HEIGHT } from './constant'
+import Button from 'components/shared/ButtonWrapper'
 
 export const CustomBottomNav = styled('div')(
   ({ styled }: { styled: IThemeStyle }) => ({

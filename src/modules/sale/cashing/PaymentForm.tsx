@@ -48,6 +48,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   })
   const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
   const [receiveCashes, setReceiveCashes] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
   const { data: listTransfer } = useAppSelector(selectListTransfer)
   const dispatch = useAppDispatch()
 
@@ -131,6 +132,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   }
 
   const handleAddToQueue = () => {
+    setIsLoading(true)
     Axios({
       method: 'POST',
       url: '/function/queue/create',
@@ -141,6 +143,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
         handlePrintTicket()
       })
       .catch(err => notify(err?.response?.data?.msg, 'error'))
+      .finally(() => setIsLoading(false))
   }
 
   const handleCheckout = () => {
@@ -150,6 +153,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       variant: 'info',
     })
       .then(() => {
+        setIsLoading(true);
         const body = {
           receiveCashes,
           receiveTotal: totalReceive,
@@ -170,6 +174,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           .catch((err) => {
             notify(err?.response?.data?.msg, 'error')
           })
+          .finally(() => setIsLoading(false));
       })
       .catch(() => null)
   }
@@ -221,7 +226,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           totalPaid: totalReceive,
           totalRemain: totalRemain,
         }
-        return <LoanForm onChange={handleChangeCashes} loanButtonRef={loanButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} />
+        return <LoanForm onLoading={setIsLoading} onChange={handleChangeCashes} loanButtonRef={loanButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} />
 
       default:
         return <CashForm onChange={handleChangeCashes} />
@@ -461,6 +466,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                         {language['CLOSE']}
                       </CustomButton>
                       <CustomButton
+                        isLoading={isLoading}
                         onClick={() => loanButtonRef.current.click()}
                         styled={theme}
                         style={{
@@ -519,6 +525,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                         {language['PRINT']}
                       </CustomButton>
                       {user?.privilege?.queue?.create && <CustomButton
+                        isLoading={isLoading}
                         onClick={handleAddToQueue}
                         styled={theme}
                         style={{
@@ -536,6 +543,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                     </>
                   ) : (
                     <CustomButton
+                      isLoading={isLoading}
                       onClick={handleCheckout}
                       styled={theme}
                       style={{
