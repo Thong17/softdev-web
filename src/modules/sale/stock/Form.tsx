@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import Button from 'components/shared/ButtonWrapper'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { stockSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -45,6 +45,7 @@ export const Form = ({
   const { lang } = useLanguage()
   const [optionObj, setOptionObj] = useState(defaultValues?.options || {})
   const [color, setColor] = useState(defaultValues?.color)
+  const [isLoading, setIsLoading] = useState(false);
   const colorValue = watch('color')
 
   useEffect(() => {
@@ -84,6 +85,7 @@ export const Form = ({
   }, [optionObj, setValue])
 
   const submit = (data) => {
+    setIsLoading(true)
     Axios({
       method: dialog.stockId ? 'PUT' : 'POST',
       url: dialog.stockId ? `/sale/stock/update/${dialog.stockId}` : `/sale/stock/create`,
@@ -111,6 +113,7 @@ export const Form = ({
 
         notify(err?.response?.data?.msg, 'error')
       })
+      .finally(() => setIsLoading(false))
   }
 
   const handleChangeOption = ({ target: { name, value } }) => {
@@ -247,6 +250,7 @@ export const Form = ({
             Cancel
           </Button>
           <Button
+            isLoading={isLoading}
             type='submit'
             style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
             onClick={handleSubmit(submit)}

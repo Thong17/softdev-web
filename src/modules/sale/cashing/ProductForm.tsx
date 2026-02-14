@@ -28,7 +28,7 @@ import { NanoInput } from 'components/shared/form/InputField'
 export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   const { theme } = useTheme()
   const { device } = useWeb()
-  const { notify } = useNotify()
+  const { notify, loadify } = useNotify()
   const { lang, language } = useLanguage()
   const dispatch = useAppDispatch()
   const { data, status } = useAppSelector(selectInfoProduct)
@@ -85,7 +85,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
       if (product.isStock && quantity > total)
         return notify('Order quantity has exceed our current stock', 'error')
 
-      Axios({
+      const axios = Axios({
         method: 'POST',
         url: '/sale/transaction/add',
         body: {
@@ -103,14 +103,15 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
           promotion: product.promotion,
         },
       })
-        .then((data) => {
-          addTransaction(data?.data?.data, data?.data?.stockRemain)
-          setQuantity(1)
-          handleCloseDialog()
-        })
-        .catch((err) => {
-          notify(err?.response?.data?.msg, 'error')
-        })
+      loadify(axios)
+      axios.then((data) => {
+        addTransaction(data?.data?.data, data?.data?.stockRemain)
+        setQuantity(1)
+        handleCloseDialog()
+      })
+      .catch((err) => {
+        notify(err?.response?.data?.msg, 'error')
+      })
     }
 
     let addedOnPrices: any[] = []
@@ -157,7 +158,8 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   useEffect(() => {
     if (!dialog.productId) return
 
-    dispatch(getInfoProduct(dialog.productId))
+    const dispatchResult = dispatch(getInfoProduct(dialog.productId))
+    loadify(dispatchResult)
   }, [dispatch, dialog.productId])
 
   useEffect(() => {

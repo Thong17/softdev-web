@@ -8,7 +8,8 @@ import { getListLoan, getListRequestLoan, selectListRequestLoan } from './redux'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import InsertLinkRoundedIcon from '@mui/icons-material/InsertLinkRounded'
-import { Box, IconButton } from '@mui/material'
+import { Box } from '@mui/material'
+import { CustomIconButton as IconButton } from 'components/shared/IconButtonWrapper'
 import { currencyFormat, durationFormat } from 'utils/index'
 import { CustomButton } from 'styles/index'
 import useLanguage from 'hooks/useLanguage'
@@ -35,13 +36,14 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
   const [rowData, setRowData] = useState<any>([])
   const { user } = useAuth()
   const { theme } = useTheme()
-  const { notify } = useNotify()
+  const { notify, loadify } = useNotify()
   const { language } = useLanguage()
   const confirm = useAlert()
   const [attachmentDialog, setAttachmentDialog] = useState({
     open: false,
     attachments: [],
   })
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     dispatch(getListRequestLoan({}))
@@ -55,11 +57,12 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
         variant: 'error',
       })
         .then(() => {
-          Axios({
+          const rejectAxios = Axios({
             method: 'PUT',
             url: `/sale/loan/reject/${id}`,
           })
-            .then(() => {
+          loadify(rejectAxios)
+          rejectAxios.then(() => {
               dispatch(getListRequestLoan({}))
               dispatch(getListLoan({}))
             })
@@ -74,11 +77,12 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
         variant: 'info',
       })
         .then(() => {
-          Axios({
+          const approveAxios = Axios({
             method: 'PUT',
             url: `/sale/loan/approve/${id}`,
           })
-            .then(() => {
+          loadify(approveAxios)
+          approveAxios.then(() => {
               dispatch(getListRequestLoan({}))
               dispatch(getListLoan({}))
             })
@@ -116,6 +120,7 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
       variant: 'info',
     })
       .then(() => {
+        setIsLoading(true)
         Axios({
           method: 'PUT',
           url: `/sale/loan/approveAll`,
@@ -125,6 +130,7 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
             dispatch(getListLoan({}))
           })
           .catch((err) => notify(err?.response?.data?.msg))
+          .finally(() => setIsLoading(false))
       })
       .catch(() => null)
   }
@@ -163,6 +169,7 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
           {language['CLOSE']}
         </CustomButton>
         <CustomButton
+          isLoading={isLoading}
           onClick={handleApproveAll}
           styled={theme}
           style={{
