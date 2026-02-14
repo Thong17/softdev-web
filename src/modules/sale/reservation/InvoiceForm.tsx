@@ -131,6 +131,7 @@ export const InvoiceForm = forwardRef(
 
     const [customerDialog, setCustomerDialog] = useState({ open: false })
     const [customer, setCustomer] = useState(selectedCustomer)
+    const [isLoading, setIsLoading] = useState(false);
     const { user } = useAuth()
     const exchangeRate = useMemo(
       () => ({
@@ -450,6 +451,7 @@ export const InvoiceForm = forwardRef(
     }
 
     const handleCheckIn = () => {
+      setIsLoading(true)
       Axios({
         method: 'PUT',
         url: `/sale/reservation/checkIn/${reservation._id}`,
@@ -466,6 +468,7 @@ export const InvoiceForm = forwardRef(
           onCheckIn(responseData)
         })
         .catch((err) => notify(err?.response?.data?.msg, 'error'))
+        .finally(() => setIsLoading(false))
     }
 
     const handleCheckOut = () => {
@@ -475,6 +478,7 @@ export const InvoiceForm = forwardRef(
         variant: 'error',
       })
         .then(() => {
+          setIsLoading(true)
           Axios({
             method: 'PUT',
             url: `/sale/reservation/checkOut/${reservation._id}`,
@@ -484,6 +488,7 @@ export const InvoiceForm = forwardRef(
               onCheckOut(data?.data?.data)
             })
             .catch((err) => notify(err?.response?.data?.msg, 'error'))
+            .finally(() => setIsLoading(false))
         })
         .catch(() => {})
     }
@@ -495,6 +500,7 @@ export const InvoiceForm = forwardRef(
         case 'reserved':
           return (
             <CustomButton
+              isLoading={isLoading}
               styled={theme}
               fullWidth
               onClick={handleCheckIn}
@@ -517,6 +523,7 @@ export const InvoiceForm = forwardRef(
                 {timeDifferent(Date.now(), reservation?.startAt)}
               </span>
               <CustomButton
+                isLoading={isLoading}
                 styled={theme}
                 fullWidth
                 onClick={handleCheckOut}

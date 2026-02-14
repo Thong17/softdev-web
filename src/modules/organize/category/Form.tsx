@@ -74,6 +74,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
   }
 
   const submit = async (data) => {
+    setLoading(true)
     Axios({
       method: id ? 'PUT' : 'POST',
       url: id ? `/organize/category/update/${id}` : `/organize/category/create`,

@@ -26,7 +26,7 @@ export const LoanPaymentDialog = ({ dialog, setDialog }: any) => {
   const { language } = useLanguage()
   const {theme} = useTheme()
   const confirm = useAlert()
-  const { notify } = useNotify()
+  const { notify, loadify } = useNotify()
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -57,12 +57,13 @@ export const LoanPaymentDialog = ({ dialog, setDialog }: any) => {
             remainTotal: data.remainTotal,
             paymentMethod: data.paymentMethod,
           }
-          Axios({
+          const axiosPayment = Axios({
             method: 'PUT',
             url: `/sale/loan/payment/${id}`,
             body,
           })
-            .then((data) => {
+          loadify(axiosPayment)
+          axiosPayment.then((data) => {
               const respData: any = data?.data?.data
               if (!respData) return
               setPaymentInfo({ ...paymentInfo, returnCashes: respData.returnCashes, status: true } as any)

@@ -73,6 +73,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
   }
 
   const submit = async (data) => {
+    setLoading(true)
     Axios({
       method: id ? 'PUT' : 'POST',
       url: id ? `/function/promotion/update/${id}` : `/function/promotion/create`,

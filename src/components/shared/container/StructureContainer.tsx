@@ -46,7 +46,7 @@ export const StructureContainer = ({
   const [mergedStructures, setMergedStructures] = useState<any>([])
   const [floorOption, setFloorOption] = useState<IOptions[]>([])
   const { theme } = useTheme()
-  const { notify } = useNotify()
+  const { loadify } = useNotify()
   const { user } = useAuth()
   const navigate = useNavigate()
   const [selectedStructure, setSelectedStructure] = useState(selected || [])
@@ -155,7 +155,7 @@ export const StructureContainer = ({
 
   const handleCreateReservation = (structure) => {
     const { price, structuresIds } = calculateStructuresPrice([structure], user?.drawer?.buyRate)
-    Axios({
+    const axios = Axios({
       method: 'POST',
       url: '/sale/reservation/create',
       body: {
@@ -163,11 +163,12 @@ export const StructureContainer = ({
         structures: structuresIds
       }
     })
+    loadify(axios)
+    axios
       .then((data: any) => {
         navigate(`/sale/reservation/${data?.data?.data?._id}`)
-        notify(data?.data?.msg, 'success')
       })
-      .catch((err) => notify(err?.response?.data?.msg, 'error'))
+      .catch((err) => console.log(err))
   }
 
   return (

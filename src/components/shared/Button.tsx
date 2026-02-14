@@ -12,13 +12,12 @@ interface IButton
   loading?: boolean
 }
 
-const ButtonRef: ForwardRefRenderFunction<HTMLButtonElement, IButton> = ({ children, loading, ...prop }, ref) => {
+const ButtonRef: ForwardRefRenderFunction<HTMLButtonElement, IButton> = ({ children, disabled, loading, ...prop }, ref) => {
   const { theme } = useTheme()
   
   return (
-    <CustomButton styled={theme} {...prop} ref={ref}>
-      {children}
-      {loading && <Loading />}
+    <CustomButton styled={theme} disabled={loading || disabled} {...prop} ref={ref}>
+      {loading ? <Loading /> : children}
     </CustomButton>
   )
 }
