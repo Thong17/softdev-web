@@ -50,6 +50,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
   }, [dispatch, statusPreRole])
 
   const submit = async (data) => {
+    setLoading(true)
     Axios({
       method: id ? 'PUT' : 'POST',
       url: id ? `/admin/role/update/${id}` : `/admin/role/create`,
