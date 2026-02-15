@@ -82,7 +82,7 @@ export const Payments = () => {
         currencyFormat(payment.services[0]?.value, payment.services[0]?.type),
         currencyFormat(payment.vouchers[0]?.value, payment.vouchers[0]?.type),
         currencyFormat(payment.total.value, payment.total.currency),
-        payment.status,
+        payment.state,
         payment.createdBy?.username,
         handleView,
         theme

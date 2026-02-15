@@ -36,7 +36,7 @@ export const createData = (
   discount: any,
   tax: any,
   total: any,
-  status: Boolean,
+  status: String,
   createdBy: any,
   onPrint: Function,
   theme
@@ -52,7 +52,7 @@ export const createData = (
     tax,
     voucher,
     total,
-    status: <TextHighlight text={status ? 'Completed' : 'Pending'} color={status ? theme.color.success : theme.color.warning} />,
+    status: <TextHighlight text={status} color={status === 'COMPLETED' ? theme.color.success : theme.color.warning} />,
     createdBy,
     action
   }

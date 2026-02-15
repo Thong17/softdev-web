@@ -1,10 +1,11 @@
-import { Box } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import React, { useState } from 'react'
 import { CustomerDialog } from '../dialog/CustomerDialog'
 import { TextEllipsis } from '../TextEllipsis'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 
 export const CustomerField = ({ err, onChange }) => {
   const { theme } = useTheme()
@@ -74,6 +75,19 @@ export const CustomerField = ({ err, onChange }) => {
           >
             {customer?.displayName || language['CUSTOMER']}
           </span>
+          {customer.id && <IconButton sx={{ position: 'absolute', right: 0 }} aria-label="delete" onClick={(e) => {
+            setCustomer({
+              displayName: null,
+              id: null,
+              point: 0,
+            })
+            onChange({
+              id: ''
+            })
+            e.stopPropagation()
+          }}>
+            <CloseRoundedIcon sx={{ fontSize: 18, color: theme.text.tertiary }} />
+          </IconButton>}
           {err && (
             <TextEllipsis className='input-error'>
               {err}
