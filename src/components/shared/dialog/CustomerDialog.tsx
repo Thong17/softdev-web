@@ -72,7 +72,6 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
 
   return (
     <form
-      onSubmit={handleSubmit(submit)}
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
@@ -149,7 +148,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
           {language['CANCEL']}
         </Button>
         <Button
-          type='submit'
+          onClick={() => handleSubmit(submit)()}
           style={{
             marginLeft: 20,
             color: theme.color.info,
