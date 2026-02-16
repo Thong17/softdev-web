@@ -21,7 +21,6 @@ const Bottombar = () => {
           display: 'flex',
           justifyContent: 'space-around',
           alignItems: 'center',
-          borderRadius: theme.radius.ternary
         }}
       >
         {sideNav.map((nav, index) => {

@@ -12,16 +12,15 @@ export const CustomBottomNav = styled('div')(
     position: 'fixed',
     bottom: 0,
     boxShadow: styled.shadow.primary,
-    padding: '10px',
     boxSizing: 'border-box',
     zIndex: 1000,
     '& a': {
       position: 'relative',
       color: styled.text.primary,
       display: 'flex',
-      alignItem: 'center',
+      alignItems: 'start',
       height: '100%',
-      paddingTop: 5,
+      paddingTop: 10,
       boxSizing: 'border-box'
     },
     '& a span': {
