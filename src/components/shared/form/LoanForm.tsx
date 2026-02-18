@@ -114,7 +114,7 @@ const CastPreset = ({ theme, onClick }) => {
   )
 }
 
-export const LoanForm = ({ onChange, loanButtonRef, paymentId, payment, onCheckoutLoan, onLoading }: any) => {
+export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId, payment, onCheckoutLoan, onLoading }: any) => {
   const { theme } = useTheme()
   const { notify } = useNotify()
   const { language } = useLanguage()
@@ -228,6 +228,21 @@ export const LoanForm = ({ onChange, loanButtonRef, paymentId, payment, onChecko
       .catch(err => notify(err?.response?.data?.msg, 'error'))
       .finally(() => onLoading(false))
   }
+
+  const handlePreview = handleSubmitLoan((data) => {
+    if (!payment) return
+    const body = { ...data, ...payment, payment: paymentId, cashes }
+    Axios({
+      method: 'POST',
+      url: '/sale/loan/preview',
+      body
+    })
+      .then(data => {
+        notify(data?.data?.msg, 'success')
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
+      .finally(() => onLoading(false))
+  })
 
   return (
     <div
@@ -582,6 +597,7 @@ export const LoanForm = ({ onChange, loanButtonRef, paymentId, payment, onChecko
           </Section>
         </div>
         <button type="submit" ref={loanButtonRef} style={{ display: 'none' }}></button>
+        <button onClick={handlePreview} ref={previewButtonRef} style={{ display: 'none' }}></button>
       </form>
     </div>
   )

@@ -211,6 +211,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   }
 
   const loanButtonRef = useRef(document.createElement('button'))
+  const previewButtonRef= useRef(document.createElement('button'))
   const renderPaymentMethod = (method) => {
     switch (method) {
       case 'transfer':
@@ -226,7 +227,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           totalPaid: totalReceive,
           totalRemain: totalRemain,
         }
-        return <LoanForm onLoading={setIsLoading} onChange={handleChangeCashes} loanButtonRef={loanButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} />
+        return <LoanForm onLoading={setIsLoading} onChange={handleChangeCashes} loanButtonRef={loanButtonRef} previewButtonRef={previewButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} />
 
       default:
         return <CashForm onChange={handleChangeCashes} />
@@ -464,6 +465,18 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                         }}
                       >
                         {language['CLOSE']}
+                      </CustomButton>
+                      <CustomButton
+                        isLoading={isLoading}
+                        onClick={() => previewButtonRef.current.click()}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.info}22`,
+                          color: theme.color.info,
+                          width: '100%',
+                        }}
+                      >
+                        {language['PREVIEW']}
                       </CustomButton>
                       <CustomButton
                         isLoading={isLoading}

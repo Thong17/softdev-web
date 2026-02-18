@@ -230,6 +230,7 @@ export const languages = {
     WRITE_OFF_LOAN: 'Write Off Loan',
     WRITTEN_OFF: 'Written Off',
     IN_REVIEW: 'In\u00a0Review',
+    PREVIEW: 'Preview',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -461,5 +462,6 @@ export const languages = {
     WRITE_OFF_LOAN: 'Write Off Loan',
     WRITTEN_OFF: 'Written Off',
     IN_REVIEW: 'In\u00a0Review',
+    PREVIEW: 'Preview',
   }
 }
