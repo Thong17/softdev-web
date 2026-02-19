@@ -14,7 +14,7 @@ import { calculatePrepaymentPenalty } from 'modules/sale/loan/DepositDialog'
 import { useReactToPrint } from 'react-to-print'
 import { PaymentReceipt } from '../invoice/PaymentReceipt'
 
-const columnData: ITableColumn<any>[] = [
+export const columnData: ITableColumn<any>[] = [
   { id: 'dueDate', label: 'DUE_DATE' },
   { id: 'principalAmount', label: 'PRINCIPAL_AMOUNT' },
   { id: 'interestAmount', label: 'INTEREST_AMOUNT' },
@@ -24,7 +24,7 @@ const columnData: ITableColumn<any>[] = [
   { id: 'action', label: 'ACTION', align: 'right' },
 ]
 
-const mapData = (data, theme, allowPayment, onPayment, onPrint) => {
+export const mapData = (data, theme, allowPayment, onPayment, onPrint) => {
   const action = data.isPaid ? (
     <IconButton
       size='small'

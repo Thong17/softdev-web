@@ -29,6 +29,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
 import { LoanForm } from 'components/shared/form/LoanForm'
 import { QueueReceipt } from 'components/shared/invoice/QueueReceipt'
+import { PreviewLoan } from 'components/shared/invoice/PreviewLoan'
 
 export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout }: any, ref) => {
   const confirm = useAlert()
@@ -51,6 +52,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   const [isLoading, setIsLoading] = useState(false);
   const { data: listTransfer } = useAppSelector(selectListTransfer)
   const dispatch = useAppDispatch()
+  const [loanPreview, setLoanPreview] = useState(null);
 
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
@@ -204,6 +206,20 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     documentTitle: 'Ticket',
   })
 
+  const previewRef = useRef(document.createElement('div'))
+  const handlePrintPreview = () => {
+    previewButtonRef.current.click()
+  }
+  const printPreview = useReactToPrint({
+    content: () => previewRef?.current,
+    documentTitle: 'Preview',
+  })
+
+  const handlePreview = (data) => {
+    setLoanPreview(data)
+    printPreview()
+  }
+
   const handleCheckoutLoan = (data) => {
     setPayment(data)
     reload()
@@ -227,7 +243,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           totalPaid: totalReceive,
           totalRemain: totalRemain,
         }
-        return <LoanForm onLoading={setIsLoading} onChange={handleChangeCashes} loanButtonRef={loanButtonRef} previewButtonRef={previewButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} />
+        return <LoanForm onLoading={setIsLoading} onChange={handleChangeCashes} onPreview={handlePreview} loanButtonRef={loanButtonRef} previewButtonRef={previewButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} />
 
       default:
         return <CashForm onChange={handleChangeCashes} />
@@ -468,7 +484,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                       </CustomButton>
                       <CustomButton
                         isLoading={isLoading}
-                        onClick={() => previewButtonRef.current.click()}
+                        onClick={handlePrintPreview}
                         styled={theme}
                         style={{
                           backgroundColor: `${theme.color.info}22`,
@@ -586,6 +602,9 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
         </div>
         <div ref={ticketRef}>
           <QueueReceipt info={queue} />
+        </div>
+        <div ref={previewRef}>
+          <PreviewLoan loanPreview={loanPreview} />
         </div>
       </div>
     </AlertContainer>

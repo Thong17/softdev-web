@@ -624,6 +624,29 @@ export const CustomReceiptContainer = styled('div')(
   })
 )
 
+export const CustomPreviewContainer = styled('div')(
+  ({
+    styled,
+    mode,
+    font,
+  }: {
+    styled: IThemeStyle
+    mode: 'preview' | 'invoice'
+    font: string
+  }) => ({
+    padding: '40px 30px 40px 0',
+    color: mode === 'preview' ? styled.text.secondary : '#222',
+    backgroundColor:
+      mode === 'preview' ? styled.background.secondary : '#ffffff',
+    '& th': {
+      fontFamily: `${font} !important`,
+    },
+    '& td': {
+      fontWeight: '300 !important',
+    },
+  })
+)
+
 export const CustomInvoiceForm = styled('div')(
   ({
     styled,

@@ -114,7 +114,7 @@ const CastPreset = ({ theme, onClick }) => {
   )
 }
 
-export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId, payment, onCheckoutLoan, onLoading }: any) => {
+export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId, payment, onCheckoutLoan, onLoading, onPreview }: any) => {
   const { theme } = useTheme()
   const { notify } = useNotify()
   const { language } = useLanguage()
@@ -237,8 +237,9 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
       url: '/sale/loan/preview',
       body
     })
-      .then(data => {
-        notify(data?.data?.msg, 'success')
+      .then(response => {
+        if (response?.data?.data?.length === 0) return notify('No data to preview', 'error')
+        onPreview(response?.data?.data)
       })
       .catch(err => notify(err?.response?.data?.msg, 'error'))
       .finally(() => onLoading(false))
