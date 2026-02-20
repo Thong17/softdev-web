@@ -4,20 +4,30 @@ import useTheme from 'hooks/useTheme'
 import { getStore, selectStore } from 'modules/organize/store/redux'
 import React, { useEffect, useState } from 'react'
 import { CustomPreviewContainer } from 'styles'
-import { InvoiceTable } from '../table/InvoiceTable'
-import { columnData, mapData } from '../table/LoanTable'
+import { PreviewTable } from '../table/PreviewTable'
+import { columnData } from '../table/LoanTable'
+import { currencyFormat, timeFormat } from 'utils/index'
 
-export const PreBorder = ({ styled }) => {
-  return (
-    <div
-      style={{
-        margin: '10px 0',
-        borderTop: styled.border.dashed,
-        borderColor: '#333',
-        width: '100%',
-      }}
-    ></div>
-  )
+const mapData = (data, theme, allowPayment, onPayment, onPrint) => {
+  return {
+    dueDate: timeFormat(data.dueDate, 'YYYY/MM/DD'),
+    principalAmount: currencyFormat(
+      data.principalAmount.value,
+      data.principalAmount.currency
+    ),
+    interestAmount: currencyFormat(
+      data.interestAmount.value,
+      data.interestAmount.currency
+    ),
+    totalAmount: currencyFormat(
+      data.totalAmount.value,
+      data.totalAmount.currency
+    ),
+    principalBalance: currencyFormat(
+      data.principalBalance.value,
+      data.principalBalance.currency
+    ),
+  }
 }
 
 export const PreviewLoan = ({ width = '100vw', loanPreview }: any) => {
@@ -64,6 +74,18 @@ export const PreviewLoan = ({ width = '100vw', loanPreview }: any) => {
       }}
     >
       <CustomPreviewContainer mode='invoice' styled={theme} font={store?.font}>
+        <Box sx={{ display: 'flex', gap: '5px' }}>
+          <img src={store.logo} alt={store.name} />
+          <h3
+            style={{
+              fontSize: 18,
+              textAlign: 'center',
+              fontFamily: `${store?.font} !important`,
+            }}
+          >
+            {store?.name}
+          </h3>
+        </Box>
         <h3
           style={{
             fontSize: 18,
@@ -95,7 +117,7 @@ export const PreviewLoan = ({ width = '100vw', loanPreview }: any) => {
           {store?.contact}
         </p>
         <div style={{ height: 10 }}></div>
-        <InvoiceTable columns={columnData?.filter(item => !['status', 'action'].includes(item.id))} rows={loanPreview?.map(item => mapData(item, theme, false, null, null))} />
+        <PreviewTable columns={columnData?.filter(item => !['status', 'action'].includes(item.id))} rows={loanPreview?.map(item => mapData(item, theme, false, null, null))} />
         <p
           style={{
             textAlign: 'center',
