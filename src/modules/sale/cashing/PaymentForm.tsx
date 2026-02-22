@@ -53,6 +53,8 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   const { data: listTransfer } = useAppSelector(selectListTransfer)
   const dispatch = useAppDispatch()
   const [loanPreview, setLoanPreview] = useState(null);
+  const [loanInfo, setLoanInfo] = useState(null);
+  const [formMode, setFormMode] = useState('pending');
 
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
@@ -190,6 +192,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       .then(() => {
         onClearPayment()
         onClear()
+        setFormMode('pending')
       })
       .catch(() => {})
   }
@@ -215,8 +218,9 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     documentTitle: 'Preview',
   })
 
-  const handlePreview = (data) => {
+  const handlePreview = (data, body) => {
     setLoanPreview(data)
+    setLoanInfo({...body, totalPayment, totalReceive, totalRemain})
     printPreview()
   }
 
@@ -224,6 +228,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     setPayment(data)
     reload()
     onCheckout()
+    setFormMode('checkout')
   }
 
   const loanButtonRef = useRef(document.createElement('button'))
@@ -243,16 +248,11 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           totalPaid: totalReceive,
           totalRemain: totalRemain,
         }
-        return <LoanForm onLoading={setIsLoading} onChange={handleChangeCashes} onPreview={handlePreview} loanButtonRef={loanButtonRef} previewButtonRef={previewButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} />
+        return <LoanForm onLoading={setIsLoading} onChange={handleChangeCashes} onPreview={handlePreview} loanButtonRef={loanButtonRef} previewButtonRef={previewButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} formMode={formMode} />
 
       default:
         return <CashForm onChange={handleChangeCashes} />
     }
-  }
-
-  const handlePrintLoanDoc = () => {
-    console.log('print loan');
-    
   }
 
   return (
@@ -455,7 +455,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                         {language['CLOSE']}
                       </CustomButton>
                       <CustomButton
-                        onClick={handlePrintLoanDoc}
+                        onClick={handlePrintPreview}
                         styled={theme}
                         style={{
                           backgroundColor: `${theme.color.info}22`,
@@ -596,7 +596,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           </div>
         </div>
       </div>
-      <div style={{ position: 'absolute', top: '-200%' }}>
+      <div style={{ position: 'absolute', top: '200%', width: '100%' }}>
         <div ref={invoiceRef}>
           <PaymentReceipt payment={payment} />
         </div>
@@ -604,7 +604,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           <QueueReceipt info={queue} />
         </div>
         <div ref={previewRef}>
-          <PreviewLoan loanPreview={loanPreview} />
+          <PreviewLoan loanPreview={loanPreview} loanInfo={loanInfo} />
         </div>
       </div>
     </AlertContainer>

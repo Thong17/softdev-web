@@ -33,14 +33,14 @@ export const PreviewTable = ({
                     padding: 5,
                     border: 'none',
                     fontWeight: 600,
-                    borderBottom: '2px dashed #333',
-                    borderTop: '2px dashed #333',
+                    borderBottom: '2px solid #00000022',
+                    borderTop: '2px solid #00000022',
                     backgroundColor: 'none'
                   }}
                   key={column.id}
                   align={column.align}
                 >
-                  {column.label}
+                  {language[column.label]}
                 </TableCell>
               ))}
             </TableRow>
@@ -55,6 +55,7 @@ export const PreviewTable = ({
                       role='checkbox'
                       tabIndex={-1}
                       key={row.id || index}
+                      style={{ height: '30px', backgroundColor: index % 2 === 0 ? '#00000011' : 'transparent' }}
                     >
                       {columns.map((column) => {
                         let value = row[column.id]

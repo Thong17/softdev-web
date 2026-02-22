@@ -231,6 +231,7 @@ export const languages = {
     WRITTEN_OFF: 'Written Off',
     IN_REVIEW: 'In\u00a0Review',
     PREVIEW: 'Preview',
+    LOAN_AMOUNT: 'Loan\u00a0Amount',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -463,5 +464,6 @@ export const languages = {
     WRITTEN_OFF: 'Written Off',
     IN_REVIEW: 'In\u00a0Review',
     PREVIEW: 'Preview',
+    LOAN_AMOUNT: 'Loan\u00a0Amount',
   }
 }

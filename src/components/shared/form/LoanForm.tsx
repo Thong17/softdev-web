@@ -114,7 +114,7 @@ const CastPreset = ({ theme, onClick }) => {
   )
 }
 
-export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId, payment, onCheckoutLoan, onLoading, onPreview }: any) => {
+export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId, payment, onCheckoutLoan, onLoading, onPreview, formMode }: any) => {
   const { theme } = useTheme()
   const { notify } = useNotify()
   const { language } = useLanguage()
@@ -193,6 +193,7 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
   }
 
   const handleAddPreset = (cash) => {
+    if (formMode === 'checkout') return
     const newCashes = [...cashes, { ...cash, id: generateId() }]
     onChange(newCashes)
     setCashes(newCashes)
@@ -239,7 +240,7 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
     })
       .then(response => {
         if (response?.data?.data?.length === 0) return notify('No data to preview', 'error')
-        onPreview(response?.data?.data)
+        onPreview(response?.data?.data, body)
       })
       .catch(err => notify(err?.response?.data?.msg, 'error'))
       .finally(() => onLoading(false))
@@ -267,6 +268,7 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
         >
           <div style={{ position: 'relative' }}>
             <NanoInput
+              disabled={formMode === 'checkout'}
               onChange={(event) =>
                 setCashForm({ ...cashForm, value: event.target.value })
               }
@@ -283,6 +285,7 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
                   style={{ position: 'absolute', right: 0, display: 'flex' }}
                 >
                   <MiniSelectField
+                    disabled={formMode === 'checkout'}
                     onChange={(event) =>
                       setCashForm({
                         ...cashForm,
@@ -386,6 +389,7 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
             label={language['ATTACHMENT']}
             style={{ paddingTop: 7 }}
             {...register('attachment')}
+            disabled={formMode === 'checkout'}
           />
         </div>
         <div style={{ gridArea: 'duration' }}>
@@ -395,12 +399,14 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
             err={errorsLoan?.duration?.value?.message || errorsLoan?.duration?.time?.message}
             label={language['INSTALMENT_DURATION']}
             {...register('duration.value')}
+            disabled={formMode === 'checkout'}
             icon={
               <>
                 <MiniSelectField
                   options={durationOptions}
                   value={durationTime}
                   onChange={(event) => setValue('duration.time', event.target.value as string)}
+                  disabled={formMode === 'checkout'}
                   sx={{
                     position: 'absolute',
                     top: -1,
@@ -426,12 +432,14 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
             label={language['INTEREST']}
             err={errorsLoan?.interest?.value?.message || errorsLoan?.interest?.currency?.message}
             {...register('interest.value')}
+            disabled={formMode === 'checkout'}
             icon={
               <>
                 <MiniSelectField
                   options={discountOptions}
                   value={interestCurrency}
                   onChange={(event) => setValue('interest.currency', event.target.value as string)}
+                  disabled={formMode === 'checkout'}
                   sx={{
                     position: 'absolute',
                     top: -1,
@@ -468,12 +476,14 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
                     err={errorsLoan?.overdue?.value?.message || errorsLoan?.overdue?.currency?.message}
                     style={{ paddingRight: 60 }}
                     {...register('overdue.value')}
+                    disabled={formMode === 'checkout'}
                     icon={
                       <>
                         <MiniSelectField
                           options={discountOptions}
                           value={overdueCurrency}
                           onChange={(event) => setValue('overdue.currency', event.target.value as string)}
+                          disabled={formMode === 'checkout'}
                           sx={{
                             position: 'absolute',
                             top: -1,
@@ -502,11 +512,13 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
                     style={{ paddingRight: 80, width: 120 }}
                     err={errorsLoan?.overdue?.duration?.value?.message || errorsLoan?.overdue?.duration?.time?.message}
                     {...register('overdue.duration.value')} 
+                    disabled={formMode === 'checkout'}
                     icon={
                       <MiniSelectField
                         options={durationOptions}
                         value={overdueDurationTime}
                         onChange={(event) => setValue('overdue.duration.time', event.target.value as string)}
+                        disabled={formMode === 'checkout'}
                         sx={{
                           position: 'absolute',
                           top: -1,
@@ -535,6 +547,7 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
                     err={errorsLoan?.prepayment?.value?.message || errorsLoan?.prepayment?.currency?.message}
                     style={{ paddingRight: 60 }}
                     {...register('prepayment.value')}
+                    disabled={formMode === 'checkout'}
                     icon={
                       <>
                         <MiniSelectField
@@ -542,6 +555,7 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
                           name='prepayment.currency'
                           value={prepaymentCurrency}
                           onChange={(event) => setValue('prepayment.currency', event.target.value as string)}
+                          disabled={formMode === 'checkout'}
                           sx={{
                             position: 'absolute',
                             top: -1,
@@ -570,11 +584,13 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
                     style={{ paddingRight: 80, width: 120 }}
                     err={errorsLoan?.prepayment?.duration?.value?.message || errorsLoan?.prepayment?.duration?.time?.message}
                     {...register('prepayment.duration.value')}
+                    disabled={formMode === 'checkout'}
                     icon={
                       <MiniSelectField
                         options={durationOptions}
                         value={prepaymentDurationTime}
                         onChange={(event) => setValue('prepayment.duration.time', event.target.value as string)}
+                        disabled={formMode === 'checkout'}
                         sx={{
                           position: 'absolute',
                           top: -1,

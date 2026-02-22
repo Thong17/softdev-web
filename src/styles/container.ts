@@ -634,7 +634,8 @@ export const CustomPreviewContainer = styled('div')(
     mode: 'preview' | 'invoice'
     font: string
   }) => ({
-    padding: '40px 30px 40px 0',
+    padding: '40px 30px',
+    boxSizing: 'border-box',
     color: mode === 'preview' ? styled.text.secondary : '#222',
     backgroundColor:
       mode === 'preview' ? styled.background.secondary : '#ffffff',

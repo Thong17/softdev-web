@@ -18,7 +18,7 @@ export const PreBorder = ({ styled }) => {
   )
 }
 
-export const QueueReceipt = ({ width = '100vw', info }: any) => {
+export const QueueReceipt = ({ width = '100%', info }: any) => {
   const dispatch = useAppDispatch()
   const { theme } = useTheme()
   const { data } = useAppSelector(selectStore)

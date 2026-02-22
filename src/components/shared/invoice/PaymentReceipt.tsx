@@ -23,7 +23,7 @@ export const PreBorder = ({ styled }) => {
   )
 }
 
-export const PaymentReceipt = ({ width = '100vw', payment }: any) => {
+export const PaymentReceipt = ({ width = '100%', payment }: any) => {
   const dispatch = useAppDispatch()
   const { theme } = useTheme()
   const { data } = useAppSelector(selectStore)
