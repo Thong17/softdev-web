@@ -54,7 +54,7 @@ export const Cashing = () => {
     setProductDialog({ ...productDialog, productId: id })
   }
 
-  const handlePayment = (data, callback) => {
+  const handlePayment = (data, callback, isPayment = true) => {
     if (data.transactions.length < 1) {
       callback()
       return notify('No transaction added', 'error')
@@ -77,6 +77,8 @@ export const Cashing = () => {
       body,
     })
       .then((data) => {
+        callback(data?.data?.data)
+        if (!isPayment) return
         setPaymentDialog({
           ...paymentDialog,
           open: true,
@@ -86,10 +88,46 @@ export const Cashing = () => {
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
-      })
-      .finally(() => {
         callback()
       })
+  }
+
+  const handleCheckout = (data, callback) => {
+    if (!paymentDialog.customer?.id) {
+      callback()
+      return notify('Please select customer', 'error')
+    }
+      
+    handlePayment(data, (payment) => {
+      setDisableProduct(true)
+      const body = {
+        receiveCashes: [],
+        receiveTotal: {
+          KHR: payment?.total.currency === 'KHR' ? payment?.total.value : 0,
+          USD: payment?.total.currency === 'USD' ? payment?.total.value : 0,
+          total:
+            payment?.total.currency === 'KHR'
+              ? payment?.total.value / payment.rate.buyRate
+              : payment?.total.value,
+        },
+        remainTotal: { USD: 0, KHR: 0 },
+        customer: payment.customer?._id,
+        paymentMethod: 'later',
+      }
+      Axios({
+        method: 'PUT',
+        url: `/sale/payment/checkout/${payment?._id}`,
+        body,
+      })
+        .then((response) => {
+          notify('Payment checkout successfully', 'success')
+          callback(response?.data?.data)
+        })
+        .catch((err) => {
+          notify(err?.response?.data?.msg, 'error')
+          callback(null)
+        })
+    }, false)
   }
 
   const handleChangeCustomer = (data) => {
@@ -259,6 +297,7 @@ export const Cashing = () => {
             onUpdate={() => setReload(!reload)}
             onUpdateStock={handleUpdateStock}
             onPayment={handlePayment}
+            onCheckout={handleCheckout}
             onClear={handleClearPayment}
             onChangeCustomer={handleChangeCustomer}
             onChangePayment={handleChangePayment}

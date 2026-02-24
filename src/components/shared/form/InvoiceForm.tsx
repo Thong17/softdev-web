@@ -28,6 +28,7 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useLanguage from 'hooks/useLanguage'
+import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 
 export const currencyOptions: IOptions[] = [
   {
@@ -176,6 +177,7 @@ export const InvoiceForm = forwardRef(({
   onUpdate,
   onUpdateStock,
   onPayment,
+  onCheckout,
   onClear,
   onChangePayment,
   onChangeCustomer,
@@ -394,6 +396,7 @@ export const InvoiceForm = forwardRef(({
   }
 
   const handleClickTransaction = (transaction) => {
+    if (paymentId) return
     reset(transaction)
   }
 
@@ -462,7 +465,18 @@ export const InvoiceForm = forwardRef(({
     onPayment({ transactions, discount, tax, voucher }, () => setIsLoading(false))
   }
 
+  const handleClickCheckout = () => {
+    setIsLoading(true)
+    onCheckout({ transactions, discount, tax, voucher }, (data) => {
+      setIsLoading(false)
+      if (data?.state === 'COMPLETED') {
+        setPaymentId(data?._id)
+      }
+    })
+  }
+
   const handleClickCustomer = () => {
+    if (paymentId) return
     setCustomerDialog({ ...customerDialog, open: true })
   }
 
@@ -532,9 +546,9 @@ export const InvoiceForm = forwardRef(({
           }}
         >
           {device === 'laptop' || device === 'desktop' ? (
-            invoiceBar && <CustomerStatistic point={customer.point} phone={customer.displayName} onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
+            invoiceBar && <CustomerStatistic point={customer.point} phone={customer.displayName} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} />
           ) : (
-            <CustomerStatistic point={customer.point} phone={customer.displayName} onClick={handleClickCustomer} style={{ marginLeft: 10 }} />
+            <CustomerStatistic point={customer.point} phone={customer.displayName} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} />
           )}
           <div
             className='toggle'
@@ -774,6 +788,7 @@ export const InvoiceForm = forwardRef(({
                 return (
                   <div
                     className='item'
+                    style={{ cursor: paymentId ? 'default' : 'pointer' }}
                     key={key}
                     onClick={() => handleClickTransaction(transaction)}
                   >
@@ -796,9 +811,9 @@ export const InvoiceForm = forwardRef(({
                       <div className='quantity'>
                         <span className='main-description'>{language['QTY']}</span>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <IconButton onClick={(event) => handleDecreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>-</IconButton>
+                          {!paymentId && <IconButton onClick={(event) => handleDecreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>-</IconButton>}
                           <span style={{ margin: '0 1px' }}>{transaction.quantity}</span>
-                          <IconButton onClick={(event) => handleIncreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>+</IconButton>
+                          {!paymentId && <IconButton onClick={(event) => handleIncreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>+</IconButton>}
                         </div>
                       </div>
                       <div className='discount'>
@@ -822,7 +837,7 @@ export const InvoiceForm = forwardRef(({
                             {currencyFormat(total, currency)}
                           </span>
                         </div>
-                        <IconButton
+                        {!paymentId && <IconButton
                           style={{ marginLeft: 5 }}
                           onClick={(event) =>
                             handleRemoveTransaction(event, transaction.id)
@@ -831,7 +846,7 @@ export const InvoiceForm = forwardRef(({
                           <CloseRoundedIcon
                             style={{ fontSize: 17, color: theme.color.error }}
                           />
-                        </IconButton>
+                        </IconButton>}
                       </div>
                     </div>
                   </div>
@@ -862,7 +877,7 @@ export const InvoiceForm = forwardRef(({
               >
                 <span
                   onClick={() =>
-                    setDiscount((prev) => ({
+                    !paymentId && setDiscount((prev) => ({
                       ...prev,
                       isEditing: !prev.isEditing,
                     }))
@@ -884,7 +899,7 @@ export const InvoiceForm = forwardRef(({
                 ) : (
                   <span
                     onClick={() =>
-                      setDiscount((prev) => ({
+                      !paymentId && setDiscount((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -903,7 +918,7 @@ export const InvoiceForm = forwardRef(({
               >
                 <span
                   onClick={() =>
-                    setTax((prev) => ({ ...prev, isEditing: !prev.isEditing }))
+                    !paymentId && setTax((prev) => ({ ...prev, isEditing: !prev.isEditing }))
                   }
                 >
                   {language['TAX']}{' '}
@@ -923,7 +938,7 @@ export const InvoiceForm = forwardRef(({
                 ) : (
                   <span
                     onClick={() =>
-                      setTax((prev) => ({
+                      !paymentId && setTax((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -942,7 +957,7 @@ export const InvoiceForm = forwardRef(({
               >
                 <span
                   onClick={() =>
-                    setVoucher((prev) => ({
+                    !paymentId && setVoucher((prev) => ({
                       ...prev,
                       isEditing: !prev.isEditing,
                     }))
@@ -964,7 +979,7 @@ export const InvoiceForm = forwardRef(({
                 ) : (
                   <span
                     onClick={() =>
-                      setVoucher((prev) => ({
+                      !paymentId && setVoucher((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -989,20 +1004,48 @@ export const InvoiceForm = forwardRef(({
         <div className='invoice-payment'>
           <div className='total-container'>
             <div className='total'>
-              <FlexBetween>
+              <FlexBetween style={{ gap: '10px'}}>
                 <CustomButton
                   styled={theme}
                   fullWidth
                   onClick={handleClearPayment}
                   style={{
                     color: theme.text.secondary,
-                    marginRight: 10,
                     borderRadius: theme.radius.secondary,
                   }}
                 >
                   {language['CLEAR']}
                 </CustomButton>
+                {paymentId ?
+                  <CustomButton
+                    styled={theme}
+                    fullWidth
+                    style={{
+                      backgroundColor: `${theme.color.info}22`,
+                      color: theme.color.info,
+                      borderRadius: theme.radius.secondary,
+                    }}
+                  >
+                    <PrintRoundedIcon
+                      style={{ fontSize: 19, marginRight: 5 }}
+                    />
+                    {language['PRINT']}
+                  </CustomButton>
+                  : <CustomButton
+                    isLoading={isLoading}
+                    styled={theme}
+                    fullWidth
+                    onClick={handleClickCheckout}
+                    style={{
+                      backgroundColor: `${theme.color.info}22`,
+                      color: theme.color.info,
+                      borderRadius: theme.radius.secondary,
+                    }}
+                  >
+                  {language['CHECKOUT']}
+                </CustomButton>}
                 <CustomButton
+                  disabled={!!paymentId}
                   isLoading={isLoading}
                   styled={theme}
                   fullWidth

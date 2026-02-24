@@ -90,14 +90,26 @@ const ProductForm = ({ defaultValues, id }: any) => {
   }, [currencyValue])
 
   useEffect(() => {
-    if (statusListBrand !== 'INIT') return
     dispatch(getListBrand({}))
-  }, [dispatch, statusListBrand])
+      .then((response) => {
+        if (!id) {
+          const firstOption = response.payload.data[0]
+          setValue('brand', firstOption?._id)
+        } 
+      })
+      .catch(console.error)
+  }, [dispatch])
 
   useEffect(() => {
-    if (statusListCategory !== 'INIT') return
     dispatch(getListCategory({}))
-  }, [dispatch, statusListCategory])
+      .then((response) => {
+        if (!id) {
+          const firstOption = response.payload.data[0]
+          setValue('category', firstOption?._id)
+        } 
+      })
+      .catch(console.error)
+  }, [dispatch])
 
   useEffect(() => {
     let brandOptions: IOptions[] = []
