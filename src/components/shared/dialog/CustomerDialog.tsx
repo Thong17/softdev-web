@@ -196,7 +196,7 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
 
   return (
     <AlertContainer
-      justify='end'
+      justify='start'
       isOpen={dialog.open}
       handleClose={handleCloseDialog}
     >

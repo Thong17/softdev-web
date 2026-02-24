@@ -25,16 +25,27 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { CustomerLayout, CustomerItem } from 'components/layouts/CustomerLayout'
 import useAlert from 'hooks/useAlert'
+import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded'
+import { TextEllipsis } from '../TextEllipsis'
+import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded'
 
-export const CustomerStatistic = ({ phone, point = 0, ...props }) => {
+export const CustomerStatistic = ({ phone, name = null, address = null, point = 0, ...props }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   
   return (
     <CustomCustomerContainer device={device} styled={theme} {...props}>
       <RankStatus text={typeof point === 'string' ? parseInt(point) : point.toFixed(0)} color={theme.color.info} />
-      <div style={{ display: 'flex', alignItems: 'start', marginLeft: 7 }}>
-        <p style={{ fontSize: 15 }}>{phone}</p>
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginLeft: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <p style={{ fontSize: 13, lineHeight: 1.3 }}>{name}</p>
+          <LocalPhoneRoundedIcon style={{ fontSize: 13, marginLeft: 10 }} />
+          <p style={{ fontSize: 13, color: theme.text.quaternary, lineHeight: 1.2 }}>{phone}</p>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <LocationOnRoundedIcon style={{ fontSize: 12, marginRight: 5, color: theme.text.quaternary }} />
+          <TextEllipsis style={{ fontSize: 11, color: theme.text.quaternary, lineHeight: 1 }}>{address}</TextEllipsis>
+        </div>
       </div>
     </CustomCustomerContainer>
   )
@@ -352,8 +363,8 @@ export const CustomerContainer = ({
                         point={customer.point}
                         onClick={() =>
                           handleClickCustomer({
+                            ...customer,
                             id: customer._id,
-                            displayName: customer.displayName,
                             point: customer.point?.toFixed(0),
                           })
                         }
