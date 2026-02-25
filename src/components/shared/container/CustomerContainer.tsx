@@ -1,7 +1,6 @@
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { CustomCustomerContainer } from 'styles'
-import { RankStatus } from '../RankStatus'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
@@ -28,25 +27,37 @@ import useAlert from 'hooks/useAlert'
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded'
 import { TextEllipsis } from '../TextEllipsis'
 import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded'
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded'
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
 
-export const CustomerStatistic = ({ phone, name = null, address = null, point = 0, ...props }) => {
+export const CustomerStatistic = ({ phone, mode='edit', name = null, address = null, point = 0, picture = null, onClear = () => {}, ...props }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
   
   return (
     <CustomCustomerContainer device={device} styled={theme} {...props}>
-      <RankStatus text={typeof point === 'string' ? parseInt(point) : point.toFixed(0)} color={theme.color.info} />
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginLeft: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <p style={{ fontSize: 13, lineHeight: 1.3 }}>{name}</p>
-          <LocalPhoneRoundedIcon style={{ fontSize: 13, marginLeft: 10 }} />
-          <p style={{ fontSize: 13, color: theme.text.quaternary, lineHeight: 1.2 }}>{phone}</p>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <LocationOnRoundedIcon style={{ fontSize: 12, marginRight: 5, color: theme.text.quaternary }} />
-          <TextEllipsis style={{ fontSize: 11, color: theme.text.quaternary, lineHeight: 1 }}>{address}</TextEllipsis>
-        </div>
-      </div>
+      <AccountCircleRoundedIcon />
+      {name ? 
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginLeft: 5 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <p style={{ fontSize: 13, lineHeight: 1.3 }}>{name}</p>
+              {phone && <LocalPhoneRoundedIcon style={{ fontSize: 13, marginLeft: 10 }} />}
+              <p style={{ fontSize: 13, color: theme.text.quaternary, lineHeight: 1.2 }}>{phone}</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {address && <LocationOnRoundedIcon style={{ fontSize: 12, marginRight: 5, color: theme.text.quaternary }} />}
+              <TextEllipsis style={{ fontSize: 11, color: theme.text.quaternary, lineHeight: 1 }}>{address}</TextEllipsis>
+            </div>
+          </div>
+          {mode === 'edit' && <IconButton onClick={(e) => {
+            e.stopPropagation()
+            onClear()
+          }}>
+            <CancelRoundedIcon style={{ fontSize: 18, color: theme.text.secondary }} />
+          </IconButton>}
+        </div> : <p style={{ fontSize: 13, marginLeft: 5 }}>{language['SELECT_CUSTOMER']}</p>}
     </CustomCustomerContainer>
   )
 }
@@ -275,7 +286,7 @@ export const CustomerContainer = ({
             width: 'fit-content',
           }}
         >
-          <MiniSearchField onChange={handleSearch} />
+          <MiniSearchField onChange={handleSearch} isActive={true} />
           <MiniFilterButton>
             <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}>
               <SortIcon asc={sortObj.name} /> {language['BY_NAME']}

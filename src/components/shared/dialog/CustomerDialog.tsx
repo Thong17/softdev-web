@@ -143,7 +143,10 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
             backgroundColor: `${theme.color.error}22`,
           }}
           fullWidth
-          onClick={() => onClose()}
+          onClick={() => {
+            reset()
+            onClose()
+          }}
         >
           {language['CANCEL']}
         </Button>
@@ -231,7 +234,11 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
           </div>
           {showForm ? (
             <CustomerForm
-              onClose={() => setShowForm(false)}
+              onClose={() => {
+                setShowForm(false)
+                setCustomerForm({})
+                setCustomerId(null)
+              }}
               theme={theme}
               defaultValues={customerForm}
               id={customerId}

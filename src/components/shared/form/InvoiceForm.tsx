@@ -466,9 +466,14 @@ export const InvoiceForm = forwardRef(({
   }
 
   const handleClickCheckout = () => {
+    if (!customer?.id) {
+      setCustomerDialog({ ...customerDialog, open: true })
+      return notify('Please select customer', 'error')
+    }
     setIsLoading(true)
-    onCheckout({ transactions, discount, tax, voucher }, (data) => {
+    onCheckout({ transactions, discount, tax, voucher }, (err, data) => {
       setIsLoading(false)
+      if (err) return
       if (data?.state === 'COMPLETED') {
         setPaymentId(data?._id)
       }
@@ -522,6 +527,11 @@ export const InvoiceForm = forwardRef(({
     })
   }
 
+  const handleClearCustomer = () => {
+    setCustomer({ displayName: null, id: null, contact: null, address: null, point: 0 })
+    onChangeCustomer({ displayName: null, id: null, contact: null, address: null, point: 0 })
+  }
+
   return (
     <CustomInvoiceForm
       mode={invoiceBar ? 'expand' : 'compact'}
@@ -546,9 +556,9 @@ export const InvoiceForm = forwardRef(({
           }}
         >
           {device === 'laptop' || device === 'desktop' ? (
-            invoiceBar && <CustomerStatistic point={customer.point} phone={customer.contact} name={customer.displayName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} />
+            invoiceBar && <CustomerStatistic mode={paymentId ? 'view' : 'edit'} point={customer.point} phone={customer.contact} name={customer.displayName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} onClear={handleClearCustomer} />
           ) : (
-            <CustomerStatistic point={customer.point} phone={customer.contact} name={customer.displayName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} />
+            <CustomerStatistic mode={paymentId ? 'view' : 'edit'} point={customer.point} phone={customer.contact} name={customer.displayName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} onClear={handleClearCustomer} />
           )}
           <div
             className='toggle'

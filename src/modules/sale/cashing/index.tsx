@@ -56,11 +56,11 @@ export const Cashing = () => {
 
   const handlePayment = (data, callback, isPayment = true) => {
     if (data.transactions.length < 1) {
-      callback()
+      callback('No transaction added')
       return notify('No transaction added', 'error')
     }
     if (paymentDialog.payment) {
-      callback()
+      callback('Payment already created')
       return setPaymentDialog({ ...paymentDialog, open: true })
     }
     const body = {
@@ -77,7 +77,7 @@ export const Cashing = () => {
       body,
     })
       .then((data) => {
-        callback(data?.data?.data)
+        callback(null, data?.data?.data)
         if (!isPayment) return
         setPaymentDialog({
           ...paymentDialog,
@@ -88,17 +88,13 @@ export const Cashing = () => {
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
-        callback()
+        callback(err?.response?.data?.msg)
       })
   }
 
   const handleCheckout = (data, callback) => {
-    if (!paymentDialog.customer?.id) {
-      callback()
-      return notify('Please select customer', 'error')
-    }
-      
-    handlePayment(data, (payment) => {
+    handlePayment(data, (err, payment) => {
+      if (err) return callback(err)
       setDisableProduct(true)
       const body = {
         receiveCashes: [],
@@ -121,11 +117,11 @@ export const Cashing = () => {
       })
         .then((response) => {
           notify('Payment checkout successfully', 'success')
-          callback(response?.data?.data)
+          callback(null, response?.data?.data)
         })
         .catch((err) => {
           notify(err?.response?.data?.msg, 'error')
-          callback(null)
+          callback(err?.response?.data?.msg)
         })
     }, false)
   }

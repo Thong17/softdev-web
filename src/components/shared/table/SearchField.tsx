@@ -50,12 +50,12 @@ export const SearchField = ({ ...props }) => {
   )
 }
 
-export const MiniSearchField = ({ ...props }) => {
+export const MiniSearchField = ({ isActive = false, ...props }) => {
   const searchField = useRef(document.createElement('input'))
   const { theme } = useTheme()
   const { device } = useWeb()
   const { language } = useLanguage()
-  const [active, setActive] = useState(false)
+  const [active, setActive] = useState(isActive)
 
   const handleClick = () => {
     setActive(!active)
