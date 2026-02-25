@@ -19,7 +19,9 @@ const initState: ToastOptions = {
 export const NotifyContext = createContext({
   ...initState,
   notify: (message, type?: TypeOptions) => {},
-  loadify: (promise) => { Promise.resolve() }
+  loadify: (promise) => { Promise.resolve() },
+  loading: (message?: string) => '' as any,
+  update: (id: string, options: any) => {}
 })
 
 const NotifyProvider = ({ children }) => {
@@ -46,8 +48,12 @@ const NotifyProvider = ({ children }) => {
     )
   }
 
+  const loading = (message?: string) => toast.loading(message || 'Loading', initState)
+
+  const update = (id: string, options: any) => toast.update(id, {...initState, ...options})
+
   return (
-    <NotifyContext.Provider value={{ ...initState, notify, loadify }}>
+    <NotifyContext.Provider value={{ ...initState, notify, loadify, loading, update }}>
       {children}
       <ToastContainer className="toast-container" limit={5} newestOnTop />
     </NotifyContext.Provider>

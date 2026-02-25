@@ -15,7 +15,8 @@ import { useEffect, useRef, useState } from 'react'
 import Footer from './Footer'
 import useLanguage from 'hooks/useLanguage'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
-import { Box } from '@mui/material'
+import { Box, IconButton, Menu, MenuItem, Stack } from '@mui/material'
+import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 
 export const MenuBar = ({ toggleSidebar, theme }) => {
   return (
@@ -34,6 +35,7 @@ const Navbar = ({ children }) => {
   const { device, width } = useWeb()
   const navRef = useRef<HTMLDivElement>(document.createElement('div'))
   const location = useLocation()
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null)
 
   const openNavbar = () => {
     setNavbar(true)
@@ -96,7 +98,31 @@ const Navbar = ({ children }) => {
         <ListNavbar>{children}</ListNavbar>
       )}
       {user?.id ? (
-        <Profile id={user.id} username={user.username} picture={user.photo} />
+        <Stack direction={'row'} gap={2} alignItems={'center'}>
+          <IconButton
+            onClick={(event) => setAnchorEl(event.currentTarget)}
+            style={{
+              borderRadius: theme.radius.primary,
+              color: theme.text.primary,
+            }}
+          >
+            <NotificationsRoundedIcon />
+          </IconButton>
+          <Menu
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)}
+            anchorEl={anchorEl}
+            id='profile-menu'
+            style={{
+              marginTop: 10,
+            }}
+          >
+            <MenuItem>
+              Notification
+            </MenuItem>
+          </Menu>
+          <Profile id={user.id} username={user.username} picture={user.photo} />
+        </Stack>
       ) : (
         <Link to='/login'>{language['LOGIN']}</Link>
       )}

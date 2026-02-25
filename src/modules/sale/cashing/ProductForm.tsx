@@ -28,7 +28,7 @@ import { NanoInput } from 'components/shared/form/InputField'
 export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   const { theme } = useTheme()
   const { device } = useWeb()
-  const { notify, loadify } = useNotify()
+  const { notify, loading, update } = useNotify()
   const { lang, language } = useLanguage()
   const dispatch = useAppDispatch()
   const { data, status } = useAppSelector(selectInfoProduct)
@@ -45,6 +45,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   const [totalStock, setTotalStock] = useState(0)
   const [totalDescription, setTotalDescription] = useState('')
   const [requireFields, setRequireFields] = useState<any[]>([])
+  const [loadingId, setLoadingId] = useState('');
 
   useEffect(() => {
     let total = 0
@@ -103,15 +104,17 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
           promotion: product.promotion,
         },
       })
-      loadify(axios)
       axios.then((data) => {
         addTransaction(data?.data?.data, data?.data?.stockRemain)
         setQuantity(1)
         handleCloseDialog()
+        update(loadingId, { render: 'Added to cart', type: 'success', isLoading: false })
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
+        update(loadingId, { render: 'Failed to add to cart', type: 'error', isLoading: false })
       })
+      .finally(() => setLoadingId(''))
     }
 
     let addedOnPrices: any[] = []
@@ -158,8 +161,9 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   useEffect(() => {
     if (!dialog.productId) return
 
-    const dispatchResult = dispatch(getInfoProduct(dialog.productId))
-    loadify(dispatchResult)
+    dispatch(getInfoProduct(dialog.productId))
+    const loadingId = loading('Adding to cart')
+    setLoadingId(loadingId)
   }, [dispatch, dialog.productId])
 
   useEffect(() => {
