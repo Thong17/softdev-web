@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { CustomerContainer } from '../container/CustomerContainer'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { FileField, IImage } from '../form/UploadField'
+// import { FileField, IImage } from '../form/UploadField'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import useWeb from 'hooks/useWeb'
 import useLanguage from 'hooks/useLanguage'
@@ -19,8 +19,8 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
     reset,
     register,
     handleSubmit,
-    getValues,
-    setValue,
+    // getValues,
+    // setValue,
     setFocus,
     formState: { errors },
   } = useForm({
@@ -29,7 +29,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
   })
   const { notify } = useNotify()
   const { language } = useLanguage()
-  const [profilePath, setProfilePath] = useState<IImage>(defaultValues?.picture)
+  // const [profilePath, setProfilePath] = useState<IImage>(defaultValues?.picture)
 
   useEffect(() => {
     setFocus('displayName')
@@ -51,24 +51,24 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
       })
   }
 
-  const handleChangeFile = (event) => {
-    const image = event.target.files[0]
-    const formData = new FormData()
-    formData.append('picture', image)
-    Axios({
-      method: 'POST',
-      url: `/shared/upload/picture`,
-      body: formData,
-      headers: {
-        'content-type': 'multipart/form-data',
-      },
-    }).then((data) => {
-      const filename: IImage = data.data.data as IImage
-      const fileId = data.data.data._id
-      setValue('picture', fileId)
-      setProfilePath(filename)
-    })
-  }
+  // const handleChangeFile = (event) => {
+  //   const image = event.target.files[0]
+  //   const formData = new FormData()
+  //   formData.append('picture', image)
+  //   Axios({
+  //     method: 'POST',
+  //     url: `/shared/upload/picture`,
+  //     body: formData,
+  //     headers: {
+  //       'content-type': 'multipart/form-data',
+  //     },
+  //   }).then((data) => {
+  //     const filename: IImage = data.data.data as IImage
+  //     const fileId = data.data.data._id
+  //     setValue('picture', fileId)
+  //     setProfilePath(filename)
+  //   })
+  // }
 
   return (
     <form
@@ -82,7 +82,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
       <div style={{ gridArea: 'displayName' }}>
         <MiniTextField
           type='text'
-          label={language['DISPLAY_NAME']}
+          label={language['PHONE_NUMBER']}
           err={errors?.displayName?.message}
           {...register('displayName')}
         />
@@ -95,7 +95,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
           {...register('fullName')}
         />
       </div>
-      <div style={{ gridArea: 'contact' }}>
+      {/* <div style={{ gridArea: 'contact' }}>
         <MiniTextField
           type='text'
           label={language['CONTACT']}
@@ -110,8 +110,8 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
           err={errors?.dateOfBirth?.message}
           {...register('dateOfBirth')}
         />
-      </div>
-      <div style={{ gridArea: 'profile' }}>
+      </div> */}
+      {/* <div style={{ gridArea: 'profile' }}>
         <FileField
           images={profilePath && [profilePath]}
           selected={getValues('picture')?._id}
@@ -121,7 +121,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
           onChange={handleChangeFile}
           height={130}
         />
-      </div>
+      </div> */}
       <div style={{ gridArea: 'address' }}>
         <MiniDetailField
           label={language['ADDRESS']}

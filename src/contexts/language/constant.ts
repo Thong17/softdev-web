@@ -232,6 +232,8 @@ export const languages = {
     IN_REVIEW: 'In\u00a0Review',
     PREVIEW: 'Preview',
     LOAN_AMOUNT: 'Loan\u00a0Amount',
+    PHONE_NUMBER: 'Phone\u00a0Number',
+    SELECT_CUSTOMER: 'Select\u00a0Customer',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -465,5 +467,7 @@ export const languages = {
     IN_REVIEW: 'In\u00a0Review',
     PREVIEW: 'Preview',
     LOAN_AMOUNT: 'Loan\u00a0Amount',
+    PHONE_NUMBER: 'Phone\u00a0Number',
+    SELECT_CUSTOMER: 'Select\u00a0Customer',
   }
 }
