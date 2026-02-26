@@ -231,7 +231,7 @@ export const InvoiceForm = forwardRef(({
     isEditing: false,
   })
   const [customerDialog, setCustomerDialog] = useState({ open: false})
-  const [customer, setCustomer] = useState({ displayName: null, id: null, contact: null, address: null, point: 0 })
+  const [customer, setCustomer] = useState({ displayName: null, id: null, fullName: null, address: null, point: 0 })
   const { user } = useAuth()
   const exchangeRate = useMemo(() => ({ sellRate: user?.drawer?.sellRate, buyRate: user?.drawer?.buyRate }), [user?.drawer])
   const { notify } = useNotify()
@@ -252,8 +252,8 @@ export const InvoiceForm = forwardRef(({
 
   const onClearPayment = () => {
     setPaymentId(null)
-    setCustomer({ displayName: null, id: null, contact: null, address: null, point: 0 })
-    onChangeCustomer({ displayName: null, id: null, contact: null, address: null, point: 0 })
+    setCustomer({ displayName: null, id: null, fullName: null, address: null, point: 0 })
+    onChangeCustomer({ displayName: null, id: null, fullName: null, address: null, point: 0 })
     setTax({
       title: 'Tax',
       value: defaultTax,
@@ -528,8 +528,8 @@ export const InvoiceForm = forwardRef(({
   }
 
   const handleClearCustomer = () => {
-    setCustomer({ displayName: null, id: null, contact: null, address: null, point: 0 })
-    onChangeCustomer({ displayName: null, id: null, contact: null, address: null, point: 0 })
+    setCustomer({ displayName: null, id: null, fullName: null, address: null, point: 0 })
+    onChangeCustomer({ displayName: null, id: null, fullName: null, address: null, point: 0 })
   }
 
   return (
@@ -555,11 +555,7 @@ export const InvoiceForm = forwardRef(({
             alignItems: 'center',
           }}
         >
-          {device === 'laptop' || device === 'desktop' ? (
-            invoiceBar && <CustomerStatistic mode={paymentId ? 'view' : 'edit'} point={customer.point} phone={customer.contact} name={customer.displayName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} onClear={handleClearCustomer} />
-          ) : (
-            <CustomerStatistic mode={paymentId ? 'view' : 'edit'} point={customer.point} phone={customer.contact} name={customer.displayName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} onClear={handleClearCustomer} />
-          )}
+          {invoiceBar && <CustomerStatistic mode={paymentId ? 'view' : 'edit'} point={customer.point} phone={customer.displayName} name={customer.fullName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} onClear={handleClearCustomer} />}
           <div
             className='toggle'
             style={{ position: 'relative' }}

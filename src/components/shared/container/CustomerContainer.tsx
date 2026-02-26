@@ -42,9 +42,9 @@ export const CustomerStatistic = ({ phone, mode='edit', name = null, address = n
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginLeft: 5 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <p style={{ fontSize: 13, lineHeight: 1.3 }}>{name}</p>
-              {phone && <LocalPhoneRoundedIcon style={{ fontSize: 13, marginLeft: 10 }} />}
-              <p style={{ fontSize: 13, color: theme.text.quaternary, lineHeight: 1.2 }}>{phone}</p>
+              {phone && <LocalPhoneRoundedIcon style={{ fontSize: 13 }} />}
+              <p style={{ fontSize: 13, color: theme.text.secondary, lineHeight: 1.2 }}>{phone}</p>
+              <p style={{ fontSize: 13, lineHeight: 1.3, marginLeft: 10 }}>{name}</p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               {address && <LocationOnRoundedIcon style={{ fontSize: 12, marginRight: 5, color: theme.text.quaternary }} />}
@@ -367,8 +367,8 @@ export const CustomerContainer = ({
                         id={customer._id}
                         ref={lastCustomerElement}
                         key={index}
-                        name={customer.displayName}
-                        contact={customer.contact}
+                        name={customer.fullName}
+                        contact={customer.displayName}
                         address={customer.address}
                         display={customer.display}
                         point={customer.point}
@@ -389,13 +389,14 @@ export const CustomerContainer = ({
                     <CustomerItem
                       id={customer._id}
                       key={index}
-                      name={customer.displayName}
-                      contact={customer.contact}
+                      name={customer.fullName}
+                      contact={customer.displayName}
                       address={customer.address}
                       display={customer.display}
                       point={customer.point}
                       onClick={() =>
                         handleClickCustomer({
+                          ...customer,
                           id: customer._id,
                           displayName: customer.displayName,
                           point: customer.point?.toFixed(0),
