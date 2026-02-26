@@ -35,6 +35,10 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
     setFocus('displayName')
   }, [setFocus])
 
+  useEffect(() => {
+    reset(defaultValues)
+  }, [defaultValues, reset])
+
   const submit = (data) => {
     Axios({
       method: id ? 'PUT' : 'POST',
@@ -45,6 +49,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
         notify(data?.data?.msg, 'success')
         reset()
         onChange()
+        onClose()
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
@@ -185,14 +190,15 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
   }
 
   const handleEditCustomer = (customer) => {
-    setCustomerForm({
+    const body = {
       displayName: customer?.displayName,
       fullName: customer?.fullName,
       dateOfBirth: customer?.dateOfBirth,
       contact: customer?.contact,
       address: customer?.address,
       picture: customer?.picture
-    })
+    }
+    setCustomerForm(body)
     setCustomerId(customer?._id)
     setShowForm(true)
   }

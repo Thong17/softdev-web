@@ -38,17 +38,17 @@ export const CustomerStatistic = ({ phone, mode='edit', name = null, address = n
   return (
     <CustomCustomerContainer device={device} styled={theme} {...props}>
       <AccountCircleRoundedIcon />
-      {name ? 
+      {phone ? 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginLeft: 5 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {phone && <LocalPhoneRoundedIcon style={{ fontSize: 13 }} />}
               <p style={{ fontSize: 13, color: theme.text.secondary, lineHeight: 1.2 }}>{phone}</p>
-              <p style={{ fontSize: 13, lineHeight: 1.3, marginLeft: 10 }}>{name}</p>
+              <p style={{ fontSize: 13, lineHeight: 1.3, marginLeft: 5 }}>{`~ ${name}`}</p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
               {address && <LocationOnRoundedIcon style={{ fontSize: 12, marginRight: 5, color: theme.text.quaternary }} />}
-              <TextEllipsis style={{ fontSize: 11, color: theme.text.quaternary, lineHeight: 1 }}>{address}</TextEllipsis>
+              <TextEllipsis style={{ fontSize: 11, color: theme.text.quaternary, lineHeight: 1, width: 'fit-content', maxWidth: 250 }}>{address}</TextEllipsis>
             </div>
           </div>
           {mode === 'edit' && <IconButton onClick={(e) => {

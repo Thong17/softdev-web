@@ -30,14 +30,14 @@ const Item = ({ id, name, contact, address, picture, point, onClick, onEdit, onD
       <div style={{ display: 'flex', justifyContent: 'space-between', flex: '0 100%', alignItems: 'center' }}>
         <div className='content' style={{ display: 'flex', flexDirection: 'column', marginRight: 10 }}>
           <div style={{ display: 'flex', justifyContent: 'start' }}>
-            <span>{name}</span>
+            {name &&<span style={{ marginRight: 10 }}>{name}</span>}
+            {contact && <span className="detail" style={{ display: 'flex', alignItems: 'center' }}><LocalPhoneRoundedIcon style={{ fontSize: 15 }} /><TextEllipsis>{contact}</TextEllipsis></span>}
             <RankStatus margin='0 0 0 5px' text={typeof point === 'string' ? parseInt(point) : point.toFixed(0)} color={theme.color.info} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div className="detail" style={{ display: 'flex', alignItems: 'end' }}><LocationOnRoundedIcon style={{ fontSize: 16, marginRight: 5 }} /><TextEllipsis style={{ fontSize: 11, color: theme.text.quaternary, lineHeight: 1 }}>{address}</TextEllipsis></div>
+            {address && <div className="detail" style={{ display: 'flex', alignItems: 'end' }}><LocationOnRoundedIcon style={{ fontSize: 16, marginRight: 5 }} /><TextEllipsis style={{ fontSize: 11, color: theme.text.quaternary, lineHeight: 1, maxWidth: 300 }}>{address}</TextEllipsis></div>}
           </div>
         </div>
-        {contact && <span className="detail" style={{ display: 'flex', alignItems: 'center' }}><LocalPhoneRoundedIcon style={{ fontSize: 15, marginRight: 5 }} /><TextEllipsis>{contact}</TextEllipsis></span>}
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <IconButton
