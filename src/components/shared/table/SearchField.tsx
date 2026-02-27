@@ -4,7 +4,7 @@ import KeyboardCommandKeyIcon from '@mui/icons-material/KeyboardCommandKey'
 import { MenuDialog } from '../MenuDialog'
 import { CustomSearchField, CustomMiniSearchField } from 'styles'
 import { IconButton, MenuItem } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import useWeb from 'hooks/useWeb'
 import useLanguage from 'hooks/useLanguage'
 
@@ -50,7 +50,7 @@ export const SearchField = ({ ...props }) => {
   )
 }
 
-export const MiniSearchField = ({ isActive = false, ...props }) => {
+export const MiniSearchField = forwardRef(({ isActive = false, ...props }: any, ref) => {
   const searchField = useRef(document.createElement('input'))
   const { theme } = useTheme()
   const { device } = useWeb()
@@ -60,6 +60,12 @@ export const MiniSearchField = ({ isActive = false, ...props }) => {
   const handleClick = () => {
     setActive(!active)
   }
+
+  useImperativeHandle(ref, () => ({
+    resetValue() {
+      searchField.current.value = ''
+    },
+  }))
 
   useEffect(() => {
     if (!active) return
@@ -87,5 +93,5 @@ export const MiniSearchField = ({ isActive = false, ...props }) => {
       <IconButton className='search-btn' size='small' onClick={handleClick}><SearchIcon fontSize='small' /></IconButton>
     </CustomMiniSearchField>
   )
-}
+})
 

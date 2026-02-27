@@ -29,6 +29,7 @@ import { TextEllipsis } from '../TextEllipsis'
 import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded'
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded'
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
+import Button from '../Button'
 
 export const CustomerStatistic = ({ phone, mode='edit', name = null, address = null, point = 0, picture = null, onClear = () => {}, ...props }) => {
   const { theme } = useTheme()
@@ -44,7 +45,7 @@ export const CustomerStatistic = ({ phone, mode='edit', name = null, address = n
             <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {phone && <LocalPhoneRoundedIcon style={{ fontSize: 13 }} />}
               <p style={{ fontSize: 13, color: theme.text.secondary, lineHeight: 1.2 }}>{phone}</p>
-              <p style={{ fontSize: 13, lineHeight: 1.3, marginLeft: 5 }}>{`~ ${name}`}</p>
+              {name && <p style={{ fontSize: 13, lineHeight: 1.3, marginLeft: 5 }}>{`~ ${name}`}</p>}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
               {address && <LocationOnRoundedIcon style={{ fontSize: 12, marginRight: 5, color: theme.text.quaternary }} />}
@@ -110,6 +111,7 @@ export const CustomerContainer = ({
     name: false,
     createdAt: false,
   })
+  const searchRef = useRef<any>()
 
   const handleToggleFavorite = () => {
     setCustomers([])
@@ -286,7 +288,7 @@ export const CustomerContainer = ({
             width: 'fit-content',
           }}
         >
-          <MiniSearchField onChange={handleSearch} isActive={true} />
+          <MiniSearchField ref={searchRef} onChange={handleSearch} isActive={true} />
           <MiniFilterButton>
             <MenuItem onClick={() => handleChangeFilter({ filter: 'name' })}>
               <SortIcon asc={sortObj.name} /> {language['BY_NAME']}
@@ -358,36 +360,14 @@ export const CustomerContainer = ({
             boxSizing: 'border-box',
           }}
         >
-          <CustomerLayout>
+          {count > 0 ? <CustomerLayout>
             {!loading
-              ? customers?.map((customer: any, index) => {
-                  if (customers.length === index + 1) {
-                    return (
-                      <CustomerItem
-                        id={customer._id}
-                        ref={lastCustomerElement}
-                        key={index}
-                        name={customer.fullName}
-                        contact={customer.displayName}
-                        address={customer.address}
-                        display={customer.display}
-                        point={customer.point}
-                        onClick={() =>
-                          handleClickCustomer({
-                            ...customer,
-                            id: customer._id,
-                            point: customer.point?.toFixed(0),
-                          })
-                        }
-                        onEdit={handleEditCustomer}
-                        onDelete={handleDeleteCustomer}
-                        picture={customer.picture?.filename}
-                      />
-                    )
-                  }
+              ? customers.map((customer: any, index) => {
+                if (customers.length === index + 1) {
                   return (
                     <CustomerItem
                       id={customer._id}
+                      ref={lastCustomerElement}
                       key={index}
                       name={customer.fullName}
                       contact={customer.displayName}
@@ -398,7 +378,6 @@ export const CustomerContainer = ({
                         handleClickCustomer({
                           ...customer,
                           id: customer._id,
-                          displayName: customer.displayName,
                           point: customer.point?.toFixed(0),
                         })
                       }
@@ -407,7 +386,30 @@ export const CustomerContainer = ({
                       picture={customer.picture?.filename}
                     />
                   )
-                })
+                }
+                return (
+                  <CustomerItem
+                    id={customer._id}
+                    key={index}
+                    name={customer.fullName}
+                    contact={customer.displayName}
+                    address={customer.address}
+                    display={customer.display}
+                    point={customer.point}
+                    onClick={() =>
+                      handleClickCustomer({
+                        ...customer,
+                        id: customer._id,
+                        displayName: customer.displayName,
+                        point: customer.point?.toFixed(0),
+                      })
+                    }
+                    onEdit={handleEditCustomer}
+                    onDelete={handleDeleteCustomer}
+                    picture={customer.picture?.filename}
+                  />
+                )
+              }) 
               : Array.apply(null, Array(5)).map((index, key) => {
                   return (
                     <div key={key}>
@@ -437,7 +439,25 @@ export const CustomerContainer = ({
                     </div>
                   )
                 })}
-          </CustomerLayout>
+          </CustomerLayout> : 
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 10, marginTop: 20 }}>
+            <span style={{ color: theme.text.quaternary }}>{language['NO_CUSTOMER_DESCRIPTION']}</span>
+            <Button
+              style={{
+                color: theme.color.info,
+                backgroundColor: `${theme.color.info}22`,
+                textTransform: 'capitalize',
+              }}
+              onClick={() => {
+                onEditCustomer({ displayName: search })
+                updateQuery('')
+                searchRef.current?.resetValue()
+              }}
+            >
+              {`${language['ADD_CUSTOMER']}`}
+            </Button>
+          </div>
+          }
           {fetching && (
             <div
               style={{

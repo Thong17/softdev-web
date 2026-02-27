@@ -234,6 +234,8 @@ export const languages = {
     LOAN_AMOUNT: 'Loan\u00a0Amount',
     PHONE_NUMBER: 'Phone\u00a0Number',
     SELECT_CUSTOMER: 'Select\u00a0Customer',
+    ADD_CUSTOMER: 'Add\u00a0Customer',
+    NO_CUSTOMER_DESCRIPTION: 'No customer found. Click below to add new.',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -469,5 +471,7 @@ export const languages = {
     LOAN_AMOUNT: 'Loan\u00a0Amount',
     PHONE_NUMBER: 'Phone\u00a0Number',
     SELECT_CUSTOMER: 'Select\u00a0Customer',
+    ADD_CUSTOMER: 'Add\u00a0Customer',
+    NO_CUSTOMER_DESCRIPTION: 'No customer found. Click below to add new.',
   }
 }
