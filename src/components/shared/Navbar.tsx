@@ -15,14 +15,14 @@ import { useEffect, useRef, useState } from 'react'
 import Footer from './Footer'
 import useLanguage from 'hooks/useLanguage'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
-import { Box, IconButton, Menu, MenuItem, Stack } from '@mui/material'
+import { IconButton, Menu, MenuItem, Stack } from '@mui/material'
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 
 export const MenuBar = ({ toggleSidebar, theme }) => {
   return (
-    <Box sx={{ cursor: 'pointer', color: theme.text.secondary }} onClick={() => toggleSidebar()}>
+    <IconButton sx={{ color: theme.text.secondary }} onClick={() => toggleSidebar()}>
       <MenuRoundedIcon />
-    </Box>
+    </IconButton>
   )
 }
 
@@ -70,10 +70,10 @@ const Navbar = ({ children }) => {
     >
       {width < 1024 ? (
         <div style={{ display: 'flex' }}>
-          <MenuBar
+          {children && <MenuBar
             theme={theme}
             toggleSidebar={openNavbar}
-          ></MenuBar>
+          ></MenuBar>}
         </div>
       ) : (
         <div style={{ display: 'flex' }}>
