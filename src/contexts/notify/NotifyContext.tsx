@@ -43,14 +43,15 @@ const NotifyProvider = ({ children }) => {
         }
       }
     }, {
-      ...initState
+      ...initState,
+      theme: 'light',
     }
     )
   }
 
-  const loading = (message?: string) => toast.loading(message || 'Loading', initState)
+  const loading = (message?: string) => toast.loading(message || 'Loading', { ...initState, theme: 'light' })
 
-  const update = (id: string, options: any) => toast.update(id, {...initState, ...options})
+  const update = (id: string, options: any) => toast.update(id, {...initState, ...options, theme: 'light'})
 
   return (
     <NotifyContext.Provider value={{ ...initState, notify, loadify, loading, update }}>

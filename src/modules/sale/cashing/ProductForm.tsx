@@ -112,7 +112,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
         addTransaction(data?.data?.data, data?.data?.stockRemain)
         setQuantity(1)
         handleCloseDialog()
-        update(loadingId, { render: 'Added to cart', type: 'success', isLoading: false })
+        update(loadingId, { render: 'Added to cart', type: 'success', isLoading: false, autoClose: 1000 })
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
@@ -304,7 +304,6 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
     }
       
     if (product.isStock && quantity > totalStock) {
-      console.log(loadingId)
       if (loadingId) return update(loadingId, { render: 'Order quantity has exceed our current stock', type: 'error', isLoading: false })
       else return notify('Order quantity has exceed our current stock', 'error')
     }
@@ -340,11 +339,11 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
         setTotalColor(0)
         setTotalCustomerOption(0)
         setQuantity(1)
-        update(loadingId, { render: 'Added to cart', type: 'success', isLoading: false, autoClose: 1000 })
+        update(newLoadingId, { render: 'Added to cart', type: 'success', isLoading: false, autoClose: 1000 })
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
-        update(loadingId, { render: 'Failed to add to cart', type: 'error', isLoading: false, autoClose: 1000 })
+        update(newLoadingId, { render: 'Failed to add to cart', type: 'error', isLoading: false })
       })
       .finally(() => {
         setLoadingId('')
