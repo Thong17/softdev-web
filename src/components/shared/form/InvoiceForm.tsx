@@ -911,7 +911,12 @@ export const InvoiceForm = forwardRef(({
                       }))
                     }
                   >
-                    -{currencyFormat(discount.value, discount.type)}
+                    -{currencyFormat(
+                      discount.isFixed 
+                        ? (subtotal.USD + (subtotal.KHR / (user?.drawer?.sellRate || 4000))) - discount.value 
+                        : discount.value, 
+                      discount.type
+                    )}
                   </span>
                 )}
               </div>
@@ -991,7 +996,12 @@ export const InvoiceForm = forwardRef(({
                       }))
                     }
                   >
-                    -{currencyFormat(voucher.value, voucher.type)}
+                    -{currencyFormat(
+                      voucher.isEditing 
+                        ? (subtotal.USD + (subtotal.KHR / (user?.drawer?.sellRate || 4000))) - voucher.value
+                        : voucher.value, 
+                      voucher.type
+                    )}
                   </span>
                 )}
               </div>
