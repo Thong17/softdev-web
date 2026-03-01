@@ -168,6 +168,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
     dispatch(getInfoProduct(dialog.productId))
     const loadingId = loading('Adding to cart')
     setLoadingId(loadingId)
+    // eslint-disable-next-line
   }, [dispatch, dialog.productId])
 
   useEffect(() => {
