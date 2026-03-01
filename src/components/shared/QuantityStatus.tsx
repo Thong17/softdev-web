@@ -8,10 +8,10 @@ export const QuantityStatus = ({ qty, min, size, label, padding, onClick }: any)
 
   useEffect(() => {
     switch (true) {
-      case qty < min || qty === 0:
+      case qty === 0:
         setStatus('error')
         break
-      case qty < min + (min / 2):
+      case qty < min:
         setStatus('warning')
         break
       default:

@@ -81,11 +81,15 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
         total += stock.quantity
       })
 
-      if (quantity < 1)
-        return notify('Please select at least 1 quantity', 'error')
-      if (product.isStock && quantity > total)
-        return notify('Order quantity has exceed our current stock', 'error')
-
+      if (quantity < 1) {
+        if (loadingId) return update(loadingId, { render: 'Please select at least 1 quantity', type: 'error', isLoading: false })
+        else return notify('Please select at least 1 quantity', 'error')
+      }
+        
+      if (product.isStock && quantity > total) {
+        if (loadingId) return update(loadingId, { render: 'Order quantity has exceed our current stock', type: 'error', isLoading: false })
+        else return notify('Order quantity has exceed our current stock', 'error')
+      }
       const axios = Axios({
         method: 'POST',
         url: '/sale/transaction/add',
@@ -290,14 +294,23 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
         }
       }
     })
-    if (isError) return notify(`Option is required`, 'error')
-    if (quantity < 1)
-      return notify('Please select at least 1 quantity', 'error')
-    if (product.isStock && quantity > totalStock)
-      return notify('Order quantity has exceed our current stock', 'error')
+    if (isError) {
+      if (loadingId) return update(loadingId, { render: 'Option is required', type: 'error', isLoading: false })
+      else return notify(`Option is required`, 'error')
+    }
+    if (quantity < 1) {
+      if (loadingId) return update(loadingId, { render: 'Please select at least 1 quantity', type: 'error', isLoading: false })
+      else return notify('Please select at least 1 quantity', 'error')
+    }
+      
+    if (product.isStock && quantity > totalStock) {
+      console.log(loadingId)
+      if (loadingId) return update(loadingId, { render: 'Order quantity has exceed our current stock', type: 'error', isLoading: false })
+      else return notify('Order quantity has exceed our current stock', 'error')
+    }
 
-    const loadingId = loading('Adding to cart')
-    setLoadingId(loadingId)
+    const newLoadingId = loading('Adding to cart')
+    setLoadingId(newLoadingId)
     Axios({
       method: 'POST',
       url: '/sale/transaction/add',
