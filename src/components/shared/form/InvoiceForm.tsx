@@ -997,7 +997,7 @@ export const InvoiceForm = forwardRef(({
                     }
                   >
                     -{currencyFormat(
-                      voucher.isEditing 
+                      voucher.isFixed 
                         ? (subtotal.USD + (subtotal.KHR / (user?.drawer?.sellRate || 4000))) - voucher.value
                         : voucher.value, 
                       voucher.type

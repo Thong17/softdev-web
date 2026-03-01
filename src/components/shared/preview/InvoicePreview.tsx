@@ -152,7 +152,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                     >
                       <span>{promotion.title}</span>
                       <span>
-                        -{currencyFormat(promotion.value, promotion.type)}
+                        -{currencyFormat(promotion.isFixed ? payment?.subtotal.BOTH - promotion.value : promotion.value, promotion.type)}
                       </span>
                     </div>
                   )
@@ -186,7 +186,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                     >
                       <span>{promotion.title}</span>
                       <span>
-                        -{currencyFormat(promotion.value, promotion.type)}
+                        -{currencyFormat(promotion.isFixed ? payment?.subtotal.BOTH - promotion.value : promotion.value, promotion.type)}
                       </span>
                     </div>
                   )
