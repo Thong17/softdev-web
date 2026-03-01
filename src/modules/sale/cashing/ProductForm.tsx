@@ -194,8 +194,10 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
       })
     })
     setProductProperties(selectedProperty)
-    if (data.colors?.length > 0 || data.options?.length > 0 || data.customers?.length > 0)
+    if (data.colors?.length > 0 || data.options?.length > 0 || data.customers?.length > 0) {
       setDialog({ ...dialog, open: true })
+      update(loadingId, { render: 'Loaded transaction', type: 'success', isLoading: false, autoClose: 1000 })
+    }
     // eslint-disable-next-line
   }, [data])
 
@@ -294,6 +296,8 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
     if (product.isStock && quantity > totalStock)
       return notify('Order quantity has exceed our current stock', 'error')
 
+    const loadingId = loading('Adding to cart')
+    setLoadingId(loadingId)
     Axios({
       method: 'POST',
       url: '/sale/transaction/add',
@@ -323,9 +327,14 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
         setTotalColor(0)
         setTotalCustomerOption(0)
         setQuantity(1)
+        update(loadingId, { render: 'Added to cart', type: 'success', isLoading: false, autoClose: 1000 })
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')
+        update(loadingId, { render: 'Failed to add to cart', type: 'error', isLoading: false, autoClose: 1000 })
+      })
+      .finally(() => {
+        setLoadingId('')
       })
   }
 
