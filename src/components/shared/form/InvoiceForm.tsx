@@ -210,6 +210,7 @@ export const InvoiceForm = forwardRef(({
   const isFixedValue = watch('discount.isFixed')
   const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
   const [paymentId, setPaymentId] = useState(id)
+  const [checkoutId, setCheckoutId] = useState(id)
   const [discount, setDiscount] = useState({
     title: 'Discount',
     value: 0,
@@ -252,6 +253,7 @@ export const InvoiceForm = forwardRef(({
 
   const onClearPayment = () => {
     setPaymentId(null)
+    setCheckoutId(null)
     setCustomer({ displayName: null, id: null, fullName: null, address: null, point: 0 })
     onChangeCustomer({ displayName: null, id: null, fullName: null, address: null, point: 0 })
     setTax({
@@ -476,6 +478,7 @@ export const InvoiceForm = forwardRef(({
       if (err) return
       if (data?.state === 'COMPLETED') {
         setPaymentId(data?._id)
+        setCheckoutId(data?._id)
       }
     })
   }
@@ -530,6 +533,10 @@ export const InvoiceForm = forwardRef(({
   const handleClearCustomer = () => {
     setCustomer({ displayName: null, id: null, fullName: null, address: null, point: 0 })
     onChangeCustomer({ displayName: null, id: null, fullName: null, address: null, point: 0 })
+  }
+
+  const handleClickPrint = () => {
+    console.log('print')
   }
 
   return (
@@ -1034,6 +1041,7 @@ export const InvoiceForm = forwardRef(({
                 </CustomButton>
                 {paymentId ?
                   <CustomButton
+                    onClick={handleClickPrint}
                     styled={theme}
                     fullWidth
                     style={{
@@ -1061,7 +1069,7 @@ export const InvoiceForm = forwardRef(({
                   {language['CHECKOUT']}
                 </CustomButton>}
                 <CustomButton
-                  disabled={!!paymentId}
+                  disabled={!!checkoutId}
                   isLoading={isLoading}
                   styled={theme}
                   fullWidth
