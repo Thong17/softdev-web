@@ -29,6 +29,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useLanguage from 'hooks/useLanguage'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
+import ReceiptDialog from '../dialog/ReceiptDialog'
 
 export const currencyOptions: IOptions[] = [
   {
@@ -232,6 +233,7 @@ export const InvoiceForm = forwardRef(({
     isEditing: false,
   })
   const [customerDialog, setCustomerDialog] = useState({ open: false})
+  const [receiptDialog, setReceiptDialog] = useState<{ open: boolean; listTransactions: ITransactionItem[] }>({open: false, listTransactions: []});
   const [customer, setCustomer] = useState({ displayName: null, id: null, fullName: null, address: null, point: 0 })
   const { user } = useAuth()
   const exchangeRate = useMemo(() => ({ sellRate: user?.drawer?.sellRate, buyRate: user?.drawer?.buyRate }), [user?.drawer])
@@ -536,7 +538,7 @@ export const InvoiceForm = forwardRef(({
   }
 
   const handleClickPrint = () => {
-    console.log('print')
+    setReceiptDialog({ open: true, listTransactions: transactions })
   }
 
   return (
@@ -554,6 +556,7 @@ export const InvoiceForm = forwardRef(({
             setCustomer(data)
           }}
         />
+        <ReceiptDialog dialog={receiptDialog} />
         <div
           style={{
             width: '100%',

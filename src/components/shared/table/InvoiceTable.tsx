@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { ITableColumn } from './StickyTable'
 import useLanguage from 'hooks/useLanguage'
+import useTheme from 'hooks/useTheme'
 
 interface ITable {
   columns: ITableColumn<string>[]
@@ -19,6 +20,7 @@ export const InvoiceTable = ({
   rows,
 }: ITable) => {
   const { language } = useLanguage()
+  const { theme } = useTheme()
   return (
     <div className='table-container'>
       <TableContainer className='table'>
@@ -33,9 +35,10 @@ export const InvoiceTable = ({
                     padding: 5,
                     border: 'none',
                     fontWeight: 600,
-                    borderBottom: '2px dashed #333',
-                    borderTop: '2px dashed #333',
-                    backgroundColor: 'none'
+                    borderBottom: 'none',
+                    borderTop: 'none',
+                    backgroundColor: 'inherit',
+                    color: theme.text.secondary
                   }}
                   key={column.id}
                   align={column.align}
@@ -66,7 +69,8 @@ export const InvoiceTable = ({
                               minWidth: column.minWidth,
                               maxWidth: column.maxWidth,
                               padding: '0 5px',
-                              borderBottom: 'none'
+                              borderBottom: 'none',
+                              color: theme.text.secondary
                             }}
                           >
                             {column.format && typeof value === 'number'

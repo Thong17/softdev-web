@@ -4,7 +4,7 @@ import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { CustomInvoiceContainer, StyledThermalBorder } from 'styles'
-import { dateFormat, timeFormat } from 'utils'
+import { currencyFormat, dateFormat, timeFormat } from 'utils'
 import { InvoiceTable } from '../table/InvoiceTable'
 import { TextEllipsis } from '../TextEllipsis'
 import { FlexBetween } from './FlexBetween'
@@ -68,7 +68,10 @@ export const InvoiceContainer = ({
   logo = null,
   tax = 0,
   footer = '',
-  font = 'Ariel'
+  font = 'Ariel',
+  padding = '35px 0',
+  hasThermalBorder = true,
+  rows=[]
 }: any) => {
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -83,31 +86,31 @@ export const InvoiceContainer = ({
         position: 'relative',
         minWidth: width,
         boxSizing: 'border-box',
-        padding: '35px 0',
+        padding: padding,
         '*': {
           fontFamily: `${font} !important`
         }
       }}
     >
-      <ThermalBorder styled={theme} position='top' />
+      {hasThermalBorder && <ThermalBorder styled={theme} position='top' />}
       <CustomInvoiceContainer
         mode='preview'
         style={{ minWidth: width, maxWidth: width }}
         styled={theme}
         font={font}
       >
-        {logo && <div style={{ width: 50, height: 50, position: 'absolute', left: 20, top: 70 }}>
-          <img
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                borderRadius: theme.radius.primary,
-              }}
-              src={`${process.env.REACT_APP_API_UPLOADS}${logo}`}
-              alt='logo'
-              loading='lazy'
-            />
+        {logo && <div style={{ width: 50, height: 50, position: 'absolute', left: 20, top: 20 }}>
+        <img
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            borderRadius: theme.radius.primary,
+          }}
+          src={`${process.env.REACT_APP_API_UPLOADS}${logo}`}
+          alt='logo'
+          loading='lazy'
+        />
         </div>}
         <p
           style={{
@@ -144,7 +147,13 @@ export const InvoiceContainer = ({
           <span>Invoice: INV0000000</span>
           <span>Cashier: {user?.username}</span>
         </FlexBetween>
-        <InvoiceTable columns={invoiceColumns} rows={[]} />
+        <InvoiceTable columns={invoiceColumns} rows={rows?.map((row) => ({
+          description: row.description,
+          qty: row.quantity,
+          price: currencyFormat(row.price.value, row.price.currency),
+          disc: <>{currencyFormat(row.discount.value, row.discount.currency)} {row.discount.isFixed ? 'Only' : ''}</>,
+          total: currencyFormat(row.total.value, row.total.currency)
+        }))} />
         <PreBorder styled={theme} />
         <div
           style={{
@@ -198,7 +207,7 @@ export const InvoiceContainer = ({
           Thank you for coming
         </p>
       </CustomInvoiceContainer>
-      <ThermalBorder styled={theme} />
+      {hasThermalBorder && <ThermalBorder styled={theme} position='bottom' />}
     </Box>
   )
 }
