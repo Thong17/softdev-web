@@ -100,14 +100,13 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
 
     return (
         <AlertContainer
-            justify='start'
+            justify='center'
             isOpen={dialog.open}
             handleClose={() => setDialog({ ...dialog, open: false })}
         >
             <div
                 style={{
-                    height: '100vh',
-                    width: 'calc(100vw - 64px)',
+                    width: 'calc(70vw - 64px)',
                     boxSizing: 'border-box',
                     display: 'flex',
                     flexDirection: 'column',

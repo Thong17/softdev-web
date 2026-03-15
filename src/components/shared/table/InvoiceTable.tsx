@@ -13,11 +13,13 @@ interface ITable {
   columns: ITableColumn<string>[]
   rows: any[]
   font?: string
+  tableSpaceHeight?: number
 }
 
 export const InvoiceTable = ({
   columns,
   rows,
+  tableSpaceHeight = 70
 }: ITable) => {
   const { language } = useLanguage()
   const { theme } = useTheme()
@@ -87,7 +89,7 @@ export const InvoiceTable = ({
           
         </Table>
       </TableContainer>
-      <div style={{ height: rows?.length > 0 ? 70 : 130, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>{rows?.length === 0 && language['NO_TRANSACTION']}</div>
+      <div style={{ height: rows?.length > 0 ? tableSpaceHeight : tableSpaceHeight + 60, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>{rows?.length === 0 && language['NO_TRANSACTION']}</div>
     </div>
   )
 }

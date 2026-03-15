@@ -155,7 +155,7 @@ export const InvoiceContainer = ({
           <span>Invoice: {invoice}</span>
           <span>Cashier: {user?.username}</span>
         </FlexBetween>
-        <InvoiceTable columns={invoiceColumns} rows={rows?.map((row) => ({
+        <InvoiceTable tableSpaceHeight={200} columns={invoiceColumns} rows={rows?.map((row) => ({
           description: row.description,
           qty: row.quantity,
           price: currencyFormat(row.price.value, row.price.currency),
