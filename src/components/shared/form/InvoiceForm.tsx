@@ -233,7 +233,7 @@ export const InvoiceForm = forwardRef(({
     isEditing: false,
   })
   const [customerDialog, setCustomerDialog] = useState({ open: false})
-  const [receiptDialog, setReceiptDialog] = useState<{ open: boolean; listTransactions: ITransactionItem[] }>({open: false, listTransactions: []});
+  const [receiptDialog, setReceiptDialog] = useState<{ open: boolean; listTransactions: ITransactionItem[], payment: any }>({open: false, listTransactions: [], payment: null});
   const [customer, setCustomer] = useState({ displayName: null, id: null, fullName: null, address: null, point: 0 })
   const { user } = useAuth()
   const exchangeRate = useMemo(() => ({ sellRate: user?.drawer?.sellRate, buyRate: user?.drawer?.buyRate }), [user?.drawer])
@@ -466,7 +466,10 @@ export const InvoiceForm = forwardRef(({
 
   const handleClickPayment = () => {
     setIsLoading(true)
-    onPayment({ transactions, discount, tax, voucher }, () => setIsLoading(false))
+    onPayment({ transactions, discount, tax, voucher }, (_error, data) => {
+      setReceiptDialog({ ...receiptDialog, payment: data })
+      setIsLoading(false)
+    })
   }
 
   const handleClickCheckout = () => {
@@ -478,6 +481,7 @@ export const InvoiceForm = forwardRef(({
     onCheckout({ transactions, discount, tax, voucher }, (err, data) => {
       setIsLoading(false)
       if (err) return
+      setReceiptDialog({ ...receiptDialog, payment: data })
       if (data?.state === 'COMPLETED') {
         setPaymentId(data?._id)
         setCheckoutId(data?._id)
@@ -538,7 +542,7 @@ export const InvoiceForm = forwardRef(({
   }
 
   const handleClickPrint = () => {
-    setReceiptDialog({ open: true, listTransactions: transactions })
+    setReceiptDialog({ ...receiptDialog, open: true, listTransactions: transactions })
   }
 
   return (
@@ -556,7 +560,7 @@ export const InvoiceForm = forwardRef(({
             setCustomer(data)
           }}
         />
-        <ReceiptDialog dialog={receiptDialog} />
+        <ReceiptDialog dialog={receiptDialog} setDialog={setReceiptDialog} />
         <div
           style={{
             width: '100%',

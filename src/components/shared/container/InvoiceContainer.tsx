@@ -71,7 +71,15 @@ export const InvoiceContainer = ({
   font = 'Ariel',
   padding = '35px 0',
   hasThermalBorder = true,
-  rows=[]
+  rows=[],
+  invoice = 'INV0000000',
+  subtotal = { USD: 0, KHR: 0 },
+  total = { value: 0, currency: 'USD' },
+  discounts = [],
+  services = [],
+  vouchers = [],
+  receiveCashes = [],
+  remain = 0
 }: any) => {
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -100,17 +108,17 @@ export const InvoiceContainer = ({
         font={font}
       >
         {logo && <div style={{ width: 50, height: 50, position: 'absolute', left: 20, top: 20 }}>
-        <img
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            borderRadius: theme.radius.primary,
-          }}
-          src={`${process.env.REACT_APP_API_UPLOADS}${logo}`}
-          alt='logo'
-          loading='lazy'
-        />
+          <img
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: theme.radius.primary,
+            }}
+            src={`${process.env.REACT_APP_API_UPLOADS}${logo}`}
+            alt='logo'
+            loading='lazy'
+          />
         </div>}
         <p
           style={{
@@ -144,7 +152,7 @@ export const InvoiceContainer = ({
           <PreTime date={null} />
         </FlexBetween>
         <FlexBetween>
-          <span>Invoice: INV0000000</span>
+          <span>Invoice: {invoice}</span>
           <span>Cashier: {user?.username}</span>
         </FlexBetween>
         <InvoiceTable columns={invoiceColumns} rows={rows?.map((row) => ({
@@ -166,11 +174,11 @@ export const InvoiceContainer = ({
           <div style={{ width: '50%' }}>
             <FlexBetween>
               <span>USD:</span>
-              <span>$</span>
+              <span>{ currencyFormat(subtotal.USD, 'USD') }</span>
             </FlexBetween>
             <FlexBetween>
               <span>KHR:</span>
-              <span>$</span>
+              <span>{ currencyFormat(subtotal.KHR, 'KHR') }</span>
             </FlexBetween>
             <FlexBetween>
               <span>Disc:</span>

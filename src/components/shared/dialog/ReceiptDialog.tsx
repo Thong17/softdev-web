@@ -27,6 +27,7 @@ const fontOption = [
     { label: 'Sans Serif', value: 'sans-serif' },
     { label: 'Hanuman', value: 'Hanuman' },
     { label: 'PTSans', value: 'PTSans' },
+    { label: 'Monospace', value: 'monospace' },
 ]
 
 const invoiceOption = [
@@ -101,7 +102,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
         <AlertContainer
             justify='start'
             isOpen={dialog.open}
-            handleClose={() => setDialog({ open: false })}
+            handleClose={() => setDialog({ ...dialog, open: false })}
         >
             <div
                 style={{
@@ -114,7 +115,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
             >
                 <DialogTitle
                     title={language['RECEIPT']}
-                    onClose={() => setDialog({ open: false })}
+                    onClose={() => setDialog({ ...dialog, open: false })}
                 />
                 <div
                     style={{
@@ -253,6 +254,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                             hasThermalBorder={false}
                             padding='0 0 20px 0'
                             rows={dialog.listTransactions}
+                            subtotal={dialog.payment?.subtotal}
                         />
                         <div style={{ display: 'flex', justifyContent: 'end' }}>
                             <Button
