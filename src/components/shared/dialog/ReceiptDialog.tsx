@@ -17,7 +17,6 @@ import { IImage } from 'components/shared/form/UploadField'
 import { InvoiceContainer } from 'components/shared/container/InvoiceContainer'
 import useTheme from 'hooks/useTheme'
 import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
-import { useNavigate } from 'react-router-dom'
 import { storeSchema } from 'modules/organize/store/schema'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 
@@ -46,9 +45,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
         formState: { errors },
     } = useForm({ resolver: yupResolver(storeSchema), defaultValues })
     const { theme } = useTheme()
-    const navigate = useNavigate()
     const { loadify } = useNotify()
-    const [loading, setLoading] = useState(false)
     const [iconPath, setIconPath] = useState<IImage>(defaultValues?.logo)
     const [preview, setPreview] = useState({
         ...defaultValues,
@@ -240,7 +237,9 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                             options={invoiceOption}
                             label='Invoice Type'
                             err={errors?.invoiceType?.message}
-                            {...register('invoiceType')}
+                            onChange={(e) => {
+                                setInvoiceType(e.target.value)
+                            }}
                         />
                         <InvoiceContainer
                             name={preview?.name}

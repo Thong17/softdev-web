@@ -162,7 +162,6 @@ export const InvoiceContainer = ({
           disc: <>{currencyFormat(row.discount.value, row.discount.currency)} {row.discount.isFixed ? 'Only' : ''}</>,
           total: currencyFormat(row.total.value, row.total.currency)
         }))} />
-        <PreBorder styled={theme} />
         <div
           style={{
             display: 'flex',
@@ -188,7 +187,6 @@ export const InvoiceContainer = ({
               <span>Tax:</span>
               <span>{tax}%</span>
             </FlexBetween>
-            <PreBorder styled={theme} />
             <FlexBetween>
               <span>Receive:</span>
               <span>$</span>

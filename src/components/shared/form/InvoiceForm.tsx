@@ -30,6 +30,8 @@ import useNotify from 'hooks/useNotify'
 import useLanguage from 'hooks/useLanguage'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import ReceiptDialog from '../dialog/ReceiptDialog'
+import { getStore, selectStore } from 'modules/organize/store/redux'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
 
 export const currencyOptions: IOptions[] = [
   {
@@ -196,8 +198,10 @@ export const InvoiceForm = forwardRef(({
     resolver: yupResolver(transactionSchema),
     defaultValues: transaction,
   })
-  const { invoiceBar, toggleInvoiceBar } = useConfig()
+  const dispatch = useAppDispatch()
   const { theme } = useTheme()
+  const { data, status } = useAppSelector(selectStore)
+  const { invoiceBar, toggleInvoiceBar } = useConfig()
   const { device } = useWeb()
   const { language } = useLanguage()
   const confirm = useAlert()
@@ -545,6 +549,24 @@ export const InvoiceForm = forwardRef(({
     setReceiptDialog({ ...receiptDialog, open: true, listTransactions: transactions })
   }
 
+  useEffect(() => {
+    dispatch(
+      getStore({
+        id: 'store',
+        fields: [
+          'name',
+          'logo',
+          'contact',
+          'address',
+          'type',
+          'other',
+          'font',
+          'tax',
+        ],
+      })
+    )
+  }, [])
+
   return (
     <CustomInvoiceForm
       mode={invoiceBar ? 'expand' : 'compact'}
@@ -560,7 +582,7 @@ export const InvoiceForm = forwardRef(({
             setCustomer(data)
           }}
         />
-        <ReceiptDialog dialog={receiptDialog} setDialog={setReceiptDialog} />
+        {status === 'SUCCESS' && <ReceiptDialog dialog={receiptDialog} setDialog={setReceiptDialog} defaultValues={data} />}
         <div
           style={{
             width: '100%',
