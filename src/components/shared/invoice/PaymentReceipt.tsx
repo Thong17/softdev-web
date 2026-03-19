@@ -26,12 +26,13 @@ export const PreBorder = ({ styled }) => {
 export const PaymentReceipt = ({ width = '100%', payment }: any) => {
   const dispatch = useAppDispatch()
   const { theme } = useTheme()
-  const { data } = useAppSelector(selectStore)
+  const { data, status } = useAppSelector(selectStore)
   const [store, setStore] = useState<any | null>(null)
   const [listTransactions, setListTransactions] = useState<any>([])
   const [info, setInfo] = useState<any | null>(null)
 
   useEffect(() => {
+    if (status !== 'INIT') return
     dispatch(
       getStore({
         id: 'store',
@@ -47,7 +48,7 @@ export const PaymentReceipt = ({ width = '100%', payment }: any) => {
         ],
       })
     )
-  }, [dispatch])
+  }, [dispatch, status])
 
   useEffect(() => {
     setStore(data)

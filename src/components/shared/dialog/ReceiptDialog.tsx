@@ -1,7 +1,7 @@
 import { AlertContainer } from '../container/AlertContainer'
 import useLanguage from 'hooks/useLanguage'
 import { DialogTitle } from '../DialogTitle'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
     TextField,
     FileField,
@@ -19,6 +19,9 @@ import useTheme from 'hooks/useTheme'
 import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
 import { storeSchema } from 'modules/organize/store/schema'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
+import { PaymentReceipt } from '../invoice/PaymentReceipt'
+import { useReactToPrint } from 'react-to-print'
+import { networkPrinting } from 'api/receipt.api'
 
 const fontOption = [
     { label: 'Arial', value: 'Arial' },
@@ -32,6 +35,11 @@ const fontOption = [
 const invoiceOption = [
     { label: 'Invoice', value: 'invoice' },
     { label: 'Delivery Note', value: 'delivery' },
+]
+
+const printOption = [
+    { label: 'Web Printing', value: 'web_printing' },
+    { label: 'Direct Printing', value: 'direct_printing' },
 ]
 
 const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
@@ -59,6 +67,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
 
     const [font, setFont] = useState(defaultValues?.font)
     const [invoiceType, setInvoiceType] = useState(defaultValues?.invoiceType)
+    const [printType, setPrintType] = useState(defaultValues?.printType)
     const fontValue = watch('font')
 
     useEffect(() => {
@@ -93,6 +102,22 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
             setIconPath(file)
             setPreview((prev) => ({ ...prev, logo: file?.filename }))
         })
+    }
+
+    const invoiceRef = useRef(document.createElement('div'))
+    const handlePrintInvoice = useReactToPrint({
+        content: () => invoiceRef?.current,
+        documentTitle: 'Invoice',
+    })
+
+    const handlePrint = () => {
+        if (printType === 'direct_printing') {
+            networkPrinting()
+                .then(console.log)
+                .catch(console.error)
+        } else {
+            handlePrintInvoice()
+        }
     }
 
     return (
@@ -254,14 +279,23 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                             rows={dialog.listTransactions}
                             subtotal={dialog.payment?.subtotal}
                         />
-                        <div style={{ display: 'flex', justifyContent: 'end' }}>
+                        <div style={{ display: 'flex', gap: 10, height: 36, justifyContent: 'end', width: '100%', position: 'relative' }}>
+                            <SelectField
+                                value={printType}
+                                options={printOption}
+                                err={errors?.printType?.message}
+                                onChange={(e) => {
+                                    setPrintType(e.target.value)
+                                }}
+                                style={{ width: '200px', position: 'absolute', top: 0, right: 0 }}
+                            />
                             <Button
                                 variant='contained'
                                 style={{
                                     backgroundColor: `${theme.color.info}22`,
                                     color: theme.color.info,
-                                    width: '50%'
                                 }}
+                                onClick={handlePrint}
                             >
                                 <PrintRoundedIcon
                                     style={{ fontSize: 19, marginRight: 5 }}
@@ -269,6 +303,11 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                                 {language['PRINT']}
                             </Button>
                         </div>
+                    </div>
+                </div>
+                <div style={{ position: 'absolute', top: '200%', width: '100%' }}>
+                    <div ref={invoiceRef}>
+                        {dialog.payment && <PaymentReceipt payment={dialog.payment} />}
                     </div>
                 </div>
             </div>
