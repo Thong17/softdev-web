@@ -4,7 +4,7 @@ import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { CustomInvoiceContainer, StyledThermalBorder } from 'styles'
-import { currencyFormat, dateFormat, timeFormat } from 'utils'
+import { currencyFormat, timeFormat } from 'utils'
 import { InvoiceTable } from '../table/InvoiceTable'
 import { TextEllipsis } from '../TextEllipsis'
 import { FlexBetween } from './FlexBetween'
@@ -13,7 +13,7 @@ export const PreDate = ({ date }) => {
   return (
     <TextEllipsis>
       <span>Date: </span>
-      <span>{dateFormat(date)}</span>
+      <span>{timeFormat(date, 'YYYY-MM-DD HH:mm')}</span>
     </TextEllipsis>
   )
 }
@@ -149,7 +149,6 @@ export const InvoiceContainer = ({
         >{contact}</p>
         <FlexBetween>
           <PreDate date={null} />
-          <PreTime date={null} />
         </FlexBetween>
         <FlexBetween>
           <span>Invoice: {invoice}</span>

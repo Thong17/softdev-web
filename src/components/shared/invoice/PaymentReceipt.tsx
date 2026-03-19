@@ -137,12 +137,11 @@ export const PaymentReceipt = ({ width = '100%', payment }: any) => {
           </FlexBetween>
         )}
         <FlexBetween>
-          <PreDate date={info?.createdAt} />
-          <PreTime date={info?.createdAt} />
+          <span>Order: {info?.invoice}</span>
+          <span>Cashier: {info?.createdBy?.username}</span>
         </FlexBetween>
         <FlexBetween>
-          <span>Invoice: {info?.invoice}</span>
-          <span>Cashier: {info?.createdBy?.username}</span>
+          <PreDate date={info?.createdAt} />
         </FlexBetween>
         <div style={{ height: 10 }}></div>
         <InvoiceTable columns={invoiceColumns} rows={listTransactions} />
