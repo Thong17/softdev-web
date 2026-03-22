@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow'
 import { ITableColumn } from './StickyTable'
 import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
+import { Box } from '@mui/material'
 
 interface ITable {
   columns: ITableColumn<string>[]
@@ -24,8 +25,10 @@ export const InvoiceTable = ({
   const { language } = useLanguage()
   const { theme } = useTheme()
   return (
-    <div className='table-container'>
+    <div className='table-container' style={{ position: 'relative' }}>
       <TableContainer className='table'>
+        <Box style={{ lineHeight: 0 }}>{'-'.repeat(100)}</Box>
+        <Box style={{ lineHeight: 0, position: 'absolute', top: '30px' }}>{'-'.repeat(100)}</Box>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
@@ -34,13 +37,13 @@ export const InvoiceTable = ({
                   style={{
                     minWidth: column.minWidth,
                     maxWidth: column.maxWidth,
-                    padding: 5,
-                    border: 'none',
-                    fontWeight: 600,
-                    borderBottom: 'none',
-                    borderTop: 'none',
+                    fontWeight: 500,
                     backgroundColor: 'inherit',
-                    color: theme.text.secondary
+                    color: theme.text.secondary,
+                    textTransform: 'none',
+                    border: 'none',
+                    lineHeight: 0,
+                    padding: '18px 0 13px 0'
                   }}
                   key={column.id}
                   align={column.align}
@@ -70,7 +73,7 @@ export const InvoiceTable = ({
                             style={{
                               minWidth: column.minWidth,
                               maxWidth: column.maxWidth,
-                              padding: '0 5px',
+                              padding: '5px 5px',
                               borderBottom: 'none',
                               color: theme.text.secondary
                             }}
@@ -86,7 +89,6 @@ export const InvoiceTable = ({
                 })}
             </TableBody>
           )}
-          
         </Table>
       </TableContainer>
       <div style={{ height: rows?.length > 0 ? tableSpaceHeight : tableSpaceHeight + 60, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>{rows?.length === 0 && language['NO_TRANSACTION']}</div>

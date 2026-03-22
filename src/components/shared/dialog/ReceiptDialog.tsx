@@ -22,19 +22,12 @@ import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import { PaymentReceipt } from '../invoice/PaymentReceipt'
 import { useReactToPrint } from 'react-to-print'
 import { networkPrinting } from 'api/receipt.api'
+import { fontOption } from 'modules/organize/store/Form'
 
-const fontOption = [
-    { label: 'Arial', value: 'Arial' },
-    { label: 'Open Sans', value: 'Open Sans' },
-    { label: 'Sans Serif', value: 'sans-serif' },
-    { label: 'Hanuman', value: 'Hanuman' },
-    { label: 'PTSans', value: 'PTSans' },
-    { label: 'Monospace', value: 'monospace' },
-]
 
 const invoiceOption = [
-    { label: 'Invoice', value: 'invoice' },
-    { label: 'Delivery Note', value: 'delivery' },
+    { label: 'Receipt', value: 'receipt' },
+    { label: 'Delivery', value: 'delivery' },
 ]
 
 const printOption = [
@@ -66,8 +59,8 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
     const other = watch('other')
 
     const [font, setFont] = useState(defaultValues?.font)
-    const [invoiceType, setInvoiceType] = useState(defaultValues?.invoiceType)
-    const [printType, setPrintType] = useState(defaultValues?.printType)
+    const [invoiceType, setInvoiceType] = useState<any>('receipt')
+    const [printType, setPrintType] = useState<any>('direct_printing')
     const fontValue = watch('font')
 
     useEffect(() => {
@@ -278,6 +271,8 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                             padding='0 0 20px 0'
                             rows={dialog.listTransactions}
                             subtotal={dialog.payment?.subtotal}
+                            invoice={dialog.payment?.invoice}
+                            createdBy={dialog.payment?.createdBy?.username}
                         />
                         <div style={{ display: 'flex', gap: 10, height: 36, justifyContent: 'end', width: '100%', position: 'relative' }}>
                             <SelectField

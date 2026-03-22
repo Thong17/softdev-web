@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { CustomReceiptContainer } from 'styles'
 import { currencyFormat } from 'utils'
 import { FlexBetween } from '../container/FlexBetween'
-import { PreDate, PreTime } from '../container/InvoiceContainer'
+import { PreDate } from '../container/InvoiceContainer'
 import { InvoiceTable } from '../table/InvoiceTable'
 
 export const PreBorder = ({ styled }) => {

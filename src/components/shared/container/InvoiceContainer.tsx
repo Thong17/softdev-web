@@ -1,6 +1,5 @@
 import { Box } from '@mui/material'
 import { invoiceColumns } from 'constants/variables'
-import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { CustomInvoiceContainer, StyledThermalBorder } from 'styles'
@@ -79,9 +78,9 @@ export const InvoiceContainer = ({
   services = [],
   vouchers = [],
   receiveCashes = [],
-  remain = 0
+  remain = 0,
+  createdBy = null
 }: any) => {
-  const { user } = useAuth()
   const { theme } = useTheme()
   const { device } = useWeb()
 
@@ -96,7 +95,11 @@ export const InvoiceContainer = ({
         boxSizing: 'border-box',
         padding: padding,
         '*': {
-          fontFamily: `${font} !important`
+          fontFamily: `${font} !important`,
+          textTransform: 'none',
+          fontSize: '16px',
+          letterSpacing: '0.5px',
+          lineHeight: '1',
         }
       }}
     >
@@ -148,11 +151,11 @@ export const InvoiceContainer = ({
           }}
         >{contact}</p>
         <FlexBetween>
-          <PreDate date={null} />
+          <span>Order: {invoice}</span>
+          <span>Cashier: {createdBy}</span>
         </FlexBetween>
-        <FlexBetween>
-          <span>Invoice: {invoice}</span>
-          <span>Cashier: {user?.username}</span>
+        <FlexBetween style={{ marginBottom: 8 }}>
+          <PreDate date={null} />
         </FlexBetween>
         <InvoiceTable tableSpaceHeight={200} columns={invoiceColumns} rows={rows?.map((row) => ({
           description: row.description,
@@ -161,25 +164,23 @@ export const InvoiceContainer = ({
           disc: <>{currencyFormat(row.discount.value, row.discount.currency)} {row.discount.isFixed ? 'Only' : ''}</>,
           total: currencyFormat(row.total.value, row.total.currency)
         }))} />
+        <p style={{ lineHeight: 0 }}>{'-'.repeat(200)}</p>
         <div
           style={{
             display: 'flex',
             alignItems: 'start',
             justifyContent: 'space-between',
+            marginTop: 10,
           }}
         >
-          <span>Total</span>
+          <span></span>
           <div style={{ width: '50%' }}>
             <FlexBetween>
-              <span>USD:</span>
+              <span>Subtotal:</span>
               <span>{ currencyFormat(subtotal.USD, 'USD') }</span>
             </FlexBetween>
             <FlexBetween>
-              <span>KHR:</span>
-              <span>{ currencyFormat(subtotal.KHR, 'KHR') }</span>
-            </FlexBetween>
-            <FlexBetween>
-              <span>Disc:</span>
+              <span>Discount:</span>
               <span>%</span>
             </FlexBetween>
             <FlexBetween>
@@ -187,11 +188,7 @@ export const InvoiceContainer = ({
               <span>{tax}%</span>
             </FlexBetween>
             <FlexBetween>
-              <span>Receive:</span>
-              <span>$</span>
-            </FlexBetween>
-            <FlexBetween>
-              <span>Remain:</span>
+              <span>Total:</span>
               <span>$</span>
             </FlexBetween>
           </div>

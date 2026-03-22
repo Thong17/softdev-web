@@ -18,12 +18,8 @@ import useTheme from 'hooks/useTheme'
 import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
 import { useNavigate } from 'react-router-dom'
 
-const fontOption = [
-  { label: 'Arial', value: 'Arial' },
-  { label: 'Open Sans', value: 'Open Sans' },
-  { label: 'Sans Serif', value: 'sans-serif' },
-  { label: 'Hanuman', value: 'Hanuman' },
-  { label: 'PTSans', value: 'PTSans' },
+export const fontOption = [
+  { label: 'Fake Receipt V1', value: "Fake Receipt V1" },
 ]
 
 const StoreForm = ({ defaultValues, id }: any) => {
