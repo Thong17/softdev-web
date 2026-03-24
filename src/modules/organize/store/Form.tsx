@@ -19,7 +19,7 @@ import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
 import { useNavigate } from 'react-router-dom'
 
 export const fontOption = [
-  { label: 'Fake Receipt V1', value: "Fake Receipt V1" },
+  { label: 'Monospace', value: "monospace" },
 ]
 
 const StoreForm = ({ defaultValues, id }: any) => {

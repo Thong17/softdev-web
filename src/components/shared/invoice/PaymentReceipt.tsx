@@ -145,29 +145,34 @@ export const PaymentReceipt = ({ width = '100%', payment }: any) => {
         </FlexBetween>
         <div style={{ height: 10 }}></div>
         <InvoiceTable columns={invoiceColumns} rows={listTransactions} />
-        <PreBorder styled={theme} />
+        <Box style={{ lineHeight: 0 }}>{'-'.repeat(300)}</Box>
         <div
           style={{
             display: 'flex',
             alignItems: 'start',
-            justifyContent: 'space-between',
+            justifyContent: 'end',
           }}
         >
-          <span>Subtotal</span>
-          <div style={{ width: '50%' }}>
+          <div style={{ width: '50%', marginTop: 10 }}>
             <FlexBetween>
-              <span>USD:</span>
+              <span>Subtotal:</span>
               <span style={{ lineHeight: 1 }}>
                 {currencyFormat(info?.subtotal?.USD, 'USD')}
               </span>
             </FlexBetween>
-            <FlexBetween>
-              <span>KHR:</span>
-              <span style={{ lineHeight: 1 }}>
-                {currencyFormat(info?.subtotal?.KHR, 'KHR')}
-              </span>
-            </FlexBetween>
             {info?.discounts?.map((prop, key) => {
+              if (parseFloat(prop.value) <= 0)
+                return <span key={key} style={{ display: 'none' }}></span>
+              return (
+                <FlexBetween key={key}>
+                  <span>{prop.title}</span>
+                  <span style={{ lineHeight: 1 }}>
+                    -{currencyFormat(parseFloat(prop.value), prop.type)}
+                  </span>
+                </FlexBetween>
+              )
+            })}
+            {info?.vouchers?.map((prop, key) => {
               if (parseFloat(prop.value) <= 0)
                 return <span key={key} style={{ display: 'none' }}></span>
               return (
@@ -191,19 +196,6 @@ export const PaymentReceipt = ({ width = '100%', payment }: any) => {
                 </FlexBetween>
               )
             })}
-            {info?.vouchers?.map((prop, key) => {
-              if (parseFloat(prop.value) <= 0)
-                return <span key={key} style={{ display: 'none' }}></span>
-              return (
-                <FlexBetween key={key}>
-                  <span>{prop.title}</span>
-                  <span style={{ lineHeight: 1 }}>
-                    -{currencyFormat(parseFloat(prop.value), prop.type)}
-                  </span>
-                </FlexBetween>
-              )
-            })}
-            <PreBorder styled={theme} />
             <FlexBetween>
               <span>Total</span>
               <span style={{ lineHeight: 1 }}>
@@ -211,21 +203,6 @@ export const PaymentReceipt = ({ width = '100%', payment }: any) => {
                   parseFloat(info?.total?.value),
                   info?.total?.currency
                 )}
-              </span>
-            </FlexBetween>
-            <PreBorder styled={theme} />
-            <FlexBetween>
-              <span>Receive</span>
-              <span style={{ lineHeight: 1 }}>
-                {currencyFormat(parseFloat(info?.receiveTotal?.total), 'USD')}
-              </span>
-            </FlexBetween>
-            <FlexBetween>
-              <span>
-                {parseFloat(info?.remainTotal?.USD) < 0 ? 'Return' : 'Remain'}
-              </span>
-              <span style={{ lineHeight: 1 }}>
-                {currencyFormat(parseFloat(info?.remainTotal?.USD), 'USD')}
               </span>
             </FlexBetween>
           </div>

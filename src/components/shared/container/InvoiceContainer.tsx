@@ -79,7 +79,8 @@ export const InvoiceContainer = ({
   vouchers = [],
   receiveCashes = [],
   remain = 0,
-  createdBy = null
+  createdBy = null,
+  createdAt = null,
 }: any) => {
   const { theme } = useTheme()
   const { device } = useWeb()
@@ -155,7 +156,7 @@ export const InvoiceContainer = ({
           <span>Cashier: {createdBy}</span>
         </FlexBetween>
         <FlexBetween style={{ marginBottom: 8 }}>
-          <PreDate date={null} />
+          <PreDate date={createdAt} />
         </FlexBetween>
         <InvoiceTable tableSpaceHeight={200} columns={invoiceColumns} rows={rows?.map((row) => ({
           description: row.description,

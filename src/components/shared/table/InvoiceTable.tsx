@@ -27,8 +27,8 @@ export const InvoiceTable = ({
   return (
     <div className='table-container' style={{ position: 'relative' }}>
       <TableContainer className='table'>
-        <Box style={{ lineHeight: 0 }}>{'-'.repeat(100)}</Box>
-        <Box style={{ lineHeight: 0, position: 'absolute', top: '30px' }}>{'-'.repeat(100)}</Box>
+        <Box style={{ lineHeight: 0 }}>{'-'.repeat(300)}</Box>
+        <Box style={{ lineHeight: 0, position: 'absolute', top: '30px' }}>{'-'.repeat(300)}</Box>
         <Table stickyHeader>
           <TableHead>
             <TableRow>

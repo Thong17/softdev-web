@@ -159,13 +159,13 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                                     gridTemplateColumns: '1fr 1fr 1fr',
                                     gridColumnGap: 20,
                                     gridTemplateAreas: `
-                              'name name contact'
-                              'type logo logo'
-                              'font font tax'
-                              'address address address'
-                              'other other other'
-                              'action action action'
-                              `,
+                                        'name name contact'
+                                        'type logo logo'
+                                        'font font tax'
+                                        'address address address'
+                                        'other other other'
+                                        'action action action'
+                                        `,
                                 }}
                             >
                                 <div style={{ gridArea: 'name' }}>
@@ -273,6 +273,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                             subtotal={dialog.payment?.subtotal}
                             invoice={dialog.payment?.invoice}
                             createdBy={dialog.payment?.createdBy?.username}
+                            createdAt={dialog.payment?.createdAt}
                         />
                         <div style={{ display: 'flex', gap: 10, height: 36, justifyContent: 'end', width: '100%', position: 'relative' }}>
                             <SelectField
