@@ -105,7 +105,19 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
 
     const handlePrint = () => {
         if (printType === 'direct_printing') {
-            networkPrinting()
+            networkPrinting({
+                name: 'Softdev',
+                invoice: '#INV00345',
+                cashier: 'Thong',
+                createdAt: '26-March-2024 8:20AM',
+                table: null,
+                subtotal: '$7.00',
+                discount: '$0.00',
+                tax: '$0.00',
+                total: '$0.00',
+                address: 'Wifi: 201938123',
+                footer: 'Thank you for coming'
+            })
                 .then(console.log)
                 .catch(console.error)
         } else {
