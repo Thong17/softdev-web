@@ -23,6 +23,7 @@ import { PaymentReceipt } from '../invoice/PaymentReceipt'
 import { useReactToPrint } from 'react-to-print'
 import { networkPrinting } from 'api/receipt.api'
 import { fontOption } from 'modules/organize/store/Form'
+import { currencyFormat, timeFormat } from 'utils/index'
 
 
 const invoiceOption = [
@@ -106,17 +107,22 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
     const handlePrint = () => {
         if (printType === 'direct_printing') {
             networkPrinting({
-                name: 'Softdev',
-                invoice: '#INV00345',
-                cashier: 'Thong',
-                createdAt: '26-March-2024 8:20AM',
-                table: null,
-                subtotal: '$7.00',
-                discount: '$0.00',
-                tax: '$0.00',
-                total: '$0.00',
-                address: 'Wifi: 201938123',
-                footer: 'Thank you for coming'
+                name: name,
+                invoice: dialog.payment?.invoice,
+                cashier: dialog.payment?.createdBy?.username,
+                createdAt: timeFormat(dialog.payment?.createdAt),
+                transactions: dialog.payment?.transactions?.map(item => ({
+                    item: item.description,
+                    qty: item.quantity,
+                    disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
+                    price: currencyFormat(item.price, item.currency, 0, true),
+                })),
+                subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
+                discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+                tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
+                total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
+                address: address,
+                footer: other
             })
                 .then(console.log)
                 .catch(console.error)

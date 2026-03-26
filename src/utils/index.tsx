@@ -58,27 +58,28 @@ export const debounce = (cb, delay = 1000) => {
   }
 }
 
-export const currencyFormat = (value, currency, decimal = 0) => {
+export const currencyFormat = (value, currency, decimal = 0, isPlain = false): any => {
   let symbol
 
   switch (true) {
     case currency === 'USD':
-      symbol = <>&#36;</>
+      symbol = isPlain ? '$' : <>&#36;</>
       decimal = value % 1 !== 0 ? 2 : decimal
       break
 
     case currency === 'KHR':
-      symbol = <>&#6107;</>
+      symbol = isPlain ? 'R' : <>&#6107;</>
       break
-  
     default:
       decimal = value % 1 !== 0 ? 2 : decimal
-      symbol = <>&#37;</>
+      symbol = isPlain ? '%' : <>&#37;</>
       break
   }
-  if (!value || typeof value !== 'number') return <span>0{symbol}</span>
+  if (!value || typeof value !== 'number') return isPlain ? `0${symbol}` :<span>0{symbol}</span>
   return (
-    <span>
+    isPlain ? 
+      `${value?.toFixed(decimal).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') || 0}${symbol}`
+      : <span>
       {value?.toFixed(decimal).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') || 0}
       {symbol}
     </span>
