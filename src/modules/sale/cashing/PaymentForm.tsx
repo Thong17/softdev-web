@@ -230,26 +230,28 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
 
   const handlePrint = () => {
       if (printType === 'direct_printing') {
-          networkPrinting({
-              name: storeInfo?.name,
-              invoice: dialog.payment?.invoice,
-              cashier: dialog.payment?.createdBy?.username,
-              createdAt: timeFormat(dialog.payment?.createdAt),
-              transactions: dialog.payment?.transactions?.map(item => ({
-                  item: item.description,
-                  qty: item.quantity,
-                  disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
-                  price: currencyFormat(item.price, item.currency, 0, true),
-              })),
-              subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
-              discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
-              tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
-              total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
-              address: storeInfo?.address,
-              footer: storeInfo?.other
-          })
-              .then(console.log)
-              .catch(console.error)
+        setIsLoading(true)
+        networkPrinting({
+            name: storeInfo?.name,
+            invoice: dialog.payment?.invoice,
+            cashier: dialog.payment?.createdBy?.username,
+            createdAt: timeFormat(dialog.payment?.createdAt),
+            transactions: dialog.payment?.transactions?.map(item => ({
+                item: item.description,
+                qty: item.quantity,
+                disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
+                price: currencyFormat(item.price, item.currency, 0, true),
+            })),
+            subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
+            discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+            tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
+            total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
+            address: storeInfo?.address,
+            footer: storeInfo?.other
+        })
+            .then(console.log)
+            .catch(handlePrintInvoice)
+            .finally(() => setIsLoading(false))
       } else {
           handlePrintInvoice()
       }
@@ -312,6 +314,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       justify='center'
       isOpen={dialog.open}
       handleClose={handleCloseDialog}
+      overflow="hidden"
     >
       <div
         style={{
@@ -592,6 +595,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                   {payment?.status ? (
                     <>
                       <CustomButton
+                        isLoading={isLoading}
                         onClick={handlePrint}
                         styled={theme}
                         style={{

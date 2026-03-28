@@ -24,6 +24,7 @@ import { useReactToPrint } from 'react-to-print'
 import { networkPrinting } from 'api/receipt.api'
 import { fontOption } from 'modules/organize/store/Form'
 import { currencyFormat, timeFormat } from 'utils/index'
+import { CustomButton } from 'styles/index'
 
 
 const invoiceOption = [
@@ -53,6 +54,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
         ...defaultValues,
         logo: defaultValues?.logo?.filename,
     })
+    const [isLoading, setIsLoading] = useState(false);
     const name = watch('name')
     const address = watch('address')
     const contact = watch('contact')
@@ -106,6 +108,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
 
     const handlePrint = () => {
         if (printType === 'direct_printing') {
+            setIsLoading(true)
             networkPrinting({
                 name: name,
                 invoice: dialog.payment?.invoice,
@@ -125,7 +128,8 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                 footer: other
             })
                 .then(console.log)
-                .catch(console.error)
+                .catch(handlePrintInvoice)
+                .finally(() => setIsLoading(false))
         } else {
             handlePrintInvoice()
         }
@@ -136,6 +140,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
             justify='center'
             isOpen={dialog.open}
             handleClose={() => setDialog({ ...dialog, open: false })}
+            overflow='hidden'
         >
             <div
                 style={{
@@ -303,19 +308,21 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                                 }}
                                 style={{ width: '200px', position: 'absolute', top: 0, right: 0 }}
                             />
-                            <Button
+                            <CustomButton
+                                isLoading={isLoading}
                                 variant='contained'
                                 style={{
                                     backgroundColor: `${theme.color.info}22`,
                                     color: theme.color.info,
                                 }}
+                                styled={theme}
                                 onClick={handlePrint}
                             >
                                 <PrintRoundedIcon
                                     style={{ fontSize: 19, marginRight: 5 }}
                                 />
                                 {language['PRINT']}
-                            </Button>
+                            </CustomButton>
                         </div>
                     </div>
                 </div>

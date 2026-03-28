@@ -1,7 +1,7 @@
 import Dialog from '@mui/material/Dialog'
 import useTheme from 'hooks/useTheme'
 
-export const AlertContainer = ({ isOpen, handleClose, children, justify }) => {
+export const AlertContainer = ({ isOpen, handleClose, children, justify, overflow = 'auto' }) => {
   const { theme } = useTheme()
 
   return (
@@ -20,6 +20,7 @@ export const AlertContainer = ({ isOpen, handleClose, children, justify }) => {
             backgroundColor: theme.background.primary,
             minWidth: 'fit-content',
             borderRadius: theme.radius.quaternary,
+            overflow
           },
         }}
         open={isOpen}
