@@ -160,42 +160,18 @@ export const PaymentReceipt = ({ width = '100%', payment }: any) => {
                 {currencyFormat(info?.subtotal?.USD, 'USD')}
               </span>
             </FlexBetween>
-            {info?.discounts?.map((prop, key) => {
-              if (parseFloat(prop.value) <= 0)
-                return <span key={key} style={{ display: 'none' }}></span>
-              return (
-                <FlexBetween key={key}>
-                  <span>{prop.title}</span>
-                  <span style={{ lineHeight: 1 }}>
-                    -{currencyFormat(parseFloat(prop.value), prop.type)}
-                  </span>
-                </FlexBetween>
-              )
-            })}
-            {info?.vouchers?.map((prop, key) => {
-              if (parseFloat(prop.value) <= 0)
-                return <span key={key} style={{ display: 'none' }}></span>
-              return (
-                <FlexBetween key={key}>
-                  <span>{prop.title}</span>
-                  <span style={{ lineHeight: 1 }}>
-                    -{currencyFormat(parseFloat(prop.value), prop.type)}
-                  </span>
-                </FlexBetween>
-              )
-            })}
-            {info?.services?.map((prop, key) => {
-              if (parseFloat(prop.value) <= 0)
-                return <span key={key} style={{ display: 'none' }}></span>
-              return (
-                <FlexBetween key={key}>
-                  <span>{prop.title}</span>
-                  <span style={{ lineHeight: 1 }}>
-                    {currencyFormat(parseFloat(prop.value), prop.type)}
-                  </span>
-                </FlexBetween>
-              )
-            })}
+            <FlexBetween>
+              <span>Discount</span>
+              <span style={{ lineHeight: 1 }}>
+                {currencyFormat(parseFloat(info?.discounts?.[0]?.value), info?.discounts?.[0]?.type)}
+              </span>
+            </FlexBetween>
+            <FlexBetween>
+              <span>Tax</span>
+              <span style={{ lineHeight: 1 }}>
+                {currencyFormat(parseFloat(info?.services?.[0]?.value), info?.services?.[0]?.type)}
+              </span>
+            </FlexBetween>
             <FlexBetween>
               <span>Total</span>
               <span style={{ lineHeight: 1 }}>

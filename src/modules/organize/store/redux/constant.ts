@@ -5,6 +5,8 @@ export interface IStoreBody {
   status: boolean,
   icon: any,
   description: string,
+  address?: string,
+  other?: string,
 }
 
 export const initState: IStoreBody = {
