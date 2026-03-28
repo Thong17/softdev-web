@@ -58,7 +58,7 @@ export const PaymentReceipt = ({ width = '100%', payment }: any) => {
     const mappedTransactions = payment?.transactions?.map((transaction) => {
       return {
         description: transaction.description,
-        price: currencyFormat(transaction.price, transaction.currency),
+        price: currencyFormat(transaction.total?.value, transaction.total?.currency),
         qty: transaction.quantity,
         disc: (
           <span>

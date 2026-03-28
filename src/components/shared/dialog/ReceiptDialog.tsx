@@ -118,7 +118,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                     item: item.description,
                     qty: item.quantity,
                     disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
-                    price: currencyFormat(item.price, item.currency, 0, true),
+                    price: currencyFormat(item.total?.value, item.total?.currency, 0, true),
                 })),
                 subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
                 discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
