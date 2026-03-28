@@ -83,6 +83,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           ],
         })
       )
+      // eslint-disable-next-line
     }, [status])
 
   useEffect(() => {

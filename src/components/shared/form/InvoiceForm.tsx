@@ -565,6 +565,7 @@ export const InvoiceForm = forwardRef(({
         ],
       })
     )
+    // eslint-disable-next-line
   }, [])
 
   return (
