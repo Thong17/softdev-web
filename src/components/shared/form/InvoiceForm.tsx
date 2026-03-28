@@ -1097,8 +1097,7 @@ export const InvoiceForm = forwardRef(({
                   >
                   {language['CHECKOUT']}
                 </CustomButton>}
-                <CustomButton
-                  disabled={!!checkoutId}
+                {!checkoutId && <CustomButton
                   isLoading={isLoading}
                   styled={theme}
                   fullWidth
@@ -1110,7 +1109,7 @@ export const InvoiceForm = forwardRef(({
                   }}
                 >
                   {language['PAYMENT']}
-                </CustomButton>
+                </CustomButton>}
               </FlexBetween>
             </div>
           </div>

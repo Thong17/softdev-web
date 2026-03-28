@@ -65,7 +65,6 @@ export const InvoiceContainer = ({
   address = 'Address',
   contact = 'Contact',
   logo = null,
-  tax = 0,
   footer = '',
   font = 'Ariel',
   padding = '35px 0',
@@ -161,9 +160,8 @@ export const InvoiceContainer = ({
         <InvoiceTable tableSpaceHeight={200} columns={invoiceColumns} rows={rows?.map((row) => ({
           description: row.description,
           qty: row.quantity,
-          price: currencyFormat(row.price.value, row.price.currency),
+          price: currencyFormat(row.total.value, row.total.currency),
           disc: <>{currencyFormat(row.discount.value, row.discount.currency)} {row.discount.isFixed ? 'Only' : ''}</>,
-          total: currencyFormat(row.total.value, row.total.currency)
         }))} />
         <p style={{ lineHeight: 0 }}>{'-'.repeat(200)}</p>
         <div
@@ -181,16 +179,16 @@ export const InvoiceContainer = ({
               <span>{ currencyFormat(subtotal.USD, 'USD') }</span>
             </FlexBetween>
             <FlexBetween>
-              <span>Discount:</span>
-              <span>%</span>
+              <span>{ discounts?.[0]?.title }:</span>
+              <span>{ currencyFormat(discounts?.[0]?.value, discounts?.[0]?.type) ?? 0 } {discounts?.[0]?.isFixed ? 'Only' : ''}</span>
             </FlexBetween>
             <FlexBetween>
-              <span>Tax:</span>
-              <span>{tax}%</span>
+              <span>{ services?.[0]?.title }:</span>
+              <span>{ currencyFormat(services?.[0]?.value, services?.[0]?.type) ?? 0 }</span>
             </FlexBetween>
             <FlexBetween>
               <span>Total:</span>
-              <span>$</span>
+              <span>{ currencyFormat(total.value, total.currency) }</span>
             </FlexBetween>
           </div>
         </div>

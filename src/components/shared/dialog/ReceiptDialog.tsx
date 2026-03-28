@@ -29,7 +29,7 @@ import { CustomButton } from 'styles/index'
 
 const invoiceOption = [
     { label: 'Receipt', value: 'receipt' },
-    { label: 'Delivery', value: 'delivery' },
+    // { label: 'Delivery', value: 'delivery' },
 ]
 
 const printOption = [
@@ -295,6 +295,9 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                             rows={dialog.listTransactions}
                             subtotal={dialog.payment?.subtotal}
                             invoice={dialog.payment?.invoice}
+                            discounts={dialog.payment?.discounts}
+                            services={dialog.payment?.services}
+                            total={dialog.payment?.total}
                             createdBy={dialog.payment?.createdBy?.username}
                             createdAt={dialog.payment?.createdAt}
                         />
