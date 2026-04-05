@@ -110,9 +110,10 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
             setIsLoading(true)
             networkPrinting({
                 name: name,
+                contact: contact,
                 invoice: dialog.payment?.invoice,
                 cashier: dialog.payment?.createdBy?.username,
-                createdAt: timeFormat(dialog.payment?.createdAt),
+                createdAt: timeFormat(dialog.payment?.createdAt, 'yyyy-MM-DD HH:mm'),
                 transactions: dialog.payment?.transactions?.map(item => ({
                     item: item.description,
                     qty: item.quantity,

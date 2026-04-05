@@ -109,23 +109,10 @@ export const PaymentReceipt = ({ width = '100%', payment, storeData = null }: an
         >
           {store?.name}
         </h3>
-        {store?.address && (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <p
-              style={{
-                textAlign: 'center',
-                marginBottom: 10,
-                maxWidth: '80%',
-              }}
-            >
-              {store?.address}
-            </p>
-          </div>
-        )}
         <p
           style={{
             textAlign: 'center',
-            marginBottom: 10,
+            marginBottom: 20,
           }}
         >
           {store?.contact}
@@ -187,20 +174,24 @@ export const PaymentReceipt = ({ width = '100%', payment, storeData = null }: an
             </FlexBetween>
           </div>
         </div>
+        {store?.address && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            <p
+              style={{
+                textAlign: 'center',
+                maxWidth: '80%',
+              }}
+            >
+              {store?.address}
+            </p>
+          </div>
+        )}
         <p
           style={{
             textAlign: 'center',
-            marginTop: 30,
           }}
         >
           {store?.other}
-        </p>
-        <p
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          Thank you for coming
         </p>
       </CustomReceiptContainer>
     </Box>

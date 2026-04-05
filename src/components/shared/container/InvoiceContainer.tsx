@@ -110,7 +110,7 @@ export const InvoiceContainer = ({
         styled={theme}
         font={font}
       >
-        {logo && <div style={{ width: 50, height: 50, position: 'absolute', left: 20, top: 20 }}>
+        {logo && <div style={{ width: 40, height: 40, position: 'absolute', left: 20, top: 20 }}>
           <img
             style={{
               width: '100%',
@@ -131,23 +131,11 @@ export const InvoiceContainer = ({
         >
           {name}
         </p>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <p
-            style={{
-              fontSize: theme.responsive[device]?.text.quaternary,
-              textAlign: 'center',
-              marginBottom: 10,
-              maxWidth: '80%',
-            }}
-          >
-            {address}
-          </p>
-        </div>
         <p
           style={{
             fontSize: theme.responsive[device]?.text.quaternary,
             textAlign: 'center',
-            marginBottom: 10,
+            marginBottom: 20,
           }}
         >{contact}</p>
         <FlexBetween>
@@ -192,20 +180,22 @@ export const InvoiceContainer = ({
             </FlexBetween>
           </div>
         </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+          <p
+            style={{
+              textAlign: 'center',
+              maxWidth: '80%',
+            }}
+          >
+            {address}
+          </p>
+        </div>
         <p
           style={{
             textAlign: 'center',
-            marginTop: 30,
           }}
         >
           {footer}
-        </p>
-        <p
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          Thank you for coming
         </p>
       </CustomInvoiceContainer>
       {hasThermalBorder && <ThermalBorder styled={theme} position='bottom' />}
