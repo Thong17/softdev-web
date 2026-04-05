@@ -330,7 +330,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                 </div>
                 <div style={{ position: 'absolute', top: '200%', width: '100%' }}>
                     <div ref={invoiceRef}>
-                        {dialog.payment && <PaymentReceipt payment={dialog.payment} />}
+                        {dialog.payment && <PaymentReceipt payment={dialog.payment} storeData={getValues()} />}
                     </div>
                 </div>
             </div>
