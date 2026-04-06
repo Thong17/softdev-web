@@ -236,7 +236,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
             name: storeInfo?.name,
             invoice: dialog.payment?.invoice,
             cashier: dialog.payment?.createdBy?.username,
-            createdAt: timeFormat(dialog.payment?.createdAt),
+            createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
             transactions: dialog.payment?.transactions?.map(item => ({
                 item: item.description,
                 qty: item.quantity,
