@@ -215,7 +215,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     })
       .then(() => {
         onClearPayment()
-        onClear()
+        onClear && onClear()
         setFormMode('pending')
       })
       .catch(() => {})
