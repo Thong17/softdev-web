@@ -149,7 +149,7 @@ export const InvoiceContainer = ({
           description: row.description,
           qty: row.quantity,
           price: currencyFormat(row.total.value, row.total.currency),
-          disc: <>{currencyFormat(row.discount.value, row.discount.currency)} {row.discount.isFixed ? 'Only' : ''}</>,
+          disc: <>{currencyFormat(row.discount?.value, row.discount?.currency)} {row.discount?.isFixed ? 'Only' : ''}</>,
         }))} />
         <p style={{ lineHeight: 0 }}>{'-'.repeat(200)}</p>
         <div

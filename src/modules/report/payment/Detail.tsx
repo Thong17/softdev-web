@@ -39,9 +39,9 @@ export const Detail = ({
           <PaymentReceipt payment={payment} />
         </div>
       </div>
-      <CustomDetailContainer styled={theme}>
+      <CustomDetailContainer styled={theme} width="auto">
         <PaymentInvoice payment={payment} />
-        <div style={{ display: 'flex', gap: 10, padding: 10 }}>
+        <div style={{ display: 'flex', gap: 10 }}>
           <CustomButton
             onClick={handleCloseDialog}
             styled={theme}

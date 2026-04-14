@@ -566,9 +566,9 @@ export const CustomProductInfo = styled('div')(
 )
 
 export const CustomDetailContainer = styled('div')(
-  ({ styled }: { styled: IThemeStyle }) => ({
+  ({ styled, width = 700 }: { styled: IThemeStyle, width?: number | string }) => ({
     padding: 20,
-    width: 700
+    width: width
   })
 )
 
