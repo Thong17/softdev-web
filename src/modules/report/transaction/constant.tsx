@@ -46,21 +46,21 @@ export const createData = (
   createdAt: string,
   privilege: any,
   theme: IThemeStyle,
-  onReverse: Function
+  onReverse?: Function
 ): Data => {
-  let action = (
+  let action = onReverse ? (
     <div style={{ float: 'right' }}>
       {(privilege?.transaction?.delete && !status) && (
         <ResetButton onClick={() => onReverse(id)} />
       )}
     </div>
-  )
+  ) : <></>
 
   return {
     description,
     quantity,
     price: currencyFormat(price, currency),
-    discount: <div><span>{discount.isFixed ? 'Only ' : ''}</span><span>{currencyFormat(discount.value, discount.type)}</span></div>,
+    discount: <div><span>{discount?.isFixed ? 'Only ' : ''}</span><span>{currencyFormat(discount?.value, discount?.type)}</span></div>,
     total: currencyFormat(total.value, total.currency),
     status: <TextHighlight text={status ? 'Completed' : 'Pending'} color={status ? theme.color.success : theme.color.warning} />,
     note,

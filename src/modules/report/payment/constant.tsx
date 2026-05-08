@@ -38,12 +38,12 @@ export const createData = (
   total: any,
   status: String,
   createdBy: any,
-  onPrint: Function,
+  onPrint: Function | null,
   theme
 ): Data => {
-  const action = <div style={{ float: 'right' }}>
+  const action = onPrint ? <div style={{ float: 'right' }}>
     <ViewButton onClick={() => onPrint(id)} />
-  </div>
+  </div> : <></>
   return {
     invoice,
     type,

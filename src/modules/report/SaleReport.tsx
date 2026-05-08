@@ -14,8 +14,15 @@ import moment from 'moment'
 import useLanguage from 'hooks/useLanguage'
 import useNotify from 'hooks/useNotify'
 import useTheme from 'hooks/useTheme'
-import { styled } from '@mui/material'
+import { IconButton, styled } from '@mui/material'
 import { IThemeStyle } from 'contexts/theme/interface'
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
+import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded'
+import { StickyTable } from 'components/shared/table/StickyTable'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import useAuth from 'hooks/useAuth'
+import { getListPayment, selectListPayment } from './payment/redux'
+import { columnData, createData } from './payment/constant'
 
 const Header = () => {
   return (
@@ -100,6 +107,7 @@ export const SaleReport = () => {
   const { language } = useLanguage()
   const { theme } = useTheme()
   const { notify } = useNotify()
+  const { user } = useAuth()
   const [selectedSaleChart, setSelectedSaleChart] = useState('day')
   const [selectedTotalIncome, setSelectedTotalIncome] = useState('day')
   const [selectedTotalProfit, setSelectedTotalProfit] = useState('day')
@@ -110,6 +118,44 @@ export const SaleReport = () => {
   const [loading, setLoading] = useState(true)
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+  const [isExpandedChart, setIsExpandedChart] = useState(true)
+  const [reportList, setReportList] = useState<any[]>([])
+  const { data: payments, count, status } = useAppSelector(selectListPayment)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(getListPayment({ query: queryParams }))
+  }, [dispatch, queryParams])
+
+  useEffect(() => {
+      const listTransactions = payments.map((payment: any) => {
+        return createData(
+          payment._id,
+          payment.invoice,
+          payment.paymentMethod?.toUpperCase(),
+          currencyFormat(payment.subtotal.BOTH, 'USD'),
+          currencyFormat(
+              payment.discounts[0]?.value,
+              payment.discounts[0]?.type,
+          ),
+          currencyFormat(
+              payment.services[0]?.value,
+              payment.services[0]?.type,
+          ),
+          currencyFormat(
+              payment.vouchers[0]?.value,
+              payment.vouchers[0]?.type,
+          ),
+          currencyFormat(payment.total.value, payment.total.currency),
+          payment.state,
+          payment.createdBy?.username,
+          null,
+          theme,
+        )
+      })
+  
+      setReportList(listTransactions)
+    }, [payments, user, theme, notify])
 
   useEffect(() => {
     let query = new URLSearchParams()
@@ -213,6 +259,26 @@ export const SaleReport = () => {
     // eslint-disable-next-line
   }, [])
 
+  const handleQuery = (data) => {
+    let { limit, search } = data
+
+    let query = {}
+    const _limit = queryParams.get('limit')
+    const _page = queryParams.get('page')
+    const _search = queryParams.get('search')
+    const _filter = queryParams.get('filter')
+    const _sort = queryParams.get('sort')
+
+    if (_limit) query = { limit: _limit, ...query }
+    if (_page) query = { page: _page, ...query }
+    if (_search) query = { search: _search, ...query }
+    if (_filter) query = { filter: _filter, ...query }
+    if (_sort) query = { sort: _sort, ...query }
+
+    if (limit || search) return setQueryParams({ ...query, ...data, page: 0 })
+    setQueryParams({ ...query, ...data })
+  }
+
   return (
     <Container header={<Header />}>
       <div
@@ -223,6 +289,7 @@ export const SaleReport = () => {
           gridTemplateAreas: ` 
               'header header' 
               'charts charts'
+              'table table'
             `,
         }}
       >
@@ -233,7 +300,7 @@ export const SaleReport = () => {
             alignItems: 'center',
             gap: 20,
             overflowX: 'auto',
-            padding: 20,
+            paddingBlock: 20,
           }}
         >
           <DetailSection
@@ -324,8 +391,13 @@ export const SaleReport = () => {
         <CardContainer
           title={
             <>
-              {language['INCOME_CHART']}
-              <div
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <IconButton onClick={() => setIsExpandedChart(!isExpandedChart)} aria-label="delete" size="small" style={{ color: theme.text.primary }}>
+                  {isExpandedChart ? <KeyboardArrowUpRoundedIcon fontSize="small" /> : <KeyboardArrowDownRoundedIcon fontSize="small" />}
+                </IconButton>
+                {language['INCOME_CHART']}
+              </div>
+              <div 
                 style={{
                   position: 'absolute',
                   display: 'flex',
@@ -352,7 +424,7 @@ export const SaleReport = () => {
           }
           style={{ gridArea: 'charts' }}
         >
-          {!loading && (
+          {(!loading && isExpandedChart) && (
             <CustomAreaChart
               data={listSale.map((item: any) => ({
                 ...item,
@@ -361,8 +433,22 @@ export const SaleReport = () => {
               labels={[{ name: 'value' }]}
               height={370}
             />
-          )}
+          )} 
         </CardContainer>
+        <div style={{ paddingBlock: '20px', width: '100%', gridArea: 'table' }}>
+          <StickyTable
+            columns={columnData.filter((col) => col.id !== 'action')}
+            rows={reportList}
+            setQuery={handleQuery}
+            count={count}
+            limit={parseInt(queryParams.get('limit') || '10')}
+            skip={
+                status === 'SUCCESS'
+                    ? parseInt(queryParams.get('page') || '0')
+                    : 0
+            }
+          />
+        </div>
       </div>
     </Container>
   )

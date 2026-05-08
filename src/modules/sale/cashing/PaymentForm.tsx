@@ -315,7 +315,6 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       justify='center'
       isOpen={dialog.open}
       handleClose={handleCloseDialog}
-      overflow="hidden"
     >
       <div
         style={{
