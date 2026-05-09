@@ -15,6 +15,7 @@ export const columnData: ITableColumn<any>[] = [
   { id: 'action', label: 'ACTION', align: 'center' },
 ]
 export interface Data {
+  id: string
   invoice: string
   type: string
   subtotal: any
@@ -45,6 +46,7 @@ export const createData = (
     <ViewButton onClick={() => onPrint(id)} />
   </div> : <></>
   return {
+    id,
     invoice,
     type,
     subtotal,

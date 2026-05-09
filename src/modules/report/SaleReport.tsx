@@ -18,11 +18,12 @@ import { IconButton, styled } from '@mui/material'
 import { IThemeStyle } from 'contexts/theme/interface'
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded'
-import { StickyTable } from 'components/shared/table/StickyTable'
+import { ExpandableTable } from 'components/shared/table/ExpandableTable'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useAuth from 'hooks/useAuth'
 import { getListPayment, selectListPayment } from './payment/redux'
 import { columnData, createData } from './payment/constant'
+import Axios from 'constants/functions/Axios'
 
 const Header = () => {
   return (
@@ -103,6 +104,81 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
   )
 }
 
+const SaleReportRowDetail = ({
+  row,
+  rowDetails,
+  detailLoading,
+  theme,
+  language,
+}: {
+  row: any
+  rowDetails: Record<string, any[]>
+  detailLoading: Record<string, boolean>
+  theme: any
+  language: any
+}) => {
+  const transactions = rowDetails[row.id] || []
+  const loadingDetail = detailLoading[row.id]
+
+  const formattedPrice = (item) => {
+    if (!item) return '-'
+    const price = item.price?.value ?? item.total?.value
+    const currency = item.price?.currency ?? item.total?.currency ?? 'USD'
+    return price !== null && price !== undefined ? currencyFormat(price, currency) : '-'
+  }
+
+  let detailContent: React.ReactNode
+
+  if (loadingDetail) {
+    detailContent = <div>{language['LOADING'] || 'Loading...'}</div>
+  } else if (transactions?.length) {
+    detailContent = (
+      <div style={{ display: 'grid', gap: 4 }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '50px 2fr 1fr 1fr 1fr',
+            padding: '6px 10px',
+            borderBottom: `1px solid ${theme.border.primary}`,
+            backgroundColor: theme.background.secondary,
+            fontSize: 13,
+            fontWeight: 600,
+            borderRadius: '5px',
+          }}
+        >
+          <div>#</div>
+          <div>{language['DESCRIPTION'] || 'Description'}</div>
+          <div style={{ textAlign: 'right' }}>{language['PRICE'] || 'Price'}</div>
+          <div style={{ textAlign: 'right' }}>{language['QUANTITY'] || 'Qty'}</div>
+          <div style={{ textAlign: 'right' }}>{language['TOTAL'] || 'Total'}</div>
+        </div>
+        {transactions.map((item: any, index: number) => (
+          <div
+            key={`${row.id}-detail-${index}`}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '50px 2fr 1fr 1fr 1fr',
+              padding: '6px 10px',
+              borderBottom: index < transactions.length - 1 ? `1px solid ${theme.border.primary}` : 'none',
+              fontSize: 13,
+            }}
+          >
+            <div>{index + 1}</div>
+            <div>{item.description || item.product || '-'}</div>
+            <div style={{ textAlign: 'right' }}>{formattedPrice(item)}</div>
+            <div style={{ textAlign: 'right' }}>{item.quantity ?? '-'}</div>
+            <div style={{ textAlign: 'right' }}>{item.total ? currencyFormat(item.total.value, item.total.currency) : '-'}</div>
+          </div>
+        ))}
+      </div>
+    )
+  } else {
+    detailContent = <div>{language['NO_DATA'] || 'No items found'}</div>
+  }
+
+  return <div style={{ padding: 12 }}>{detailContent}</div>
+}
+
 export const SaleReport = () => {
   const { language } = useLanguage()
   const { theme } = useTheme()
@@ -120,8 +196,38 @@ export const SaleReport = () => {
   const [toDate, setToDate] = useState('')
   const [isExpandedChart, setIsExpandedChart] = useState(true)
   const [reportList, setReportList] = useState<any[]>([])
+  const [expandedRows, setExpandedRows] = useState<string[]>([])
+  const [rowDetails, setRowDetails] = useState<Record<string, any[]>>({})
+  const [detailLoading, setDetailLoading] = useState<Record<string, boolean>>({})
   const { data: payments, count, status } = useAppSelector(selectListPayment)
   const dispatch = useAppDispatch()
+
+  const toggleRowExpansion = async (id: string) => {
+    if (expandedRows.includes(id)) {
+      setExpandedRows((prev) => prev.filter((rowId) => rowId !== id))
+      return
+    }
+
+    setExpandedRows((prev) => [...prev, id])
+    if (rowDetails[id]) return
+
+    setDetailLoading((prev) => ({ ...prev, [id]: true }))
+    try {
+      const response = await Axios({
+        url: `/sale/payment/detail/${id}`,
+        method: 'GET',
+      })
+      const detailData = response?.data?.data
+      setRowDetails((prev) => ({
+        ...prev,
+        [id]: detailData?.transactions || [],
+      }))
+    } catch (err: any) {
+      notify(err?.response?.data?.msg, 'error')
+    } finally {
+      setDetailLoading((prev) => ({ ...prev, [id]: false }))
+    }
+  }
 
   useEffect(() => {
     dispatch(getListPayment({ query: queryParams }))
@@ -436,15 +542,26 @@ export const SaleReport = () => {
           )} 
         </CardContainer>
         <div style={{ paddingBlock: '20px', width: '100%', gridArea: 'table' }}>
-          <StickyTable
+          <ExpandableTable
             columns={columnData.filter((col) => col.id !== 'action')}
             rows={reportList}
             setQuery={handleQuery}
+            handleClick={toggleRowExpansion}
+            expandedRowIds={expandedRows}
+            renderRowDetail={(row) => (
+              <SaleReportRowDetail
+                row={row}
+                rowDetails={rowDetails}
+                detailLoading={detailLoading}
+                theme={theme}
+                language={language}
+              />
+            )}
             count={count}
-            limit={parseInt(queryParams.get('limit') || '10')}
+            limit={Number.parseInt(queryParams.get('limit') || '10')}
             skip={
                 status === 'SUCCESS'
-                    ? parseInt(queryParams.get('page') || '0')
+                    ? Number.parseInt(queryParams.get('page') || '0')
                     : 0
             }
           />
