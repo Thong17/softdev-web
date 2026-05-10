@@ -25,11 +25,21 @@ import { getListPayment, selectListPayment } from './payment/redux'
 import { columnData, createData } from './payment/constant'
 import Axios from 'constants/functions/Axios'
 
-const Header = () => {
+const Header = ({ fromDate, toDate, onFromDateChange, onToDateChange, language, theme }) => {
   return (
-    <>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
       <ReportBreadcrumbs page='saleReport' />
-    </>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ fontSize: 13, color: theme.text.secondary }}>{language['FROM'] || 'From'}:</span>
+          <DateInput styled={theme} type='date' name='fromDate' value={fromDate} onChange={onFromDateChange} />
+        </div>
+        <span style={{ color: theme.text.secondary, fontSize: 13 }}>{language['TO'] || 'To'}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <DateInput styled={theme} type='date' name='toDate' value={toDate} onChange={onToDateChange} />
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -201,6 +211,15 @@ export const SaleReport = () => {
   const [detailLoading, setDetailLoading] = useState<Record<string, boolean>>({})
   const { data: payments, count, status } = useAppSelector(selectListPayment)
   const dispatch = useAppDispatch()
+
+  // Load date filter from query params on mount
+  useEffect(() => {
+    const _fromDate = queryParams.get('fromDate')
+    const _toDate = queryParams.get('toDate')
+    if (_fromDate) setFromDate(_fromDate)
+    if (_toDate) setToDate(_toDate)
+    // eslint-disable-next-line
+  }, [])
 
   const toggleRowExpansion = async (id: string) => {
     if (expandedRows.includes(id)) {
@@ -385,8 +404,37 @@ export const SaleReport = () => {
     setQueryParams({ ...query, ...data })
   }
 
+  const handleFromDateChange = (e) => {
+    const newFromDate = e.target.value
+    // If toDate exists and is less than new fromDate, show error
+    if (toDate && newFromDate && new Date(newFromDate) > new Date(toDate)) {
+      notify('Start date cannot be after end date', 'error')
+      return
+    }
+    setFromDate(newFromDate)
+  }
+
+  const handleToDateChange = (e) => {
+    const newToDate = e.target.value
+    // If fromDate exists and new toDate is less than fromDate, show error
+    if (fromDate && newToDate && new Date(newToDate) < new Date(fromDate)) {
+      notify('End date cannot be before start date', 'error')
+      return
+    }
+    setToDate(newToDate)
+  }
+
   return (
-    <Container header={<Header />}>
+    <Container header={
+      <Header
+        fromDate={fromDate}
+        toDate={toDate}
+        onFromDateChange={handleFromDateChange}
+        onToDateChange={handleToDateChange}
+        language={language}
+        theme={theme}
+      />
+    }>
       <div
         style={{
           display: 'grid',
@@ -518,13 +566,6 @@ export const SaleReport = () => {
                   name='_chartData'
                   onChange={handleChangeQuery}
                 />
-                {selectedSaleChart === 'range' && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginRight: 5 }}>
-                    <DateInput styled={theme} type='date' name='fromDate' id='fromDate' value={fromDate} onChange={(event) => setFromDate(event.target.value)} />
-                    <span style={{ color: theme.text.secondary, fontSize: 13, lineHeight: 1 }}>{language['TO']}</span>
-                    <DateInput styled={theme} type='date' name='toDate' id='toDate' value={toDate} onChange={(event) => setToDate(event.target.value)} />
-                  </div>
-                )}
               </div>
             </>
           }
@@ -541,7 +582,7 @@ export const SaleReport = () => {
             />
           )} 
         </CardContainer>
-        <div style={{ paddingBlock: '20px', width: '100%', gridArea: 'table' }}>
+        <div style={{ paddingBlock: '20px', width: '100%', gridArea: 'table', paddingTop: "20px" }}>
           <ExpandableTable
             columns={columnData.filter((col) => col.id !== 'action')}
             rows={reportList}
