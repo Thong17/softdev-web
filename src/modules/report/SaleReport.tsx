@@ -25,20 +25,10 @@ import { getListPayment, selectListPayment } from './payment/redux'
 import { columnData, createData } from './payment/constant'
 import Axios from 'constants/functions/Axios'
 
-const Header = ({ fromDate, toDate, onFromDateChange, onToDateChange, language, theme }) => {
+const Header = ({ language, theme }) => {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
       <ReportBreadcrumbs page='saleReport' />
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <span style={{ fontSize: 13, color: theme.text.secondary }}>{language['FROM'] || 'From'}:</span>
-          <DateInput styled={theme} type='date' name='fromDate' value={fromDate} onChange={onFromDateChange} />
-        </div>
-        <span style={{ color: theme.text.secondary, fontSize: 13 }}>{language['TO'] || 'To'}</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <DateInput styled={theme} type='date' name='toDate' value={toDate} onChange={onToDateChange} />
-        </div>
-      </div>
     </div>
   )
 }
@@ -59,10 +49,6 @@ const filterOption = [
   {
     label: 'Yearly',
     value: 'year',
-  },
-  {
-    label: 'Range',
-    value: 'range',
   },
 ]
 
@@ -427,10 +413,6 @@ export const SaleReport = () => {
   return (
     <Container header={
       <Header
-        fromDate={fromDate}
-        toDate={toDate}
-        onFromDateChange={handleFromDateChange}
-        onToDateChange={handleToDateChange}
         language={language}
         theme={theme}
       />
@@ -442,6 +424,7 @@ export const SaleReport = () => {
           gridColumnGap: 20,
           gridTemplateAreas: ` 
               'header header' 
+              'filter filter'
               'charts charts'
               'table table'
             `,
@@ -541,6 +524,27 @@ export const SaleReport = () => {
               />
             }
           />
+        </div>
+        <div
+          style={{
+            gridArea: 'filter',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            gap: 10,
+            paddingBottom: 20,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span style={{ fontSize: 13, color: theme.text.secondary }}>{language['FROM'] || 'From'}:</span>
+              <DateInput styled={theme} type='date' name='fromDate' value={fromDate} onChange={handleFromDateChange} />
+            </div>
+            <span style={{ color: theme.text.secondary, fontSize: 13 }}>{language['TO'] || 'To'}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <DateInput styled={theme} type='date' name='toDate' value={toDate} onChange={handleToDateChange} />
+            </div>
+          </div>
         </div>
         <CardContainer
           title={
