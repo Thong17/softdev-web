@@ -60,6 +60,8 @@ import { HintButton } from 'components/shared/HintButton'
 import { Queue } from 'modules/function/queue'
 import { Loan } from 'modules/sale/loan'
 import { DetailLoan } from 'modules/sale/loan/Detail'
+import { DetailMembership } from 'modules/organize/membership/Detail'
+import { CreateMembership, Memberships, UpdateMembership } from 'modules/organize/membership'
 
 
 const routes: RouteObject[] = [
@@ -268,7 +270,7 @@ const routes: RouteObject[] = [
       {
         path: 'brand/create',
         element: (
-          <AuthGuard role={{ route: 'category', action: 'create' }}>
+          <AuthGuard role={{ route: 'brand', action: 'create' }}>
             <CreateBrand />
           </AuthGuard>
         ),
@@ -276,7 +278,7 @@ const routes: RouteObject[] = [
       {
         path: 'brand/update/:id',
         element: (
-          <AuthGuard role={{ route: 'category', action: 'update' }}>
+          <AuthGuard role={{ route: 'brand', action: 'update' }}>
             <UpdateBrand />
           </AuthGuard>
         ),
@@ -284,7 +286,7 @@ const routes: RouteObject[] = [
       {
         path: 'brand/detail/:id',
         element: (
-          <AuthGuard role={{ route: 'category', action: 'detail' }}>
+          <AuthGuard role={{ route: 'brand', action: 'detail' }}>
             <DetailBrand />
           </AuthGuard>
         ),
@@ -368,6 +370,39 @@ const routes: RouteObject[] = [
           <AuthGuard role={{ route: 'store', action: 'update' }}>
             <LayoutForm />
             <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
+          </AuthGuard>
+        ),
+      },
+
+      // Membership
+      {
+        path: 'membership',
+        element: <>
+          <Memberships />
+          <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
+        </>,
+      },
+      {
+        path: 'membership/create',
+        element: (
+          <AuthGuard role={{ route: 'membership', action: 'create' }}>
+            <CreateMembership />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'membership/update/:id',
+        element: (
+          <AuthGuard role={{ route: 'membership', action: 'update' }}>
+            <UpdateMembership />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'membership/detail/:id',
+        element: (
+          <AuthGuard role={{ route: 'membership', action: 'detail' }}>
+            <DetailMembership />
           </AuthGuard>
         ),
       },

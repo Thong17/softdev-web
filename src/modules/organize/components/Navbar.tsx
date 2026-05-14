@@ -12,6 +12,7 @@ const Navbar = () => {
         {user?.privilege?.organize?.brand && <NavLink to='/organize/brand'>{language['BRAND']}</NavLink>}
         {user?.privilege?.organize?.product && <NavLink to='/organize/product'>{language['PRODUCT']}</NavLink>}
         {user?.privilege?.organize?.store && <NavLink to='/organize/store'>{language['STORE']}</NavLink>}
+        {user?.privilege?.organize?.membership && <NavLink to='/organize/membership'>{language['MEMBERSHIP']}</NavLink>}
     </>
   )
 }

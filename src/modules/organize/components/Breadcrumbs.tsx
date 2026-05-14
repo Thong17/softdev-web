@@ -4,7 +4,7 @@ import { IBreadcrumbs } from 'constants/interfaces/Breadcrumbs'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import useLanguage from 'hooks/useLanguage'
 
-declare type page = 'organize' | 'category' | 'categoryCreate' | 'categoryUpdate' | 'brand' | 'brandCreate' | 'brandUpdate' | 'product' | 'productCreate' | 'productDetail' | 'productUpdate' | 'storeUpdate' | 'storeLayout'
+declare type page = 'organize' | 'category' | 'categoryCreate' | 'categoryUpdate' | 'brand' | 'brandCreate' | 'brandUpdate' | 'product' | 'productCreate' | 'productDetail' | 'productUpdate' | 'storeUpdate' | 'storeLayout' | 'membership' | 'membershipCreate' | 'membershipUpdate' | 'membershipDetail'
 
 const StoreBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page, id }) => {
   const { language } = useLanguage()
@@ -151,6 +151,56 @@ const StoreBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page, id }) => {
       },
       {
         title: language['LAYOUT'],
+      },
+    ],
+
+    // Membership
+    membership: [
+      {
+        title: language['ORGANIZE'],
+        path: '/organize'
+      },
+      {
+        title: language['MEMBERSHIP'],
+      },
+    ],
+    membershipCreate: [
+      {
+        title: language['ORGANIZE'],
+        path: '/organize'
+      },
+      {
+        title: language['MEMBERSHIP'],
+        path: '/organize/membership'
+      },
+      {
+        title: language['CREATE'],
+      },
+    ],
+    membershipUpdate: [
+      {
+        title: language['ORGANIZE'],
+        path: '/organize'
+      },
+      {
+        title: language['MEMBERSHIP'],
+        path: '/organize/membership'
+      },
+      {
+        title: language['UPDATE'],
+      },
+    ],
+    membershipDetail: [
+      {
+        title: language['ORGANIZE'],
+        path: '/organize'
+      },
+      {
+        title: language['MEMBERSHIP'],
+        path: '/organize/membership'
+      },
+      {
+        title: language['DETAIL'],
       },
     ],
   }

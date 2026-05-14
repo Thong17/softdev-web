@@ -237,6 +237,7 @@ export const languages = {
     ADD_CUSTOMER: 'Add\u00a0Customer',
     NO_CUSTOMER_DESCRIPTION: 'No customer found. Click below to add new.',
     RECEIPT: 'Receipt',
+    MEMBERSHIP: 'Membership',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -475,5 +476,6 @@ export const languages = {
     ADD_CUSTOMER: 'Add\u00a0Customer',
     NO_CUSTOMER_DESCRIPTION: 'No customer found. Click below to add new.',
     RECEIPT: 'Receipt',
+    MEMBERSHIP: 'Membership',
   }
 }
