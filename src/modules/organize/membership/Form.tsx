@@ -5,20 +5,27 @@ import {
   DetailField,
 } from 'components/shared/form'
 import Button from 'components/shared/Button'
-import useWeb from 'hooks/useWeb'
 import { useForm } from 'react-hook-form'
 import { membershipSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { useAppDispatch } from 'app/hooks'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListMembership } from './redux'
-import { LocaleDetail } from 'components/shared/form/LocaleField'
+import { LocaleField } from 'components/shared/form/LocaleField'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import useTheme from 'hooks/useTheme'
+import useLanguage from 'hooks/useLanguage'
 import { useNavigate } from 'react-router-dom'
 import { ProductContainer } from 'components/shared/container/ProductContainer'
+import { getListBrand, selectListBrand } from '../brand/redux'
+import { getListCategory, selectListCategory } from '../category/redux'
+import { AlertDialog } from 'components/shared/table/AlertDialog'
+import { DialogTitle } from 'components/shared/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import useWeb from 'hooks/useWeb'
 
 const typeOption = [
   {
@@ -42,13 +49,6 @@ const targetOption = [
   { value: 'all', label: 'All Products' },
 ]
 
-const durationOption = [
-  { value: 'day', label: 'Day' },
-  { value: 'week', label: 'Week' },
-  { value: 'month', label: 'Month' },
-  { value: 'year', label: 'Year' },
-]
-
 const MembershipForm = ({ defaultValues, id }: any) => {
   const dispatch = useAppDispatch()
   const {
@@ -60,15 +60,23 @@ const MembershipForm = ({ defaultValues, id }: any) => {
     setError,
     formState: { errors },
   } = useForm({ resolver: yupResolver(membershipSchema), defaultValues })
-  const { device } = useWeb()
   const { theme } = useTheme()
   const { notify } = useNotify()
+  const { lang } = useLanguage()
+  const { width } = useWeb()
+  const { data: listBrand } = useAppSelector(selectListBrand)
+  const { data: listCategory } = useAppSelector(selectListCategory)
   const [loading, setLoading] = useState(false)
-  const [type, setType] = useState(defaultValues?.discount?.type || 'PCT')
-  const typeValue = watch('discount.type')
-  const [isFixed, setIsFixed] = useState(defaultValues?.discount?.isFixed || false)
+  const [type, setType] = useState(defaultValues?.discounts?.type || 'PCT')
+  const typeValue = watch('discounts.type')
+  const [isFixed, setIsFixed] = useState(defaultValues?.discounts?.isFixed || false)
   const [selectedProducts, setSelectedProducts] = useState<any>(defaultValues?.target?.products || [])
   const [targetType, setTargetType] = useState(defaultValues?.target?.type || 'product')
+  const [productDialogOpen, setProductDialogOpen] = useState(false)
+  const [selectedBrand, setSelectedBrand] = useState(defaultValues?.target?.brands?.[0] || '')
+  const [selectedCategory, setSelectedCategory] = useState(defaultValues?.target?.categories?.[0] || '')
+  const [brandOptions, setBrandOptions] = useState<any[]>([])
+  const [categoryOptions, setCategoryOptions] = useState<any[]>([])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -90,15 +98,65 @@ const MembershipForm = ({ defaultValues, id }: any) => {
       setValue('target.products', selectedProducts)
       setValue('target.categories', [])
       setValue('target.brands', [])
-    } else {
+    } else if (targetType === 'category') {
+      setValue('target.products', [])
+      setValue('target.categories', selectedCategory ? [selectedCategory] : [])
+      setValue('target.brands', [])
+    } else if (targetType === 'brand') {
       setValue('target.products', [])
       setValue('target.categories', [])
-      setValue('target.brands', [])
+      setValue('target.brands', selectedBrand ? [selectedBrand] : [])
     }
-  }, [selectedProducts, targetType, setValue])
+  }, [selectedProducts, selectedCategory, selectedBrand, targetType, setValue])
 
-  const handleChangeName = (name) => {
-    setValue('name', name)
+  useEffect(() => {
+    dispatch(getListBrand({}))
+      .catch(console.error)
+
+    dispatch(getListCategory({}))
+      .catch(console.error)
+  }, [dispatch])
+
+  useEffect(() => {
+    setBrandOptions(
+      listBrand?.map((item: any) => ({
+        label: item.name?.[lang] || item.name?.['English'],
+        value: item._id,
+      })) || []
+    )
+  }, [listBrand, lang])
+
+  useEffect(() => {
+    setCategoryOptions(
+      listCategory?.map((item: any) => ({
+        label: item.name?.[lang] || item.name?.['English'],
+        value: item._id,
+      })) || []
+    )
+  }, [listCategory, lang])
+
+  const handleChangeTargetType = (e) => {
+    const value = e.target.value
+    setTargetType(value)
+    setValue('target.type', value)
+
+    if (value === 'product') {
+      setProductDialogOpen(true)
+    } else {
+      setProductDialogOpen(false)
+    }
+  }
+
+  const handleChangeCategory = (e) => {
+    const value = e.target.value
+    setSelectedCategory(value)
+    setValue('target.categories', value ? [value] : [])
+  }
+
+  const handleChangeBrand = (e) => {
+    const value = e.target.value
+    setSelectedBrand(value)
+    setValue('target.brands', value ? [value] : [])
   }
 
   const handleChangeDescription = (description) => {
@@ -141,38 +199,30 @@ const MembershipForm = ({ defaultValues, id }: any) => {
   return (
     <form
       onSubmit={handleSubmit(submit)}
-      style={{
-        display: 'grid',
-        gridTemplateColumns:
-          device === 'mobile' || device === 'tablet' ? '1fr' : '500px 1fr',
-        gridGap: 20,
-      }}
     >
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
+          gridTemplateColumns: '1fr 1fr 1fr 1fr',
           gridColumnGap: 20,
           height: 'fit-content',
+          marginTop: 20,
           gridTemplateAreas: `
-                              'name name name name'
-                              'discountValue discountValue discountType discountType'
-                              'startAt startAt expireAt expireAt'
-                              'durationValue durationValue durationUnit durationUnit'
-                              'targetType targetType targetType targetType'
-                              'note note note note'
                               'description description description description'
+                              'discountType discountValue startAt expireAt'
+                              'targetType targetSelector targetSelector targetSelector'
+                              'note note note note'
                               'action action action action'
                               `,
         }}
       >
-        <div style={{ gridArea: 'name' }}>
-          <LocaleDetail
-            onChange={handleChangeName}
-            err={errors?.name}
-            describe='Name'
-            name='name'
-            defaultValue={getValues('name')}
+        <div style={{ gridArea: 'description', marginTop: 20, marginBottom: 20 }}>
+          <LocaleField
+            onChange={handleChangeDescription}
+            err={errors?.description}
+            describe='Description'
+            name='description'
+            defaultValue={getValues('description')}
           />
         </div>
         <div style={{ gridArea: 'discountValue' }}>
@@ -180,8 +230,8 @@ const MembershipForm = ({ defaultValues, id }: any) => {
             type='number'
             step='any'
             label='Discount Value'
-            err={errors?.discount?.value?.message}
-            {...register('discount.value')}
+            err={errors?.discounts?.value?.message}
+            {...register('discounts.value')}
             icon={isFixed ? <CheckBoxRoundedIcon onClick={handleToggleCheck} fontSize='small' /> : <CheckBoxOutlineBlankRoundedIcon style={{ color: theme.text.quaternary }} onClick={handleToggleCheck} fontSize='small' />}
           />
         </div>
@@ -190,8 +240,8 @@ const MembershipForm = ({ defaultValues, id }: any) => {
             value={type}
             options={typeOption}
             label='Discount Type'
-            err={errors?.discount?.type?.message}
-            {...register('discount.type')}
+            err={errors?.discounts?.type?.message}
+            {...register('discounts.type')}
           />
         </div>
         <div style={{ gridArea: 'startAt' }}>
@@ -210,50 +260,50 @@ const MembershipForm = ({ defaultValues, id }: any) => {
             {...register('expireAt')}
           />
         </div>
-        <div style={{ gridArea: 'durationValue' }}>
-          <TextField
-            type='number'
-            step='any'
-            label='Duration Value'
-            err={errors?.duration?.value?.message}
-            {...register('duration.value')}
-          />
-        </div>
-        <div style={{ gridArea: 'durationUnit' }}>
-          <SelectField
-            value={watch('duration.unit') || 'month'}
-            options={durationOption}
-            label='Duration Unit'
-            err={errors?.duration?.unit?.message}
-            {...register('duration.unit')}
-          />
-        </div>
         <div style={{ gridArea: 'targetType' }}>
           <SelectField
             value={targetType}
             options={targetOption}
             label='Target Type'
             err={errors?.target?.type?.message}
-            onChange={(e) => {
-              setTargetType(e.target.value)
-              setValue('target.type', e.target.value)
-            }}
+            onChange={handleChangeTargetType}
           />
         </div>
-        <div style={{ gridArea: 'note', marginTop: 10 }}>
+        {targetType === 'category' && (
+          <div style={{ gridArea: 'targetSelector' }}>
+            <SelectField
+              value={selectedCategory}
+              options={categoryOptions}
+              label='Category'
+              err={errors?.target?.categories?.message}
+              onChange={handleChangeCategory}
+            />
+          </div>
+        )}
+        {targetType === 'brand' && (
+          <div style={{ gridArea: 'targetSelector' }}>
+            <SelectField
+              value={selectedBrand}
+              options={brandOptions}
+              label='Brand'
+              err={errors?.target?.brands?.message}
+              onChange={handleChangeBrand}
+            />
+          </div>
+        )}
+        {targetType === 'product' && (
+          <div style={{ gridArea: 'targetSelector', marginTop: 30, marginBottom: 20 }}>
+            <Button variant='outlined' style={{ width: '100%', justifyContent: 'space-between' }} onClick={() => setProductDialogOpen(true)}>
+              {selectedProducts.length ? `${selectedProducts.length} selected` : 'Choose products'}
+            </Button>
+          </div>
+        )}
+        <div style={{ gridArea: 'note' }}>
           <DetailField
             label='Note'
             err={errors?.note?.message}
+            style={{ height: 70 }}
             {...register('note')}
-          />
-        </div>
-        <div style={{ gridArea: 'description', marginTop: 10, marginBottom: 10 }}>
-          <LocaleDetail
-            onChange={handleChangeDescription}
-            err={errors?.description}
-            describe='Description'
-            name='description'
-            defaultValue={getValues('description')}
           />
         </div>
         <div
@@ -277,11 +327,17 @@ const MembershipForm = ({ defaultValues, id }: any) => {
           </Button>
         </div>
       </div>
-      <div style={{ display: 'grid' }}>
-        {targetType === 'product' && (
+      <AlertDialog isOpen={productDialogOpen} handleClose={() => setProductDialogOpen(false)}>
+        <DialogTitle title="Select Product" onClose={() => setProductDialogOpen(false)} />
+        <DialogContent style={{ width: width < 1024 ? '80vw' : '70vw', height: '70vh' }}>
           <ProductContainer onClickProduct={handleClickProduct} filterSelected={true} selectedProducts={selectedProducts} />
-        )}
-      </div>
+        </DialogContent>
+        <DialogActions>
+          <Button variant='contained' style={{ marginRight: 10 }} onClick={() => setProductDialogOpen(false)}>
+            Close
+          </Button>
+        </DialogActions>
+      </AlertDialog>
     </form>
   )
 }

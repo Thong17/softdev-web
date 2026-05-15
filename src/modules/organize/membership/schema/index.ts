@@ -1,9 +1,8 @@
 import * as yup from 'yup'
 
 export const membershipSchema = yup.object().shape({
-  name: yup.object().required(),
   description: yup.object(),
-  discount: yup.object().shape({
+  discounts: yup.object().shape({
     value: yup.number().required().positive(),
     type: yup.string().required(),
     isFixed: yup.boolean()

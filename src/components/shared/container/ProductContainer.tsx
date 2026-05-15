@@ -375,6 +375,7 @@ export const ProductContainer = ({
             marginBottom: 0,
             display: 'flex',
             alignItems: 'center',
+            color: theme.text.secondary,
           }}
         >
           <ArrowRightRoundedIcon fontSize='large' />

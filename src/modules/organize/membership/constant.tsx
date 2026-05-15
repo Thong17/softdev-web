@@ -15,7 +15,7 @@ import { PromotionLabel } from 'components/shared/PromotionLabel'
 export declare type ColumnHeader =
   | 'no'
   | 'name'
-  | 'discount'
+  | 'discounts'
   | 'target'
   | 'status'
   | 'startAt'
@@ -26,7 +26,7 @@ export declare type ColumnHeader =
 
 export const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'name', label: 'NAME' },
-  { id: 'discount', label: 'DISCOUNT' },
+  { id: 'discounts', label: 'DISCOUNT' },
   { id: 'target', label: 'TARGET' },
   { id: 'status', label: 'STATUS' },
   { id: 'startAt', label: 'START_AT' },
@@ -38,7 +38,7 @@ export const columnData: ITableColumn<ColumnHeader>[] = [
 
 export interface Data {
   name: string
-  discount: ReactElement
+  discounts: ReactElement
   target: string
   status: ReactElement
   startAt: string
@@ -49,9 +49,8 @@ export interface Data {
 }
 
 export const initState = {
-  name: {},
   description: {},
-  discount: {
+  discounts: {
     value: 0,
     type: 'PCT',
     isFixed: false
@@ -74,7 +73,7 @@ export const initState = {
 export const createData = (
   id: string,
   name: string,
-  discount: { value: number, type: string, isFixed: boolean },
+  discounts: { value: number, type: string, isFixed: boolean },
   target: { type: string },
   startAt: string,
   expireAt: string,
@@ -125,14 +124,14 @@ export const createData = (
     </div>
   )
 
-  const discountValue = discount?.value || 0
-  const discountType = discount?.type || 'PCT'
-  const discountLabel = <PromotionLabel value={discountValue} type={discountType} isFixed={discount?.isFixed} />
+  const discountValue = discounts?.value || 0
+  const discountType = discounts?.type || 'PCT'
+  const discountLabel = <PromotionLabel value={discountValue} type={discountType} isFixed={discounts?.isFixed} />
   const status = <PromotionStatus start={new Date(startAt)} expire={new Date(expireAt)} />
 
   return { 
     name, 
-    discount: discountLabel, 
+    discounts: discountLabel, 
     target: target?.type || '...',
     status, 
     startAt: dateFormat(startAt), 

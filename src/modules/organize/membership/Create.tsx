@@ -1,6 +1,5 @@
 import React from 'react'
 import Container from 'components/shared/Container'
-import { useNavigate } from 'react-router-dom'
 import MembershipForm from './Form'
 import { initState } from './constant'
 import StoreBreadcrumbs from '../components/Breadcrumbs'
