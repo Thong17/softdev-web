@@ -82,20 +82,20 @@ export const Memberships = () => {
 
   useEffect(() => {
     const listMemberships = memberships.map((membership: any) => {
-      return createData(
-        membership._id,
-        membership.name?.[lang] || membership.name?.['English'] || '...',
-        membership.discount,
-        membership.target,
-        membership.startAt,
-        membership.expireAt,
-        membership.note,
-        membership.createdBy || '...',
-        user?.privilege,
+      return createData({
+        id: membership._id,
+        name: membership.description?.[lang] || membership.description?.['English'] || '...',
+        discounts: membership.discount || membership.discounts,
+        target: membership.discounts?.[0]?.target?.length || 0,
+        startAt: membership.startAt,
+        expireAt: membership.expireAt,
+        note: membership.note,
+        createdBy: membership.createdBy || '...',
+        privilege: user?.privilege,
         device,
         navigate,
-        setDialog
-      )
+        setDialog,
+      })
     })
 
     setRowData(listMemberships)

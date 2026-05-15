@@ -51,39 +51,48 @@ export interface Data {
 export const initState = {
   description: {},
   discounts: {
-    value: 0,
-    type: 'PCT',
-    isFixed: false
-  },
-  target: {
-    type: 'product',
-    products: [],
-    categories: [],
-    brands: []
-  },
-  duration: {
-    value: 1,
-    unit: 'month'
+    0: {
+      type: 'product',
+      target: '',
+      discountType: 'percentage',
+      value: 0,
+    },
   },
   note: '',
   startAt: '',
-  expireAt: ''
+  expireAt: '',
+  isActive: true,
 }
 
-export const createData = (
-  id: string,
-  name: string,
-  discounts: { value: number, type: string, isFixed: boolean },
-  target: { type: string },
-  startAt: string,
-  expireAt: string,
-  note: string,
-  createdBy: string,
-  privilege: any,
-  device: DeviceOptions,
-  navigate: Function,
+export interface CreateDataProps {
+  id: string
+  name: string
+  discounts: any
+  target: any
+  startAt: string
+  expireAt: string
+  note: string
+  createdBy: any
+  privilege: any
+  device: DeviceOptions
+  navigate: Function
   setDialog: Function
-): Data => {
+}
+
+export const createData = ({
+  id,
+  name,
+  discounts,
+  target,
+  startAt,
+  expireAt,
+  note,
+  createdBy,
+  privilege,
+  device,
+  navigate,
+  setDialog,
+}: CreateDataProps): Data => {
   let action = (
     <div style={{ float: 'right' }}>
       {device === 'mobile' ? (
@@ -124,20 +133,52 @@ export const createData = (
     </div>
   )
 
-  const discountValue = discounts?.value || 0
-  const discountType = discounts?.type || 'PCT'
-  const discountLabel = <PromotionLabel value={discountValue} type={discountType} isFixed={discounts?.isFixed} />
+  const discountObject = (() => {
+    if (!discounts) return null
+    if (discounts.value !== undefined && discounts.type !== undefined) {
+      return discounts
+    }
+    if (typeof discounts === 'object') {
+      const keys = Object.keys(discounts)
+      if (keys.length > 0) {
+        const first = discounts[keys[0]]
+        if (first && typeof first === 'object' && first.value !== undefined) {
+          return first
+        }
+      }
+    }
+    return null
+  })()
+
+  const discountValue = discountObject?.value || 0
+  const discountType = discountObject?.type || 'PCT'
+  const discountLabel = (
+    <PromotionLabel
+      value={discountValue}
+      type={discountType}
+      isFixed={discountObject?.isFixed}
+    />
+  )
+
+  const createdByLabel =
+    (createdBy &&
+      (createdBy.username ||
+        createdBy.name ||
+        (typeof createdBy._id === 'string' ? createdBy._id : null) ||
+        (typeof createdBy === 'string' ? createdBy : null) ||
+        '...')) ||
+    '...'
   const status = <PromotionStatus start={new Date(startAt)} expire={new Date(expireAt)} />
 
-  return { 
-    name, 
-    discounts: discountLabel, 
-    target: target?.type || '...',
-    status, 
-    startAt: dateFormat(startAt), 
-    expireAt: dateFormat(expireAt), 
+  return {
+    name,
+    discounts: discountLabel,
+    target: target,
+    status,
+    startAt: dateFormat(startAt),
+    expireAt: dateFormat(expireAt),
     note: note || '...',
-    createdBy, 
-    action 
+    createdBy: createdByLabel,
+    action,
   }
 }

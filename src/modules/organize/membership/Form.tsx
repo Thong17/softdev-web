@@ -13,8 +13,6 @@ import useNotify from 'hooks/useNotify'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListMembership } from './redux'
 import { LocaleField } from 'components/shared/form/LocaleField'
-import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
-import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import { useNavigate } from 'react-router-dom'
@@ -27,18 +25,14 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import useWeb from 'hooks/useWeb'
 
-const typeOption = [
+const discountTypeOption = [
   {
-    value: 'PCT',
-    label: 'Percent',
+    value: 'percentage',
+    label: 'Percentage',
   },
   {
-    value: 'USD',
-    label: 'USD',
-  },
-  {
-    value: 'KHR',
-    label: 'KHR',
+    value: 'fixed',
+    label: 'Fixed',
   },
 ]
 
@@ -46,20 +40,75 @@ const targetOption = [
   { value: 'product', label: 'Product' },
   { value: 'category', label: 'Category' },
   { value: 'brand', label: 'Brand' },
-  { value: 'all', label: 'All Products' },
 ]
+
+const getLegacyTargets = (targetFromLegacy: any) => {
+  if (!targetFromLegacy) return []
+
+  switch (targetFromLegacy.type) {
+    case 'product':
+      return targetFromLegacy.products || []
+    case 'category':
+      return targetFromLegacy.categories || []
+    case 'brand':
+      return targetFromLegacy.brands || []
+    default:
+      return []
+  }
+}
+
+const normalizeDefaultValues = (values: any = {}) => {
+  const rawDiscounts = values?.discounts
+  let discount = {} as any
+
+  if (rawDiscounts && typeof rawDiscounts === 'object') {
+    if (rawDiscounts.type || rawDiscounts.discountType || rawDiscounts.value !== undefined) {
+      discount = rawDiscounts
+    } else {
+      const firstKey = Object.keys(rawDiscounts)[0]
+      discount = firstKey ? rawDiscounts[firstKey] : {}
+    }
+  }
+
+  const targetFromLegacy = values?.target
+  let targets: string[] = []
+
+  if (Array.isArray(discount?.target)) {
+    targets = discount.target
+  } else if (typeof discount?.target === 'string' && discount.target) {
+    targets = [discount.target]
+  } else {
+    targets = getLegacyTargets(targetFromLegacy)
+  }
+
+  return {
+    description: values?.description || {},
+    discounts: {
+      0: {
+        type: discount?.type || targetFromLegacy?.type || 'product',
+        target: targets,
+        discountType: discount?.discountType || 'percentage',
+        value: discount?.value ?? 0,
+      },
+    },
+    note: values?.note || '',
+    startAt: values?.startAt || '',
+    expireAt: values?.expireAt || '',
+    isActive: values?.isActive ?? true,
+  }
+}
 
 const MembershipForm = ({ defaultValues, id }: any) => {
   const dispatch = useAppDispatch()
+  const normalizedDefaultValues = normalizeDefaultValues(defaultValues)
   const {
-    watch,
     register,
     handleSubmit,
     setValue,
     getValues,
     setError,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(membershipSchema), defaultValues })
+  } = useForm<any>({ resolver: yupResolver(membershipSchema), defaultValues: normalizedDefaultValues })
   const { theme } = useTheme()
   const { notify } = useNotify()
   const { lang } = useLanguage()
@@ -67,47 +116,25 @@ const MembershipForm = ({ defaultValues, id }: any) => {
   const { data: listBrand } = useAppSelector(selectListBrand)
   const { data: listCategory } = useAppSelector(selectListCategory)
   const [loading, setLoading] = useState(false)
-  const [type, setType] = useState(defaultValues?.discounts?.type || 'PCT')
-  const typeValue = watch('discounts.type')
-  const [isFixed, setIsFixed] = useState(defaultValues?.discounts?.isFixed || false)
-  const [selectedProducts, setSelectedProducts] = useState<any>(defaultValues?.target?.products || [])
-  const [targetType, setTargetType] = useState(defaultValues?.target?.type || 'product')
+  const [targetType, setTargetType] = useState(normalizedDefaultValues.discounts?.[0]?.type || 'product')
+  const [discountType, setDiscountType] = useState(normalizedDefaultValues.discounts?.[0]?.discountType || 'percentage')
+  const [selectedTarget, setSelectedTarget] = useState<string[]>(normalizedDefaultValues.discounts?.[0]?.target || [])
   const [productDialogOpen, setProductDialogOpen] = useState(false)
-  const [selectedBrand, setSelectedBrand] = useState(defaultValues?.target?.brands?.[0] || '')
-  const [selectedCategory, setSelectedCategory] = useState(defaultValues?.target?.categories?.[0] || '')
   const [brandOptions, setBrandOptions] = useState<any[]>([])
   const [categoryOptions, setCategoryOptions] = useState<any[]>([])
   const navigate = useNavigate()
 
   useEffect(() => {
-    const selectedType = typeOption.find((key) => key.value === typeValue)
-    setType(selectedType?.value || '')
-  }, [typeValue])
+    register('discounts.0.type')
+    register('discounts.0.discountType')
+    register('discounts.0.target')
+  }, [register])
 
   useEffect(() => {
-    setValue('discount.type', type)
-  }, [type, setValue])
-
-  useEffect(() => {
-    setValue('target.type', targetType)
-    if (targetType === 'all') {
-      setValue('target.products', [])
-      setValue('target.categories', [])
-      setValue('target.brands', [])
-    } else if (targetType === 'product') {
-      setValue('target.products', selectedProducts)
-      setValue('target.categories', [])
-      setValue('target.brands', [])
-    } else if (targetType === 'category') {
-      setValue('target.products', [])
-      setValue('target.categories', selectedCategory ? [selectedCategory] : [])
-      setValue('target.brands', [])
-    } else if (targetType === 'brand') {
-      setValue('target.products', [])
-      setValue('target.categories', [])
-      setValue('target.brands', selectedBrand ? [selectedBrand] : [])
-    }
-  }, [selectedProducts, selectedCategory, selectedBrand, targetType, setValue])
+    setValue('discounts.0.type', targetType)
+    setValue('discounts.0.discountType', discountType)
+    setValue('discounts.0.target', selectedTarget)
+  }, [targetType, discountType, selectedTarget, setValue])
 
   useEffect(() => {
     dispatch(getListBrand({}))
@@ -138,25 +165,18 @@ const MembershipForm = ({ defaultValues, id }: any) => {
   const handleChangeTargetType = (e) => {
     const value = e.target.value
     setTargetType(value)
-    setValue('target.type', value)
-
-    if (value === 'product') {
-      setProductDialogOpen(true)
-    } else {
-      setProductDialogOpen(false)
-    }
+    setSelectedTarget([])
+    setProductDialogOpen(value === 'product')
   }
 
   const handleChangeCategory = (e) => {
     const value = e.target.value
-    setSelectedCategory(value)
-    setValue('target.categories', value ? [value] : [])
+    setSelectedTarget(value ? [value] : [])
   }
 
   const handleChangeBrand = (e) => {
     const value = e.target.value
-    setSelectedBrand(value)
-    setValue('target.brands', value ? [value] : [])
+    setSelectedTarget(value ? [value] : [])
   }
 
   const handleChangeDescription = (description) => {
@@ -164,13 +184,9 @@ const MembershipForm = ({ defaultValues, id }: any) => {
   }
 
   const handleClickProduct = (id) => {
-    if (!selectedProducts.includes(id)) return setSelectedProducts(prev => [...prev, id])
-    setSelectedProducts(prev => prev.filter(item => item !== id))
-  }
-
-  const handleToggleCheck = () => {
-    setIsFixed(!isFixed)
-    setValue('discount.isFixed', !isFixed)
+    setSelectedTarget((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    )
   }
 
   const submit = async (data) => {
@@ -230,18 +246,17 @@ const MembershipForm = ({ defaultValues, id }: any) => {
             type='number'
             step='any'
             label='Discount Value'
-            err={errors?.discounts?.value?.message}
-            {...register('discounts.value')}
-            icon={isFixed ? <CheckBoxRoundedIcon onClick={handleToggleCheck} fontSize='small' /> : <CheckBoxOutlineBlankRoundedIcon style={{ color: theme.text.quaternary }} onClick={handleToggleCheck} fontSize='small' />}
+            err={errors?.discounts?.[0]?.value?.message}
+            {...register('discounts.0.value')}
           />
         </div>
         <div style={{ gridArea: 'discountType' }}>
           <SelectField
-            value={type}
-            options={typeOption}
-            label='Discount Type'
-            err={errors?.discounts?.type?.message}
-            {...register('discounts.type')}
+            value={discountType}
+            options={discountTypeOption}
+            label='Discount Mode'
+            err={errors?.discounts?.[0]?.discountType?.message}
+            onChange={(e) => setDiscountType(e.target.value)}
           />
         </div>
         <div style={{ gridArea: 'startAt' }}>
@@ -265,17 +280,17 @@ const MembershipForm = ({ defaultValues, id }: any) => {
             value={targetType}
             options={targetOption}
             label='Target Type'
-            err={errors?.target?.type?.message}
+            err={errors?.discounts?.[0]?.type?.message}
             onChange={handleChangeTargetType}
           />
         </div>
         {targetType === 'category' && (
           <div style={{ gridArea: 'targetSelector' }}>
             <SelectField
-              value={selectedCategory}
+              value={selectedTarget}
               options={categoryOptions}
               label='Category'
-              err={errors?.target?.categories?.message}
+              err={errors?.discounts?.[0]?.target?.message}
               onChange={handleChangeCategory}
             />
           </div>
@@ -283,10 +298,10 @@ const MembershipForm = ({ defaultValues, id }: any) => {
         {targetType === 'brand' && (
           <div style={{ gridArea: 'targetSelector' }}>
             <SelectField
-              value={selectedBrand}
+              value={selectedTarget}
               options={brandOptions}
               label='Brand'
-              err={errors?.target?.brands?.message}
+              err={errors?.discounts?.[0]?.target?.message}
               onChange={handleChangeBrand}
             />
           </div>
@@ -294,8 +309,13 @@ const MembershipForm = ({ defaultValues, id }: any) => {
         {targetType === 'product' && (
           <div style={{ gridArea: 'targetSelector', marginTop: 30, marginBottom: 20 }}>
             <Button variant='outlined' style={{ width: '100%', justifyContent: 'space-between' }} onClick={() => setProductDialogOpen(true)}>
-              {selectedProducts.length ? `${selectedProducts.length} selected` : 'Choose products'}
+              {selectedTarget.length ? `${selectedTarget.length} selected` : 'Choose products'}
             </Button>
+            {errors?.discounts?.[0]?.target?.message && (
+              <div style={{ color: theme.color.error, fontSize: 12, marginTop: 6 }}>
+                {errors?.discounts?.[0]?.target?.message}
+              </div>
+            )}
           </div>
         )}
         <div style={{ gridArea: 'note' }}>
@@ -330,7 +350,7 @@ const MembershipForm = ({ defaultValues, id }: any) => {
       <AlertDialog isOpen={productDialogOpen} handleClose={() => setProductDialogOpen(false)}>
         <DialogTitle title="Select Product" onClose={() => setProductDialogOpen(false)} />
         <DialogContent style={{ width: width < 1024 ? '80vw' : '70vw', height: '70vh' }}>
-          <ProductContainer onClickProduct={handleClickProduct} filterSelected={true} selectedProducts={selectedProducts} />
+          <ProductContainer onClickProduct={handleClickProduct} filterSelected={true} selectedProducts={selectedTarget} />
         </DialogContent>
         <DialogActions>
           <Button variant='contained' style={{ marginRight: 10 }} onClick={() => setProductDialogOpen(false)}>
