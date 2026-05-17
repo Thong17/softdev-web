@@ -47,7 +47,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
     { label: language['TRANSFER'], value: 'transfer' },
-    { label: language['LOAN'], value: 'loan' },
+    // { label: language['LOAN'], value: 'loan' },
   ]
 
   useEffect(() => {

@@ -63,7 +63,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
     { label: language['TRANSFER'], value: 'transfer' },
-    { label: language['LOAN'], value: 'loan' },
+    // { label: language['LOAN'], value: 'loan' },
   ]
 
   useEffect(() => {
@@ -221,7 +221,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       .catch(() => {})
   }
 
-  const printType = 'direct_printing'
+  const printType: string = 'web_printing'
 
   const invoiceRef = useRef(document.createElement('div'))
   const handlePrintInvoice = useReactToPrint({
