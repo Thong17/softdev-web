@@ -240,7 +240,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     documentTitle: 'Invoice',
   })
 
-  const handleDirectPrint = async (data: { items: { description: string; qty: number }[], createdAt: string, invoice: string }) => {
+  const handleDirectPrint = async (data: { items: { description: string; qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }) => {
     try {
       // 1. Find your printer by its Windows name
       const config = qz.configs.create("Gprinter GP-2270T");
@@ -250,6 +250,9 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
         // sanitize description to avoid breaking TSPL string quoting
         const desc = (item.description || '').toString().replace(/"/g, "'");
         for (let i = 0; i < (item.qty || 0); i++) {
+          const optionsText = item.options?.map((option, index) => `
+            TEXT 70,${110 + index * 30},"2",0,1,1,"- ${option.name}: ${option.value}"\r\n
+            `)
           const tsplData = [
             'SIZE 52 mm, 126 mm\r\n',
             'GAP 2 mm, 0 mm\r\n',
@@ -260,9 +263,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
             `TEXT 50,20,"2",0,1,1,"${(data.createdAt || '')}"\r\n`,
             `TEXT 50,50,"2",0,1,1,"#${(data.invoice || '')}"\r\n`,
             `TEXT 50,80,"2",0,1,1,"${desc}"\r\n`,
-            `TEXT 70,110,"2",0,1,1,"- Size: Large"\r\n`,
-            `TEXT 70,140,"2",0,1,1,"- Sugar: 70%"\r\n`,
-            `TEXT 70,170,"2",0,1,1,"- Ice: Normal"\r\n`,
+            ...(optionsText || []),
             // move barcode lower so it doesn't overlap text and reduce its height
             'PRINT 1,1\r\n',
           ];
@@ -306,7 +307,11 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           handleDirectPrint({
             items: dialog.payment?.transactions?.map(item => ({
               description: item.description,
-              qty: item.quantity
+              qty: item.quantity,
+              options: item.options?.map(option => ({
+                name: option.property?.name?.English,
+                value: option.name?.English
+              }))
             })) || [],
             createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
             invoice: dialog.payment?.invoice
