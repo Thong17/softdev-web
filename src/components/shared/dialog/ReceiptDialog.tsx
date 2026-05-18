@@ -20,7 +20,7 @@ import { storeSchema } from 'modules/organize/store/schema'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import { PaymentReceipt } from '../invoice/PaymentReceipt'
 import { useReactToPrint } from 'react-to-print'
-import { networkPrinting } from 'api/receipt.api'
+import { directPrinting } from 'api/receipt.api'
 import { fontOption } from 'modules/organize/store/Form'
 import { currencyFormat, timeFormat } from 'utils/index'
 import { CustomButton } from 'styles/index'
@@ -108,7 +108,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
     const handlePrint = () => {
         if (printType === 'direct_printing') {
             setIsLoading(true)
-            networkPrinting({
+            directPrinting({
                 name: name,
                 contact: contact,
                 invoice: dialog.payment?.invoice,

@@ -32,7 +32,7 @@ import useLanguage from 'hooks/useLanguage'
 import { LoanForm } from 'components/shared/form/LoanForm'
 import { QueueReceipt } from 'components/shared/invoice/QueueReceipt'
 import { PreviewLoan } from 'components/shared/invoice/PreviewLoan'
-import { networkPrinting } from 'api/receipt.api'
+import { directPrinting } from 'api/receipt.api'
 
 export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout }: any, ref) => {
   const confirm = useAlert()
@@ -221,7 +221,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       .catch(() => {})
   }
 
-  const printType: string = 'web_printing'
+  const printType: string = 'direct_printing'
 
   const invoiceRef = useRef(document.createElement('div'))
   const handlePrintInvoice = useReactToPrint({
@@ -232,7 +232,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   const handlePrint = () => {
       if (printType === 'direct_printing') {
         setIsLoading(true)
-        networkPrinting({
+        directPrinting({
             name: storeInfo?.name,
             invoice: dialog.payment?.invoice,
             cashier: dialog.payment?.createdBy?.username,
@@ -249,7 +249,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
             total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
             address: storeInfo?.address,
             footer: storeInfo?.other
-        })
+        }, 'USB', 'thermal')
             .then(console.log)
             .catch(handlePrintInvoice)
             .finally(() => setIsLoading(false))
