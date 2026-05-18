@@ -33,6 +33,7 @@ import { LoanForm } from 'components/shared/form/LoanForm'
 import { QueueReceipt } from 'components/shared/invoice/QueueReceipt'
 import { PreviewLoan } from 'components/shared/invoice/PreviewLoan'
 import { directPrinting } from 'api/receipt.api'
+import * as qz from 'qz-tray'
 
 export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout }: any, ref) => {
   const confirm = useAlert()
@@ -65,6 +66,16 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     { label: language['TRANSFER'], value: 'transfer' },
     // { label: language['LOAN'], value: 'loan' },
   ]
+
+  useEffect(() => {
+    // Connect to the local QZ Tray service when the component mounts
+    if (!qz.websocket.isActive()) {
+      qz.websocket.connect().catch(err => console.error("QZ Tray connection failed:", err));
+    }
+    return () => {
+      // Optional: clean up connection on unmount if desired
+    };
+  }, []);
 
   useEffect(() => {
     if (status !== 'INIT') return
@@ -221,13 +232,51 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       .catch(() => {})
   }
 
-  const printType: string = 'direct_printing'
+  const printType: string = 'web_printing'
 
   const invoiceRef = useRef(document.createElement('div'))
   const handlePrintInvoice = useReactToPrint({
     content: () => invoiceRef?.current,
     documentTitle: 'Invoice',
   })
+
+  const handleDirectPrint = async (data: { items: { description: string; qty: number }[], createdAt: string, invoice: string }) => {
+    try {
+      // 1. Find your printer by its Windows name
+      const config = qz.configs.create("Gprinter GP-2270T");
+
+      // 2. For each item, print as many labels as the quantity
+      for (const item of data.items || []) {
+        // sanitize description to avoid breaking TSPL string quoting
+        const desc = (item.description || '').toString().replace(/"/g, "'");
+        for (let i = 0; i < (item.qty || 0); i++) {
+          const tsplData = [
+            'SIZE 52 mm, 126 mm\r\n',
+            'GAP 2 mm, 0 mm\r\n',
+            'DENSITY 1\r\n',
+            'CLS\r\n',
+            // use built-in font index (e.g. "3") instead of external TTF file
+            // invoice/timestamp below item description
+            `TEXT 50,20,"2",0,1,1,"${(data.createdAt || '')}"\r\n`,
+            `TEXT 50,50,"2",0,1,1,"#${(data.invoice || '')}"\r\n`,
+            `TEXT 50,80,"2",0,1,1,"${desc}"\r\n`,
+            `TEXT 70,110,"2",0,1,1,"- Size: Large"\r\n`,
+            `TEXT 70,140,"2",0,1,1,"- Sugar: 70%"\r\n`,
+            `TEXT 70,170,"2",0,1,1,"- Ice: Normal"\r\n`,
+            // move barcode lower so it doesn't overlap text and reduce its height
+            'PRINT 1,1\r\n',
+          ];
+
+          // send each label to the printer sequentially
+          await qz.print(config, tsplData);
+        }
+      }
+
+      console.log("Labels printed instantly!");
+    } catch (error) {
+      console.error("Printing failed:", error);
+    }
+  };
 
   const handlePrint = () => {
       if (printType === 'direct_printing') {
@@ -254,6 +303,14 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
             .catch(handlePrintInvoice)
             .finally(() => setIsLoading(false))
       } else {
+          handleDirectPrint({
+            items: dialog.payment?.transactions?.map(item => ({
+              description: item.description,
+              qty: item.quantity
+            })) || [],
+            createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+            invoice: dialog.payment?.invoice
+          })
           handlePrintInvoice()
       }
   }

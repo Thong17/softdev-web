@@ -36,6 +36,7 @@
     "js-sha256": "^0.9.0",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.4",
+    "qz-tray": "^2.2.6",
     "react": "^17.0.2",
     "react-barcode-reader": "0.0.2",
     "react-beautiful-dnd": "^13.1.0",
