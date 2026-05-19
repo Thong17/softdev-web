@@ -44,6 +44,7 @@ export type ReceiptTransaction = {
   qty?: number;
   disc?: string;
   price?: string;
+  total?: string;
 };
 
 export type ReceiptData = {
@@ -60,7 +61,7 @@ export type ReceiptData = {
   footer?: string;
 };
 
-export const handleReceiptPrint = async (data: ReceiptData, printer: string = "POS80 Printer") => {
+export const handleReceiptPrint = async (data: ReceiptData, printer: string = "POS80 Printer", charsPerLine: number = 48) => {
     try {
       const config = qz.configs.create(printer);
       if (config.setEncoding) {
@@ -68,6 +69,48 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
       }
 
       const sanitize = (value: string = '') => value.toString().replace(/"/g, "'")
+      const getColumnWidths = (lineWidth: number) => {
+        const qtyWidth = 4;
+        const minPrice = 8;
+        const minDisc = 8;
+        const minTotal = 8;
+        const minItem = 12;
+
+        let priceWidth = Math.max(minPrice, Math.floor(lineWidth * 0.18));
+        let discWidth = Math.max(minDisc, Math.floor(lineWidth * 0.18));
+        let totalWidth = Math.max(minTotal, Math.floor(lineWidth * 0.18));
+        let itemWidth = lineWidth - qtyWidth - priceWidth - discWidth - totalWidth;
+
+        if (itemWidth < minItem) {
+          priceWidth = minPrice;
+          discWidth = minDisc;
+          totalWidth = minTotal;
+          itemWidth = lineWidth - qtyWidth - priceWidth - discWidth - totalWidth;
+        }
+
+        if (itemWidth < minItem) {
+          itemWidth = Math.max(8, itemWidth);
+          const extra = minItem - itemWidth;
+          const reduceFrom = [priceWidth - minPrice, discWidth - minDisc, totalWidth - minTotal].reduce((sum, v) => sum + Math.max(0, v), 0);
+          if (reduceFrom > 0) {
+            const ratio = extra / reduceFrom;
+            priceWidth = Math.max(minPrice, priceWidth - Math.round((priceWidth - minPrice) * ratio));
+            discWidth = Math.max(minDisc, discWidth - Math.round((discWidth - minDisc) * ratio));
+            totalWidth = Math.max(minTotal, totalWidth - Math.round((totalWidth - minTotal) * ratio));
+            itemWidth = lineWidth - qtyWidth - priceWidth - discWidth - totalWidth;
+          }
+        }
+
+        if (itemWidth < 1) {
+          itemWidth = 1;
+          priceWidth = Math.max(minPrice, lineWidth - qtyWidth - discWidth - totalWidth - itemWidth);
+        }
+
+        return { itemWidth, qtyWidth, priceWidth, discWidth, totalWidth };
+      }
+
+      const { itemWidth, qtyWidth, priceWidth, discWidth, totalWidth } = getColumnWidths(charsPerLine);
+      const lineSep = '-'.repeat(charsPerLine);
       const pad = (text: string, width: number, align: 'left' | 'right' = 'left') => {
         const safe = text.length > width ? text.slice(0, width - 1) + '…' : text;
         return align === 'right'
@@ -95,7 +138,6 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
       }
 
       const init = '\x1B@'
-      const feedLines = '\x1Bd\x05'
       const alignCenter = '\x1Ba\x01'
       const alignLeft = '\x1Ba\x00'
       const boldOn = '\x1BE\x01'
@@ -123,7 +165,7 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
 
       const transactionLines = [
         alignLeft,
-        '----------------------------------------',
+        lineSep,
         newLine,
         `Invoice: ${sanitize(data.invoice || '')}`,
         newLine,
@@ -131,52 +173,58 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
         newLine,
         `Date: ${sanitize(data.createdAt || '')}`,
         newLine,
-        '----------------------------------------',
+        lineSep,
         newLine,
-        pad('Item', 18),
-        pad('Qty', 4, 'right'),
-        pad('Price', 10, 'right'),
-        pad('Disc', 10, 'right'),
+        pad('Item', itemWidth),
+        pad('Qty', qtyWidth, 'right'),
+        pad('Price', priceWidth, 'right'),
+        pad('Disc', discWidth, 'right'),
+        pad('Total', totalWidth, 'right'),
         newLine,
-        '----------------------------------------',
+        lineSep,
         newLine,
         ...(data.transactions || []).flatMap((item) => {
           const itemName = sanitize(item.item || '');
-          const wrappedName = wrapText(itemName, 18);
+          const wrappedName = wrapText(itemName, itemWidth);
           const qtyText = (item.qty || 0).toString();
           const priceText = sanitize(item.price || '');
+          const totalText = sanitize(item.total || '');
           const discText = sanitize(item.disc || '');
 
           const rows: string[] = [];
           rows.push(
-            pad(wrappedName[0], 18),
-            pad(qtyText, 4, 'right'),
-            pad(priceText, 10, 'right'),
-            pad(discText, 10, 'right'),
+            pad(wrappedName[0], itemWidth),
+            pad(qtyText, qtyWidth, 'right'),
+            pad(priceText, priceWidth, 'right'),
+            pad(discText, discWidth, 'right'),
+            pad(totalText, totalWidth, 'right'),
             newLine,
           );
 
           for (let i = 1; i < wrappedName.length; i += 1) {
             rows.push(
-              pad(wrappedName[i], 18),
-              pad('', 4, 'right'),
-              pad('', 10, 'right'),
-              pad('', 10, 'right'),
+              pad(wrappedName[i], itemWidth),
+              pad('', qtyWidth, 'right'),
+              pad('', priceWidth, 'right'),
+              pad('', discWidth, 'right'),
+              pad('', totalWidth, 'right'),
               newLine,
             );
           }
 
           return rows;
         }),
-        '----------------------------------------',
+        lineSep,
         newLine,
       ];
 
       const totalLines = ['Subtotal', 'Discount', 'Tax', 'Total'].flatMap((label) => {
         const value = data[label.toLowerCase() as keyof ReceiptData] as string | undefined;
+        const labelWidth = Math.max(12, charsPerLine - 20);
+        const valueWidth = charsPerLine - labelWidth;
         return [
-          pad(`${label}:`, 28),
-          pad(sanitize(value || ''), 14, 'right'),
+          pad(`${label}:`, labelWidth),
+          pad(sanitize(value || ''), valueWidth, 'right'),
           newLine,
         ];
       });
@@ -186,7 +234,6 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
         : [newLine, newLine];
 
       const receipt = [
-        init,
         ...headerParts,
         ...addressParts,
         ...transactionLines,

@@ -82,8 +82,8 @@ export const InvoicePreview = ({ payment, customer }) => {
                           <span className='sub-description'>
                             {language['PRICE']}:
                             {currencyFormat(
-                              transaction.price?.value,
-                              transaction.price?.currency
+                              transaction.price,
+                              transaction.currency
                             )}
                             <span
                               style={{
