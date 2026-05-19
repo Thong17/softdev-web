@@ -75,7 +75,27 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
           : safe + ' '.repeat(Math.max(0, width - safe.length));
       }
 
+      const wrapText = (text: string, width: number) => {
+        const words = text.split(' ');
+        const lines: string[] = [];
+        let line = '';
+
+        for (const word of words) {
+          const next = line ? `${line} ${word}` : word;
+          if (next.length <= width) {
+            line = next;
+          } else {
+            if (line) lines.push(line);
+            line = word;
+          }
+        }
+
+        if (line) lines.push(line);
+        return lines.length ? lines : [''];
+      }
+
       const init = '\x1B@'
+      const feedLines = '\x1Bd\x05'
       const alignCenter = '\x1Ba\x01'
       const alignLeft = '\x1Ba\x00'
       const boldOn = '\x1BE\x01'
@@ -83,6 +103,7 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
       const doubleSize = '\x1D!\x11'
       const normalSize = '\x1D!\x00'
       const cut = '\x1DV\x00'
+      const drawerPulse = '\x1Bp\x00\x3C\xFF'
       const newLine = '\n'
 
       const headerParts = [
@@ -121,16 +142,31 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
         newLine,
         ...(data.transactions || []).flatMap((item) => {
           const itemName = sanitize(item.item || '');
+          const wrappedName = wrapText(itemName, 18);
           const qtyText = (item.qty || 0).toString();
           const priceText = sanitize(item.price || '');
           const discText = sanitize(item.disc || '');
-          return [
-            pad(itemName, 18),
+
+          const rows: string[] = [];
+          rows.push(
+            pad(wrappedName[0], 18),
             pad(qtyText, 4, 'right'),
             pad(priceText, 10, 'right'),
             pad(discText, 10, 'right'),
             newLine,
-          ];
+          );
+
+          for (let i = 1; i < wrappedName.length; i += 1) {
+            rows.push(
+              pad(wrappedName[i], 18),
+              pad('', 4, 'right'),
+              pad('', 10, 'right'),
+              pad('', 10, 'right'),
+              newLine,
+            );
+          }
+
+          return rows;
         }),
         '----------------------------------------',
         newLine,
@@ -146,16 +182,18 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
       });
 
       const footerParts = data.footer
-        ? [newLine, alignCenter, `${sanitize(data.footer)}`, newLine]
-        : [];
+        ? [newLine, newLine, alignCenter, `${sanitize(data.footer)}`, newLine, newLine]
+        : [newLine, newLine];
 
       const receipt = [
+        init,
         ...headerParts,
         ...addressParts,
         ...transactionLines,
         ...totalLines,
         ...footerParts,
-        newLine,
+        drawerPulse,
+        newLine.repeat(3),
         cut,
       ].join('');
 
