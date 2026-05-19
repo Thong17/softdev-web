@@ -10,7 +10,7 @@ export const handleThermalPrint = async (data: { items: { description: string; q
         // sanitize description to avoid breaking TSPL string quoting
         const desc = (item.description || '').toString().replace(/"/g, "'");
         for (let i = 0; i < (item.qty || 0); i++) {
-          const optionsText = item.options?.map((option, index) => `
+          const optionsText = item.options?.slice(0, 3).map((option, index) => `
             TEXT 70,${110 + index * 30},"2",0,1,1,"- ${option.name}: ${option.value}"\r\n
             `)
           const tsplData = [
@@ -21,7 +21,7 @@ export const handleThermalPrint = async (data: { items: { description: string; q
             // use built-in font index (e.g. "3") instead of external TTF file
             // invoice/timestamp below item description
             `TEXT 50,20,"2",0,1,1,"${(data.createdAt || '')}"\r\n`,
-            `TEXT 50,50,"2",0,1,1,"#${(data.invoice?.split('-')[1] || '')}"\r\n`,
+            `TEXT 50,50,"2",0,1,1,"Queue: #${(data.invoice?.split('-')[1] || '')}"\r\n`,
             `TEXT 50,80,"2",0,1,1,"${desc}"\r\n`,
             ...(optionsText || []),
             // move barcode lower so it doesn't overlap text and reduce its height
@@ -222,7 +222,7 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
 
       const shouldShowTotalLine = (value?: string) => {
         if (!value) return false;
-        const numeric = parseFloat(value.replace(/[^0-9.-]/g, ''));
+        const numeric = Number.parseFloat(value.replace(/[^0-9.-]/g, ''));
         return !Number.isNaN(numeric) && numeric !== 0;
       }
 
