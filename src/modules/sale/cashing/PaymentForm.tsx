@@ -240,7 +240,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     documentTitle: 'Invoice',
   })
 
-  const handleDirectPrint = async (data: { items: { description: string; qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }) => {
+  const handleThermalPrint = async (data: { items: { description: string; qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }) => {
     try {
       // 1. Find your printer by its Windows name
       const config = qz.configs.create("Gprinter GP-2270T");
@@ -279,8 +279,47 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     }
   };
 
+  const handleReceiptPrint = async (data: { items: { description: string; qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }) => {
+    try {
+      // 1. Find your printer by its Windows name
+      const config = qz.configs.create("POS80 Printer");
+
+      // 2. For each item, print as many labels as the quantity
+      for (const item of data.items || []) {
+        // sanitize description to avoid breaking TSPL string quoting
+        const desc = (item.description || '').toString().replace(/"/g, "'");
+        for (let i = 0; i < (item.qty || 0); i++) {
+          const optionsText = item.options?.map((option, index) => `
+            TEXT 70,${110 + index * 30},"2",0,1,1,"- ${option.name}: ${option.value}"\r\n
+            `)
+          const tsplData = [
+            'SIZE 52 mm, 126 mm\r\n',
+            'GAP 2 mm, 0 mm\r\n',
+            'DENSITY 1\r\n',
+            'CLS\r\n',
+            // use built-in font index (e.g. "3") instead of external TTF file
+            // invoice/timestamp below item description
+            `TEXT 50,20,"2",0,1,1,"${(data.createdAt || '')}"\r\n`,
+            `TEXT 50,50,"2",0,1,1,"#${(data.invoice || '')}"\r\n`,
+            `TEXT 50,80,"2",0,1,1,"${desc}"\r\n`,
+            ...(optionsText || []),
+            // move barcode lower so it doesn't overlap text and reduce its height
+            'PRINT 1,1\r\n',
+          ];
+
+          // send each label to the printer sequentially
+          await qz.print(config, tsplData);
+        }
+      }
+
+      console.log("Labels printed instantly!");
+    } catch (error) {
+      console.error("Printing failed:", error);
+    }
+  };
+
   const handlePrint = () => {
-      if (printType === 'direct_printing') {
+      if (printType === 'network_printing') {
         setIsLoading(true)
         directPrinting({
             name: storeInfo?.name,
@@ -304,7 +343,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
             .catch(handlePrintInvoice)
             .finally(() => setIsLoading(false))
       } else {
-          handleDirectPrint({
+          handleThermalPrint({
             items: dialog.payment?.transactions?.map(item => ({
               description: item.description,
               qty: item.quantity,
@@ -316,7 +355,18 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
             createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
             invoice: dialog.payment?.invoice
           })
-          handlePrintInvoice()
+          handleReceiptPrint({
+            items: dialog.payment?.transactions?.map(item => ({
+              description: item.description,
+              qty: item.quantity,
+              options: item.options?.map(option => ({
+                name: option.property?.name?.English,
+                value: option.name?.English
+              }))
+            })) || [],
+            createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+            invoice: dialog.payment?.invoice
+          })
       }
   }
 
