@@ -21,7 +21,7 @@ export const handleThermalPrint = async (data: { items: { description: string; q
             // use built-in font index (e.g. "3") instead of external TTF file
             // invoice/timestamp below item description
             `TEXT 50,20,"2",0,1,1,"${(data.createdAt || '')}"\r\n`,
-            `TEXT 50,50,"2",0,1,1,"#${(data.invoice || '')}"\r\n`,
+            `TEXT 50,50,"2",0,1,1,"#${(data.invoice?.split('-')[1] || '')}"\r\n`,
             `TEXT 50,80,"2",0,1,1,"${desc}"\r\n`,
             ...(optionsText || []),
             // move barcode lower so it doesn't overlap text and reduce its height
@@ -154,6 +154,8 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
         boldOn,
         doubleSize,
         `${sanitize(data.name || '')}`,
+        newLine,
+        `#${sanitize(data.invoice?.split('-')[1] || '')}`,
         boldOff,
         normalSize,
         newLine,
@@ -218,8 +220,16 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
         newLine,
       ];
 
+      const shouldShowTotalLine = (value?: string) => {
+        if (!value) return false;
+        const numeric = parseFloat(value.replace(/[^0-9.-]/g, ''));
+        return !Number.isNaN(numeric) && numeric !== 0;
+      }
+
       const totalLines = ['Subtotal', 'Discount', 'Tax', 'Total'].flatMap((label) => {
         const value = data[label.toLowerCase() as keyof ReceiptData] as string | undefined;
+        if (!shouldShowTotalLine(value)) return [];
+
         const labelWidth = Math.max(12, charsPerLine - 20);
         const valueWidth = charsPerLine - labelWidth;
         return [

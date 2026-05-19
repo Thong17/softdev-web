@@ -268,7 +268,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       } else {
           handleThermalPrint({
             items: dialog.payment?.transactions?.map(item => ({
-              description: item.description,
+              description: item.name?.English || item.description,
               qty: item.quantity,
               options: item.options?.map(option => ({
                 name: option.property?.name?.English,
