@@ -33,8 +33,7 @@ import { LoanForm } from 'components/shared/form/LoanForm'
 import { QueueReceipt } from 'components/shared/invoice/QueueReceipt'
 import { PreviewLoan } from 'components/shared/invoice/PreviewLoan'
 import { directPrinting } from 'api/receipt.api'
-import * as qz from 'qz-tray'
-import { handleReceiptPrint, handleThermalPrint } from 'utils/printer'
+import { initQzTray, handleReceiptPrint, handleThermalPrint } from 'utils/printer'
 
 export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout }: any, ref) => {
   const confirm = useAlert()
@@ -69,10 +68,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   ]
 
   useEffect(() => {
-    // Connect to the local QZ Tray service when the component mounts
-    if (!qz.websocket.isActive()) {
-      qz.websocket.connect().catch(err => console.error("QZ Tray connection failed:", err));
-    }
+    initQzTray().catch(err => console.error('QZ Tray init failed:', err))
     return () => {
       // Optional: clean up connection on unmount if desired
     };

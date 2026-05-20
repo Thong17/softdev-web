@@ -1,5 +1,58 @@
 import * as qz from 'qz-tray'
 
+export const initQzTray = async () => {
+  qz.security.setCertificatePromise((resolve, reject) => {
+    fetch("/certs/digital-certificate.txt")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load certificate");
+        }
+        return response.text();
+      })
+      .then((text) => resolve(text))
+      .catch((error) => reject(error));
+  })
+
+  qz.security.setSignatureAlgorithm("SHA512")
+
+  qz.security.setSignaturePromise((toSign) => {
+    console.log('QZ signature requested', toSign)
+
+    return (resolve, reject) => {
+      fetch(`${process.env.REACT_APP_API_URL}/config/sign-qz-cert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          data: toSign
+        })
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Signature request failed: ${response.status}`)
+          }
+          return response.json()
+        })
+        .then((data) => {
+          if (!data?.signature) {
+            throw new Error('No signature returned from server')
+          }
+          const signature = data.signature.trim()
+          resolve(signature)
+        })
+        .catch((err) => {
+          console.error('Error signing data for QZ Tray:', err)
+          reject(err)
+        })
+    }
+  })
+
+  if (!qz.websocket.isActive()) {
+    await qz.websocket.connect()
+  }
+}
+
 export const handleThermalPrint = async (data: { items: { description: string; qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }, printer: string="Gprinter GP-2270T") => {
     try {
       // 1. Find your printer by its Windows name
