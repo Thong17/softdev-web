@@ -2,15 +2,29 @@ import * as qz from 'qz-tray'
 
 export const initQzTray = async () => {
   qz.security.setCertificatePromise((resolve, reject) => {
-    fetch("/certs/digital-certificate.txt")
+    fetch(`${process.env.REACT_APP_API_URL}/config/get-certificate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }}
+    )
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to load certificate");
+          throw new Error(`Certificate request failed: ${response.status}`)
         }
-        return response.text();
+        return response.json()
       })
-      .then((text) => resolve(text))
-      .catch((error) => reject(error));
+      .then((data) => {
+        if (!data?.certificate) {
+          throw new Error('No certificate returned from server')
+        }
+        const certificate = data.certificate.trim()
+        resolve(certificate)
+      })
+      .catch((err) => {
+        console.error('Error signing data for QZ Tray:', err)
+        reject(err)
+      })
   })
 
   qz.security.setSignatureAlgorithm("SHA512")
