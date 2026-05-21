@@ -60,6 +60,11 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   const [loanInfo, setLoanInfo] = useState(null);
   const [formMode, setFormMode] = useState('pending');
   const { data: storeInfo, status } = useAppSelector(selectStore)
+  const [printerSetting, setPrinterSetting] = useState({
+    receiptPrinterName: '',
+    receiptPrinterCharPerLine: 0,
+    thermalPrinterName: ''
+  });
 
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
@@ -73,6 +78,24 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
       // Optional: clean up connection on unmount if desired
     };
   }, []);
+
+  
+  useEffect(() => {
+    Axios({
+      method: 'GET',
+      url: '/organize/store/getTelegramSetting'
+    })
+      .then((res) => {
+        const data = res.data.data
+        setPrinterSetting({
+          receiptPrinterName: data.receiptPrinterName || '',
+          receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
+          thermalPrinterName: data.thermalPrinterName || ''
+        })
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
+    //eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     if (status !== 'INIT') return
@@ -262,37 +285,37 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
             .catch(handlePrintInvoice)
             .finally(() => setIsLoading(false))
       } else {
-          handleThermalPrint({
-            items: dialog.payment?.transactions?.map(item => ({
-              description: item.product?.name?.English || item.description,
+        handleThermalPrint({
+          items: dialog.payment?.transactions?.map(item => ({
+            description: item.product?.name?.English || item.description,
+            qty: item.quantity,
+            options: item.options?.map(option => ({
+              name: option.property?.name?.English,
+              value: option.name?.English
+            }))
+          })) || [],
+          createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+          invoice: dialog.payment?.invoice
+        }, printerSetting.thermalPrinterName).catch(err => notify(err.message, 'error'))
+        handleReceiptPrint({
+          name: storeInfo?.name as string,
+          invoice: dialog.payment?.invoice,
+          cashier: dialog.payment?.createdBy?.username,
+          createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+          transactions: dialog.payment?.transactions?.map(item => ({
+              item: item.description,
               qty: item.quantity,
-              options: item.options?.map(option => ({
-                name: option.property?.name?.English,
-                value: option.name?.English
-              }))
-            })) || [],
-            createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-            invoice: dialog.payment?.invoice
-          })
-          handleReceiptPrint({
-            name: storeInfo?.name as string,
-            invoice: dialog.payment?.invoice,
-            cashier: dialog.payment?.createdBy?.username,
-            createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-            transactions: dialog.payment?.transactions?.map(item => ({
-                item: item.description,
-                qty: item.quantity,
-                disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
-                price: currencyFormat(item.price, item.currency, 0, true),
-                total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
-            })),
-            subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
-            discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
-            tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
-            total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
-            address: storeInfo?.address,
-            footer: storeInfo?.other
-        })
+              disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
+              price: currencyFormat(item.price, item.currency, 0, true),
+              total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+          })),
+          subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
+          discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+          tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
+          total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
+          address: storeInfo?.address,
+          footer: storeInfo?.other
+        }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
       }
   }
 

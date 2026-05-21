@@ -40,7 +40,10 @@ const Config = () => {
         SENT_AFTER_PAYMENT: false,
         SENT_AFTER_OPEN_DRAWER: false,
         SENT_AFTER_CLOSE_DRAWER: false,
-      } 
+      },
+      thermalPrinterName: '',
+      receiptPrinterName: '',
+      receiptPrinterCharPerLine: 0,
     } 
   })
 
@@ -149,27 +152,67 @@ const Config = () => {
                 <CheckboxField name='telegramPrivilege.SENT_AFTER_OPEN_DRAWER' defaultChecked={getValues('telegramPrivilege.SENT_AFTER_OPEN_DRAWER')} label={language['SENT_AFTER_OPEN_DRAWER']} onChange={handleChangeCheckbox} />
                 <CheckboxField name='telegramPrivilege.SENT_AFTER_CLOSE_DRAWER' defaultChecked={getValues('telegramPrivilege.SENT_AFTER_CLOSE_DRAWER')} label={language['SENT_AFTER_CLOSE_DRAWER']} onChange={handleChangeCheckbox} />
               </div>
+              
+            </Section>
+            <Section describe='Printer Configuration' style={{ marginTop: 40 }}>
               <div
                 style={{
-                  gridArea: 'action',
-                  marginTop: 10,
-                  display: 'flex',
-                  justifyContent: 'end',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gridColumnGap: 20,
+                  gridTemplateAreas:
+                    ` 
+                      'thermalPrinterName thermalPrinterName thermalPrinterName'
+                      'receiptPrinterName receiptPrinterName receiptPrinterCharPerLine'
+                    `
                 }}
               >
-                <Button
-                  type='submit'
-                  variant='contained'
-                  style={{
-                    marginLeft: 10,
-                    backgroundColor: `${theme.color.info}22`,
-                    color: theme.color.info,
-                  }}
-                >
-                  {language['SAVE']}
-                </Button>
+                <div style={{ gridArea: 'thermalPrinterName' }}>
+                  <TextField
+                    type='text'
+                    label='Thermal Printer Name'
+                    err={errors.thermalPrinterName?.message}
+                    {...register('thermalPrinterName')}
+                  />
+                </div>
+                <div style={{ gridArea: 'receiptPrinterName' }}>
+                  <TextField
+                    type='text'
+                    label='Receipt Printer Name'
+                    err={errors.receiptPrinterName?.message}
+                    {...register('receiptPrinterName')}
+                  />
+                </div>
+                <div style={{ gridArea: 'receiptPrinterCharPerLine' }}>
+                  <TextField
+                    type='text'
+                    label='Characters Per Line'
+                    err={errors.receiptPrinterCharPerLine?.message}
+                    {...register('receiptPrinterCharPerLine')}
+                  />
+                </div>
               </div>
             </Section>
+            <div
+              style={{
+                gridArea: 'action',
+                marginTop: 20,
+                display: 'flex',
+                justifyContent: 'end',
+              }}
+            >
+              <Button
+                type='submit'
+                variant='contained'
+                style={{
+                  marginLeft: 10,
+                  backgroundColor: `${theme.color.info}22`,
+                  color: theme.color.info,
+                }}
+              >
+                {language['SAVE']}
+              </Button>
+            </div>
           </form>
         }
       </Container>

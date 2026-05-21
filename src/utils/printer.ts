@@ -30,8 +30,6 @@ export const initQzTray = async () => {
   qz.security.setSignatureAlgorithm("SHA512")
 
   qz.security.setSignaturePromise((toSign) => {
-    console.log('QZ signature requested', toSign)
-
     return (resolve, reject) => {
       fetch(`${process.env.REACT_APP_API_URL}/config/sign-qz-cert`, {
         method: 'POST',
@@ -99,10 +97,8 @@ export const handleThermalPrint = async (data: { items: { description: string; q
           await qz.print(config, tsplData);
         }
       }
-
-      console.log("Labels printed instantly!");
-    } catch (error) {
-      console.error("Printing failed:", error);
+    } catch (error: any) {
+      throw new Error(error.message);
     }
   };
 
@@ -322,8 +318,7 @@ export const handleReceiptPrint = async (data: ReceiptData, printer: string = "P
       ].join('');
 
       await qz.print(config, [receipt]);
-      console.log("Receipt printed successfully!");
-    } catch (error) {
-      console.error("Printing failed:", error);
+    } catch (error: any) {
+      throw new Error(error.message);
     }
   };
