@@ -1069,6 +1069,35 @@ export const InvoiceForm = forwardRef(({
                 >
                   {language['CLEAR']}
                 </CustomButton>
+                {paymentId ?
+                  <CustomButton
+                    onClick={handleClickPrint}
+                    styled={theme}
+                    fullWidth
+                    style={{
+                      backgroundColor: `${theme.color.info}22`,
+                      color: theme.color.info,
+                      borderRadius: theme.radius.secondary,
+                    }}
+                  >
+                    <PrintRoundedIcon
+                      style={{ fontSize: 19, marginRight: 5 }}
+                    />
+                    {language['PRINT']}
+                  </CustomButton>
+                  : <CustomButton
+                    isLoading={isLoading}
+                    styled={theme}
+                    fullWidth
+                    onClick={handleClickCheckout}
+                    style={{
+                      backgroundColor: `${theme.color.info}22`,
+                      color: theme.color.info,
+                      borderRadius: theme.radius.secondary,
+                    }}
+                  >
+                  {language['CHECKOUT']}
+                </CustomButton>}
                 {!checkoutId && <CustomButton
                   isLoading={isLoading}
                   styled={theme}

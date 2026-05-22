@@ -102,7 +102,7 @@ export const PaymentForm = forwardRef(
     const paymentMethods = [
       { label: language['CASH'], value: 'cash' },
       { label: language['TRANSFER'], value: 'transfer' },
-      // { label: language['LOAN'], value: 'loan' },
+      { label: language['LOAN'], value: 'loan' },
     ].filter((item) => paymentType.includes(item.value as PaymentMethod))
 
     useEffect(() => {

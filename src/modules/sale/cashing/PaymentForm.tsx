@@ -72,7 +72,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
     { label: language['TRANSFER'], value: 'transfer' },
-    // { label: language['LOAN'], value: 'loan' },
+    { label: language['LOAN'], value: 'loan' },
   ]
 
   useEffect(() => {
