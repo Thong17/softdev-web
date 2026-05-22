@@ -79,6 +79,15 @@ const Config = () => {
     setValue(name, checked)
   }
 
+  const handleBackup = () => {
+    Axios({
+      method: 'POST',
+      url: '/utility/backup-db',
+    })
+      .then(res => notify(res?.data?.msg, 'success'))
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
+  }
+
   return (
     <Layout>
       <Container>
@@ -228,6 +237,17 @@ const Config = () => {
                 justifyContent: 'end',
               }}
             >
+              <Button
+                onClick={() => handleBackup()}
+                variant='contained'
+                style={{
+                  marginLeft: 10,
+                  backgroundColor: `${theme.color.warning}22`,
+                  color: theme.color.warning,
+                }}
+              >
+                {language['BACKUP']} DB
+              </Button>
               <Button
                 type='submit'
                 variant='contained'
