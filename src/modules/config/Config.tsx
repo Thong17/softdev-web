@@ -42,6 +42,9 @@ const Config = () => {
         SENT_AFTER_CLOSE_DRAWER: false,
       },
       thermalPrinterName: '',
+      thermalPrinterWidth: '',
+      thermalPrinterHeight: '',
+      thermalPrinterGap: '',
       receiptPrinterName: '',
       receiptPrinterCharPerLine: 0,
     } 
@@ -158,12 +161,12 @@ const Config = () => {
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gridTemplateColumns: '1fr 200px 200px 200px',
                   gridColumnGap: 20,
                   gridTemplateAreas:
                     ` 
-                      'thermalPrinterName thermalPrinterName thermalPrinterName'
-                      'receiptPrinterName receiptPrinterName receiptPrinterCharPerLine'
+                      'thermalPrinterName thermalPrinterWidth thermalPrinterHeight thermalPrinterGap'
+                      'receiptPrinterName receiptPrinterName receiptPrinterName receiptPrinterCharPerLine'
                     `
                 }}
               >
@@ -173,6 +176,30 @@ const Config = () => {
                     label='Thermal Printer Name'
                     err={errors.thermalPrinterName?.message}
                     {...register('thermalPrinterName')}
+                  />
+                </div>
+                <div style={{ gridArea: 'thermalPrinterWidth' }}>
+                  <TextField
+                    type='text'
+                    label='Paper Width (mm)'
+                    err={errors.thermalPrinterWidth?.message}
+                    {...register('thermalPrinterWidth')}
+                  />
+                </div>
+                <div style={{ gridArea: 'thermalPrinterHeight' }}>
+                  <TextField
+                    type='text'
+                    label='Paper Height (mm)'
+                    err={errors.thermalPrinterHeight?.message}
+                    {...register('thermalPrinterHeight')}
+                  />
+                </div>
+                <div style={{ gridArea: 'thermalPrinterGap' }}>
+                  <TextField
+                    type='text'
+                    label='Paper Gap (mm)'
+                    err={errors.thermalPrinterGap?.message}
+                    {...register('thermalPrinterGap')}
                   />
                 </div>
                 <div style={{ gridArea: 'receiptPrinterName' }}>

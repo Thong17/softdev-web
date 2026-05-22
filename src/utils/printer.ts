@@ -65,7 +65,7 @@ export const initQzTray = async () => {
   }
 }
 
-export const handleThermalPrint = async (data: { items: { description: string; qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }, printer: string="Gprinter GP-2270T") => {
+export const handleThermalPrint = async (data: { items: { description: string; qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }, printer: string="Gprinter GP-2270T", storeConfig: { width: number, height: number, gap: number } = { width: 52, height: 126, gap: 2 }) => {
     try {
       // 1. Find your printer by its Windows name
       const config = qz.configs.create(printer);
@@ -79,8 +79,8 @@ export const handleThermalPrint = async (data: { items: { description: string; q
             TEXT 70,${110 + index * 30},"2",0,1,1,"- ${option.name}: ${option.value}"\r\n
             `)
           const tsplData = [
-            'SIZE 52 mm, 126 mm\r\n',
-            'GAP 2 mm, 0 mm\r\n',
+            `SIZE ${storeConfig.width} mm, ${storeConfig.height} mm\r\n`,
+            `GAP ${storeConfig.gap} mm, 0 mm\r\n`,
             'DENSITY 1\r\n',
             'CLS\r\n',
             // use built-in font index (e.g. "3") instead of external TTF file

@@ -63,7 +63,10 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   const [printerSetting, setPrinterSetting] = useState({
     receiptPrinterName: '',
     receiptPrinterCharPerLine: 0,
-    thermalPrinterName: ''
+    thermalPrinterName: '',
+    thermalPrinterWidth: 0,
+    thermalPrinterHeight: 0,
+    thermalPrinterGap: 0
   });
 
   const paymentMethods = [
@@ -90,7 +93,10 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
         setPrinterSetting({
           receiptPrinterName: data.receiptPrinterName || '',
           receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
-          thermalPrinterName: data.thermalPrinterName || ''
+          thermalPrinterName: data.thermalPrinterName || '',
+          thermalPrinterWidth: data.thermalPrinterWidth || 0,
+          thermalPrinterHeight: data.thermalPrinterHeight || 0,
+          thermalPrinterGap: data.thermalPrinterGap || 0
         })
       })
       .catch(err => notify(err?.response?.data?.msg, 'error'))
@@ -296,7 +302,11 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           })) || [],
           createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
           invoice: dialog.payment?.invoice
-        }, printerSetting.thermalPrinterName).catch(err => notify(err.message, 'error'))
+        }, printerSetting.thermalPrinterName, {
+          width: Number(printerSetting.thermalPrinterWidth),
+          height: Number(printerSetting.thermalPrinterHeight),
+          gap: Number(printerSetting.thermalPrinterGap)
+        }).catch(err => notify(err.message, 'error'))
         handleReceiptPrint({
           name: storeInfo?.name as string,
           invoice: dialog.payment?.invoice,
