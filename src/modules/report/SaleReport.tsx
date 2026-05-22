@@ -137,7 +137,7 @@ const SaleReportRowDetail = ({
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '50px 2fr 1fr 1fr 1fr',
+            gridTemplateColumns: '50px 2fr 100px 100px 100px 100px',
             padding: '6px 10px',
             borderBottom: `1px solid ${theme.border.primary}`,
             backgroundColor: theme.background.secondary,
@@ -150,6 +150,7 @@ const SaleReportRowDetail = ({
           <div>{language['DESCRIPTION'] || 'Description'}</div>
           <div style={{ textAlign: 'right' }}>{language['PRICE'] || 'Price'}</div>
           <div style={{ textAlign: 'right' }}>{language['QUANTITY'] || 'Qty'}</div>
+          <div style={{ textAlign: 'right' }}>{language['DISCOUNT'] || 'Disc'}</div>
           <div style={{ textAlign: 'right' }}>{language['TOTAL'] || 'Total'}</div>
         </div>
         {transactions.map((item: any, index: number) => (
@@ -157,7 +158,7 @@ const SaleReportRowDetail = ({
             key={`${row.id}-detail-${index}`}
             style={{
               display: 'grid',
-              gridTemplateColumns: '50px 2fr 1fr 1fr 1fr',
+              gridTemplateColumns: '50px 2fr 100px 100px 100px 100px',
               padding: '6px 10px',
               borderBottom: index < transactions.length - 1 ? `1px solid ${theme.border.primary}` : 'none',
               fontSize: 13,
@@ -167,6 +168,7 @@ const SaleReportRowDetail = ({
             <div>{item.description || item.product || '-'}</div>
             <div style={{ textAlign: 'right' }}>{formattedPrice(item)}</div>
             <div style={{ textAlign: 'right' }}>{item.quantity ?? '-'}</div>
+            <div style={{ textAlign: 'right' }}>{item.discount.isFixed ? 'Fixed' : ''} {currencyFormat(item.discount.value, item.discount.type)}</div>
             <div style={{ textAlign: 'right' }}>{item.total ? currencyFormat(item.total.value, item.total.currency) : '-'}</div>
           </div>
         ))}
