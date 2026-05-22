@@ -65,8 +65,9 @@ export const initQzTray = async () => {
   }
 }
 
-export const handleThermalPrint = async (data: { items: { description: string; qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }, printer: string="Gprinter GP-2270T", storeConfig: { width: number, height: number, gap: number } = { width: 52, height: 126, gap: 2 }) => {
+export const handleThermalPrint = async (data: { items: { description: string; qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }, printer?: string, storeConfig: { width: number, height: number, gap: number } = { width: 52, height: 126, gap: 2 }) => {
     try {
+      if (!printer) return
       // 1. Find your printer by its Windows name
       const config = qz.configs.create(printer);
 
@@ -124,8 +125,9 @@ export type ReceiptData = {
   footer?: string;
 };
 
-export const handleReceiptPrint = async (data: ReceiptData, printer: string = "POS80 Printer", charsPerLine: number = 48) => {
+export const handleReceiptPrint = async (data: ReceiptData, printer?: string, charsPerLine: number = 48) => {
     try {
+      if (!printer) return
       const config = qz.configs.create(printer);
       if (config.setEncoding) {
         config.setEncoding('UTF-8');
