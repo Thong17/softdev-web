@@ -50,6 +50,10 @@ const filterOption = [
     label: 'Yearly',
     value: 'year',
   },
+  {
+    label: 'Range',
+    value: 'range',
+  },
 ]
 
 const filterTotal = [
@@ -235,6 +239,15 @@ export const SaleReport = () => {
   }
 
   useEffect(() => {
+    const _fromDate = queryParams.get('fromDate')
+    const _toDate = queryParams.get('toDate')
+    const _chartData = queryParams.get('_chartData')
+    if (_chartData === 'range' && (!_fromDate || !_toDate)) {
+      return
+    }
+    if (_fromDate && _toDate) {
+      setSelectedSaleChart('range')
+    }
     dispatch(getListPayment({ query: queryParams }))
   }, [dispatch, queryParams])
 
@@ -298,6 +311,8 @@ export const SaleReport = () => {
 
     switch (name) {
       case '_chartData':
+        setSelectedSaleChart(value)
+        if (value === 'range' && (fromDate === '' || toDate === '')) return
         if (_totalIncome) query.append('_totalIncome', _totalIncome)
         if (_totalProfit) query.append('_totalProfit', _totalProfit)
         query.append('_chartData', value)
@@ -305,9 +320,10 @@ export const SaleReport = () => {
         if (value === 'range') {
           query.append('fromDate', fromDate)
           query.append('toDate', toDate)
+        } else {
+          setFromDate('')
+          setToDate('')
         }
-
-        setSelectedSaleChart(value)
         getReportListSale({ query })
           .then((data) => {
             setListSale(data?.data)
