@@ -274,6 +274,7 @@ export const SaleReport = () => {
           ),
           currencyFormat(payment.total.value, payment.total.currency),
           payment.state,
+          payment.createdAt,
           payment.createdBy?.username,
           null,
           theme,

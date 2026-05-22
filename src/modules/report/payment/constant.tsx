@@ -1,6 +1,7 @@
 import { ViewButton } from 'components/shared/table/ActionButton'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { TextHighlight } from 'components/shared/TextHighlight'
+import moment from 'moment'
 
 export const columnData: ITableColumn<any>[] = [
   { id: 'invoice', label: 'INVOICE' },
@@ -11,6 +12,7 @@ export const columnData: ITableColumn<any>[] = [
   { id: 'voucher', label: 'VOUCHER' },
   { id: 'total', label: 'TOTAL' },
   { id: 'status', label: 'STATUS' },
+  {id: 'createdAt', label: 'CREATED\u00a0AT' },
   { id: 'createdBy', label: 'Created\u00a0By' },
   { id: 'action', label: 'ACTION', align: 'center' },
 ]
@@ -24,6 +26,7 @@ export interface Data {
   voucher: any
   total: any,
   status: any,
+  createdAt: any,
   createdBy: any,
   action: any
 }
@@ -38,6 +41,7 @@ export const createData = (
   tax: any,
   total: any,
   status: String,
+  createdAt: any,
   createdBy: any,
   onPrint: Function | null,
   theme
@@ -55,6 +59,7 @@ export const createData = (
     voucher,
     total,
     status: <TextHighlight text={status} color={status === 'COMPLETED' ? theme.color.success : theme.color.warning} />,
+    createdAt: moment(createdAt).format('DD/MM/YYYY HH:mm'),
     createdBy,
     action
   }

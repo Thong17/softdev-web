@@ -83,6 +83,10 @@ export const Payments = () => {
                 payment.paymentMethod?.toUpperCase(),
                 currencyFormat(payment.subtotal.BOTH, 'USD'),
                 currencyFormat(
+                    payment.vouchers[0]?.value,
+                    payment.vouchers[0]?.type,
+                ),
+                currencyFormat(
                     payment.discounts[0]?.value,
                     payment.discounts[0]?.type,
                 ),
@@ -90,12 +94,9 @@ export const Payments = () => {
                     payment.services[0]?.value,
                     payment.services[0]?.type,
                 ),
-                currencyFormat(
-                    payment.vouchers[0]?.value,
-                    payment.vouchers[0]?.type,
-                ),
                 currencyFormat(payment.total.value, payment.total.currency),
                 payment.state,
+                payment.createdAt,
                 payment.createdBy?.username,
                 handleView,
                 theme,
@@ -112,6 +113,7 @@ export const Payments = () => {
                 <Header
                     handleSearch={handleSearch}
                     handleFilter={handleFilter}
+                    queryParams={queryParams}
                 />
             }
         >
