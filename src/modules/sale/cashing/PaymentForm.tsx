@@ -335,10 +335,8 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           cashier: dialog.payment?.createdBy?.username,
           createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
           transactions: dialog.payment?.transactions?.map(item => ({
-              item: item.description,
+              item: item.product?.name?.English || item.description,
               qty: item.quantity,
-              disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
-              price: currencyFormat(item.price, item.currency, 0, true),
               total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
           })),
           subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
