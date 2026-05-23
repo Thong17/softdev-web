@@ -230,7 +230,7 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
         ? [alignCenter, `${sanitize(data.address)}`, newLine]
         : [];
 
-      const transactionLines = [
+      const transactionLines = charsPerLine > 40 ? [
         alignLeft,
         lineSep,
         newLine,
@@ -283,6 +283,50 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
         }),
         lineSep,
         newLine,
+      ] : [
+        alignLeft,
+        `Invoice: ${sanitize(data.invoice || '')}`,
+        newLine,
+        `Cashier: ${sanitize(data.cashier || '')}`,
+        newLine,
+        `Date: ${sanitize(data.createdAt || '')}`,
+        newLine,
+        lineSep,
+        newLine,
+        pad('Item', itemWidth + priceWidth + 4),
+        pad('Qty', qtyWidth, 'right'),
+        pad('Total', totalWidth, 'right'),
+        newLine,
+        lineSep,
+        newLine,
+        ...(data.transactions || []).flatMap((item) => {
+          console.log(item)
+          const itemName = sanitize(item.item || '');
+          const wrappedName = wrapText(itemName, itemWidth + priceWidth + 4);
+          const qtyText = (item.qty || 0).toString();
+          const totalText = sanitize(item.total || '');
+
+          const rows: string[] = [];
+          rows.push(
+            pad(wrappedName[0], itemWidth + priceWidth + 4),
+            pad(qtyText, qtyWidth, 'right'),
+            pad(totalText, totalWidth, 'right'),
+            newLine,
+          );
+
+          for (let i = 1; i < wrappedName.length; i += 1) {
+            rows.push(
+              pad(wrappedName[i], itemWidth + priceWidth + 4),
+              pad('', qtyWidth, 'right'),
+              pad('', totalWidth, 'right'),
+              newLine,
+            );
+          }
+
+          return rows;
+        }),
+        lineSep,
+        newLine,
       ];
 
       const shouldShowTotalLine = (value?: string) => {
@@ -308,12 +352,19 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
         ? [newLine, newLine, alignCenter, `${sanitize(data.footer)}`, newLine, newLine]
         : [newLine, newLine];
 
-      const receipt = [
+      const receipt =  charsPerLine > 40 ? [
         ...headerParts,
         ...addressParts,
         ...transactionLines,
         ...totalLines,
         ...footerParts,
+        drawerPulse,
+        newLine.repeat(3),
+        cut,
+      ].join('') : [
+        ...transactionLines,
+        ...totalLines,
+        newLine.repeat(3),
         drawerPulse,
         newLine.repeat(3),
         cut,
