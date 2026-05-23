@@ -24,6 +24,5 @@ yarn-error.log*
 package-lock.json
 .vscode/settings.json
 yarn.lock
-.env.development
-.env.production
-.env
+.env*
+!.env.example

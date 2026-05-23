@@ -47,6 +47,8 @@ const Config = () => {
       thermalPrinterGap: '',
       receiptPrinterName: '',
       receiptPrinterCharPerLine: 0,
+      storePrinterName: '',
+      storePrinterCharPerLine: 0,
     } 
   })
 
@@ -176,6 +178,7 @@ const Config = () => {
                     ` 
                       'thermalPrinterName thermalPrinterWidth thermalPrinterHeight thermalPrinterGap'
                       'receiptPrinterName receiptPrinterName receiptPrinterName receiptPrinterCharPerLine'
+                      'storePrinterName storePrinterName storePrinterName storePrinterCharPerLine'
                     `
                 }}
               >
@@ -189,7 +192,7 @@ const Config = () => {
                 </div>
                 <div style={{ gridArea: 'thermalPrinterWidth' }}>
                   <TextField
-                    type='text'
+                    type='number'
                     label='Paper Width (mm)'
                     err={errors.thermalPrinterWidth?.message}
                     {...register('thermalPrinterWidth')}
@@ -197,7 +200,7 @@ const Config = () => {
                 </div>
                 <div style={{ gridArea: 'thermalPrinterHeight' }}>
                   <TextField
-                    type='text'
+                    type='number'
                     label='Paper Height (mm)'
                     err={errors.thermalPrinterHeight?.message}
                     {...register('thermalPrinterHeight')}
@@ -205,7 +208,7 @@ const Config = () => {
                 </div>
                 <div style={{ gridArea: 'thermalPrinterGap' }}>
                   <TextField
-                    type='text'
+                    type='number'
                     label='Paper Gap (mm)'
                     err={errors.thermalPrinterGap?.message}
                     {...register('thermalPrinterGap')}
@@ -221,10 +224,26 @@ const Config = () => {
                 </div>
                 <div style={{ gridArea: 'receiptPrinterCharPerLine' }}>
                   <TextField
-                    type='text'
+                    type='number'
                     label='Characters Per Line'
                     err={errors.receiptPrinterCharPerLine?.message}
                     {...register('receiptPrinterCharPerLine')}
+                  />
+                </div>
+                <div style={{ gridArea: 'storePrinterName' }}>
+                  <TextField
+                    type='text'
+                    label='Store Printer Name'
+                    err={errors.storePrinterName?.message}
+                    {...register('storePrinterName')}
+                  />
+                </div>
+                <div style={{ gridArea: 'storePrinterCharPerLine' }}>
+                  <TextField
+                    type='number'
+                    label='Characters Per Line'
+                    err={errors.storePrinterCharPerLine?.message}
+                    {...register('storePrinterCharPerLine')}
                   />
                 </div>
               </div>
