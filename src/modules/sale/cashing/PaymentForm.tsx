@@ -63,6 +63,8 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
   const [printerSetting, setPrinterSetting] = useState({
     receiptPrinterName: '',
     receiptPrinterCharPerLine: 0,
+    storePrinterName: '',
+    storePrinterCharPerLine: 0,
     thermalPrinterName: '',
     thermalPrinterWidth: 0,
     thermalPrinterHeight: 0,
@@ -93,6 +95,8 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
         setPrinterSetting({
           receiptPrinterName: data.receiptPrinterName || '',
           receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
+          storePrinterName: data.storePrinterName || '',
+          storePrinterCharPerLine: data.storePrinterCharPerLine || 0,
           thermalPrinterName: data.thermalPrinterName || '',
           thermalPrinterWidth: data.thermalPrinterWidth || 0,
           thermalPrinterHeight: data.thermalPrinterHeight || 0,
@@ -326,6 +330,25 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           address: storeInfo?.address,
           footer: storeInfo?.other
         }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
+        handleReceiptPrint({
+          name: storeInfo?.name as string,
+          invoice: dialog.payment?.invoice,
+          cashier: dialog.payment?.createdBy?.username,
+          createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+          transactions: dialog.payment?.transactions?.map(item => ({
+              item: item.description,
+              qty: item.quantity,
+              disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
+              price: currencyFormat(item.price, item.currency, 0, true),
+              total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+          })),
+          subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
+          discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+          tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
+          total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
+          address: storeInfo?.address,
+          footer: storeInfo?.other
+        }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
       }
   }
 
