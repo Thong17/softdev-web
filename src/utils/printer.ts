@@ -123,6 +123,7 @@ export type ReceiptData = {
   total?: string;
   address?: string;
   footer?: string;
+  paymentMethod?: string;
 };
 
 export const handleReceiptPrint = async (data: ReceiptData, printer?: string, charsPerLine: number = 48) => {
@@ -240,6 +241,8 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
         newLine,
         `Date: ${sanitize(data.createdAt || '')}`,
         newLine,
+        `Payment Method: ${sanitize(data.paymentMethod || '')}`,
+        newLine,
         lineSep,
         newLine,
         pad('Item', itemWidth),
@@ -300,7 +303,6 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
         lineSep,
         newLine,
         ...(data.transactions || []).flatMap((item) => {
-          console.log(item)
           const itemName = sanitize(item.item || '');
           const wrappedName = wrapText(itemName, itemWidth + priceWidth + 4);
           const qtyText = (item.qty || 0).toString();
@@ -358,14 +360,14 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
         ...transactionLines,
         ...totalLines,
         ...footerParts,
-        drawerPulse,
+        ...(data.paymentMethod === 'cash' ? [drawerPulse] : []),
         newLine.repeat(3),
         cut,
       ].join('') : [
         ...transactionLines,
         ...totalLines,
         newLine.repeat(3),
-        drawerPulse,
+        ...(data.paymentMethod === 'cash' ? [drawerPulse] : []),
         newLine.repeat(3),
         cut,
       ].join('');
