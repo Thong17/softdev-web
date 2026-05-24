@@ -328,7 +328,8 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
           total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
           address: storeInfo?.address,
-          footer: storeInfo?.other
+          footer: storeInfo?.other,
+          paymentMethod: dialog.payment?.paymentMethod,
         }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
         handleReceiptPrint({
           name: storeInfo?.name as string,
@@ -345,7 +346,8 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
           total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
           address: storeInfo?.address,
-          footer: storeInfo?.other
+          footer: storeInfo?.other,
+          paymentMethod: dialog.payment?.paymentMethod,
         }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
       }
   }
