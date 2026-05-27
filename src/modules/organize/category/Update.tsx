@@ -17,7 +17,7 @@ export const UpdateCategory = () => {
   
   useEffect(() => {
     if (id) {
-      dispatch(getCategory({ id, fields: ['name', 'icon', 'status', 'description'] }))
+      dispatch(getCategory({ id, fields: ['name', 'icon', 'status', 'hasThermalPrinting', 'description'] }))
     }
   }, [dispatch, id])
   

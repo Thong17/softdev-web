@@ -299,6 +299,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
           items: dialog.payment?.transactions?.map(item => ({
             description: item.product?.name?.English || item.description,
             qty: item.quantity,
+            hasThermalPrinting: item.product?.category?.hasThermalPrinting,
             options: item.options?.map(option => ({
               name: option.property?.name?.English,
               value: option.name?.English

@@ -7,13 +7,14 @@ import { MenuItem } from '@mui/material'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
 import { languages } from 'contexts/language/constant'
 
-export declare type ColumnHeader = 'icon' | 'name' | 'status' | 'description' | 'createdBy' | 'action' | 'no'
+export declare type ColumnHeader = 'icon' | 'name' | 'status' | 'hasThermalPrinting' | 'description' | 'createdBy' | 'action' | 'no'
 
 export const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'icon', label: 'ICON' },
   { id: 'name', label: 'NAME' },
   { id: 'description', label: 'DESCRIPTION' },
   { id: 'status', label: 'STATUS' },
+  { id: 'hasThermalPrinting', label: 'THERMAL_PRINTING' },
   { id: 'action', label: 'ACTION', align: 'center' },
 ]
 export interface Data {
@@ -23,15 +24,17 @@ export interface Data {
   description: string
   createdBy: string
   status: boolean
+  hasThermalPrinting: boolean
   action: ReactElement
 }
-export const importColumns = ['ID', Object.keys(languages).map(lang => `NAME_${lang}`.toUpperCase()), 'DESCRIPTION', 'STATUS', 'TAGS']
+export const importColumns = ['ID', Object.keys(languages).map(lang => `NAME_${lang}`.toUpperCase()), 'DESCRIPTION', 'STATUS', 'HAS_THERMAL_PRINTING', 'TAGS']
 
 export const importColumnData: ITableColumn<any>[] = [
   { id: 'no', label: 'ID' },
   ...Object.keys(languages).map(lang => ({ id: `name${lang}`, label: `${lang}` })),
   { id: 'description', label: 'Description' },
   { id: 'status', label: 'Status' },
+  { id: 'hasThermalPrinting', label: 'Thermal Printing' },
   { id: 'action', label: 'Remove', align: 'right' },
 ]
 
@@ -42,6 +45,7 @@ export const createData = (
   description: string,
   createdBy: string,
   status: boolean,
+  hasThermalPrinting: boolean,
   privilege: any,
   device: DeviceOptions,
   navigate: Function,
@@ -87,5 +91,5 @@ export const createData = (
     </div>
   )
 
-  return { id, icon: <CircleIcon icon={icon} />, name, description, createdBy, status, action }
+  return { id, icon: <CircleIcon icon={icon} />, name, description, createdBy, status, hasThermalPrinting, action }
 }
