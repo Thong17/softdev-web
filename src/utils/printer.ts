@@ -65,7 +65,7 @@ export const initQzTray = async () => {
   }
 }
 
-export const handleThermalPrint = async (data: { items: { description: string; qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }, printer?: string, storeConfig: { width: number, height: number, gap: number } = { width: 52, height: 126, gap: 2 }) => {
+export const handleThermalPrint = async (data: { items: { description: string, hasThermalPrinting: boolean, qty: number, options: { name: string, value: string }[] }[], createdAt: string, invoice: string }, printer?: string, storeConfig: { width: number, height: number, gap: number } = { width: 52, height: 126, gap: 2 }) => {
     try {
       if (!printer) return
       // 1. Find your printer by its Windows name
@@ -73,6 +73,7 @@ export const handleThermalPrint = async (data: { items: { description: string; q
 
       // 2. For each item, print as many labels as the quantity
       for (const item of data.items || []) {
+        if (!item.hasThermalPrinting) continue;
         // sanitize description to avoid breaking TSPL string quoting
         const desc = (item.description || '').toString().replace(/"/g, "'");
         for (let i = 0; i < (item.qty || 0); i++) {

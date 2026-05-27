@@ -185,7 +185,7 @@ const Config = () => {
                 <div style={{ gridArea: 'thermalPrinterName' }}>
                   <TextField
                     type='text'
-                    label='Thermal Printer Name'
+                    label='Label Printer Name'
                     err={errors.thermalPrinterName?.message}
                     {...register('thermalPrinterName')}
                   />

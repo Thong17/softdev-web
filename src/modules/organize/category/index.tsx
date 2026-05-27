@@ -159,6 +159,7 @@ export const Categories = () => {
         category.description || '...',
         category.createdBy || '...',
         category.status,
+        category.hasThermalPrinting,
         user?.privilege,
         device,
         navigate,
@@ -168,7 +169,7 @@ export const Categories = () => {
     setRowData(listCategories)
   }, [categories, lang, user, device, theme, navigate])
 
-  const handleToggleStatus = (id) => {
+  const handleToggleStatus = (id, columnKey) => {
     confirm({
       title: 'Are you sure you want to toggle the status?',
       description:
@@ -178,7 +179,9 @@ export const Categories = () => {
       .then(() => {
         Axios({
           method: 'PUT',
-          url: `/organize/category/toggleStatus/${id}`,
+          url: columnKey === 'hasThermalPrinting'
+            ? `/organize/category/toggleThermalPrinting/${id}`
+            : `/organize/category/toggleStatus/${id}`,
         })
           .then(() => {
             dispatch(getListCategory({ query: queryParams }))

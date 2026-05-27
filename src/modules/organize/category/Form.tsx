@@ -40,14 +40,21 @@ const CategoryForm = ({ defaultValues, id }: any) => {
   const { device } = useWeb()
   const { notify } = useNotify()
   const [status, setStatus] = useState(defaultValues?.status)
+  const [hasThermalPrinting, setHasThermalPrinting] = useState(defaultValues?.hasThermalPrinting)
   const [loading, setLoading] = useState(false)
   const [iconPath, setIconPath] = useState<IImage>(defaultValues?.icon)
   const statusValue = watch('status')
+  const hasThermalPrintingValue = watch('hasThermalPrinting')
 
   useEffect(() => {
     const selectedStatus = statusOption.find((key) => key.value === statusValue)
     setStatus(selectedStatus?.value)
   }, [statusValue])
+
+  useEffect(() => {
+    const selectedStatus = statusOption.find((key) => key.value === hasThermalPrintingValue)
+    setHasThermalPrinting(selectedStatus?.value)
+  }, [hasThermalPrintingValue])
 
   const handleChangeCategory = (category) => {
     setValue('name', category)
@@ -115,7 +122,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
           gridColumnGap: 20,
           gridTemplateAreas: `
                               'category category category'
-                              'status icon icon'
+                              'status hasThermalPrinting icon'
                               'description description description'
                               'action action action'
                               `,
@@ -137,6 +144,15 @@ const CategoryForm = ({ defaultValues, id }: any) => {
             value={status}
             err={errors?.status?.message}
             {...register('status')}
+          />
+        </div>
+        <div style={{ gridArea: 'hasThermalPrinting' }}>
+          <SelectField
+            options={statusOption}
+            label='Label Printing'
+            value={hasThermalPrinting}
+            err={errors?.hasThermalPrinting?.message}
+            {...register('hasThermalPrinting')}
           />
         </div>
         <div style={{ gridArea: 'icon' }}>

@@ -4,6 +4,7 @@ export interface ICategoryBody {
   name: Object,
   status: boolean,
   icon: any,
+  hasThermalPrinting: boolean,
   description: string,
 }
 
@@ -11,6 +12,7 @@ export const initState: ICategoryBody = {
   name: {},
   status: true,
   icon: null,
+  hasThermalPrinting: true,
   description: ''
 }
 

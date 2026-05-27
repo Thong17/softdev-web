@@ -241,6 +241,7 @@ export const languages = {
     CLEAR_PAYMENT_WARNING: 'This action will permanently delete all payment data within the specified date range. Please ensure that you have backed up any necessary information before proceeding.',
     WARNING: 'Warning',
     BACKUP: 'Backup',
+    THERMAL_PRINTING: 'Label Printing',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -505,5 +506,6 @@ export const languages = {
       'សកម្មភាពនេះនឹងលុបទិន្នន័យទូទាត់ទាំងអស់ជាអចិន្ត្រៃយ៍ក្នុងចន្លោះកាលបរិច្ឆេទដែលបានកំណត់។ សូមប្រាកដថាអ្នកបានបម្រុងទុកទិន្នន័យចាំបាច់មុនពេលបន្ត។',
     WARNING: 'ការព្រមាន',
     BACKUP: 'បម្រុងទុក',
+    THERMAL_PRINTING: 'ការបោះពុម្ពស្លាក',
   }
 }
