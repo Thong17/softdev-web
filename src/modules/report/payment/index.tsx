@@ -122,7 +122,7 @@ export const Payments = () => {
                     dialog={paymentDialog}
                     setDialog={setPaymentDialog}
                     onCheckout={() => {
-                      setPaymentDialog({ open: false, payment: null })
+                    //   setPaymentDialog({ open: false, payment: null })
                       dispatch(getListPayment({ query: queryParams }))
                     }}
                 />
