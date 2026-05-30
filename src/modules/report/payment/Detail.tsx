@@ -1,11 +1,18 @@
+import { directPrinting } from 'api/receipt.api'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
 import { PaymentReceipt } from 'components/shared/invoice/PaymentReceipt'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
+import Axios from 'constants/functions/Axios'
 import useLanguage from 'hooks/useLanguage'
+import useNotify from 'hooks/useNotify'
+import { getStore, selectStore } from 'modules/organize/store/redux'
 import { useEffect, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print'
 import { CustomDetailContainer } from 'styles/container'
 import { CustomButton } from 'styles/index'
+import { currencyFormat, timeFormat } from 'utils/index'
+import { handleReceiptPrint, handleThermalPrint, initQzTray } from 'utils/printer'
 
 export const Detail = ({
   theme,
@@ -14,6 +21,70 @@ export const Detail = ({
  }: any) => {
   const [payment, setPayment] = useState(null)
   const { language } = useLanguage()
+  const { data: storeInfo, status } = useAppSelector(selectStore)
+  const dispatch = useAppDispatch()
+  const { notify } = useNotify()
+  const [isLoading, setIsLoading] = useState(false)
+  const printType: string = 'web_printing'
+  const [printerSetting, setPrinterSetting] = useState({
+    receiptPrinterName: '',
+    receiptPrinterCharPerLine: 0,
+    storePrinterName: '',
+    storePrinterCharPerLine: 0,
+    thermalPrinterName: '',
+    thermalPrinterWidth: 0,
+    thermalPrinterHeight: 0,
+    thermalPrinterGap: 0
+  });
+
+  useEffect(() => {
+    initQzTray().catch(err => console.error('QZ Tray init failed:', err))
+    return () => {
+      // Optional: clean up connection on unmount if desired
+    };
+  }, []);
+
+  useEffect(() => {
+    Axios({
+      method: 'GET',
+      url: '/organize/store/getTelegramSetting'
+    })
+      .then((res) => {
+        const data = res.data.data
+        setPrinterSetting({
+          receiptPrinterName: data.receiptPrinterName || '',
+          receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
+          storePrinterName: data.storePrinterName || '',
+          storePrinterCharPerLine: data.storePrinterCharPerLine || 0,
+          thermalPrinterName: data.thermalPrinterName || '',
+          thermalPrinterWidth: data.thermalPrinterWidth || 0,
+          thermalPrinterHeight: data.thermalPrinterHeight || 0,
+          thermalPrinterGap: data.thermalPrinterGap || 0
+        })
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
+    //eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
+      if (status !== 'INIT') return
+        dispatch(
+          getStore({
+            id: 'store',
+            fields: [
+              'name',
+              'logo',
+              'contact',
+              'address',
+              'type',
+              'other',
+              'font',
+              'tax',
+            ],
+          })
+        )
+        // eslint-disable-next-line
+  }, [status])
   
   const handleCloseDialog = () => {
     setDialog({ ...dialog, stockId: null, open: false })
@@ -24,6 +95,90 @@ export const Detail = ({
     content: () => invoiceRef?.current,
     documentTitle: 'Invoice',
   })
+
+  const handlePrint = () => {
+    if (printType === 'network_printing') {
+      setIsLoading(true)
+      directPrinting({
+          name: storeInfo?.name,
+          invoice: dialog.payment?.invoice,
+          cashier: dialog.payment?.createdBy?.username,
+          createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+          transactions: dialog.payment?.transactions?.map(item => ({
+              item: item.description,
+              qty: item.quantity,
+              disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
+              price: currencyFormat(item.price, item.currency, 0, true),
+          })),
+          subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
+          discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+          tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
+          total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
+          address: storeInfo?.address,
+          footer: storeInfo?.other
+      }, 'USB', 'thermal')
+          .then(console.log)
+          .catch(handlePrintInvoice)
+          .finally(() => setIsLoading(false))
+    } else {
+      console.log(dialog.payment, storeInfo?.name)
+      handleThermalPrint({
+        items: dialog.payment?.transactions?.map(item => ({
+          description: item.product?.name?.English || item.description,
+          qty: item.quantity,
+          hasThermalPrinting: item.product?.category?.hasThermalPrinting,
+          options: item.options?.map(option => ({
+            name: option.property?.name?.English,
+            value: option.name?.English
+          }))
+        })) || [],
+        createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+        invoice: dialog.payment?.invoice
+      }, printerSetting.thermalPrinterName, {
+        width: Number(printerSetting.thermalPrinterWidth),
+        height: Number(printerSetting.thermalPrinterHeight),
+        gap: Number(printerSetting.thermalPrinterGap)
+      }).catch(err => notify(err.message, 'error'))
+      handleReceiptPrint({
+        name: storeInfo?.name as string,
+        invoice: dialog.payment?.invoice,
+        cashier: dialog.payment?.createdBy?.username,
+        createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+        transactions: dialog.payment?.transactions?.map(item => ({
+            item: item.description,
+            qty: item.quantity,
+            disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
+            price: currencyFormat(item.price, item.currency, 0, true),
+            total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+        })),
+        subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
+        discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+        tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
+        total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
+        address: storeInfo?.address,
+        footer: storeInfo?.other,
+        paymentMethod: dialog.payment?.paymentMethod,
+      }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
+      handleReceiptPrint({
+        name: storeInfo?.name as string,
+        invoice: dialog.payment?.invoice,
+        cashier: dialog.payment?.createdBy?.username,
+        createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+        transactions: dialog.payment?.transactions?.map(item => ({
+            item: item.product?.name?.English || item.description,
+            qty: item.quantity,
+            total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+        })),
+        subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
+        discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+        tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
+        total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
+        address: storeInfo?.address,
+        footer: storeInfo?.other,
+        paymentMethod: dialog.payment?.paymentMethod,
+      }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
+    }
+}
 
   useEffect(() => {
     setPayment(dialog?.payment)
@@ -55,7 +210,8 @@ export const Detail = ({
             {language['CLOSE']}
           </CustomButton>
           <CustomButton
-            onClick={() => handlePrintInvoice()}
+            isLoading={isLoading}
+            onClick={() => handlePrint()}
             styled={theme}
             style={{
               borderRadius: theme.radius.secondary,
