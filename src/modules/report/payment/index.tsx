@@ -12,10 +12,13 @@ import Axios from 'constants/functions/Axios'
 import { Detail } from './Detail'
 import useTheme from 'hooks/useTheme'
 import { PaymentForm } from 'modules/sale/cashing/PaymentForm'
+import useAuth from 'hooks/useAuth'
+import useAlert from 'hooks/useAlert'
 
 export const Payments = () => {
     const dispatch = useAppDispatch()
     const { data: payments, count, status } = useAppSelector(selectListPayment)
+    const confirm = useAlert()
     const { notify } = useNotify()
     const { theme } = useTheme()
     const [rowData, setRowData] = useState<Data[]>([])
@@ -24,6 +27,7 @@ export const Payments = () => {
         open: false,
         payment: null,
     })
+    const { user } = useAuth()
 
     const updateQuery = debounce((value) => {
         handleQuery({ search: value })
@@ -76,6 +80,26 @@ export const Payments = () => {
                 })
                 .catch((err) => notify(err?.response?.data?.msg))
         }
+
+        const handleClear = (id) => {
+            confirm({
+                title: 'Are you sure you want to clear this payment?',
+                description: 'Clearing the payment will remove it completely from system.',
+                variant: 'error',
+            })
+                .then(() => {
+                    Axios({
+                        method: 'DELETE',
+                        url: '/utility/clear-payment',
+                        body: {
+                            id
+                        }
+                    }).then(() => {
+                        dispatch(getListPayment({ query: queryParams }))
+                    }).catch(console.error)
+                })
+                .catch(() => null)
+        }
         const listPayments = payments.map((payment: any) => {
             return createData(
                 payment._id,
@@ -100,6 +124,8 @@ export const Payments = () => {
                 payment.createdBy?.username,
                 handleView,
                 theme,
+                user?.privilege,
+                handleClear
             )
         })
 
