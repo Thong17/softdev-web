@@ -60,6 +60,8 @@ import { HintButton } from 'components/shared/HintButton'
 import { Queue } from 'modules/function/queue'
 import { Loan } from 'modules/sale/loan'
 import { DetailLoan } from 'modules/sale/loan/Detail'
+import { FrontScreenSetup } from 'modules/organize/store/FrontScreenSetup'
+import FrontScreen from 'modules/front-screen'
 
 
 const routes: RouteObject[] = [
@@ -363,6 +365,15 @@ const routes: RouteObject[] = [
         ),
       },
       {
+        path: 'store/:id/front-screen',
+        element: (
+          <AuthGuard role={{ route: 'store', action: 'update' }}>
+            <FrontScreenSetup />
+            <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
+          </AuthGuard>
+        ),
+      },
+      {
         path: 'store/:id/layout',
         element: (
           <AuthGuard role={{ route: 'store', action: 'update' }}>
@@ -466,6 +477,10 @@ const routes: RouteObject[] = [
         element: <Payments />,
       },
     ],
+  },
+  {
+    path: '/front-screen',
+    element: <FrontScreen />,
   },
   {
     path: '/config',

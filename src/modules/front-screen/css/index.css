@@ -1,0 +1,18 @@
+.resizer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 3px;
+    height: 100%;
+    cursor: col-resize;
+    background: #ffffff22;
+    z-index: 1000;
+    transition: width 0.2s, background 0.2s;
+    display: grid;
+    place-items: center;
+}
+
+.resizer:hover {
+    width: 13px;
+    background: #00000022;
+}

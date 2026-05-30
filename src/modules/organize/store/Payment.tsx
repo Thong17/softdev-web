@@ -78,6 +78,10 @@ export const PaymentStore = () => {
     {
       title: language['PAYMENT'],
     },
+    {
+      title: language['FRONT_SCREEN'],
+      path: `/organize/store/${id}/front-screen`
+    },
   ]
 
   const handleChangeTransfer = (value) => {

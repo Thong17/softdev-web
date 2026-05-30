@@ -40,6 +40,10 @@ export const UpdateStore = () => {
       title: language['PAYMENT'],
       path: `/organize/store/${id}/payment`
     },
+    {
+      title: language['FRONT_SCREEN'],
+      path: `/organize/store/${id}/front-screen`
+    },
   ]
   
   return (
