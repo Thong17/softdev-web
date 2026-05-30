@@ -35,7 +35,7 @@ import { PreviewLoan } from 'components/shared/invoice/PreviewLoan'
 import { directPrinting } from 'api/receipt.api'
 import { initQzTray, handleReceiptPrint, handleThermalPrint } from 'utils/printer'
 
-export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout }: any, ref) => {
+export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout }: any, ref) => {
   const confirm = useAlert()
   const { theme } = useTheme()
   const { language } = useLanguage()
@@ -270,6 +270,26 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
     documentTitle: 'Invoice',
   })
 
+  const handlePrintLabel = () => {
+    handleThermalPrint({
+      items: dialog.payment?.transactions?.map(item => ({
+        description: item.product?.name?.English || item.description,
+        qty: item.quantity,
+        hasThermalPrinting: item.product?.category?.hasThermalPrinting,
+        options: item.options?.map(option => ({
+          name: option.property?.name?.English,
+          value: option.name?.English
+        }))
+      })) || [],
+      createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+      invoice: dialog.payment?.invoice
+    }, printerSetting.thermalPrinterName, {
+      width: Number(printerSetting.thermalPrinterWidth),
+      height: Number(printerSetting.thermalPrinterHeight),
+      gap: Number(printerSetting.thermalPrinterGap)
+    }).catch(err => notify(err.message, 'error'))
+  }
+
   const handlePrint = () => {
       if (printType === 'network_printing') {
         setIsLoading(true)
@@ -295,23 +315,25 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
             .catch(handlePrintInvoice)
             .finally(() => setIsLoading(false))
       } else {
-        handleThermalPrint({
-          items: dialog.payment?.transactions?.map(item => ({
-            description: item.product?.name?.English || item.description,
-            qty: item.quantity,
-            hasThermalPrinting: item.product?.category?.hasThermalPrinting,
-            options: item.options?.map(option => ({
-              name: option.property?.name?.English,
-              value: option.name?.English
-            }))
-          })) || [],
-          createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-          invoice: dialog.payment?.invoice
-        }, printerSetting.thermalPrinterName, {
-          width: Number(printerSetting.thermalPrinterWidth),
-          height: Number(printerSetting.thermalPrinterHeight),
-          gap: Number(printerSetting.thermalPrinterGap)
-        }).catch(err => notify(err.message, 'error'))
+        if (source === 'payment') {
+          handleThermalPrint({
+            items: dialog.payment?.transactions?.map(item => ({
+              description: item.product?.name?.English || item.description,
+              qty: item.quantity,
+              hasThermalPrinting: item.product?.category?.hasThermalPrinting,
+              options: item.options?.map(option => ({
+                name: option.property?.name?.English,
+                value: option.name?.English
+              }))
+            })) || [],
+            createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+            invoice: dialog.payment?.invoice
+          }, printerSetting.thermalPrinterName, {
+            width: Number(printerSetting.thermalPrinterWidth),
+            height: Number(printerSetting.thermalPrinterHeight),
+            gap: Number(printerSetting.thermalPrinterGap)
+          }).catch(err => notify(err.message, 'error'))
+        }
         handleReceiptPrint({
           name: storeInfo?.name as string,
           invoice: dialog.payment?.invoice,
@@ -594,7 +616,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                   {payment?.status ? (
                     <>
                       <CustomButton
-                        onClick={handleClearPayment}
+                        onClick={source === 'payment' ? handleClearPayment : handleCloseDialog}
                         styled={theme}
                         style={{
                           backgroundColor: `${theme.color.error}22`,
@@ -664,7 +686,7 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                 <div style={{ display: 'flex', gap: 10 }}>
                   {payment?.status ? (
                     <CustomButton
-                      onClick={handleClearPayment}
+                      onClick={source === 'payment' ? handleClearPayment : handleCloseDialog}
                       styled={theme}
                       style={{
                         backgroundColor: `${theme.color.error}22`,
@@ -722,21 +744,40 @@ export const PaymentForm = forwardRef(({ dialog, setDialog, onClear, onCheckout 
                       </CustomButton>}
                     </>
                   ) : (
-                    <CustomButton
-                      isLoading={isLoading}
-                      onClick={handleCheckout}
-                      styled={theme}
-                      style={{
-                        backgroundColor: `${theme.color.success}22`,
-                        color: theme.color.success,
-                        width: '100%',
-                      }}
-                    >
-                      <ReceiptRoundedIcon
-                        style={{ fontSize: 17, marginRight: 5 }}
-                      />{' '}
-                      {language['CHECKOUT']}
-                    </CustomButton>
+                    <>
+                      <CustomButton
+                        isLoading={isLoading}
+                        onClick={handleCheckout}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.success}22`,
+                          color: theme.color.success,
+                          width: '100%',
+                        }}
+                      >
+                        <ReceiptRoundedIcon
+                          style={{ fontSize: 17, marginRight: 5 }}
+                        />{' '}
+                        {language['CHECKOUT']}
+                      </CustomButton>
+                      {
+                        source === 'payment' && <CustomButton
+                          isLoading={isLoading}
+                          onClick={handlePrintLabel}
+                          styled={theme}
+                          style={{
+                            backgroundColor: `${theme.color.info}22`,
+                            color: theme.color.info,
+                            width: '100%',
+                          }}
+                        >
+                          <PrintRoundedIcon
+                            style={{ fontSize: 19, marginRight: 5 }}
+                          />{' '}
+                          {language['PRINT_LABEL']}
+                        </CustomButton>
+                      }
+                    </>
                   )}
                 </div>
               )}

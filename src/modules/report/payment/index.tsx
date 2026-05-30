@@ -80,7 +80,7 @@ export const Payments = () => {
             return createData(
                 payment._id,
                 payment.invoice,
-                payment.paymentMethod?.toUpperCase(),
+                (payment.paymentMethod ?? 'cash')?.toUpperCase(),
                 currencyFormat(payment.subtotal.BOTH, 'USD'),
                 currencyFormat(
                     payment.vouchers[0]?.value,
@@ -119,6 +119,7 @@ export const Payments = () => {
         >
             {paymentDialog?.payment?.state === 'PENDING' ? (
                 <PaymentForm
+                    source="report"
                     dialog={paymentDialog}
                     setDialog={setPaymentDialog}
                     onCheckout={() => {
