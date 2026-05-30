@@ -166,6 +166,11 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   }, [totalPayment, exchangeRate, totalReceive.total])
 
   const handleCloseDialog = () => {
+    if (source === 'report') {
+      onClearPayment()
+      onClear && onClear()
+      setFormMode('pending')
+    }
     setDialog({ ...dialog, open: false })
   }
 
