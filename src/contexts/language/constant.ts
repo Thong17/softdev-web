@@ -243,6 +243,7 @@ export const languages = {
     BACKUP: 'Backup',
     THERMAL_PRINTING: 'Label Printing',
     PRINT_LABEL: 'Print Label',
+    PRINT_RECEIPT: 'Print Receipt',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -509,5 +510,6 @@ export const languages = {
     BACKUP: 'បម្រុងទុក',
     THERMAL_PRINTING: 'ការបោះពុម្ពស្លាក',
     PRINT_LABEL: 'បោះពុម្ពស្លាក',
+    PRINT_RECEIPT: 'បោះពុម្ពបង្កាន់ដៃ',
   }
 }

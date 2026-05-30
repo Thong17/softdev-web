@@ -319,25 +319,6 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
             .catch(handlePrintInvoice)
             .finally(() => setIsLoading(false))
       } else {
-        if (source === 'payment') {
-          handleThermalPrint({
-            items: dialog.payment?.transactions?.map(item => ({
-              description: item.product?.name?.English || item.description,
-              qty: item.quantity,
-              hasThermalPrinting: item.product?.category?.hasThermalPrinting,
-              options: item.options?.map(option => ({
-                name: option.property?.name?.English,
-                value: option.name?.English
-              }))
-            })) || [],
-            createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-            invoice: dialog.payment?.invoice
-          }, printerSetting.thermalPrinterName, {
-            width: Number(printerSetting.thermalPrinterWidth),
-            height: Number(printerSetting.thermalPrinterHeight),
-            gap: Number(printerSetting.thermalPrinterGap)
-          }).catch(err => notify(err.message, 'error'))
-        }
         handleReceiptPrint({
           name: storeInfo?.name as string,
           invoice: dialog.payment?.invoice,
@@ -728,7 +709,22 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                         <PrintRoundedIcon
                           style={{ fontSize: 19, marginRight: 5 }}
                         />{' '}
-                        {language['PRINT']}
+                        {language['PRINT_RECEIPT']}
+                      </CustomButton>
+                      <CustomButton
+                        isLoading={isLoading}
+                        onClick={handlePrintLabel}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.warning}22`,
+                          color: theme.color.warning,
+                          width: '100%',
+                        }}
+                      >
+                        <PrintRoundedIcon
+                          style={{ fontSize: 19, marginRight: 5 }}
+                        />{' '}
+                        {language['PRINT_LABEL']}
                       </CustomButton>
                       {user?.privilege?.queue?.create && <CustomButton
                         isLoading={isLoading}
@@ -770,8 +766,8 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                           onClick={handlePrintLabel}
                           styled={theme}
                           style={{
-                            backgroundColor: `${theme.color.info}22`,
-                            color: theme.color.info,
+                            backgroundColor: `${theme.color.warning}22`,
+                            color: theme.color.warning,
                             width: '100%',
                           }}
                         >
