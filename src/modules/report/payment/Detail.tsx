@@ -121,7 +121,6 @@ export const Detail = ({
           .catch(handlePrintInvoice)
           .finally(() => setIsLoading(false))
     } else {
-      console.log(dialog.payment, storeInfo?.name)
       handleThermalPrint({
         items: dialog.payment?.transactions?.map(item => ({
           description: item.product?.name?.English || item.description,
