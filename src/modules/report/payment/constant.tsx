@@ -1,4 +1,4 @@
-import { ViewButton } from 'components/shared/table/ActionButton'
+import { ResetButton, ViewButton } from 'components/shared/table/ActionButton'
 import { ITableColumn } from 'components/shared/table/StickyTable'
 import { TextHighlight } from 'components/shared/TextHighlight'
 import moment from 'moment'
@@ -44,10 +44,15 @@ export const createData = (
   createdAt: any,
   createdBy: any,
   onPrint: Function | null,
-  theme
+  theme,
+  privilege?: any,
+  onClear?: Function | null,
 ): Data => {
   const action = onPrint ? <div style={{ float: 'right' }}>
     <ViewButton onClick={() => onPrint(id)} />
+    {(privilege?.payment?.delete && onClear) && (
+      <ResetButton onClick={() => onClear(id)} />
+    )}
   </div> : <></>
   return {
     id,
