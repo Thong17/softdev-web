@@ -301,6 +301,7 @@ export const Cashing = () => {
             onChangePayment={handleChangePayment}
             table={table}
             setTable={setTable}
+            disableForm={disableProduct}
           />
         </div>
       </div>
