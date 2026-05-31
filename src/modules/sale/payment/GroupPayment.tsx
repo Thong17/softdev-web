@@ -27,6 +27,7 @@ const GroupPayment = () => {
     const { notify } = useNotify()
     const { language } = useLanguage()
     const { user } = useAuth()
+    const [listPaymentSelected, setListPaymentSelected] = useState<string[]>([]);
 
     const [paymentDialog, setPaymentDialog] = useState<any>({
         open: false,
@@ -86,20 +87,27 @@ const GroupPayment = () => {
         dispatch(getListPayment({ query: queryParams }))
     }, [dispatch, queryParams])
 
-    useEffect(() => {
-        const handleView = (id) => {
-            Axios({
-                url: `/sale/payment/detail/${id}`,
-                method: 'GET',
+    const handleView = (id) => {
+        Axios({
+            url: `/sale/payment/detail/${id}`,
+            method: 'GET',
+        })
+            .then((data) => {
+                setPaymentDialog({ payment: data?.data?.data, open: true })
             })
-                .then((data) => {
-                    setPaymentDialog({ payment: data?.data?.data, open: true })
-                })
-                .catch((err) => notify(err?.response?.data?.msg))
-        }
-        const handleMerge = (data) => {
-            console.log(data)
-        }
+            .catch((err) => notify(err?.response?.data?.msg))
+    }
+
+    const handleMerge = (id) => {
+        setListPaymentSelected(prev => {
+            const isExist = prev.includes(id)
+            return isExist
+                ? prev.filter(item => item !== id)
+                : [...prev, id]
+        })
+    }
+
+    useEffect(() => {
         const listTransactions = payments.map((payment: any) => {
             return createData(
                 payment._id,
@@ -125,16 +133,17 @@ const GroupPayment = () => {
                 handleView,
                 theme,
                 user?.privilege,
-                handleMerge
+                handleMerge,
+                listPaymentSelected
             )
             })
         setRowData(listTransactions)
-    }, [payments, user, theme, notify])
+    }, [payments, user, theme, notify, listPaymentSelected])
 
     return (
         <Container
             header={
-                <Header />
+                <Header styled={theme} listPaymentSelected={listPaymentSelected} onOpenGroupPayment={() => setPaymentDialog({ open: true })} />
             }
         >
             <PaymentForm

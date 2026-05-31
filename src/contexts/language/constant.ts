@@ -244,6 +244,7 @@ export const languages = {
     THERMAL_PRINTING: 'Label Printing',
     PRINT_LABEL: 'Print Label',
     PRINT_RECEIPT: 'Print Receipt',
+    GROUP_PAYMENT: 'Group Payment'
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -511,5 +512,6 @@ export const languages = {
     THERMAL_PRINTING: 'ការបោះពុម្ពស្លាក',
     PRINT_LABEL: 'បោះពុម្ពស្លាក',
     PRINT_RECEIPT: 'បោះពុម្ពបង្កាន់ដៃ',
+    GROUP_PAYMENT: 'GROUP PAYMENT'
   }
 }

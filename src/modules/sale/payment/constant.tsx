@@ -49,10 +49,11 @@ export const createData = (
   theme,
   privilege?: any,
   onMerge?: Function | null,
+  listPaymentSelected?: string[]
 ): Data => {
   const action = onPrint ? <div style={{ display: 'flex', gap: '5px', justifyContent: 'end' }}>
     {(privilege?.payment?.update && onMerge) && (
-      <MergeButton onClick={(e) => {
+      <MergeButton isOn={listPaymentSelected?.includes(id)} onClick={(e) => {
         e.stopPropagation()
         onMerge(id)
       }} />

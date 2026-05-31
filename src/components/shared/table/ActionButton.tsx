@@ -196,15 +196,15 @@ export const RemoveButton: FC<ButtonProps> = ({ ...prop }) => {
   )
 }
 
-export const MergeButton: FC<ButtonProps> = ({ disabled, title, ...prop }) => {
+export const MergeButton: FC<ButtonProps & { isOn?: boolean }> = ({ disabled, isOn, title, ...prop }) => {
   const { theme } = useTheme()
   return (
     <IconButton
       size='small'
       style={{
-        backgroundColor: disabled ? `${theme.text.secondary}22` : `${theme.color.info}22`,
+        backgroundColor: disabled ? `${theme.text.secondary}22` : (isOn ? `${theme.text.primary}22` : `${theme.color.info}22`),
         borderRadius: theme.radius.primary,
-        color: disabled ? theme.text.secondary : theme.color.info,
+        color: disabled ? theme.text.secondary : (isOn ? theme.text.primary : theme.color.info),
       }}
       disabled={disabled}
       {...prop}
