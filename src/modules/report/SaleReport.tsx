@@ -104,7 +104,7 @@ const ListFilter = ({ grades, name, value = '', onChange }) => {
   )
 }
 
-const SaleReportRowDetail = ({
+export const SaleReportRowDetail = ({
   row,
   rowDetails,
   detailLoading,

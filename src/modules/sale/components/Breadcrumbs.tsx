@@ -8,7 +8,8 @@ declare type page =
   | 'loan'
   | 'sale'
   | 'stock'
-  | 'transaction'
+  | 'reservation'
+  | 'payment'
 
 const SaleBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
   const { language } = useLanguage()
@@ -34,6 +35,15 @@ const SaleBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
       },
       {
         title: language['STOCK'],
+      },
+    ],
+    payment: [
+      {
+        title: language['SALE'],
+        path: '/sale',
+      },
+      {
+        title: language['PAYMENT'],
       },
     ],
   }
