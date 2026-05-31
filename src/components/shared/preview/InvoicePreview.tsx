@@ -1,16 +1,77 @@
 import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { CustomInvoiceForm } from 'styles/container'
-import { currencyFormat } from 'utils'
+import { currencyFormat, timeFormat } from 'utils'
 import { CustomerStatistic } from '../container/CustomerContainer'
 import { CircleIcon } from '../table/CustomIcon'
+import { IconButton } from '@mui/material'
+import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
+import { handleThermalPrint } from 'utils/printer'
+import useNotify from 'hooks/useNotify'
+import Axios from 'constants/functions/Axios'
 
 export const InvoicePreview = ({ payment, customer }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   const { language } = useLanguage()
+  const { notify } = useNotify()
+
+  useEffect(() => {
+    Axios({
+      method: 'GET',
+      url: '/organize/store/getTelegramSetting'
+    })
+      .then((res) => {
+        const data = res.data.data
+        setPrinterSetting({
+          receiptPrinterName: data.receiptPrinterName || '',
+          receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
+          storePrinterName: data.storePrinterName || '',
+          storePrinterCharPerLine: data.storePrinterCharPerLine || 0,
+          thermalPrinterName: data.thermalPrinterName || '',
+          thermalPrinterWidth: data.thermalPrinterWidth || 0,
+          thermalPrinterHeight: data.thermalPrinterHeight || 0,
+          thermalPrinterGap: data.thermalPrinterGap || 0
+        })
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
+    //eslint-disable-next-line
+  }, [])
+
+  const [printerSetting, setPrinterSetting] = useState({
+    receiptPrinterName: '',
+    receiptPrinterCharPerLine: 0,
+    storePrinterName: '',
+    storePrinterCharPerLine: 0,
+    thermalPrinterName: '',
+    thermalPrinterWidth: 0,
+    thermalPrinterHeight: 0,
+    thermalPrinterGap: 0
+  });
+
+  const handlePrintTransaction = (event, transaction) => {
+    event.stopPropagation()
+    // Implementation for printing transaction
+    handleThermalPrint({
+      items: [{
+        description: transaction.product?.name?.English || transaction.description,
+        qty: transaction.quantity,
+        hasThermalPrinting: !!transaction.product?.category?.hasThermalPrinting,
+        options: transaction.options?.map(option => ({
+          name: option.property?.name?.English,
+          value: option.name?.English
+        }))
+      }],
+      createdAt: timeFormat(payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+      invoice: payment?.invoice
+    }, printerSetting.thermalPrinterName, {
+      width: Number(printerSetting.thermalPrinterWidth),
+      height: Number(printerSetting.thermalPrinterHeight),
+      gap: Number(printerSetting.thermalPrinterGap)
+    }).catch(err => notify(err.message, 'error'))
+  }
   
   return (
     <div
@@ -47,6 +108,7 @@ export const InvoicePreview = ({ payment, customer }) => {
               phone={customer?.displayName}
               style={{ marginLeft: 10 }}
             />
+            <span style={{ marginRight: 10 }}>#{payment?.invoice?.split('-')[1]}</span>
           </div>
           <div
             style={{ height: '100%', position: 'relative', marginBottom: 10 }}
@@ -117,6 +179,18 @@ export const InvoicePreview = ({ payment, customer }) => {
                               {currencyFormat(total, currency)}
                             </span>
                           </div>
+                        </div>
+                        <div style={{ minWidth: 33 }}>
+                          {(!payment?.status && transaction.product?.category?.hasThermalPrinting) && <IconButton
+                            onClick={(e) => handlePrintTransaction(e, transaction)}
+                            style={{
+                              backgroundColor: `${theme.color.info}22`,
+                            }}
+                          >
+                            <PrintRoundedIcon
+                              style={{ fontSize: 17, color: theme.color.info }}
+                            />
+                          </IconButton>}
                         </div>
                       </div>
                     </div>

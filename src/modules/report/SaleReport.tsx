@@ -162,6 +162,9 @@ const SaleReportRowDetail = ({
               padding: '6px 10px',
               borderBottom: index < transactions.length - 1 ? `1px solid ${theme.border.primary}` : 'none',
               fontSize: 13,
+              backgroundColor: item.isDeleted ? theme.color.error + '20' : 'transparent',
+              color: item.isDeleted ? theme.color.error : theme.text.primary,
+              borderRadius: '5px',
             }}
           >
             <div>{index + 1}</div>

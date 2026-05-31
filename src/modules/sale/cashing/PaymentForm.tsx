@@ -70,6 +70,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
     thermalPrinterHeight: 0,
     thermalPrinterGap: 0
   });
+  const [isQzTrayAvailable, setIsQzTrayAvailable] = useState(false);
 
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
@@ -77,7 +78,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   ]
 
   useEffect(() => {
-    initQzTray().catch(err => console.error('QZ Tray init failed:', err))
+    initQzTray().then(() => setIsQzTrayAvailable(true)).catch(err => console.error('QZ Tray init failed:', err))
     return () => {
       // Optional: clean up connection on unmount if desired
     };
@@ -275,6 +276,10 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   })
 
   const handlePrintLabel = () => {
+    if (!isQzTrayAvailable) {
+      notify('Label printing is not available on this device', 'error')
+      return
+    }
     handleThermalPrint({
       items: dialog.payment?.transactions?.map(item => ({
         description: item.product?.name?.English || item.description,
@@ -319,6 +324,10 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
             .catch(handlePrintInvoice)
             .finally(() => setIsLoading(false))
       } else {
+        if (!isQzTrayAvailable) {
+          notify('Receipt printing is not available on this device', 'error')
+          return
+        }
         handleReceiptPrint({
           name: storeInfo?.name as string,
           invoice: dialog.payment?.invoice,

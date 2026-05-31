@@ -17,7 +17,7 @@ export const ReservationForm = () => {
       .then(response => {
         if (response.code !== 'SUCCESS') return
         const data = response.data
-        setDefaultValue(prev => ({ ...prev, transactions: data.payment?.transactions, customer: { ...data.customer, id: data.customer?._id }, reservation: data, }))
+        setDefaultValue(prev => ({ ...prev, transactions: data?.payment?.transactions, customer: { ...data?.customer, id: data?.customer?._id }, reservation: data, }))
       })
       .catch(err => notify(err?.response?.data?.msg, 'error'))
       // eslint-disable-next-line

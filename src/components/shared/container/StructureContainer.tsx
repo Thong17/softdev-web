@@ -278,7 +278,9 @@ export const StructureContainer = ({
                         align={structure.align}
                         justify={structure.justify}
                         direction={structure.direction}
-                        status={structure.status}
+                        status={structure.status === 'vacant' && structure.reservations?.length
+                          ? 'reserved'
+                          : structure.status}
                       />
                     </Box>
                   )
@@ -311,7 +313,9 @@ export const StructureContainer = ({
                         align={structure.align}
                         justify={structure.justify}
                         direction={structure.direction}
-                        status={structure.status}
+                        status={structure.status === 'vacant' && structure.reservations?.length
+                          ? 'reserved'
+                          : structure.status}
                       />
                     </Box>
                   )

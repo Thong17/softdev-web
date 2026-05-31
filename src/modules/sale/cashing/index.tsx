@@ -297,6 +297,7 @@ export const Cashing = () => {
             onClear={handleClearPayment}
             onChangeCustomer={handleChangeCustomer}
             onChangePayment={handleChangePayment}
+            disableForm={disableProduct}
           />
         </div>
       </div>
