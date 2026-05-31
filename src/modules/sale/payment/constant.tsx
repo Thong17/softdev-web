@@ -14,6 +14,7 @@ export const columnData: ITableColumn<any>[] = [
   { id: 'voucher', label: 'VOUCHER' },
   { id: 'total', label: 'TOTAL' },
   { id: 'status', label: 'STATUS' },
+  { id: 'table', label: 'TABLE' },
   {id: 'createdAt', label: 'CREATED\u00a0AT' },
   { id: 'createdBy', label: 'Created\u00a0By' },
   { id: 'action', label: 'ACTION', align: 'center' },
@@ -28,6 +29,7 @@ export interface Data {
   voucher: any
   total: any,
   status: any,
+  table: any,
   createdAt: any,
   createdBy: any,
   action: any
@@ -43,6 +45,7 @@ export const createData = (
   tax: any,
   total: any,
   status: string,
+  table: string,
   createdAt: any,
   createdBy: any,
   onPrint: Function | null,
@@ -83,6 +86,7 @@ export const createData = (
     voucher,
     total,
     status: <TextHighlight text={status} color={status === 'COMPLETED' ? theme.color.success : theme.color.warning} />,
+    table,
     createdAt: moment(createdAt).format('DD/MM/YYYY HH:mm'),
     createdBy,
     action

@@ -32,6 +32,7 @@ import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import ReceiptDialog from '../dialog/ReceiptDialog'
 import { getStore, selectStore } from 'modules/organize/store/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
+import TableBarRoundedIcon from '@mui/icons-material/TableBarRounded'
 
 export const currencyOptions: IOptions[] = [
   {
@@ -175,6 +176,14 @@ export const recalculatePayment = (paymentId, data) => {
   })
 }
 
+const tableOption = [
+  { label: '01', value: '01' },
+  { label: '02', value: '02' },
+  { label: '03', value: '03' },
+  { label: '04', value: '04' },
+  { label: '050', value: '050' },
+]
+
 export const InvoiceForm = forwardRef(({
   id = null,
   defaultTax = 0,
@@ -186,7 +195,9 @@ export const InvoiceForm = forwardRef(({
   onClear,
   onChangePayment,
   onChangeCustomer,
-  listTransactions = []
+  listTransactions = [],
+  table,
+  setTable,
 }: any, ref) => {
   const {
     register,
@@ -595,13 +606,27 @@ export const InvoiceForm = forwardRef(({
           }}
         >
           {invoiceBar && <CustomerStatistic mode={paymentId ? 'view' : 'edit'} point={customer.point} phone={customer.displayName} name={customer.fullName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} onClear={handleClearCustomer} />}
-          <div
-            className='toggle'
-            style={{ position: 'relative' }}
-            onClick={() => toggleInvoiceBar()}
-          >
-            <ShoppingCartRoundedIcon fontSize='small' />
-            {totalQuantity > 0 && <NotificationLabel value={totalQuantity} />}
+          <div style={{ display: 'flex' }}>
+            {invoiceBar && <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginRight: '-20px' }}>
+              <TableBarRoundedIcon style={{ fontSize: 22 }} />
+              <MiniSelectField
+                style={{ minWidth: 50, width: 50 }}
+                options={tableOption}
+                value={table}
+                search={true}
+                onChange={(event) =>
+                  setTable(event.target.value)
+                }
+              />
+            </div>}
+            <div
+              className='toggle'
+              style={{ position: 'relative' }}
+              onClick={() => toggleInvoiceBar()}
+            >
+              <ShoppingCartRoundedIcon fontSize='small' />
+              {totalQuantity > 0 && <NotificationLabel value={totalQuantity} />}
+            </div>
           </div>
         </div>
         <div className='invoice-form'>

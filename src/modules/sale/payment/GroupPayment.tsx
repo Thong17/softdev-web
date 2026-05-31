@@ -134,6 +134,7 @@ const GroupPayment = () => {
                 ),
                 currencyFormat(payment.total.value, payment.total.currency),
                 payment.state,
+                payment.table || '--',
                 payment.createdAt,
                 payment.createdBy?.username,
                 handleView,
