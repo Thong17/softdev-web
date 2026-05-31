@@ -607,18 +607,6 @@ export const InvoiceForm = forwardRef(
               <CustomButton
                 styled={theme}
                 fullWidth
-                onClick={handleClearPayment}
-                style={{
-                  color: theme.text.secondary,
-                  marginRight: 10,
-                  borderRadius: theme.radius.secondary,
-                }}
-              >
-                {language['CLEAR']}
-              </CustomButton>
-              <CustomButton
-                styled={theme}
-                fullWidth
                 onClick={handleClickPayment}
                 style={{
                   backgroundColor: `${theme.color.success}22`,
@@ -675,7 +663,8 @@ export const InvoiceForm = forwardRef(
       })
     }
 
-    const handlePrintTransaction = (transaction) => {
+    const handlePrintTransaction = (event, transaction) => {
+      event.stopPropagation()
       // Implementation for printing transaction
       handleThermalPrint({
         items: [{
@@ -976,7 +965,7 @@ export const InvoiceForm = forwardRef(
                               {language['SAVE']}
                             </Button>
                             {transaction.hasThermalPrinting && <Button
-                              onClick={() => handlePrintTransaction(transaction)}
+                              onClick={(event) => handlePrintTransaction(event, transaction)}
                               style={{
                                 marginLeft: 10,
                                 color: theme.color.info,
@@ -1036,25 +1025,37 @@ export const InvoiceForm = forwardRef(
                             )}
                           </span>
                         </div>
-                        <div className='total'>
+                        <div className='total' style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                           <div
-                            style={{ display: 'flex', flexDirection: 'column' }}
+                            style={{ display: 'flex', flexDirection: 'column', minWidth: 40 }}
                           >
                             <span className='main-description'>{language['TOTAL']}</span>
                             <span className='sub-description'>
                               {currencyFormat(total, currency)}
                             </span>
                           </div>
-                          {!reservation?.payment?.status && <IconButton
-                            style={{ marginLeft: 5 }}
-                            onClick={(event) =>
-                              handleRemoveTransaction(event, transaction.id)
-                            }
-                          >
-                            <CloseRoundedIcon
-                              style={{ fontSize: 17, color: theme.color.error }}
-                            />
-                          </IconButton>}
+                          <div style={{ display: 'flex', gap: 5, minWidth: 70, justifyContent: 'end' }}>
+                            {(!reservation?.payment?.status && transaction.hasThermalPrinting) && <IconButton
+                              onClick={(e) => handlePrintTransaction(e, transaction)}
+                              style={{
+                                backgroundColor: `${theme.color.info}22`,
+                              }}
+                            >
+                              <PrintRoundedIcon
+                                style={{ fontSize: 17, color: theme.color.info }}
+                              />
+                            </IconButton>}
+                            {!reservation?.payment?.status && <IconButton
+                              style={{ backgroundColor: `${theme.color.error}22`, }}
+                              onClick={(event) =>
+                                handleRemoveTransaction(event, transaction.id)
+                              }
+                            >
+                              <CloseRoundedIcon
+                                style={{ fontSize: 17, color: theme.color.error }}
+                              />
+                            </IconButton>}
+                          </div>
                         </div>
                       </div>
                     </div>

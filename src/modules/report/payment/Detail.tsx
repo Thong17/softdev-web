@@ -12,7 +12,7 @@ import { useReactToPrint } from 'react-to-print'
 import { CustomDetailContainer } from 'styles/container'
 import { CustomButton } from 'styles/index'
 import { currencyFormat, timeFormat } from 'utils/index'
-import { handleReceiptPrint, handleThermalPrint, initQzTray } from 'utils/printer'
+import { handleReceiptPrint, initQzTray } from 'utils/printer'
 
 export const Detail = ({
   theme,
@@ -36,9 +36,10 @@ export const Detail = ({
     thermalPrinterHeight: 0,
     thermalPrinterGap: 0
   });
+  const [isQzTrayAvailable, setIsQzTrayAvailable] = useState(false);
 
   useEffect(() => {
-    initQzTray().catch(err => console.error('QZ Tray init failed:', err))
+    initQzTray().then(() => setIsQzTrayAvailable(true)).catch(err => console.error('QZ Tray init failed:', err))
     return () => {
       // Optional: clean up connection on unmount if desired
     };
@@ -121,23 +122,10 @@ export const Detail = ({
           .catch(handlePrintInvoice)
           .finally(() => setIsLoading(false))
     } else {
-      handleThermalPrint({
-        items: dialog.payment?.transactions?.map(item => ({
-          description: item.product?.name?.English || item.description,
-          qty: item.quantity,
-          hasThermalPrinting: item.product?.category?.hasThermalPrinting,
-          options: item.options?.map(option => ({
-            name: option.property?.name?.English,
-            value: option.name?.English
-          }))
-        })) || [],
-        createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-        invoice: dialog.payment?.invoice
-      }, printerSetting.thermalPrinterName, {
-        width: Number(printerSetting.thermalPrinterWidth),
-        height: Number(printerSetting.thermalPrinterHeight),
-        gap: Number(printerSetting.thermalPrinterGap)
-      }).catch(err => notify(err.message, 'error'))
+      if (!isQzTrayAvailable) {
+        notify('Receipt printing is not available on this device', 'error')
+        return
+      }
       handleReceiptPrint({
         name: storeInfo?.name as string,
         invoice: dialog.payment?.invoice,
