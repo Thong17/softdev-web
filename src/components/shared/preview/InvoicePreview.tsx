@@ -47,6 +47,7 @@ export const InvoicePreview = ({ payment, customer }) => {
               phone={customer?.displayName}
               style={{ marginLeft: 10 }}
             />
+            <span style={{ marginRight: 10 }}>#{payment?.invoice?.split('-')[1]}</span>
           </div>
           <div
             style={{ height: '100%', position: 'relative', marginBottom: 10 }}

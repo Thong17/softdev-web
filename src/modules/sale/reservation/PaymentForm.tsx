@@ -6,54 +6,136 @@ import { CashForm } from 'components/shared/form/CashForm'
 import { SelectTab } from 'components/shared/form/SelectTab'
 import { InvoicePreview } from 'components/shared/preview/InvoicePreview'
 import useTheme from 'hooks/useTheme'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { CustomButton } from 'styles'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import ReceiptRoundedIcon from '@mui/icons-material/ReceiptRounded'
-import { currencyFormat } from 'utils'
+import { currencyFormat, timeFormat } from 'utils'
 import useAuth from 'hooks/useAuth'
 import { IDrawer } from 'contexts/auth/interface'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useAlert from 'hooks/useAlert'
-import { useReactToPrint } from 'react-to-print'
-import { PaymentReceipt } from 'components/shared/invoice/PaymentReceipt'
 import useWeb from 'hooks/useWeb'
-import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getListTransfer, selectListTransfer } from 'modules/organize/store/redux'
 import { CarouselContainer } from 'components/shared/container/CarouselContainer'
+import {
+  getListTransfer,
+  getStore,
+  selectListTransfer,
+  selectStore,
+} from 'modules/organize/store/redux'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
+import { directPrinting } from 'api/receipt.api'
+import { initQzTray, handleReceiptPrint, handleThermalPrint } from 'utils/printer'
 
-export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
+export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout }: any, ref) => {
   const confirm = useAlert()
-  const { language } = useLanguage()
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { notify } = useNotify()
   const { width } = useWeb()
   const { user, reload } = useAuth()
   const [totalReceive, setTotalReceive] = useState({ KHR: 0, USD: 0, total: 0 })
   const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
   const [payment, setPayment] = useState<any>(null)
-  const [paymentMethod, setPaymentMethod] = useState('cash')
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'transfer' | null>('cash')
   const [totalPayment, setTotalPayment] = useState({
     value: 0,
     currency: 'USD',
   })
   const [exchangeRate, setExchangeRate] = useState<null | IDrawer>(null)
   const [receiveCashes, setReceiveCashes] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
   const { data: listTransfer } = useAppSelector(selectListTransfer)
   const dispatch = useAppDispatch()
+  const { data: storeInfo, status } = useAppSelector(selectStore)
+  const [printerSetting, setPrinterSetting] = useState({
+    receiptPrinterName: '',
+    receiptPrinterCharPerLine: 0,
+    storePrinterName: '',
+    storePrinterCharPerLine: 0,
+    thermalPrinterName: '',
+    thermalPrinterWidth: 0,
+    thermalPrinterHeight: 0,
+    thermalPrinterGap: 0
+  });
 
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
     { label: language['TRANSFER'], value: 'transfer' },
-    { label: language['LOAN'], value: 'loan' },
   ]
+
+  useEffect(() => {
+    initQzTray().catch(err => console.error('QZ Tray init failed:', err))
+    return () => {
+      // Optional: clean up connection on unmount if desired
+    };
+  }, []);
+
+  
+  useEffect(() => {
+    Axios({
+      method: 'GET',
+      url: '/organize/store/getTelegramSetting'
+    })
+      .then((res) => {
+        const data = res.data.data
+        setPrinterSetting({
+          receiptPrinterName: data.receiptPrinterName || '',
+          receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
+          storePrinterName: data.storePrinterName || '',
+          storePrinterCharPerLine: data.storePrinterCharPerLine || 0,
+          thermalPrinterName: data.thermalPrinterName || '',
+          thermalPrinterWidth: data.thermalPrinterWidth || 0,
+          thermalPrinterHeight: data.thermalPrinterHeight || 0,
+          thermalPrinterGap: data.thermalPrinterGap || 0
+        })
+      })
+      .catch(err => notify(err?.response?.data?.msg, 'error'))
+    //eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
+    if (status !== 'INIT') return
+      dispatch(
+        getStore({
+          id: 'store',
+          fields: [
+            'name',
+            'logo',
+            'contact',
+            'address',
+            'type',
+            'other',
+            'font',
+            'tax',
+          ],
+        })
+      )
+      // eslint-disable-next-line
+    }, [status])
 
   useEffect(() => {
     dispatch(getListTransfer())
   }, [dispatch])
-  
+
+  useImperativeHandle(ref, () => ({
+    callClearPayment() {
+      onClearPayment()
+    }
+  }))
+
+  const onClearPayment = () => {
+    setTotalReceive({ KHR: 0, USD: 0, total: 0 })
+    setTotalRemain({ KHR: 0, USD: 0 })
+    setPayment(null)
+    setPaymentMethod(null)
+    setTotalPayment({ value: 0, currency: 'USD' })
+    setExchangeRate(null)
+    setReceiveCashes([])
+  }
+
   useEffect(() => {
     setPayment(dialog.payment)
     
@@ -66,12 +148,16 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
   }, [dialog.payment])
 
   useEffect(() => {
-    const remainUSD = totalPayment.value - totalReceive.total    
+    const remainUSD = totalPayment.value - totalReceive.total
     const sellRate = exchangeRate?.sellRate || 4000
     setTotalRemain({ USD: remainUSD, KHR: remainUSD * sellRate })
   }, [totalPayment, exchangeRate, totalReceive.total])
 
   const handleCloseDialog = () => {
+    if (source === 'report') {
+      onClearPayment()
+      onClear && onClear()
+    }
     setDialog({ ...dialog, open: false })
   }
 
@@ -79,19 +165,20 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
     if (value === 'transfer') {
       const buyRate = exchangeRate?.buyRate || 4000
       setTotalReceive({
-        KHR: totalPayment.currency === 'KHR' ? totalPayment.value : 0, 
-        USD: totalPayment.currency === 'USD' ? totalPayment.value : 0, 
-        total: totalPayment.currency === 'KHR' ? totalPayment.value / buyRate : totalPayment.value
+        KHR: totalPayment.currency === 'KHR' ? totalPayment.value : 0,
+        USD: totalPayment.currency === 'USD' ? totalPayment.value : 0,
+        total:
+          totalPayment.currency === 'KHR'
+            ? totalPayment.value / buyRate
+            : totalPayment.value,
       })
-    }
-    else setTotalReceive({ KHR: 0, USD: 0, total: 0 })
+    } else setTotalReceive({ KHR: 0, USD: 0, total: 0 })
     setPaymentMethod(value)
   }
 
   const handleChangeCashes = (cashes) => {
     let totalUSD = 0
     let totalKHR = 0
-    
     setReceiveCashes(cashes)
     cashes?.forEach((cash) => {
       if (cash.currency === 'USD') totalUSD += cash.value * cash.quantity
@@ -111,45 +198,132 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
       description: 'Checkout the payment will update the status to complete.',
       variant: 'info'
     }).then(() => {
-      const body = {
-        receiveCashes,
-        receiveTotal: totalReceive,
-        remainTotal: totalRemain,
-        customer: dialog.customer?.id,
-        paymentMethod,
-      }
-      Axios({
-        method: 'PUT',
-        url: `/sale/payment/checkout/${dialog.payment?._id}`,
-        body,
+        setIsLoading(true);
+        const body = {
+          receiveCashes,
+          receiveTotal: totalReceive,
+          remainTotal: totalRemain,
+          customer: dialog.customer?.id,
+          paymentMethod,
+        }
+        Axios({
+          method: 'PUT',
+          url: `/sale/payment/checkout/${dialog.payment?._id}`,
+          body,
+        })
+          .then((data) => {
+            setPayment(data?.data?.data)
+            reload()
+            onClear()
+          })
+          .catch((err) => {
+            notify(err?.response?.data?.msg, 'error')
+          })
+          .finally(() => setIsLoading(false));
       })
-        .then((data) => {
-          setPayment(data?.data?.data)
-          reload()
-          onClear()
-        })
-        .catch((err) => {
-          notify(err?.response?.data?.msg, 'error')
-        })
-    }).catch(() => {})
+      .catch(() => null)
   }
 
   const handleClearPayment = () => {
     handleCloseDialog()
   }
+  const printType: string = 'web_printing'
 
-  const invoiceRef = useRef(document.createElement('div'))
+  const handlePrintLabel = () => {
+    handleThermalPrint({
+      items: dialog.payment?.transactions?.map(item => ({
+        description: item.product?.name?.English || item.description,
+        qty: item.quantity,
+        hasThermalPrinting: item.product?.category?.hasThermalPrinting,
+        options: item.options?.map(option => ({
+          name: option.property?.name?.English,
+          value: option.name?.English
+        }))
+      })) || [],
+      createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+      invoice: dialog.payment?.invoice
+    }, printerSetting.thermalPrinterName, {
+      width: Number(printerSetting.thermalPrinterWidth),
+      height: Number(printerSetting.thermalPrinterHeight),
+      gap: Number(printerSetting.thermalPrinterGap)
+    }).catch(err => notify(err.message, 'error'))
+  }
 
-  const handlePrintInvoice = useReactToPrint({
-    content: () => invoiceRef?.current,
-    documentTitle: 'Invoice'
-  })
+  const handlePrint = () => {
+      if (printType === 'network_printing') {
+        setIsLoading(true)
+        directPrinting({
+            name: storeInfo?.name,
+            invoice: dialog.payment?.invoice,
+            cashier: dialog.payment?.createdBy?.username,
+            createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+            transactions: dialog.payment?.transactions?.map(item => ({
+                item: item.description,
+                qty: item.quantity,
+                disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
+                price: currencyFormat(item.price, item.currency, 0, true),
+            })),
+            subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
+            discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+            tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
+            total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
+            address: storeInfo?.address,
+            footer: storeInfo?.other
+        }, 'USB', 'thermal')
+            .then(console.log)
+            .catch(console.error)
+            .finally(() => setIsLoading(false))
+      } else {
+        handleReceiptPrint({
+          name: storeInfo?.name as string,
+          invoice: dialog.payment?.invoice,
+          cashier: dialog.payment?.createdBy?.username,
+          createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+          transactions: dialog.payment?.transactions?.map(item => ({
+              item: item.description,
+              qty: item.quantity,
+              disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
+              price: currencyFormat(item.price, item.currency, 0, true),
+              total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+          })),
+          subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
+          discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+          tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
+          total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
+          address: storeInfo?.address,
+          footer: storeInfo?.other,
+          paymentMethod: dialog.payment?.paymentMethod,
+        }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
+        handleReceiptPrint({
+          name: storeInfo?.name as string,
+          invoice: dialog.payment?.invoice,
+          cashier: dialog.payment?.createdBy?.username,
+          createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+          transactions: dialog.payment?.transactions?.map(item => ({
+              item: item.product?.name?.English || item.description,
+              qty: item.quantity,
+              total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+          })),
+          subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
+          discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+          tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
+          total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
+          address: storeInfo?.address,
+          footer: storeInfo?.other,
+          paymentMethod: dialog.payment?.paymentMethod,
+        }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
+      }
+  }
 
   const renderPaymentMethod = (method) => {
     switch (method) {
       case 'transfer':
-        return <CarouselContainer images={listTransfer?.map(item => item.image) || []} />
-    
+        return (
+          <CarouselContainer
+            images={listTransfer?.map((item) => item.image) || []}
+          />
+        )
+
       default:
         return <CashForm onChange={handleChangeCashes} />
     }
@@ -169,7 +343,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
           position: 'relative',
         }}
       >
-        <DialogTitle title='Payment' onClose={handleCloseDialog} />
+        <DialogTitle title={language['PAYMENT']} onClose={handleCloseDialog} />
         <div
           style={{
             padding: '10px 20px 20px 20px',
@@ -177,15 +351,17 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
             height: 'calc(100% - 69.98px)',
             gridGap: 20,
             display: 'grid',
-            gridTemplateColumns: width > 1024 ? 'calc(100% - 480px) auto' : '1fr',
+            gridTemplateColumns:
+              width > 1024 ? 'calc(100% - 480px) auto' : '1fr',
             gridTemplateRows: width > 1024 ? '1fr 200px' : 'auto',
-            gridTemplateAreas: width > 1024 
-                                ? `'payment preview''exchange preview'` 
-                                : `
+            gridTemplateAreas:
+              width > 1024
+                ? `'payment preview''exchange preview'`
+                : `
                                   'payment payment'
                                   'exchange exchange'
                                   'preview preview'
-                                  ` 
+                                  `,
           }}
         >
           <div
@@ -272,7 +448,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
             }}
           >
             <div className='total-receive'>
-              <span>Receive Total</span>
+              <span>{language['RECEIVE_TOTAL']}</span>
               <div style={{ display: 'flex', lineHeight: 1 }}>
                 <span>
                   {currencyFormat(totalReceive.USD, 'USD')} +{' '}
@@ -300,7 +476,10 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                   }}
                 >
                   <span>
-                    {payment?.remainTotal?.USD < 0 ? 'Return' : 'Remain'} Total
+                    {payment?.remainTotal?.USD < 0
+                      ? language['RETURN']
+                      : language['REMAIN']}{' '}
+                    {language['TOTAL']}
                   </span>
                   <div style={{ display: 'flex', lineHeight: 1 }}>
                     <span>
@@ -337,7 +516,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
               <div style={{ display: 'flex', gap: 10 }}>
                 {payment?.status ? (
                   <CustomButton
-                    onClick={handleClearPayment}
+                    onClick={source === 'payment' ? handleClearPayment : handleCloseDialog}
                     styled={theme}
                     style={{
                       backgroundColor: `${theme.color.error}22`,
@@ -345,7 +524,7 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                       width: '100%',
                     }}
                   >
-                    Close
+                    {language['CLOSE']}
                   </CustomButton>
                 ) : (
                   <CustomButton
@@ -357,39 +536,77 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
                       width: '100%',
                     }}
                   >
-                    Close
+                    {language['CLOSE']}
                   </CustomButton>
                 )}
                 {payment?.status ? (
-                  <CustomButton
-                    onClick={handlePrintInvoice}
-                    styled={theme}
-                    style={{
-                      backgroundColor: `${theme.color.info}22`,
-                      color: theme.color.info,
-                      width: '100%',
-                    }}
-                  >
-                    <PrintRoundedIcon
-                      style={{ fontSize: 19, marginRight: 5 }}
-                    />{' '}
-                    Print
-                  </CustomButton>
+                  <>
+                    <CustomButton
+                      isLoading={isLoading}
+                      onClick={handlePrint}
+                      styled={theme}
+                      style={{
+                        backgroundColor: `${theme.color.info}22`,
+                        color: theme.color.info,
+                        width: '100%',
+                      }}
+                    >
+                      <PrintRoundedIcon
+                        style={{ fontSize: 19, marginRight: 5 }}
+                      />{' '}
+                      {language['PRINT_RECEIPT']}
+                    </CustomButton>
+                    <CustomButton
+                      isLoading={isLoading}
+                      onClick={handlePrintLabel}
+                      styled={theme}
+                      style={{
+                        backgroundColor: `${theme.color.warning}22`,
+                        color: theme.color.warning,
+                        width: '100%',
+                      }}
+                    >
+                      <PrintRoundedIcon
+                        style={{ fontSize: 19, marginRight: 5 }}
+                      />{' '}
+                      {language['PRINT_LABEL']}
+                    </CustomButton>
+                  </>
                 ) : (
-                  <CustomButton
-                    onClick={handleCheckout}
-                    styled={theme}
-                    style={{
-                      backgroundColor: `${theme.color.success}22`,
-                      color: theme.color.success,
-                      width: '100%',
-                    }}
-                  >
-                    <ReceiptRoundedIcon
-                      style={{ fontSize: 17, marginRight: 5 }}
-                    />{' '}
-                    Check out
-                  </CustomButton>
+                  <>
+                    <CustomButton
+                      isLoading={isLoading}
+                      onClick={handleCheckout}
+                      styled={theme}
+                      style={{
+                        backgroundColor: `${theme.color.success}22`,
+                        color: theme.color.success,
+                        width: '100%',
+                      }}
+                    >
+                      <ReceiptRoundedIcon
+                        style={{ fontSize: 17, marginRight: 5 }}
+                      />{' '}
+                      {language['CHECKOUT']}
+                    </CustomButton>
+                    {
+                      source === 'payment' && <CustomButton
+                        isLoading={isLoading}
+                        onClick={handlePrintLabel}
+                        styled={theme}
+                        style={{
+                          backgroundColor: `${theme.color.warning}22`,
+                          color: theme.color.warning,
+                          width: '100%',
+                        }}
+                      >
+                        <PrintRoundedIcon
+                          style={{ fontSize: 19, marginRight: 5 }}
+                        />{' '}
+                        {language['PRINT_LABEL']}
+                      </CustomButton>
+                    }
+                  </>
                 )}
               </div>
             </div>
@@ -399,19 +616,16 @@ export const PaymentForm = ({ dialog, setDialog, onClear }: any) => {
           </div>
         </div>
       </div>
-      <div style={{ position: 'absolute', top: '-200%' }}>
-        <div ref={invoiceRef}>
-          <PaymentReceipt payment={payment} />
-        </div>
-      </div>
     </AlertContainer>
   )
-}
+})
 
 const CashReturn = ({ cash }) => (
   <div className='cash'>
     <span>{currencyFormat(parseFloat(cash.cash), cash.currency)}</span>
-    {cash.exchange && <span>({currencyFormat(parseFloat(cash.exchange), 'KHR')})</span>}
+    {cash.exchange && (
+      <span>({currencyFormat(parseFloat(cash.exchange), 'KHR')})</span>
+    )}
     <span style={{ marginLeft: 5 }}>x{cash.quantity}</span>
   </div>
 )

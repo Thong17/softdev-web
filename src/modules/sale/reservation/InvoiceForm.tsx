@@ -10,7 +10,7 @@ import { CustomButton, CustomInvoiceForm } from 'styles'
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
 import useWeb from 'hooks/useWeb'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import { currencyFormat, timeDifferent } from 'utils'
+import { currencyFormat, timeDifferent, timeFormat } from 'utils'
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
 import { useForm } from 'react-hook-form'
@@ -44,6 +44,8 @@ import {
 } from 'components/shared/form/InvoiceForm'
 import useLanguage from 'hooks/useLanguage'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
+import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
+import { handleThermalPrint } from 'utils/printer'
 
 export const mappedTransaction = (transaction) => {
   return {
@@ -53,7 +55,9 @@ export const mappedTransaction = (transaction) => {
     price: { value: transaction.price, currency: transaction.currency },
     quantity: transaction.quantity,
     total: transaction.total,
-    profile: transaction.product?.profile?.filename
+    profile: transaction.product?.profile?.filename,
+    hasThermalPrinting: !!transaction.product?.category?.hasThermalPrinting,
+    options: transaction.options ?? [],
   }
 }
 
@@ -132,6 +136,16 @@ export const InvoiceForm = forwardRef(
     const [customerDialog, setCustomerDialog] = useState({ open: false })
     const [customer, setCustomer] = useState(selectedCustomer)
     const [isLoading, setIsLoading] = useState(false);
+    const [printerSetting, setPrinterSetting] = useState({
+      receiptPrinterName: '',
+      receiptPrinterCharPerLine: 0,
+      storePrinterName: '',
+      storePrinterCharPerLine: 0,
+      thermalPrinterName: '',
+      thermalPrinterWidth: 0,
+      thermalPrinterHeight: 0,
+      thermalPrinterGap: 0
+    });
     const { user } = useAuth()
     const exchangeRate = useMemo(
       () => ({
@@ -141,6 +155,28 @@ export const InvoiceForm = forwardRef(
       [user?.drawer]
     )
     const { notify } = useNotify()
+
+    useEffect(() => {
+      Axios({
+        method: 'GET',
+        url: '/organize/store/getTelegramSetting'
+      })
+        .then((res) => {
+          const data = res.data.data
+          setPrinterSetting({
+            receiptPrinterName: data.receiptPrinterName || '',
+            receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
+            storePrinterName: data.storePrinterName || '',
+            storePrinterCharPerLine: data.storePrinterCharPerLine || 0,
+            thermalPrinterName: data.thermalPrinterName || '',
+            thermalPrinterWidth: data.thermalPrinterWidth || 0,
+            thermalPrinterHeight: data.thermalPrinterHeight || 0,
+            thermalPrinterGap: data.thermalPrinterGap || 0
+          })
+        })
+        .catch(err => notify(err?.response?.data?.msg, 'error'))
+      //eslint-disable-next-line
+    }, [])
 
     useEffect(() => {
       if (
@@ -639,6 +675,27 @@ export const InvoiceForm = forwardRef(
       })
     }
 
+    const handlePrintTransaction = (transaction) => {
+      // Implementation for printing transaction
+      handleThermalPrint({
+        items: [{
+          description: transaction.product?.name?.English || transaction.description,
+          qty: transaction.quantity,
+          hasThermalPrinting: transaction.hasThermalPrinting,
+          options: transaction.options?.map(option => ({
+            name: option.property?.name?.English,
+            value: option.name?.English
+          }))
+        }],
+        createdAt: timeFormat(reservationData?.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+        invoice: reservationData?.payment?.invoice
+      }, printerSetting.thermalPrinterName, {
+        width: Number(printerSetting.thermalPrinterWidth),
+        height: Number(printerSetting.thermalPrinterHeight),
+        gap: Number(printerSetting.thermalPrinterGap)
+      }).catch(err => notify(err.message, 'error'))
+    }
+
     return (
       <CustomInvoiceForm
         mode={invoiceBar ? 'expand' : 'compact'}
@@ -910,7 +967,7 @@ export const InvoiceForm = forwardRef(
                             <Button
                               type='submit'
                               style={{
-                                marginLeft: 20,
+                                marginLeft: 10,
                                 color: theme.color.info,
                                 backgroundColor: `${theme.color.info}22`,
                               }}
@@ -918,6 +975,18 @@ export const InvoiceForm = forwardRef(
                             >
                               {language['SAVE']}
                             </Button>
+                            {transaction.hasThermalPrinting && <Button
+                              onClick={() => handlePrintTransaction(transaction)}
+                              style={{
+                                marginLeft: 10,
+                                color: theme.color.info,
+                                backgroundColor: `${theme.color.info}22`,
+                              }}
+                            >
+                              <PrintRoundedIcon
+                                style={{ fontSize: 19 }}
+                              />
+                            </Button>}
                           </div>
                         </form>
                       </div>
@@ -927,8 +996,9 @@ export const InvoiceForm = forwardRef(
                   return (
                     <div
                       className='item'
+                      style={{ cursor: reservation?.payment?.status ? 'default' : 'pointer' }}
                       key={key}
-                      onClick={() => handleClickTransaction(transaction)}
+                      onClick={() => !reservation?.payment?.status && handleClickTransaction(transaction)}
                     >
                       <div className='item-description'>
                         <div className='profile'>
@@ -949,9 +1019,9 @@ export const InvoiceForm = forwardRef(
                         <div className='quantity'>
                           <span className='main-description'>{language['QTY']}</span>
                           <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <IconButton onClick={(event) => handleDecreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>-</IconButton>
+                            {!reservation?.payment?.status && <IconButton onClick={(event) => handleDecreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>-</IconButton>}
                             <span style={{ margin: '0 1px' }}>{transaction.quantity}</span>
-                            <IconButton onClick={(event) => handleIncreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>+</IconButton>
+                            {!reservation?.payment?.status && <IconButton onClick={(event) => handleIncreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>+</IconButton>}
                           </div>
                         </div>
                         <div className='discount'>
@@ -975,7 +1045,7 @@ export const InvoiceForm = forwardRef(
                               {currencyFormat(total, currency)}
                             </span>
                           </div>
-                          <IconButton
+                          {!reservation?.payment?.status && <IconButton
                             style={{ marginLeft: 5 }}
                             onClick={(event) =>
                               handleRemoveTransaction(event, transaction.id)
@@ -984,7 +1054,7 @@ export const InvoiceForm = forwardRef(
                             <CloseRoundedIcon
                               style={{ fontSize: 17, color: theme.color.error }}
                             />
-                          </IconButton>
+                          </IconButton>}
                         </div>
                       </div>
                     </div>
@@ -1015,7 +1085,7 @@ export const InvoiceForm = forwardRef(
                 >
                   <span
                     onClick={() =>
-                      setDiscount((prev) => ({
+                      !reservation?.payment?.status && setDiscount((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -1041,13 +1111,18 @@ export const InvoiceForm = forwardRef(
                   ) : (
                     <span
                       onClick={() =>
-                        setDiscount((prev) => ({
+                        !reservation?.payment?.status && setDiscount((prev) => ({
                           ...prev,
                           isEditing: !prev.isEditing,
                         }))
                       }
                     >
-                      -{currencyFormat(discount.value, discount.type)}
+                      -{currencyFormat(
+                        discount.isFixed 
+                          ? (subtotal.USD + (subtotal.KHR / (user?.drawer?.sellRate || 4000))) - discount.value 
+                          : discount.value, 
+                        discount.type
+                      )}
                     </span>
                   )}
                 </div>
@@ -1060,7 +1135,7 @@ export const InvoiceForm = forwardRef(
                 >
                   <span
                     onClick={() =>
-                      setTax((prev) => ({
+                      !reservation?.payment?.status && setTax((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -1087,7 +1162,7 @@ export const InvoiceForm = forwardRef(
                   ) : (
                     <span
                       onClick={() =>
-                        setTax((prev) => ({
+                        !reservation?.payment?.status && setTax((prev) => ({
                           ...prev,
                           isEditing: !prev.isEditing,
                         }))
@@ -1106,7 +1181,7 @@ export const InvoiceForm = forwardRef(
                 >
                   <span
                     onClick={() =>
-                      setVoucher((prev) => ({
+                      !reservation?.payment?.status && setVoucher((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -1132,13 +1207,18 @@ export const InvoiceForm = forwardRef(
                   ) : (
                     <span
                       onClick={() =>
-                        setVoucher((prev) => ({
+                        !reservation?.payment?.status && setVoucher((prev) => ({
                           ...prev,
                           isEditing: !prev.isEditing,
                         }))
                       }
                     >
-                      -{currencyFormat(voucher.value, voucher.type)}
+                      -{currencyFormat(
+                        voucher.isFixed 
+                          ? (subtotal.USD + (subtotal.KHR / (user?.drawer?.sellRate || 4000))) - voucher.value
+                          : voucher.value, 
+                        voucher.type
+                      )}
                     </span>
                   )}
                 </div>

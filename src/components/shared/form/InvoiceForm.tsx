@@ -157,6 +157,8 @@ export interface ITransactionItem {
   profile?: string
   note?: string
   total: ICurrency
+  hasThermalPrinting?: boolean
+  options?: any[]
 }
 
 export const recalculatePayment = (paymentId, data) => {
