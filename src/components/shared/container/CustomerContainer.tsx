@@ -31,7 +31,7 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded'
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
 import Button from '../Button'
 
-export const CustomerStatistic = ({ phone, mode='edit', name = null, address = null, point = 0, picture = null, onClear = () => {}, ...props }) => {
+export const CustomerStatistic = ({ phone, mode='edit', name = null, address = null, point = 0, picture = null, onClear, ...props }: any) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   const { language } = useLanguage()
@@ -52,7 +52,7 @@ export const CustomerStatistic = ({ phone, mode='edit', name = null, address = n
               <TextEllipsis style={{ fontSize: 11, color: theme.text.quaternary, lineHeight: 1, width: 'fit-content', maxWidth: 250 }}>{address}</TextEllipsis>
             </div>
           </div>
-          {mode === 'edit' && <IconButton onClick={(e) => {
+          {(mode === 'edit' && onClear) && <IconButton onClick={(e) => {
             e.stopPropagation()
             onClear()
           }}>

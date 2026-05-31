@@ -119,7 +119,7 @@ export const calculatePaymentTotal = (
   } = voucher
   const { sellRate = 4000 } = exchangeRate
 
-  let total = subtotal.USD + subtotal.KHR / sellRate
+  let total = subtotal.USD + (subtotal.KHR / sellRate)
 
   const { total: discountedTotal } = calculateTransactionTotal(
     { value: total, currency: 'USD' },

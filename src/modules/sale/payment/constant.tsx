@@ -4,6 +4,7 @@ import { ITableColumn } from 'components/shared/table/StickyTable'
 import { TextHighlight } from 'components/shared/TextHighlight'
 import moment from 'moment'
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
+import PointOfSaleRoundedIcon from '@mui/icons-material/PointOfSaleRounded'
 
 export const columnData: ITableColumn<any>[] = [
   { id: 'invoice', label: 'INVOICE' },
@@ -48,13 +49,13 @@ export const createData = (
   table: string,
   createdAt: any,
   createdBy: any,
-  onPrint: Function | null,
+  onView: Function | null,
   theme,
   privilege?: any,
   onMerge?: Function | null,
   listPaymentSelected?: string[]
 ): Data => {
-  const action = onPrint ? <div style={{ display: 'flex', gap: '5px', justifyContent: 'end' }}>
+  const action = onView ? <div style={{ display: 'flex', gap: '5px', justifyContent: 'end' }}>
     {(privilege?.payment?.update && onMerge) && (
       <MergeButton isOn={listPaymentSelected?.includes(id)} onClick={(e) => {
         e.stopPropagation()
@@ -65,7 +66,7 @@ export const createData = (
       size='small'
       onClick={(e) => {
         e.stopPropagation()
-        onPrint(id)
+        onView(id)
       }}
       style={{
         backgroundColor: `${theme.color.success}22`,
@@ -74,6 +75,20 @@ export const createData = (
       }}
     >
       <AttachMoneyRoundedIcon fontSize='small' />
+    </IconButton>
+    <IconButton
+      size='small'
+      onClick={(e) => {
+        e.stopPropagation()
+        onView(id, 'detail')
+      }}
+      style={{
+        backgroundColor: `${theme.color.success}22`,
+        borderRadius: theme.radius.primary,
+        color: theme.color.success,
+      }}
+    >
+      <PointOfSaleRoundedIcon fontSize='small' />
     </IconButton>
   </div> : <></>
   return {

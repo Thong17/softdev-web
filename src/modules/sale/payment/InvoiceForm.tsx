@@ -10,7 +10,7 @@ import { CustomButton, CustomInvoiceForm } from 'styles'
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
 import useWeb from 'hooks/useWeb'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import { currencyFormat, timeDifferent, timeFormat } from 'utils'
+import { currencyFormat, timeFormat } from 'utils'
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
 import { useForm } from 'react-hook-form'
@@ -69,7 +69,7 @@ export const InvoiceForm = forwardRef(
       id = null,
       defaultTax = 0,
       transaction,
-      reservationTransaction,
+      paymentTransaction,
       onUpdate,
       onUpdateStock,
       onPayment,
@@ -77,9 +77,7 @@ export const InvoiceForm = forwardRef(
       onChangeCustomer,
       listTransactions = [],
       selectedCustomer = initCustomer,
-      reservationData,
-      onCheckIn,
-      onCheckOut,
+      paymentData,
     }: any,
     ref
   ) => {
@@ -110,7 +108,7 @@ export const InvoiceForm = forwardRef(
 
     const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
     const [paymentId, setPaymentId] = useState(id)
-    const [reservation, setReservation] = useState<any>(null)    
+    const [payment, setPayment] = useState<any>(null)    
     const [transactions, setTransactions] = useState<ITransactionItem[]>([])
     const [discount, setDiscount] = useState({
       title: 'Discount',
@@ -135,7 +133,6 @@ export const InvoiceForm = forwardRef(
 
     const [customerDialog, setCustomerDialog] = useState({ open: false })
     const [customer, setCustomer] = useState(selectedCustomer)
-    const [isLoading, setIsLoading] = useState(false);
     const [printerSetting, setPrinterSetting] = useState({
       receiptPrinterName: '',
       receiptPrinterCharPerLine: 0,
@@ -180,8 +177,8 @@ export const InvoiceForm = forwardRef(
 
     useEffect(() => {
       if (
-        !reservation?.payment ||
-        reservation?.payment?.discounts?.length === 0
+        !payment ||
+        payment?.discounts?.length === 0
       )
         return setDiscount({
           title: 'Discount',
@@ -190,22 +187,22 @@ export const InvoiceForm = forwardRef(
           isFixed: false,
           isEditing: false,
         })
-      setDiscount(reservation?.payment?.discounts[0])
-    }, [reservation])
+      setDiscount(payment?.discounts[0])
+    }, [payment])
 
     useEffect(() => {
-      if (!reservation?.payment || reservation?.payment?.services?.length === 0)
+      if (!payment || payment?.services?.length === 0)
         return setTax({
           title: 'Tax',
           value: defaultTax,
           type: 'PCT',
           isEditing: false,
         })
-      setTax(reservation?.payment?.services[0])
-    }, [reservation, defaultTax])
+      setTax(payment?.services[0])
+    }, [payment, defaultTax])
 
     useEffect(() => {
-      if (!reservation?.payment || reservation?.payment?.vouchers?.length === 0)
+      if (!payment || payment?.vouchers?.length === 0)
         return setVoucher({
           title: 'Voucher',
           value: 0,
@@ -213,21 +210,15 @@ export const InvoiceForm = forwardRef(
           isFixed: false,
           isEditing: false,
         })
-      setVoucher(reservation?.payment?.vouchers[0])
-    }, [reservation])
-
-    const [structureTitle, setStructureTitle] = useState('')
-    useEffect(() => {
-      setReservation(reservationData)
-      let title = ''
-      reservationData?.structures?.forEach((structure, index) => {
-        title += reservationData?.structures?.length === index + 1 ? structure.title : structure.title + '-'
-      })
-      setStructureTitle(title)
-    }, [reservationData])
+      setVoucher(payment?.vouchers[0])
+    }, [payment])
 
     useEffect(() => {
-      if (transaction || reservationTransaction) return
+      setPayment(paymentData)
+    }, [paymentData])
+
+    useEffect(() => {
+      if (transaction || paymentTransaction) return
       setTransactions(listTransactions.map((item) => mappedTransaction(item)))
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listTransactions])
@@ -246,8 +237,8 @@ export const InvoiceForm = forwardRef(
     }, [transaction])
 
     useEffect(() => {
-      if (!reservationTransaction) return
-      setTransactions((prev) => [...prev, reservationTransaction])
+      if (!paymentTransaction) return
+      setTransactions((prev) => [...prev, paymentTransaction])
 
       if (!paymentId) return
       recalculatePayment(paymentId, {})
@@ -256,7 +247,7 @@ export const InvoiceForm = forwardRef(
         })
         .catch((msg) => notify(msg, 'error'))
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [reservationTransaction])
+    }, [paymentTransaction])
 
     useEffect(() => {
       setCustomer(selectedCustomer)
@@ -316,18 +307,6 @@ export const InvoiceForm = forwardRef(
       })
       setSubtotal({ USD: 0, KHR: 0 })
       setTransactions([])
-    }
-
-    const handleClearPayment = () => {
-      confirm({
-        title: 'Are you sure you want to clear the invoice?',
-        description: 'Clear the invoice will erase all the transaction.',
-        variant: 'error',
-      })
-        .then(() => {
-          onClearPayment()
-        })
-        .catch(() => {})
     }
 
     useEffect(() => {
@@ -486,139 +465,33 @@ export const InvoiceForm = forwardRef(
       setCustomerDialog({ ...customerDialog, open: true })
     }
 
-    const handleCheckIn = () => {
-      setIsLoading(true)
-      Axios({
-        method: 'PUT',
-        url: `/sale/reservation/checkIn/${reservation._id}`,
-        body: {
-          discounts: [discount],
-          vouchers: [voucher],
-          services: [tax],
-        },
-      })
-        .then((data) => {
-          const responseData = data?.data?.data
-          setReservation(responseData)
-          setCustomer(responseData?.customer)
-          onCheckIn(responseData)
-        })
-        .catch((err) => notify(err?.response?.data?.msg, 'error'))
-        .finally(() => setIsLoading(false))
-    }
-
-    const handleCheckOut = () => {
-      confirm({
-        title: 'Are you sure you want to check out this reservation?',
-        description: 'Check out will update the reservation status.',
-        variant: 'error',
-      })
-        .then(() => {
-          setIsLoading(true)
-          Axios({
-            method: 'PUT',
-            url: `/sale/reservation/checkOut/${reservation._id}`,
-          })
-            .then((data) => {
-              setReservation(data?.data?.data)
-              onCheckOut(data?.data?.data)
-            })
-            .catch((err) => notify(err?.response?.data?.msg, 'error'))
-            .finally(() => setIsLoading(false))
-        })
-        .catch(() => {})
-    }
-
     const renderActions = () => {
-      if (!reservation) return null
-
-      switch (reservation.status) {
-        case 'reserved':
-          return (
-            <CustomButton
-              isLoading={isLoading}
-              styled={theme}
-              fullWidth
-              onClick={handleCheckIn}
-              style={{
-                backgroundColor: `${theme.color.success}22`,
-                color: theme.color.success,
-                borderRadius: theme.radius.secondary,
-              }}
-            >
-              <TextEllipsis style={{ maxWidth: 170 }}>{language['START']} {structureTitle}</TextEllipsis>
-            </CustomButton>
-          )
-
-        case 'occupied':
-          return (
-            <>
-              <span
-                style={{ width: '100%', display: 'grid', placeItems: 'center' }}
-              >
-                {timeDifferent(Date.now(), reservation?.startAt)}
-              </span>
-              <CustomButton
-                isLoading={isLoading}
-                styled={theme}
-                fullWidth
-                onClick={handleCheckOut}
-                style={{
-                  backgroundColor: `${theme.color.error}22`,
-                  color: theme.color.error,
-                  borderRadius: theme.radius.secondary,
-                }}
-              >
-                <TextEllipsis style={{ maxWidth: 170 }}>{language['STOP']} {structureTitle}</TextEllipsis>
-              </CustomButton>
-            </>
-          )
-
-        default:
-          if (reservation?.payment?.status) {
-            return (
-              <>
-                <span
-                  style={{
-                    width: '100%',
-                    display: 'grid',
-                    placeItems: 'center',
-                  }}
-                >
-                  {language['COMPLETED']}
-                </span>
-                <CustomButton
-                  styled={theme}
-                  fullWidth
-                  onClick={handleClickPayment}
-                  style={{
-                    backgroundColor: `${theme.color.info}22`,
-                    color: theme.color.info,
-                    borderRadius: theme.radius.secondary,
-                  }}
-                >
-                  <TextEllipsis style={{ maxWidth: 170 }}>{language['DETAIL']} {structureTitle}</TextEllipsis>
-                </CustomButton>
-              </>
-            )
-          }
-          return (
-            <>
-              <CustomButton
-                styled={theme}
-                fullWidth
-                onClick={handleClickPayment}
-                style={{
-                  backgroundColor: `${theme.color.success}22`,
-                  color: theme.color.success,
-                  borderRadius: theme.radius.secondary,
-                }}
-              >
-                <TextEllipsis style={{ maxWidth: 170 }}>{language['PAYMENT']} {structureTitle}</TextEllipsis>
-              </CustomButton>
-            </>
-          )
-      }
+      if (!payment) return null
+      return payment?.status ? (
+        <CustomButton
+          styled={theme}
+          fullWidth
+          onClick={handleClickPayment}
+          style={{
+            backgroundColor: `${theme.color.info}22`,
+            color: theme.color.info,
+            borderRadius: theme.radius.secondary,
+          }}
+        >
+          <TextEllipsis style={{ maxWidth: 170 }}>{language['DETAIL']}</TextEllipsis>
+        </CustomButton>
+      ) : <CustomButton
+        styled={theme}
+        fullWidth
+        onClick={handleClickPayment}
+        style={{
+          backgroundColor: `${theme.color.success}22`,
+          color: theme.color.success,
+          borderRadius: theme.radius.secondary,
+        }}
+      >
+        <TextEllipsis style={{ maxWidth: 170 }}>{language['PAYMENT']}</TextEllipsis>
+      </CustomButton>
     }
 
     const handleIncreaseQuantity = (event, transactionId) => {
@@ -676,8 +549,8 @@ export const InvoiceForm = forwardRef(
             value: option.name?.English
           }))
         }],
-        createdAt: timeFormat(reservationData?.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-        invoice: reservationData?.payment?.invoice
+        createdAt: timeFormat(paymentData?.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+        invoice: paymentData?.payment?.invoice
       }, printerSetting.thermalPrinterName, {
         width: Number(printerSetting.thermalPrinterWidth),
         height: Number(printerSetting.thermalPrinterHeight),
@@ -698,7 +571,7 @@ export const InvoiceForm = forwardRef(
             onClickCustomer={(data) => {
               Axios({
                 method: 'PUT',
-                url: `/sale/reservation/update/${reservation?._id}`,
+                url: `/sale/payment/update/${payment?._id}`,
                 body: { customer: data?.id }
               })
                 .then(resp => {
@@ -985,9 +858,9 @@ export const InvoiceForm = forwardRef(
                   return (
                     <div
                       className='item'
-                      style={{ cursor: reservation?.payment?.status ? 'default' : 'pointer' }}
+                      style={{ cursor: payment?.status ? 'default' : 'pointer' }}
                       key={key}
-                      onClick={() => !reservation?.payment?.status && handleClickTransaction(transaction)}
+                      onClick={() => !payment?.status && handleClickTransaction(transaction)}
                     >
                       <div className='item-description'>
                         <div className='profile'>
@@ -1008,9 +881,9 @@ export const InvoiceForm = forwardRef(
                         <div className='quantity'>
                           <span className='main-description'>{language['QTY']}</span>
                           <div style={{ display: 'flex', alignItems: 'center' }}>
-                            {!reservation?.payment?.status && <IconButton onClick={(event) => handleDecreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>-</IconButton>}
+                            {!payment?.status && <IconButton onClick={(event) => handleDecreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>-</IconButton>}
                             <span style={{ margin: '0 1px' }}>{transaction.quantity}</span>
-                            {!reservation?.payment?.status && <IconButton onClick={(event) => handleIncreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>+</IconButton>}
+                            {!payment?.status && <IconButton onClick={(event) => handleIncreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>+</IconButton>}
                           </div>
                         </div>
                         <div className='discount'>
@@ -1035,7 +908,7 @@ export const InvoiceForm = forwardRef(
                             </span>
                           </div>
                           <div style={{ display: 'flex', gap: 5, minWidth: 70, justifyContent: 'end' }}>
-                            {(!reservation?.payment?.status && transaction.hasThermalPrinting) && <IconButton
+                            {(!payment?.status && transaction.hasThermalPrinting) && <IconButton
                               onClick={(e) => handlePrintTransaction(e, transaction)}
                               style={{
                                 backgroundColor: `${theme.color.info}22`,
@@ -1045,7 +918,7 @@ export const InvoiceForm = forwardRef(
                                 style={{ fontSize: 17, color: theme.color.info }}
                               />
                             </IconButton>}
-                            {!reservation?.payment?.status && <IconButton
+                            {!payment?.status && <IconButton
                               style={{ backgroundColor: `${theme.color.error}22`, }}
                               onClick={(event) =>
                                 handleRemoveTransaction(event, transaction.id)
@@ -1086,7 +959,7 @@ export const InvoiceForm = forwardRef(
                 >
                   <span
                     onClick={() =>
-                      !reservation?.payment?.status && setDiscount((prev) => ({
+                      !payment?.status && setDiscount((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -1112,7 +985,7 @@ export const InvoiceForm = forwardRef(
                   ) : (
                     <span
                       onClick={() =>
-                        !reservation?.payment?.status && setDiscount((prev) => ({
+                        !payment?.status && setDiscount((prev) => ({
                           ...prev,
                           isEditing: !prev.isEditing,
                         }))
@@ -1136,7 +1009,7 @@ export const InvoiceForm = forwardRef(
                 >
                   <span
                     onClick={() =>
-                      !reservation?.payment?.status && setTax((prev) => ({
+                      !payment?.status && setTax((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -1163,7 +1036,7 @@ export const InvoiceForm = forwardRef(
                   ) : (
                     <span
                       onClick={() =>
-                        !reservation?.payment?.status && setTax((prev) => ({
+                        !payment?.status && setTax((prev) => ({
                           ...prev,
                           isEditing: !prev.isEditing,
                         }))
@@ -1182,7 +1055,7 @@ export const InvoiceForm = forwardRef(
                 >
                   <span
                     onClick={() =>
-                      !reservation?.payment?.status && setVoucher((prev) => ({
+                      !payment?.status && setVoucher((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -1208,7 +1081,7 @@ export const InvoiceForm = forwardRef(
                   ) : (
                     <span
                       onClick={() =>
-                        !reservation?.payment?.status && setVoucher((prev) => ({
+                        !payment?.status && setVoucher((prev) => ({
                           ...prev,
                           isEditing: !prev.isEditing,
                         }))

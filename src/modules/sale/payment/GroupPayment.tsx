@@ -4,7 +4,7 @@ import { getListPayment, selectListPayment } from 'modules/report/payment/redux'
 import React, { useEffect, useState } from 'react'
 import { Header } from './Header'
 import { ExpandableTable } from 'components/shared/table/ExpandableTable'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
@@ -28,6 +28,7 @@ const GroupPayment = () => {
     const { notify } = useNotify()
     const { language } = useLanguage()
     const { user } = useAuth()
+    const navigate = useNavigate()
     const [listPaymentSelected, setListPaymentSelected] = useState<string[]>([]);
 
     const [paymentDialog, setPaymentDialog] = useState<any>({
@@ -93,7 +94,8 @@ const GroupPayment = () => {
         dispatch(getListPayment({ query: queryParams }))
     }, [dispatch, queryParams])
 
-    const handleView = (id) => {
+    const handleView = (id, type) => {
+        if (type === 'detail') return navigate(`/sale/payment/${id}`)
         Axios({
             url: `/sale/payment/detail/${id}`,
             method: 'GET',

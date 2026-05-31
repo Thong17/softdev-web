@@ -61,6 +61,7 @@ import { Queue } from 'modules/function/queue'
 import { Loan } from 'modules/sale/loan'
 import { DetailLoan } from 'modules/sale/loan/Detail'
 import GroupPayment from 'modules/sale/payment/GroupPayment'
+import { PaymentDetail } from 'modules/sale/payment/PaymentDetail'
 
 
 const routes: RouteObject[] = [
@@ -443,6 +444,10 @@ const routes: RouteObject[] = [
         element: <>
           <GroupPayment />      
         </>
+      },
+      {
+        path: 'payment/:id',
+        element: <PaymentDetail />,
       },
     ],
   },
