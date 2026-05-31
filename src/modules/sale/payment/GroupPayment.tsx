@@ -14,6 +14,7 @@ import { currencyFormat } from 'utils/index'
 import useAuth from 'hooks/useAuth'
 import { columnData, createData } from './constant'
 import { PaymentForm } from '../cashing/PaymentForm'
+import GroupPaymentDialog from './GroupPaymentDialog'
 
 const GroupPayment = () => {
     const dispatch = useAppDispatch()
@@ -32,6 +33,11 @@ const GroupPayment = () => {
     const [paymentDialog, setPaymentDialog] = useState<any>({
         open: false,
         payment: null,
+    })
+
+    const [groupPaymentDialog, setGroupPaymentDialog] = useState<any>({
+        open: false,
+        payment: [],
     })
 
     const toggleRowExpansion = async (id: string) => {
@@ -143,9 +149,10 @@ const GroupPayment = () => {
     return (
         <Container
             header={
-                <Header styled={theme} listPaymentSelected={listPaymentSelected} onOpenGroupPayment={() => setPaymentDialog({ open: true })} />
+                <Header styled={theme} listPaymentSelected={listPaymentSelected} onOpenGroupPayment={() => setGroupPaymentDialog({ open: true, payments: listPaymentSelected })} />
             }
-        >
+        >   
+            <GroupPaymentDialog dialog={groupPaymentDialog} setDialog={setGroupPaymentDialog} />
             <PaymentForm
                 source="report"
                 dialog={paymentDialog}
