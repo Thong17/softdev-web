@@ -69,9 +69,9 @@ export const createData = (
         onView(id)
       }}
       style={{
-        backgroundColor: `${theme.color.success}22`,
+        backgroundColor: `${theme.color.info}22`,
         borderRadius: theme.radius.primary,
-        color: theme.color.success,
+        color: theme.color.info,
       }}
     >
       <AttachMoneyRoundedIcon fontSize='small' />

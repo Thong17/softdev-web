@@ -202,9 +202,9 @@ export const MergeButton: FC<ButtonProps & { isOn?: boolean }> = ({ disabled, is
     <IconButton
       size='small'
       style={{
-        backgroundColor: disabled ? `${theme.text.secondary}22` : (isOn ? `${theme.text.primary}22` : `${theme.color.info}22`),
+        backgroundColor: disabled ? `${theme.text.secondary}22` : (isOn ? `${theme.text.primary}22` : `${theme.color.warning}22`),
         borderRadius: theme.radius.primary,
-        color: disabled ? theme.text.secondary : (isOn ? theme.text.primary : theme.color.info),
+        color: disabled ? theme.text.secondary : (isOn ? theme.text.primary : theme.color.warning),
       }}
       disabled={disabled}
       {...prop}

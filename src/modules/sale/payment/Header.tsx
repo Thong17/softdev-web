@@ -27,8 +27,8 @@ export const Header = ({ styled, onOpenGroupPayment, listPaymentSelected, privil
         onClick={() => onOpenGroupPayment()}
         style={{
           marginLeft: 10,
-          backgroundColor: `${styled.color.info}22`,
-          color: styled.color.info,
+          backgroundColor: `${styled.color.warning}22`,
+          color: styled.color.warning,
         }}
         styled={styled}
       >
