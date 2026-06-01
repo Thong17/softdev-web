@@ -143,6 +143,7 @@ export const Cashing = () => {
       customer: null,
     })
     setDisableProduct(false)
+    setTable('--')
   }
 
   const handleChangePayment = (data) => {

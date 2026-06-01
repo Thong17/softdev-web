@@ -218,6 +218,7 @@ const MiniInput: ForwardRefRenderFunction<
             fullWidth
             onChange={(e) => setSearchText(e.target.value)}
             InputProps={{
+              autoComplete: 'off',
               startAdornment: (
                 <InputAdornment position='start'>
                   <SearchIcon />
