@@ -15,6 +15,14 @@ export const getListPayment = createAsyncThunk(
   }
 )
 
+export const getDetailPayment = async ({ id }: any) => {
+  const response = await Axios({
+    method: 'GET',
+    url: `/sale/payment/detail/${id}`,
+  })
+  return response?.data
+}
+
 export const paymentSlice = createSlice({
   name: 'payment',
   initialState,

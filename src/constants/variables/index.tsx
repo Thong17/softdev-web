@@ -29,3 +29,15 @@ export const invoiceColumns: ITableColumn<string>[] = [
   { id: 'disc', label: 'Disc' },
   { id: 'price', label: 'Price' },
 ]
+
+export const tableOptions = [
+  { label: '--', value: '--' },
+  ...Array.from({ length: 99 }, (_, i) => {
+    const num = String(i + 1).padStart(2, '0');
+
+    return {
+      label: num,
+      value: num,
+    };
+  }),
+];

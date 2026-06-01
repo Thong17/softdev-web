@@ -63,6 +63,12 @@ export const sideNav: any = [
         icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'loan'
       },
+      {
+        route: '/sale/payment',
+        title: 'PAYMENT',
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
+        permission: 'payment'
+      },
     ]
   },
   {

@@ -15,20 +15,19 @@ import { ProductForm } from '../cashing/ProductForm'
 import { DrawerForm } from '../cashing/DrawerForm'
 import { PaymentForm } from './PaymentForm'
 import useAuth from 'hooks/useAuth'
-import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { InvoiceForm, mappedTransaction } from './InvoiceForm'
+import { InvoiceForm } from './InvoiceForm'
 import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 import { getListCodeProduct, selectListCodeProduct } from 'shared/redux'
 
-export const Cashing = ({ id = null, transactions = [], customer, reservationData = null, onReload }: any) => {
+export const Cashing = ({ id = null, transactions = [], customer, paymentData = null, onReload }: any) => {
   const { user } = useAuth()
   const { notify } = useNotify()
   const { device } = useWeb()
   const dispatch = useAppDispatch()
   const { data: preview } = useAppSelector(selectInfoStore)
   const [paymentId, setPaymentId] = useState(id)
-  const [reservation, setReservation] = useState(reservationData)
+  const [payment, setPayment] = useState(paymentData)
   const { data: listCode } = useAppSelector(selectListCodeProduct)
   const [productDialog, setProductDialog] = useState<any>({
     open: false,
@@ -43,9 +42,9 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   })
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
-  const [reservationTransaction, setReservationTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
   const [disableProduct, setDisableProduct] = useState(true)
+  const [table, setTable] = useState('--');
 
   useEffect(() => {
     dispatch(getInfoStore())
@@ -53,8 +52,8 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   }, [dispatch])
 
   useEffect(() => {
-    setReservation(reservationData)
-  }, [reservationData])
+    setPayment(paymentData)
+  }, [paymentData])
   
   useEffect(() => {
     setPaymentId(id)
@@ -65,16 +64,11 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
   }, [customer])
 
   useEffect(() => {
-    let isDisabled = reservation && !reservation.payment
-    let isCompleted = reservation?.isCompleted
-
-    
-    if (!reservation)  setDisableProduct(true)
-    else if (!isDisabled) setDisableProduct(isCompleted)
-    else setDisableProduct(true)
-    
-    setPaymentDialog(prev => ({ ...prev, payment: reservation?.payment }))
-  }, [reservation])
+    if (!payment) setDisableProduct(true)
+    let isCompleted = payment?.status
+    setDisableProduct(isCompleted)
+    setPaymentDialog(prev => ({ ...prev, payment }))
+  }, [payment])
   
   const handleClickProduct = (id) => {
     setProductDialog({ ...productDialog, productId: id })
@@ -86,30 +80,6 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
     if (paymentDialog.payment) {
       return setPaymentDialog({ ...paymentDialog, open: true })
     }
-    const body = {
-      transactions: data.transactions.map((transaction) => transaction.id),
-      discounts: [data.discount],
-      vouchers: [data.voucher],
-      services: [data.tax],
-      customer: paymentDialog.customer?.id,
-    }
-
-    Axios({
-      method: 'POST',
-      url: '/sale/payment/create',
-      body,
-    })
-      .then((data) => {
-        setPaymentDialog({
-          ...paymentDialog,
-          open: true,
-          payment: data?.data?.data,
-        })
-        setPaymentId(data?.data?.data?._id)
-      })
-      .catch((err) => {
-        notify(err?.response?.data?.msg, 'error')
-      })
   }
 
   const handleChangeCustomer = (data) => {
@@ -126,17 +96,6 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
       ...paymentDialog,
       payment: data,
     })
-  }
-
-  const handleCheckedIn = (data) => {
-    setReservation(data)
-    setPaymentId(data?.payment?._id)
-    if (!data.payment?.transactions[0]) return
-    setReservationTransaction(mappedTransaction(data.payment?.transactions[0]))
-  }
-
-  const handleCheckedOut = (data) => {
-    setReservation(data)
   }
 
   const handleScanProduct = (code) => {
@@ -187,6 +146,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
         dialog={paymentDialog}
         setDialog={setPaymentDialog}
         onClear={handleClearPayment}
+        onCheckout={() => setDisableProduct(true)}
       />
       <div
         style={{
@@ -259,11 +219,10 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
             onChangePayment={handleChangePayment}
             listTransactions={transactions}
             selectedCustomer={customer}
-            reservationData={reservation}
-            onCheckIn={handleCheckedIn}
-            onCheckOut={handleCheckedOut}
-            reservationTransaction={reservationTransaction}
-            invoice={paymentDialog.payment?.invoice}
+            paymentData={payment}
+            table={table}
+            setTable={setTable}
+            disableForm={disableProduct}
           />
         </div>
       </div>

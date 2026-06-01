@@ -44,6 +44,7 @@ export const Cashing = () => {
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
+  const [table, setTable] = useState('--');
 
   useEffect(() => {
     dispatch(getInfoStore())
@@ -64,6 +65,7 @@ export const Cashing = () => {
       return setPaymentDialog({ ...paymentDialog, open: true })
     }
     const body = {
+      table: table,
       transactions: data.transactions.map((transaction) => transaction.id),
       discounts: [data.discount],
       vouchers: [data.voucher],
@@ -297,7 +299,10 @@ export const Cashing = () => {
             onClear={handleClearPayment}
             onChangeCustomer={handleChangeCustomer}
             onChangePayment={handleChangePayment}
+            table={table}
+            setTable={setTable}
             disableForm={disableProduct}
+            invoice={paymentDialog.payment?.invoice}
           />
         </div>
       </div>

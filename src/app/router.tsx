@@ -60,6 +60,8 @@ import { HintButton } from 'components/shared/HintButton'
 import { Queue } from 'modules/function/queue'
 import { Loan } from 'modules/sale/loan'
 import { DetailLoan } from 'modules/sale/loan/Detail'
+import GroupPayment from 'modules/sale/payment/GroupPayment'
+import { PaymentDetail } from 'modules/sale/payment/PaymentDetail'
 
 
 const routes: RouteObject[] = [
@@ -434,6 +436,18 @@ const routes: RouteObject[] = [
             <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
           </AuthGuard>
         ),
+      },
+
+      // Payment
+      {
+        path: 'payment',
+        element: <>
+          <GroupPayment />      
+        </>
+      },
+      {
+        path: 'payment/:id',
+        element: <PaymentDetail />,
       },
     ],
   },

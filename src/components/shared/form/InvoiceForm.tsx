@@ -32,6 +32,8 @@ import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import ReceiptDialog from '../dialog/ReceiptDialog'
 import { getStore, selectStore } from 'modules/organize/store/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
+import TableBarRoundedIcon from '@mui/icons-material/TableBarRounded'
+import { tableOptions } from 'constants/variables'
 
 export const currencyOptions: IOptions[] = [
   {
@@ -118,7 +120,7 @@ export const calculatePaymentTotal = (
   } = voucher
   const { sellRate = 4000 } = exchangeRate
 
-  let total = subtotal.USD + subtotal.KHR / sellRate
+  let total = subtotal.USD + (subtotal.KHR / sellRate)
 
   const { total: discountedTotal } = calculateTransactionTotal(
     { value: total, currency: 'USD' },
@@ -187,7 +189,10 @@ export const InvoiceForm = forwardRef(({
   onChangePayment,
   onChangeCustomer,
   listTransactions = [],
+  table,
+  setTable,
   disableForm = false,
+  invoice = null
 }: any, ref) => {
   const {
     register,
@@ -571,6 +576,15 @@ export const InvoiceForm = forwardRef(({
     // eslint-disable-next-line
   }, [])
 
+  const handleChangeTable = (value) => {
+    if (paymentId) {
+      recalculatePayment(paymentId, { table: value })
+        .then(() => notify(`Table updated to ${value} successfully`, 'success'))
+        .catch(err => notify(err, 'error'))
+    }
+    setTable(value)
+  }
+
   return (
     <CustomInvoiceForm
       mode={invoiceBar ? 'expand' : 'compact'}
@@ -596,13 +610,27 @@ export const InvoiceForm = forwardRef(({
           }}
         >
           {invoiceBar && <CustomerStatistic mode={paymentId ? 'view' : 'edit'} point={customer.point} phone={customer.displayName} name={customer.fullName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} onClear={handleClearCustomer} />}
-          <div
-            className='toggle'
-            style={{ position: 'relative' }}
-            onClick={() => toggleInvoiceBar()}
-          >
-            <ShoppingCartRoundedIcon fontSize='small' />
-            {totalQuantity > 0 && <NotificationLabel value={totalQuantity} />}
+          <div style={{ display: 'flex' }}>
+            {(invoiceBar && setTable) && <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginRight: '-30px' }}>
+              <TableBarRoundedIcon style={{ fontSize: 22 }} />
+              <MiniSelectField
+                style={{ minWidth: 50, width: 50 }}
+                options={tableOptions}
+                value={table}
+                search={true}
+                onChange={(event) =>
+                  handleChangeTable(event.target.value)
+                }
+              />
+            </div>}
+            <div
+              className='toggle'
+              style={{ position: 'relative' }}
+              onClick={() => toggleInvoiceBar()}
+            >
+              <ShoppingCartRoundedIcon fontSize='small' />
+              {totalQuantity > 0 && <NotificationLabel value={totalQuantity} />}
+            </div>
           </div>
         </div>
         <div className='invoice-form'>
@@ -1047,7 +1075,7 @@ export const InvoiceForm = forwardRef(({
               </div>
             </div>
             <div className='total'>
-              <span>{language['TOTAL']}</span>
+              <span>{language['TOTAL']} {invoice && <span title={invoice} style={{ color: theme.color.success, fontWeight: 'bold' }}>#{invoice?.split('-')[1]}</span>}</span>
               <span>
                 {currencyFormat(
                   calculatePaymentTotal(subtotal, discount, tax, voucher, exchangeRate),
