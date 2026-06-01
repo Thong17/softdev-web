@@ -263,6 +263,7 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
             onCheckIn={handleCheckedIn}
             onCheckOut={handleCheckedOut}
             reservationTransaction={reservationTransaction}
+            invoice={paymentDialog.payment?.invoice}
           />
         </div>
       </div>

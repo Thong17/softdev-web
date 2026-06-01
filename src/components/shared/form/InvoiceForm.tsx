@@ -200,6 +200,7 @@ export const InvoiceForm = forwardRef(({
   table,
   setTable,
   disableForm = false,
+  invoice = null
 }: any, ref) => {
   const {
     register,
@@ -1082,7 +1083,7 @@ export const InvoiceForm = forwardRef(({
               </div>
             </div>
             <div className='total'>
-              <span>{language['TOTAL']}</span>
+              <span>{language['TOTAL']} {invoice && <span title={invoice} style={{ color: theme.color.success, fontWeight: 'bold' }}>#{invoice?.split('-')[1]}</span>}</span>
               <span>
                 {currencyFormat(
                   calculatePaymentTotal(subtotal, discount, tax, voucher, exchangeRate),

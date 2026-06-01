@@ -302,6 +302,7 @@ export const Cashing = () => {
             table={table}
             setTable={setTable}
             disableForm={disableProduct}
+            invoice={paymentDialog.payment?.invoice}
           />
         </div>
       </div>

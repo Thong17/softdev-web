@@ -80,6 +80,7 @@ export const InvoiceForm = forwardRef(
       reservationData,
       onCheckIn,
       onCheckOut,
+      invoice,
     }: any,
     ref
   ) => {
@@ -1225,7 +1226,7 @@ export const InvoiceForm = forwardRef(
                 </div>
               </div>
               <div className='total'>
-                <span>{language['TOTAL']}</span>
+                <span>{language['TOTAL']} {invoice && <span title={invoice} style={{ color: theme.color.success, fontWeight: 'bold' }}>#{invoice?.split('-')[1]}</span>}</span>
                 <span>
                   {currencyFormat(
                     calculatePaymentTotal(
