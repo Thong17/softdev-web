@@ -47,6 +47,7 @@ import { TextEllipsis } from 'components/shared/TextEllipsis'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import { handleThermalPrint } from 'utils/printer'
 import TableBarRoundedIcon from '@mui/icons-material/TableBarRounded'
+import { tableOptions } from 'constants/variables'
 
 export const mappedTransaction = (transaction) => {
   return {
@@ -61,15 +62,6 @@ export const mappedTransaction = (transaction) => {
     options: transaction.options ?? [],
   }
 }
-
-const tableOption = [
-  { label: '--', value: '--' },
-  { label: '01', value: '01' },
-  { label: '02', value: '02' },
-  { label: '03', value: '03' },
-  { label: '04', value: '04' },
-  { label: '050', value: '050' },
-]
 
 export const initCustomer = { displayName: null, id: null, point: 0 }
 
@@ -638,7 +630,7 @@ export const InvoiceForm = forwardRef(
                 <TableBarRoundedIcon style={{ fontSize: 22 }} />
                 <MiniSelectField
                   style={{ minWidth: 50, width: 50 }}
-                  options={tableOption}
+                  options={tableOptions}
                   value={table}
                   search={true}
                   disabled={disableForm}

@@ -33,6 +33,7 @@ import ReceiptDialog from '../dialog/ReceiptDialog'
 import { getStore, selectStore } from 'modules/organize/store/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import TableBarRoundedIcon from '@mui/icons-material/TableBarRounded'
+import { tableOptions } from 'constants/variables'
 
 export const currencyOptions: IOptions[] = [
   {
@@ -175,15 +176,6 @@ export const recalculatePayment = (paymentId, data) => {
       .catch(err => reject(err?.response?.data?.msg))
   })
 }
-
-const tableOption = [
-  { label: '--', value: '--' },
-  { label: '01', value: '01' },
-  { label: '02', value: '02' },
-  { label: '03', value: '03' },
-  { label: '04', value: '04' },
-  { label: '050', value: '050' },
-]
 
 export const InvoiceForm = forwardRef(({
   id = null,
@@ -623,7 +615,7 @@ export const InvoiceForm = forwardRef(({
               <TableBarRoundedIcon style={{ fontSize: 22 }} />
               <MiniSelectField
                 style={{ minWidth: 50, width: 50 }}
-                options={tableOption}
+                options={tableOptions}
                 value={table}
                 search={true}
                 onChange={(event) =>
