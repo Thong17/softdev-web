@@ -39,7 +39,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   const [totalReceive, setTotalReceive] = useState({ KHR: 0, USD: 0, total: 0 })
   const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
   const [payment, setPayment] = useState<any>(null)
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'transfer' | null>('cash')
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'transfer' | null>(null)
   const [totalPayment, setTotalPayment] = useState({
     value: 0,
     currency: 'USD',
