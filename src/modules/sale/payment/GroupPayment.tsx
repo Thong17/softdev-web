@@ -147,6 +147,7 @@ const GroupPayment = () => {
             )
             })
         setRowData(listTransactions)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [payments, user, theme, notify, listPaymentSelected])
 
     return (

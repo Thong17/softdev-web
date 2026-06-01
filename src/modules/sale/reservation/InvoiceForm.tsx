@@ -319,18 +319,6 @@ export const InvoiceForm = forwardRef(
       setTransactions([])
     }
 
-    const handleClearPayment = () => {
-      confirm({
-        title: 'Are you sure you want to clear the invoice?',
-        description: 'Clear the invoice will erase all the transaction.',
-        variant: 'error',
-      })
-        .then(() => {
-          onClearPayment()
-        })
-        .catch(() => {})
-    }
-
     useEffect(() => {
       setIsFixed(isFixedValue)
     }, [isFixedValue])

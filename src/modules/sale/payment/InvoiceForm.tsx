@@ -185,7 +185,7 @@ export const InvoiceForm = forwardRef(
           })
         })
         .catch(err => notify(err?.response?.data?.msg, 'error'))
-      //eslint-disable-next-line
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -229,6 +229,7 @@ export const InvoiceForm = forwardRef(
     useEffect(() => {
       setPayment(paymentData)
       setTable(paymentData?.table || '--')
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [paymentData])
 
     useEffect(() => {
