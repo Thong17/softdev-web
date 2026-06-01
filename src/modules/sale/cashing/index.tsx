@@ -44,7 +44,7 @@ export const Cashing = () => {
   const { theme } = useTheme()
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
-  const [table, setTable] = useState('');
+  const [table, setTable] = useState('--');
 
   useEffect(() => {
     dispatch(getInfoStore())

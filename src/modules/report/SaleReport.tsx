@@ -264,16 +264,16 @@ export const SaleReport = () => {
           payment.paymentMethod?.toUpperCase(),
           currencyFormat(payment.subtotal.BOTH, 'USD'),
           currencyFormat(
+              payment.vouchers[0]?.value,
+              payment.vouchers[0]?.type,
+          ),
+          currencyFormat(
               payment.discounts[0]?.value,
               payment.discounts[0]?.type,
           ),
           currencyFormat(
               payment.services[0]?.value,
               payment.services[0]?.type,
-          ),
-          currencyFormat(
-              payment.vouchers[0]?.value,
-              payment.vouchers[0]?.type,
           ),
           currencyFormat(payment.total.value, payment.total.currency),
           payment.state,

@@ -5,10 +5,10 @@ import { TextHighlight } from 'components/shared/TextHighlight'
 import moment from 'moment'
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
 import PointOfSaleRoundedIcon from '@mui/icons-material/PointOfSaleRounded'
+import TableBarRoundedIcon from '@mui/icons-material/TableBarRounded'
 
 export const columnData: ITableColumn<any>[] = [
   { id: 'invoice', label: 'INVOICE' },
-  { id: 'type', label: 'TYPE' },
   { id: 'subtotal', label: 'SUBTOTAL' },
   { id: 'discount', label: 'DISCOUNT' },
   { id: 'tax', label: 'TAX' },
@@ -16,8 +16,8 @@ export const columnData: ITableColumn<any>[] = [
   { id: 'total', label: 'TOTAL' },
   { id: 'status', label: 'STATUS' },
   { id: 'table', label: 'TABLE' },
-  {id: 'createdAt', label: 'CREATED\u00a0AT' },
-  { id: 'createdBy', label: 'Created\u00a0By' },
+  { id: 'createdAt', label: 'CREATED_AT' },
+  { id: 'createdBy', label: 'CREATED_BY' },
   { id: 'action', label: 'ACTION', align: 'center' },
 ]
 export interface Data {
@@ -56,7 +56,7 @@ export const createData = (
   listPaymentSelected?: string[]
 ): Data => {
   const action = onView ? <div style={{ display: 'flex', gap: '5px', justifyContent: 'end' }}>
-    {(privilege?.payment?.update && onMerge) && (
+    {(privilege?.payment?.merge && onMerge) && (
       <MergeButton isOn={listPaymentSelected?.includes(id)} onClick={(e) => {
         e.stopPropagation()
         onMerge(id)
@@ -99,10 +99,10 @@ export const createData = (
     discount,
     tax,
     voucher,
-    total,
+    total: <TextHighlight text={total} color={theme.color.success} size={14} />,
     status: <TextHighlight text={status} color={status === 'COMPLETED' ? theme.color.success : theme.color.warning} />,
-    table,
-    createdAt: moment(createdAt).format('DD/MM/YYYY HH:mm'),
+    table: <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><TableBarRoundedIcon fontSize='small' style={{ color: table === '--' ? theme.color.error : theme.color.info }} />{table}</div>,
+    createdAt: moment(createdAt).fromNow(),
     createdBy,
     action
   }

@@ -16,14 +16,14 @@ const RequestNotification = ({ qty }) => {
   )
 }
 
-export const Header = ({ styled, onOpenGroupPayment, listPaymentSelected }) => {
+export const Header = ({ styled, onOpenGroupPayment, listPaymentSelected, privilege }) => {
   const { language } = useLanguage()
   return (
     <Box
       sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
     >
       <Breadcrumbs page='payment' />
-      <CustomButton
+      {privilege?.payment?.merge && <CustomButton
         onClick={() => onOpenGroupPayment()}
         style={{
           marginLeft: 10,
@@ -34,7 +34,7 @@ export const Header = ({ styled, onOpenGroupPayment, listPaymentSelected }) => {
       >
         {listPaymentSelected.length > 0 && <RequestNotification qty={listPaymentSelected.length} />}
         {language['GROUP_PAYMENT']}
-      </CustomButton>
+      </CustomButton>}
     </Box>
   )
 }

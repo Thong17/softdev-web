@@ -177,6 +177,7 @@ export const recalculatePayment = (paymentId, data) => {
 }
 
 const tableOption = [
+  { label: '--', value: '--' },
   { label: '01', value: '01' },
   { label: '02', value: '02' },
   { label: '03', value: '03' },
@@ -582,6 +583,15 @@ export const InvoiceForm = forwardRef(({
     // eslint-disable-next-line
   }, [])
 
+  const handleChangeTable = (value) => {
+    if (paymentId) {
+      recalculatePayment(paymentId, { table: value })
+        .then(() => notify(`Table updated to ${value} successfully`, 'success'))
+        .catch(err => notify(err, 'error'))
+    }
+    setTable(value)
+  }
+
   return (
     <CustomInvoiceForm
       mode={invoiceBar ? 'expand' : 'compact'}
@@ -608,7 +618,7 @@ export const InvoiceForm = forwardRef(({
         >
           {invoiceBar && <CustomerStatistic mode={paymentId ? 'view' : 'edit'} point={customer.point} phone={customer.displayName} name={customer.fullName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} onClear={handleClearCustomer} />}
           <div style={{ display: 'flex' }}>
-            {invoiceBar && <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginRight: '-20px' }}>
+            {(invoiceBar && setTable) && <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginRight: '-30px' }}>
               <TableBarRoundedIcon style={{ fontSize: 22 }} />
               <MiniSelectField
                 style={{ minWidth: 50, width: 50 }}
@@ -616,7 +626,7 @@ export const InvoiceForm = forwardRef(({
                 value={table}
                 search={true}
                 onChange={(event) =>
-                  setTable(event.target.value)
+                  handleChangeTable(event.target.value)
                 }
               />
             </div>}

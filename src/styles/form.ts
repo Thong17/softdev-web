@@ -25,7 +25,7 @@ export const CustomMiniSelect = styled('div')(
       padding: 0,
       '& .option-detail': {
         display: 'none'
-      }
+      },
     },
     '& div': {
       zIndex: 10,
@@ -49,6 +49,13 @@ export const CustomMiniSelect = styled('div')(
       '& svg': {
         color: styled.text.quaternary,
         fontSize: 27
+      },
+      '& .Mui-disabled': {
+        color: `${styled.text.quaternary} !important`,
+        '& span': {
+          color: `${styled.text.secondary} !important`,
+          WebkitTextFillColor: `${styled.text.secondary} !important`,
+        }
       },
     },
   })

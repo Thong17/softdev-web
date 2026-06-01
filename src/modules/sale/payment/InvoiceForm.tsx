@@ -46,6 +46,7 @@ import useLanguage from 'hooks/useLanguage'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import { handleThermalPrint } from 'utils/printer'
+import TableBarRoundedIcon from '@mui/icons-material/TableBarRounded'
 
 export const mappedTransaction = (transaction) => {
   return {
@@ -60,6 +61,15 @@ export const mappedTransaction = (transaction) => {
     options: transaction.options ?? [],
   }
 }
+
+const tableOption = [
+  { label: '--', value: '--' },
+  { label: '01', value: '01' },
+  { label: '02', value: '02' },
+  { label: '03', value: '03' },
+  { label: '04', value: '04' },
+  { label: '050', value: '050' },
+]
 
 export const initCustomer = { displayName: null, id: null, point: 0 }
 
@@ -78,6 +88,9 @@ export const InvoiceForm = forwardRef(
       listTransactions = [],
       selectedCustomer = initCustomer,
       paymentData,
+      table,
+      setTable,
+      disableForm = false,
     }: any,
     ref
   ) => {
@@ -108,7 +121,7 @@ export const InvoiceForm = forwardRef(
 
     const [subtotal, setSubtotal] = useState({ USD: 0, KHR: 0 })
     const [paymentId, setPaymentId] = useState(id)
-    const [payment, setPayment] = useState<any>(null)    
+    const [payment, setPayment] = useState<any>(null)  
     const [transactions, setTransactions] = useState<ITransactionItem[]>([])
     const [discount, setDiscount] = useState({
       title: 'Discount',
@@ -215,6 +228,7 @@ export const InvoiceForm = forwardRef(
 
     useEffect(() => {
       setPayment(paymentData)
+      setTable(paymentData?.table || '--')
     }, [paymentData])
 
     useEffect(() => {
@@ -391,6 +405,7 @@ export const InvoiceForm = forwardRef(
     }
 
     const handleClickTransaction = (transaction) => {
+      if (disableForm) return
       reset(transaction)
     }
 
@@ -467,7 +482,7 @@ export const InvoiceForm = forwardRef(
 
     const renderActions = () => {
       if (!payment) return null
-      return payment?.status ? (
+      return disableForm ? (
         <CustomButton
           styled={theme}
           fullWidth
@@ -558,6 +573,15 @@ export const InvoiceForm = forwardRef(
       }).catch(err => notify(err.message, 'error'))
     }
 
+    const handleChangeTable = (value) => {
+      if (paymentId) {
+        recalculatePayment(paymentId, { table: value })
+          .then(() => notify(`Table updated to ${value} successfully`, 'success'))
+          .catch(err => notify(err, 'error'))
+      }
+      setTable(value)
+    }
+
     return (
       <CustomInvoiceForm
         mode={invoiceBar ? 'expand' : 'compact'}
@@ -608,13 +632,28 @@ export const InvoiceForm = forwardRef(
                 style={{ marginLeft: 10 }}
               />
             )}
-            <div
-              className='toggle'
-              style={{ position: 'relative' }}
-              onClick={() => toggleInvoiceBar()}
-            >
-              <ShoppingCartRoundedIcon fontSize='small' />
-              {totalQuantity > 0 && <NotificationLabel value={totalQuantity} />}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {(invoiceBar && setTable) && <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginRight: '-30px' }}>
+                <TableBarRoundedIcon style={{ fontSize: 22 }} />
+                <MiniSelectField
+                  style={{ minWidth: 50, width: 50 }}
+                  options={tableOption}
+                  value={table}
+                  search={true}
+                  disabled={disableForm}
+                  onChange={(event) =>
+                    handleChangeTable(event.target.value)
+                  }
+                />
+              </div>}
+              <div
+                className='toggle'
+                style={{ position: 'relative' }}
+                onClick={() => toggleInvoiceBar()}
+              >
+                <ShoppingCartRoundedIcon fontSize='small' />
+                {totalQuantity > 0 && <NotificationLabel value={totalQuantity} />}
+              </div>
             </div>
           </div>
           <div className='invoice-form'>
@@ -858,9 +897,9 @@ export const InvoiceForm = forwardRef(
                   return (
                     <div
                       className='item'
-                      style={{ cursor: payment?.status ? 'default' : 'pointer' }}
+                      style={{ cursor: disableForm ? 'default' : 'pointer' }}
                       key={key}
-                      onClick={() => !payment?.status && handleClickTransaction(transaction)}
+                      onClick={() => handleClickTransaction(transaction)}
                     >
                       <div className='item-description'>
                         <div className='profile'>
@@ -881,9 +920,9 @@ export const InvoiceForm = forwardRef(
                         <div className='quantity'>
                           <span className='main-description'>{language['QTY']}</span>
                           <div style={{ display: 'flex', alignItems: 'center' }}>
-                            {!payment?.status && <IconButton onClick={(event) => handleDecreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>-</IconButton>}
+                            {!disableForm && <IconButton onClick={(event) => handleDecreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>-</IconButton>}
                             <span style={{ margin: '0 1px' }}>{transaction.quantity}</span>
-                            {!payment?.status && <IconButton onClick={(event) => handleIncreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>+</IconButton>}
+                            {!disableForm && <IconButton onClick={(event) => handleIncreaseQuantity(event, transaction.id)} style={{ height: 22, width: 22, fontSize: 16, display: 'flex', justifyContent: 'center', alignItems: 'center', color: theme.text.secondary }}>+</IconButton>}
                           </div>
                         </div>
                         <div className='discount'>
@@ -908,7 +947,7 @@ export const InvoiceForm = forwardRef(
                             </span>
                           </div>
                           <div style={{ display: 'flex', gap: 5, minWidth: 70, justifyContent: 'end' }}>
-                            {(!payment?.status && transaction.hasThermalPrinting) && <IconButton
+                            {(!disableForm && transaction.hasThermalPrinting) && <IconButton
                               onClick={(e) => handlePrintTransaction(e, transaction)}
                               style={{
                                 backgroundColor: `${theme.color.info}22`,
@@ -918,7 +957,7 @@ export const InvoiceForm = forwardRef(
                                 style={{ fontSize: 17, color: theme.color.info }}
                               />
                             </IconButton>}
-                            {!payment?.status && <IconButton
+                            {!disableForm && <IconButton
                               style={{ backgroundColor: `${theme.color.error}22`, }}
                               onClick={(event) =>
                                 handleRemoveTransaction(event, transaction.id)
@@ -959,7 +998,7 @@ export const InvoiceForm = forwardRef(
                 >
                   <span
                     onClick={() =>
-                      !payment?.status && setDiscount((prev) => ({
+                      !disableForm && setDiscount((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -985,7 +1024,7 @@ export const InvoiceForm = forwardRef(
                   ) : (
                     <span
                       onClick={() =>
-                        !payment?.status && setDiscount((prev) => ({
+                        !disableForm && setDiscount((prev) => ({
                           ...prev,
                           isEditing: !prev.isEditing,
                         }))
@@ -1009,7 +1048,7 @@ export const InvoiceForm = forwardRef(
                 >
                   <span
                     onClick={() =>
-                      !payment?.status && setTax((prev) => ({
+                      !disableForm && setTax((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -1036,7 +1075,7 @@ export const InvoiceForm = forwardRef(
                   ) : (
                     <span
                       onClick={() =>
-                        !payment?.status && setTax((prev) => ({
+                        !disableForm && setTax((prev) => ({
                           ...prev,
                           isEditing: !prev.isEditing,
                         }))
@@ -1055,7 +1094,7 @@ export const InvoiceForm = forwardRef(
                 >
                   <span
                     onClick={() =>
-                      !payment?.status && setVoucher((prev) => ({
+                      !disableForm && setVoucher((prev) => ({
                         ...prev,
                         isEditing: !prev.isEditing,
                       }))
@@ -1081,7 +1120,7 @@ export const InvoiceForm = forwardRef(
                   ) : (
                     <span
                       onClick={() =>
-                        !payment?.status && setVoucher((prev) => ({
+                        !disableForm && setVoucher((prev) => ({
                           ...prev,
                           isEditing: !prev.isEditing,
                         }))

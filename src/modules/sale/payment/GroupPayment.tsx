@@ -120,8 +120,12 @@ const GroupPayment = () => {
             return createData(
                 payment._id,
                 payment.invoice,
-                payment.paymentMethod?.toUpperCase(),
+                payment.paymentMethod?.toUpperCase() ?? '--',
                 currencyFormat(payment.subtotal.BOTH, 'USD'),
+                currencyFormat(
+                    payment.vouchers[0]?.value,
+                    payment.vouchers[0]?.type,
+                ),
                 currencyFormat(
                     payment.discounts[0]?.value,
                     payment.discounts[0]?.type,
@@ -129,10 +133,6 @@ const GroupPayment = () => {
                 currencyFormat(
                     payment.services[0]?.value,
                     payment.services[0]?.type,
-                ),
-                currencyFormat(
-                    payment.vouchers[0]?.value,
-                    payment.vouchers[0]?.type,
                 ),
                 currencyFormat(payment.total.value, payment.total.currency),
                 payment.state,
@@ -152,7 +152,7 @@ const GroupPayment = () => {
     return (
         <Container
             header={
-                <Header styled={theme} listPaymentSelected={listPaymentSelected} onOpenGroupPayment={() => setGroupPaymentDialog({ open: true, payments: listPaymentSelected })} />
+                <Header privilege={user?.privilege} styled={theme} listPaymentSelected={listPaymentSelected} onOpenGroupPayment={() => setGroupPaymentDialog({ open: true, payments: listPaymentSelected })} />
             }
         >   
             <GroupPaymentDialog dialog={groupPaymentDialog} setDialog={setGroupPaymentDialog} />

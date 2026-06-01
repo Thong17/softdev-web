@@ -45,6 +45,7 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
   const [disableProduct, setDisableProduct] = useState(true)
+  const [table, setTable] = useState('--');
 
   useEffect(() => {
     dispatch(getInfoStore())
@@ -64,7 +65,7 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
   }, [customer])
 
   useEffect(() => {
-    if (!payment)  setDisableProduct(true)
+    if (!payment) setDisableProduct(true)
     let isCompleted = payment?.status
     setDisableProduct(isCompleted)
     setPaymentDialog(prev => ({ ...prev, payment }))
@@ -80,30 +81,6 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
     if (paymentDialog.payment) {
       return setPaymentDialog({ ...paymentDialog, open: true })
     }
-    const body = {
-      transactions: data.transactions.map((transaction) => transaction.id),
-      discounts: [data.discount],
-      vouchers: [data.voucher],
-      services: [data.tax],
-      customer: paymentDialog.customer?.id,
-    }
-
-    Axios({
-      method: 'POST',
-      url: '/sale/payment/create',
-      body,
-    })
-      .then((data) => {
-        setPaymentDialog({
-          ...paymentDialog,
-          open: true,
-          payment: data?.data?.data,
-        })
-        setPaymentId(data?.data?.data?._id)
-      })
-      .catch((err) => {
-        notify(err?.response?.data?.msg, 'error')
-      })
   }
 
   const handleChangeCustomer = (data) => {
@@ -170,6 +147,7 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
         dialog={paymentDialog}
         setDialog={setPaymentDialog}
         onClear={handleClearPayment}
+        onCheckout={() => setDisableProduct(true)}
       />
       <div
         style={{
@@ -243,6 +221,9 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
             listTransactions={transactions}
             selectedCustomer={customer}
             paymentData={payment}
+            table={table}
+            setTable={setTable}
+            disableForm={disableProduct}
           />
         </div>
       </div>

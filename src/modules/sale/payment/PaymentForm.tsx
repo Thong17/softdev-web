@@ -214,6 +214,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
         })
           .then((data) => {
             setPayment(data?.data?.data)
+            onCheckout()
             reload()
             onClear()
           })
