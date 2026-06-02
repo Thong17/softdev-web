@@ -125,6 +125,7 @@ export type ReceiptData = {
   address?: string;
   footer?: string;
   paymentMethod?: string;
+  table?: string
 };
 
 export const handleReceiptPrint = async (data: ReceiptData, printer?: string, charsPerLine: number = 48) => {
@@ -239,6 +240,7 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
         `Invoice: ${sanitize(data.invoice || '')}`,
         newLine,
         `Cashier: ${sanitize(data.cashier || '')}`,
+        ...((data.table && data.table !== '--') ? [newLine, `Table: ${sanitize(data.table || '--')}`] : []),
         newLine,
         `Date: ${sanitize(data.createdAt || '')}`,
         newLine,
