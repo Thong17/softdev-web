@@ -38,7 +38,7 @@ const GroupPayment = () => {
 
     const [groupPaymentDialog, setGroupPaymentDialog] = useState<any>({
         open: false,
-        payment: [],
+        payments: [],
     })
 
     const toggleRowExpansion = async (id: string) => {
@@ -103,7 +103,7 @@ const GroupPayment = () => {
             .then((data) => {
                 setPaymentDialog({ payment: data?.data?.data, open: true })
             })
-            .catch((err) => notify(err?.response?.data?.msg))
+            .catch((err) => notify(err?.response?.data?.msg, 'error'))
     }
 
     const handleMerge = (id) => {
@@ -150,10 +150,25 @@ const GroupPayment = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [payments, user, theme, notify, listPaymentSelected])
 
+    const handleOpenGroupPayment = () => {
+        if (listPaymentSelected.length < 2) return notify('Group payment requires at least 2 selected payments', 'warning')
+        Axios({
+            url: '/sale/payment/group-payment',
+            method: 'POST',
+            body: {
+                paymentIds: listPaymentSelected,
+            },
+        })
+            .then((response) => {
+                setGroupPaymentDialog({ payments: response?.data?.data, open: true })
+            })
+            .catch((err) => notify(err?.response?.data?.msg, 'error'))
+    }
+
     return (
         <Container
             header={
-                <Header privilege={user?.privilege} styled={theme} listPaymentSelected={listPaymentSelected} onOpenGroupPayment={() => setGroupPaymentDialog({ open: true, payments: listPaymentSelected })} />
+                <Header privilege={user?.privilege} styled={theme} listPaymentSelected={listPaymentSelected} onOpenGroupPayment={handleOpenGroupPayment} />
             }
         >   
             <GroupPaymentDialog dialog={groupPaymentDialog} setDialog={setGroupPaymentDialog} />

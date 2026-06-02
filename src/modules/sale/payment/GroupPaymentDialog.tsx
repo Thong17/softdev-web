@@ -1,13 +1,11 @@
 import { AlertContainer } from 'components/shared/container/AlertContainer'
-import { DialogTitle } from 'components/shared/DialogTitle'
-import useLanguage from 'hooks/useLanguage'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import React from 'react'
 import useTheme from 'hooks/useTheme'
 import { IconButton } from '@mui/material'
+import './css/index.css'
 
 const GroupPaymentDialog = ({ dialog, setDialog }) => {
-    const { language } = useLanguage()
     const { theme } = useTheme()
     const handleCloseDialog = () => {
         setDialog({ ...dialog, open: false })
@@ -26,13 +24,21 @@ const GroupPaymentDialog = ({ dialog, setDialog }) => {
                     position: 'relative',
                 }}
             >
-                <DialogTitle
-                    title={language['PAYMENT']}
-                    onClose={handleCloseDialog}
-                >
-                    {language['TEST']}
-                    <IconButton onClick={handleCloseDialog}><CloseRoundedIcon style={{ color: theme.text.primary }} /></IconButton>
-                </DialogTitle>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 20, padding: '20px' }}>
+                    <div style={{ display: 'flex', gap: 10, padding: '0', maxWidth: '80vw', overflowX: 'auto' }}>
+                        {dialog.payments?.map((payment) => (
+                            <div key={payment._id} className="payment-item" style={{ backgroundColor: `${theme.text.secondary}22`, color: theme.text.secondary, borderRadius: theme.radius.ternary }}>    
+                                <span>{payment.invoice}</span>
+                                <IconButton>
+                                    <CloseRoundedIcon style={{ color: theme.text.secondary }} />
+                                </IconButton>
+                            </div>
+                        ))}
+                    </div>
+                    <IconButton onClick={handleCloseDialog}>
+                        <CloseRoundedIcon style={{ color: theme.text.primary }} />
+                    </IconButton>
+                </div>
             </div>
         </AlertContainer>
     )
