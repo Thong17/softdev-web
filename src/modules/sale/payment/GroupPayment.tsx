@@ -165,13 +165,22 @@ const GroupPayment = () => {
             .catch((err) => notify(err?.response?.data?.msg, 'error'))
     }
 
+    const handleRemovePayment = (id) => {
+        setListPaymentSelected(prev => prev.filter(item => item !== id))
+        groupPaymentDialog.payments = groupPaymentDialog.payments.filter(payment => payment._id !== id)
+        if (groupPaymentDialog.payments.length < 2) {
+            setGroupPaymentDialog({ payments: [], open: false })
+            return notify('Group payment requires at least 2 selected payments', 'warning')
+        }
+    }
+
     return (
         <Container
             header={
                 <Header privilege={user?.privilege} styled={theme} listPaymentSelected={listPaymentSelected} onOpenGroupPayment={handleOpenGroupPayment} />
             }
         >   
-            <GroupPaymentDialog dialog={groupPaymentDialog} setDialog={setGroupPaymentDialog} />
+            <GroupPaymentDialog dialog={groupPaymentDialog} setDialog={setGroupPaymentDialog} handleRemovePayment={handleRemovePayment} />
             <PaymentForm
                 source="report"
                 dialog={paymentDialog}

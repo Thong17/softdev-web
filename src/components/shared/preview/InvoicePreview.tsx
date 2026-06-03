@@ -213,7 +213,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                     </span>
                   </div>
                 </div>
-                {payment?.discounts.map((promotion, key) => {
+                {payment?.discounts?.map((promotion, key) => {
                   return (
                     <div
                       key={key}
@@ -230,7 +230,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                     </div>
                   )
                 })}
-                {payment?.services.map((service, key) => {
+                {payment?.services?.map((service, key) => {
                   return (
                     <div
                       key={key}
@@ -247,7 +247,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                     </div>
                   )
                 })}
-                {payment?.vouchers.map((promotion, key) => {
+                {payment?.vouchers?.map((promotion, key) => {
                   return (
                     <div
                       key={key}
