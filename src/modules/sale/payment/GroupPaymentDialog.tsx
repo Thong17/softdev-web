@@ -5,7 +5,6 @@ import { AlertContainer } from 'components/shared/container/AlertContainer'
 import { ExchangeRate } from 'components/shared/ExchangeRate'
 import { CashForm } from 'components/shared/form/CashForm'
 import { SelectTab } from 'components/shared/form/SelectTab'
-import { InvoicePreview } from 'components/shared/preview/InvoicePreview'
 import useTheme from 'hooks/useTheme'
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { CustomButton } from 'styles'
@@ -32,6 +31,7 @@ import useLanguage from 'hooks/useLanguage'
 import { LoanForm } from 'components/shared/form/LoanForm'
 import { directPrinting } from 'api/receipt.api'
 import { initQzTray, handleReceiptPrint, handleThermalPrint } from 'utils/printer'
+import { InvoicePreview } from './InvoicePreview'
 
 export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout, handleRemovePayment }: any, ref) => {
   const confirm = useAlert()
@@ -436,10 +436,10 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 20, padding: '20px 20px 0 20px' }}>
             <div style={{ display: 'flex', gap: 10, padding: '0', maxWidth: '80vw', overflowX: 'auto' }}>
                 {dialog.payments?.map((payment) => (
-                    <div key={payment._id} className="payment-item" style={{ backgroundColor: `${theme.text.secondary}22`, color: theme.text.secondary, borderRadius: theme.radius.ternary }}>    
+                    <div key={payment._id} className="payment-item" style={{ backgroundColor: `${theme.text.secondary}11`, color: theme.text.secondary, borderRadius: theme.radius.ternary }}>    
                         <span>{payment.invoice}</span>
                         <IconButton onClick={() => handleRemovePayment(payment._id)}>
-                            <CloseRoundedIcon style={{ color: theme.text.secondary }} />
+                            <CloseRoundedIcon fontSize='small' style={{ color: theme.text.secondary }} />
                         </IconButton>
                     </div>
                 ))}
@@ -805,7 +805,11 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
             </div>
           </Box>
           <div style={{ gridArea: 'preview' }}>
-            <InvoicePreview payment={payment} customer={dialog.customer} />
+            <div style={{ maxHeight: 'calc(100vh - 160px)', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {dialog.payments?.map((p) => (
+                <InvoicePreview key={p._id} payment={p} customer={dialog.customer} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
