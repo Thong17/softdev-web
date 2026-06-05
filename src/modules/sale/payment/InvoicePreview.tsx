@@ -11,8 +11,9 @@ import useNotify from 'hooks/useNotify'
 import Axios from 'constants/functions/Axios'
 import { CustomerStatistic } from 'components/shared/container/CustomerContainer'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 
-export const InvoicePreview = ({ payment, customer }) => {
+export const InvoicePreview = ({ payment, customer, onRemove }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   const { language } = useLanguage()
@@ -87,6 +88,11 @@ export const InvoicePreview = ({ payment, customer }) => {
         device={device}
         height='100%'
       >
+        <IconButton style={{ position: 'absolute', top: 3, right: 10, backgroundColor: `${theme.color.error}11` }} onClick={() => onRemove(payment?._id)}>
+          <CloseRoundedIcon
+            style={{ fontSize: 17, color: theme.color.error }}
+          />
+        </IconButton>
         <div
           style={{
             display: 'flex',

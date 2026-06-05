@@ -433,7 +433,7 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
           position: 'relative',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 20, padding: '20px 20px 0 20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 20, padding: '10px 20px 0 20px' }}>
             <div style={{ display: 'flex', gap: 10, padding: '0', maxWidth: '80vw', overflowX: 'auto' }}>
                 {dialog.payments?.map((payment) => (
                     <div key={payment._id} className="payment-item" style={{ backgroundColor: `${theme.text.secondary}11`, color: theme.text.secondary, borderRadius: theme.radius.ternary }}>    
@@ -807,7 +807,7 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
           <div style={{ gridArea: 'preview' }}>
             <div style={{ maxHeight: 'calc(100vh - 160px)', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
               {dialog.payments?.map((p) => (
-                <InvoicePreview key={p._id} payment={p} customer={dialog.customer} />
+                <InvoicePreview key={p._id} payment={p} customer={dialog.customer} onRemove={handleRemovePayment} />
               ))}
             </div>
           </div>
