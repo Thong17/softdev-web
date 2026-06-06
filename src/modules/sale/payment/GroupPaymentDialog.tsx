@@ -243,7 +243,8 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
           .then((data) => {
             setPayment(data?.data?.group)
             reload()
-            onCheckout()
+            onCheckout && onCheckout()
+            setFormMode('checkout')
           })
           .catch((err) => {
             notify(err?.response?.data?.msg, 'error')
