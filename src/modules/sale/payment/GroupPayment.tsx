@@ -217,16 +217,29 @@ const GroupPayment = () => {
     return (
         <Container
             header={
-                <Header privilege={user?.privilege} styled={theme} listPaymentSelected={listPaymentSelected} onOpenGroupPayment={handleOpenGroupPayment} />
+                <Header
+                    privilege={user?.privilege}
+                    styled={theme}
+                    listPaymentSelected={listPaymentSelected}
+                    onOpenGroupPayment={handleOpenGroupPayment}
+                />
             }
-        >   
-            <GroupPaymentDialog dialog={groupPaymentDialog} setDialog={setGroupPaymentDialog} handleRemovePayment={handleRemovePayment} />
+        >
+            <GroupPaymentDialog
+                source='report'
+                dialog={groupPaymentDialog}
+                setDialog={setGroupPaymentDialog}
+                handleRemovePayment={handleRemovePayment}
+                onCheckout={() => {
+                    setListPaymentSelected([])
+                    dispatch(getListPayment({ query: queryParams }))
+                }}
+            />
             <PaymentForm
-                source="report"
+                source='report'
                 dialog={paymentDialog}
                 setDialog={setPaymentDialog}
                 onCheckout={() => {
-                //   setPaymentDialog({ open: false, payment: null })
                     dispatch(getListPayment({ query: queryParams }))
                 }}
             />
@@ -252,7 +265,7 @@ const GroupPayment = () => {
                         ? Number.parseInt(queryParams.get('page') || '0')
                         : 0
                 }
-                />
+            />
         </Container>
     )
 }
