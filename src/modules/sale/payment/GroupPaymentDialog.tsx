@@ -391,7 +391,7 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
   const handleCheckoutLoan = (data) => {
     setPayment(data)
     reload()
-    onCheckout()
+    onCheckout && onCheckout()
     setFormMode('checkout')
   }
 
