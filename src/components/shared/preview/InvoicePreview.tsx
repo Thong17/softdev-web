@@ -201,7 +201,7 @@ export const InvoicePreview = ({ payment, customer }) => {
           <div className='invoice-total'>
             <div className='total-container'>
               <div className='charge'>
-                <div className='item'>
+                <div className='item preview'>
                   <span>{language['SUBTOTAL']}</span>
                   <div style={{ display: 'flex', lineHeight: 1 }}>
                     <span>
@@ -217,7 +217,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                   return (
                     <div
                       key={key}
-                      className='item'
+                      className='item preview'
                       style={{
                         color: theme.text.quaternary,
                         fontSize: theme.responsive[device]?.text.quaternary,
@@ -234,7 +234,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                   return (
                     <div
                       key={key}
-                      className='item'
+                      className='item preview'
                       style={{
                         color: theme.text.quaternary,
                         fontSize: theme.responsive[device]?.text.quaternary,
@@ -251,7 +251,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                   return (
                     <div
                       key={key}
-                      className='item'
+                      className='item preview'
                       style={{
                         color: theme.text.quaternary,
                         fontSize: theme.responsive[device]?.text.quaternary,

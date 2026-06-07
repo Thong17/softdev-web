@@ -780,6 +780,9 @@ export const CustomInvoiceForm = styled('div')(
             justifyContent: 'space-between',
             alignItems: 'center',
             height: 31,
+            '&.preview span:hover': {
+              cursor: 'default',
+            },
             '& span:hover': {
               color: styled.text.primary,
               cursor: 'pointer'

@@ -934,7 +934,7 @@ export const InvoiceForm = forwardRef(({
         <div className='invoice-total'>
           <div className='total-container'>
             <div className='charge'>
-              <div className='item'>
+              <div className='item preview'>
                 <span>{language['SUBTOTAL']}</span>
                 <div style={{ display: 'flex', lineHeight: 1 }}>
                   <span>
