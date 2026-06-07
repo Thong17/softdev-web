@@ -306,6 +306,11 @@ export const PaymentForm = forwardRef(
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 gap: 0.8,
+                '& span': {
+                  color: Number.isNaN(totalRemain?.USD) 
+                    ? theme.color.error 
+                    : (totalRemain?.USD > 0 ? theme.color.error : theme.color.success),
+                },
                 '&::before': {
                   content: `''`,
                   borderTop: theme.border.dashed,
@@ -378,6 +383,9 @@ export const PaymentForm = forwardRef(
                       borderRadius: theme.radius.primary,
                       color: theme.color.info,
                       lineHeight: 1,
+                      '& span': {
+                        color: theme.color.info + '!important',
+                      },
                     },
                   }}
                 >
