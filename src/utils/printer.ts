@@ -77,9 +77,7 @@ export const handleThermalPrint = async (data: { items: { description: string, h
         // sanitize description to avoid breaking TSPL string quoting
         const desc = (item.description || '').toString().replace(/"/g, "'");
         for (let i = 0; i < (item.qty || 0); i++) {
-          const optionsText = item.options?.slice(0, 3).map((option, index) => `
-            TEXT 70,${110 + index * 30},"2",0,1,1,"- ${option.name}: ${option.value}"\r\n
-            `)
+          const optionsText = item.options?.slice(0, 3).map((option, index) => `\n            TEXT 70,${110 + index * 30},"2",0,1,1,"- ${option.name}: ${option.value}"\r\n\n            `)
           const tsplData = [
             `SIZE ${storeConfig.width} mm, ${storeConfig.height} mm\r\n`,
             `GAP ${storeConfig.gap} mm, 0 mm\r\n`,
@@ -121,6 +119,7 @@ export type ReceiptData = {
   subtotal?: string;
   discount?: string;
   tax?: string;
+  voucher?: string;
   total?: string;
   address?: string;
   footer?: string;
@@ -380,3 +379,140 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
       throw new Error(error.message);
     }
   };
+
+export const handleGroupReceiptPrinting = async (data: ReceiptData[], printer?: string, charsPerLine: number = 48) => {
+  try {
+    if (!printer) return
+    const config = qz.configs.create(printer);
+    if (config.setEncoding) {
+      config.setEncoding('UTF-8');
+    }
+
+    const sanitize = (value: string = '') => value.toString().replace(/"/g, "'")
+    const parseNumeric = (value?: string) => {
+      if (!value) return 0
+      const numeric = Number.parseFloat(value.toString().replace(/[^0-9.-]/g, ''))
+      return Number.isNaN(numeric) ? 0 : numeric
+    }
+
+    const shouldShowTotalLine = (value?: string) => parseNumeric(value) !== 0
+
+    const pad = (text: string, width: number, align: 'left' | 'right' = 'left') => {
+      const safe = text.length > width ? text.slice(0, width - 1) + '…' : text;
+      return align === 'right'
+        ? ' '.repeat(Math.max(0, width - safe.length)) + safe
+        : safe + ' '.repeat(Math.max(0, width - safe.length));
+    }
+
+    const wrapText = (text: string, width: number) => {
+      const words = text.split(' ');
+      const lines: string[] = [];
+      let line = '';
+
+      for (const word of words) {
+        const next = line ? `${line} ${word}` : word;
+        if (next.length <= width) {
+          line = next;
+        } else {
+          if (line) lines.push(line);
+          line = word;
+        }
+      }
+
+      if (line) lines.push(line);
+      return lines.length ? lines : [''];
+    }
+
+    const init = '\x1B@'
+    const alignCenter = '\x1Ba\x01'
+    const alignLeft = '\x1Ba\x00'
+    const boldOn = '\x1BE\x01'
+    const boldOff = '\x1BE\x00'
+    const doubleSize = '\x1D!\x11'
+    const normalSize = '\x1D!\x00'
+    const cut = '\x1DV\x00'
+    const drawerPulse = '\x1Bp\x00\x3C\xFF'
+    const newLine = '\n'
+
+    // group receipts by payment method
+    const groups: Record<string, ReceiptData[]> = {};
+    for (const r of data || []) {
+      const key = (r.paymentMethod || 'unknown').toString();
+      groups[key] = groups[key] || [];
+      groups[key].push(r);
+    }
+
+    const lineSep = '-'.repeat(charsPerLine);
+
+    for (const [paymentMethod, receipts] of Object.entries(groups)) {
+      const headerParts = [init, alignCenter, boldOn, doubleSize, sanitize(paymentMethod || ''), newLine, boldOff, normalSize, newLine];
+      const transactionLines: string[] = [];
+
+      for (const r of receipts) {
+        // per-receipt header
+        transactionLines.push(alignLeft, lineSep, newLine)
+        transactionLines.push(`Invoice: ${sanitize(r.invoice || '')}`, newLine)
+        transactionLines.push(`Cashier: ${sanitize(r.cashier || '')}`, newLine)
+        if (r.table && r.table !== '--') transactionLines.push(`Table: ${sanitize(r.table)}`, newLine)
+        transactionLines.push(`Date: ${sanitize(r.createdAt || '')}`, newLine)
+        transactionLines.push(`Payment Method: ${sanitize(r.paymentMethod || '')}`, newLine)
+        transactionLines.push(lineSep, newLine)
+
+        // columns
+        if (charsPerLine > 40) {
+          const itemWidth = Math.floor(charsPerLine * 0.5)
+          const priceW = Math.floor(charsPerLine * 0.18)
+          transactionLines.push(pad('Item', itemWidth), pad('Qty', 4, 'right'), pad('Price', priceW, 'right'), pad('Disc', priceW, 'right'), pad('Total', priceW, 'right'), newLine)
+          transactionLines.push(lineSep, newLine)
+
+          const invoicePrefix = `#${sanitize(r.invoice?.split('-')[1] || '')} `
+          for (const t of r.transactions || []) {
+            const wrapped = wrapText(`${invoicePrefix}${sanitize(t.item || '')}`, itemWidth)
+            transactionLines.push(pad(wrapped[0], itemWidth), pad((t.qty || 0).toString(), 4, 'right'), pad(sanitize(t.price || ''), priceW, 'right'), pad(sanitize(t.disc || ''), priceW, 'right'), pad(sanitize(t.total || ''), priceW, 'right'), newLine)
+            for (let i = 1; i < wrapped.length; i++) transactionLines.push(pad(wrapped[i], itemWidth), pad('', 4, 'right'), pad('', priceW, 'right'), pad('', priceW, 'right'), pad('', priceW, 'right'), newLine)
+          }
+        } else {
+          const nameW = Math.floor(charsPerLine * 0.6)
+          const totalW = Math.floor(charsPerLine * 0.3)
+          transactionLines.push(pad('Item', nameW), pad('Qty', 4, 'right'), pad('Total', totalW, 'right'), newLine)
+          transactionLines.push(lineSep, newLine)
+
+          const invoicePrefix = `#${sanitize(r.invoice?.split('-')[1] || '')} `
+          for (const t of r.transactions || []) {
+            const wrapped = wrapText(`${invoicePrefix}${sanitize(t.item || '')}`, nameW)
+            transactionLines.push(pad(wrapped[0], nameW), pad((t.qty || 0).toString(), 4, 'right'), pad(sanitize(t.total || ''), totalW, 'right'), newLine)
+            for (let i = 1; i < wrapped.length; i++) transactionLines.push(pad(wrapped[i], nameW), pad('', 4, 'right'), pad('', totalW, 'right'), newLine)
+          }
+        }
+
+        // per-receipt totals
+        const labelWidth = Math.max(12, charsPerLine - 20)
+        const valueWidth = charsPerLine - labelWidth
+
+        transactionLines.push(lineSep, newLine)
+        transactionLines.push(pad('Subtotal:', labelWidth), pad(sanitize(r.subtotal || ''), valueWidth, 'right'), newLine)
+
+        if (shouldShowTotalLine(r.discount)) {
+          transactionLines.push(pad('Discount:', labelWidth), pad(sanitize(r.discount || ''), valueWidth, 'right'), newLine)
+        }
+
+        if (shouldShowTotalLine(r.tax)) {
+          transactionLines.push(pad('Tax:', labelWidth), pad(sanitize(r.tax || ''), valueWidth, 'right'), newLine)
+        }
+
+        if (shouldShowTotalLine((r as any).voucher)) {
+          transactionLines.push(pad('Voucher:', labelWidth), pad(sanitize((r as any).voucher || ''), valueWidth, 'right'), newLine)
+        }
+
+        transactionLines.push(pad('Total:', labelWidth), pad(sanitize(r.total || ''), valueWidth, 'right'), newLine)
+        transactionLines.push(newLine)
+      }
+
+      const footerParts = [newLine, newLine]
+      const receipt = [...headerParts, ...transactionLines, ...footerParts, ...(paymentMethod === 'cash' ? [drawerPulse] : []), newLine.repeat(3), cut].join('')
+      await qz.print(config, [receipt])
+    }
+  } catch (error: any) {
+    throw new Error(error.message)
+  }
+}

@@ -29,7 +29,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
 import { LoanForm } from 'components/shared/form/LoanForm'
-import { initQzTray, handleReceiptPrint } from 'utils/printer'
+import { initQzTray, handleGroupReceiptPrinting } from 'utils/printer'
 import { InvoicePreview } from './InvoicePreview'
 
 export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout, handleRemovePayment }: any, ref) => {
@@ -272,44 +272,48 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
       notify('Receipt printing is not available on this device', 'error')
       return
     }
-    handleReceiptPrint({
+    handleGroupReceiptPrinting(dialog.payments?.map(item => ({
       name: storeInfo?.name as string,
-      invoice: payment?.invoice,
-      cashier: payment?.createdBy?.username,
-      createdAt: timeFormat(payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-      transactions: payment?.transactions?.map(item => ({
+      invoice: item?.invoice,
+      cashier: item?.createdBy?.username,
+      createdAt: timeFormat(item?.createdAt, 'YYYY-MM-DD HH:mm'),
+      transactions: item?.transactions?.map(item => ({
           item: item.description,
           qty: item.quantity,
           disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
           price: currencyFormat(item.price, item.currency, 0, true),
           total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
       })),
-      subtotal: currencyFormat(payment?.subtotal?.USD, 'USD', 0, true),
-      discount: currencyFormat(payment?.discounts[0]?.value, payment?.discounts[0]?.type, 0, true) + (payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
-      tax: currencyFormat(payment?.services[0]?.value, payment?.services[0]?.type, 0, true),
-      total: currencyFormat(payment?.total?.value, payment?.total?.currency, 0, true),
+      subtotal: currencyFormat(item?.subtotal?.USD, 'USD', 0, true),
+      discount: currencyFormat(item?.discounts[0]?.value, item?.discounts[0]?.type, 0, true) + (item?.discounts[0]?.isFixed ? ' Fixed' : ''),
+      voucher: currencyFormat(item?.vouchers[0]?.value, item?.vouchers[0]?.type, 0, true) + (item?.vouchers[0]?.isFixed ? ' Fixed' : ''),
+      tax: currencyFormat(item?.services[0]?.value, item?.services[0]?.type, 0, true),
+      total: currencyFormat(item?.total?.value, item?.total?.currency, 0, true),
       address: storeInfo?.address,
       footer: storeInfo?.other,
-      paymentMethod: payment?.paymentMethod,
-    }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
-    handleReceiptPrint({
+      paymentMethod: item?.paymentMethod,
+    })), printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
+    handleGroupReceiptPrinting(dialog.payments?.map(item => ({
       name: storeInfo?.name as string,
-      invoice: payment?.invoice,
-      cashier: payment?.createdBy?.username,
-      createdAt: timeFormat(payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-      transactions: payment?.transactions?.map(item => ({
-          item: item.product?.name?.English || item.description,
+      invoice: item?.invoice,
+      cashier: item?.createdBy?.username,
+      createdAt: timeFormat(item?.createdAt, 'YYYY-MM-DD HH:mm'),
+      transactions: item?.transactions?.map(item => ({
+          item: item.description,
           qty: item.quantity,
+          disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
+          price: currencyFormat(item.price, item.currency, 0, true),
           total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
       })),
-      subtotal: currencyFormat(payment?.subtotal?.USD, 'USD', 0, true),
-      discount: currencyFormat(payment?.discounts[0]?.value, payment?.discounts[0]?.type, 0, true) + (payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
-      tax: currencyFormat(payment?.services[0]?.value, payment?.services[0]?.type, 0, true),
-      total: currencyFormat(payment?.total?.value, payment?.total?.currency, 0, true),
+      subtotal: currencyFormat(item?.subtotal?.USD, 'USD', 0, true),
+      discount: currencyFormat(item?.discounts[0]?.value, item?.discounts[0]?.type, 0, true) + (item?.discounts[0]?.isFixed ? ' Fixed' : ''),
+      voucher: currencyFormat(item?.vouchers[0]?.value, item?.vouchers[0]?.type, 0, true) + (item?.vouchers[0]?.isFixed ? ' Fixed' : ''),
+      tax: currencyFormat(item?.services[0]?.value, item?.services[0]?.type, 0, true),
+      total: currencyFormat(item?.total?.value, item?.total?.currency, 0, true),
       address: storeInfo?.address,
       footer: storeInfo?.other,
-      paymentMethod: payment?.paymentMethod,
-    }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
+      paymentMethod: item?.paymentMethod,
+    })), printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
   }
 
   const ticketRef = useRef(document.createElement('div'))
@@ -405,10 +409,10 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
               width > 1024
                 ? `'payment preview''exchange preview'`
                 : `
-                                  'payment payment'
-                                  'exchange exchange'
-                                  'preview preview'
-                                  `,
+                  'payment payment'
+                  'exchange exchange'
+                  'preview preview'
+                `,
           }}
         >
           <div
@@ -582,20 +586,6 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
                         }}
                       >
                         {language['CLOSE']}
-                      </CustomButton>
-                      <CustomButton
-                        onClick={handlePrintPreview}
-                        styled={theme}
-                        style={{
-                          backgroundColor: `${theme.color.info}22`,
-                          color: theme.color.info,
-                          width: '100%',
-                        }}
-                      >
-                        <PrintRoundedIcon
-                          style={{ fontSize: 19, marginRight: 5 }}
-                        />
-                        {language['PRINT']}
                       </CustomButton>
                     </>
                   ) : (
