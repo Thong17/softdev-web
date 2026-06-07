@@ -16,45 +16,31 @@ import { columnData, createData } from './constant'
 import { PaymentForm } from '../cashing/PaymentForm'
 import GroupPaymentDialog from './GroupPaymentDialog'
 
-export const mergePayments = (data) => {
+export const mergePayments = (data, groupPayment) => {
     const paymentsData = data || []
 
     // Build a merged payment object compatible with InvoicePreview
-    const base = paymentsData[0] || {
-        _id: `group-${Date.now()}`,
-        invoice: `GROUP-${Date.now()}`,
-        total: { value: 0, currency: 'USD' },
-        subtotal: { USD: 0, KHR: 0, BOTH: 0 },
-        rate: { buyRate: 4000, sellRate: 4100 },
+    const base = {
+        _id: null,
+        invoice: groupPayment?.invoice,
+        total: groupPayment?.total,
+        subtotal: groupPayment?.subtotal,
+        rate: groupPayment?.rate,
         discounts: [],
         vouchers: [],
         services: [],
         transactions: [],
-        createdBy: {},
+        createdBy: groupPayment?.createdBy,
+        returnCashes: [],
+        receiveCashes: [],
     }
 
     const merged = {
         ...base,
-        _id: `group-${Date.now()}`,
-        invoice: `GROUP-${Date.now()}`,
         transactions: paymentsData.flatMap((p) => p.transactions || []),
-        subtotal: paymentsData.reduce(
-            (acc, p) => ({
-                USD: (acc.USD || 0) + (p.subtotal?.USD || 0),
-                KHR: (acc.KHR || 0) + (p.subtotal?.KHR || 0),
-                BOTH: (acc.BOTH || 0) + (p.subtotal?.BOTH || 0),
-            }),
-            { USD: 0, KHR: 0, BOTH: 0 }
-        ),
-        total: paymentsData.reduce((s, p) => ({
-            value: (s.value || 0) + (p.total?.value || 0),
-            currency: p.total?.currency || s.currency || 'USD',
-        }), { value: 0, currency: 'USD' }),
         discounts: paymentsData.flatMap((p) => p.discounts || []),
         vouchers: paymentsData.flatMap((p) => p.vouchers || []),
         services: paymentsData.flatMap((p) => p.services || []),
-        createdAt: new Date().toISOString(),
-        createdBy: base.createdBy || paymentsData[0]?.createdBy || {},
     }
 
     return { paymentsData, merged }
@@ -204,22 +190,35 @@ const GroupPayment = () => {
             },
         })
             .then((response) => {
-                mergePayments(response?.data?.data)
-                const { paymentsData, merged } = mergePayments(response?.data?.data)
+                const { paymentsData, merged } = mergePayments(response?.data?.data, response?.data?.group)
                 setGroupPaymentDialog({ payments: paymentsData, payment: merged, open: true })
             })
             .catch((err) => notify(err?.response?.data?.msg, 'error'))
     }
 
     const handleRemovePayment = (id) => {
-        setListPaymentSelected(prev => prev.filter(item => item !== id))
-        groupPaymentDialog.payments = groupPaymentDialog.payments.filter(payment => payment._id !== id)
-        const { paymentsData, merged } = mergePayments(groupPaymentDialog.payments)
-        setGroupPaymentDialog(prev => ({ ...prev, payments: paymentsData, payment: merged }))
-        if (groupPaymentDialog.payments.length < 2) {
+        const remainingSelected = groupPaymentDialog.payments.filter(payment => payment._id !== id)
+        groupPaymentDialog.payments = remainingSelected
+
+        if (remainingSelected.length < 2) {
             setGroupPaymentDialog({ payments: [], open: false })
+            setListPaymentSelected(prev => prev.filter(item => item !== id))
             return notify('Group payment requires at least 2 selected payments', 'warning')
         }
+
+        Axios({
+            url: '/sale/payment/group-payment',
+            method: 'POST',
+            body: {
+                paymentIds: remainingSelected,
+            },
+        })
+            .then((response) => {
+                setListPaymentSelected(prev => prev.filter(item => item !== id))
+                const { paymentsData, merged } = mergePayments(response?.data?.data, response?.data?.group)
+                setGroupPaymentDialog(prev => ({ ...prev, payments: paymentsData, payment: merged }))
+            })
+            .catch((err) => notify(err?.response?.data?.msg, 'error'))
     }
 
     return (

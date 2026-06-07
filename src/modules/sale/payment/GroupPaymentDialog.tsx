@@ -29,8 +29,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
 import { LoanForm } from 'components/shared/form/LoanForm'
-import { directPrinting } from 'api/receipt.api'
-import { initQzTray, handleReceiptPrint, handleThermalPrint } from 'utils/printer'
+import { initQzTray, handleReceiptPrint } from 'utils/printer'
 import { InvoicePreview } from './InvoicePreview'
 
 export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout, handleRemovePayment }: any, ref) => {
@@ -268,106 +267,49 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
       .catch(() => {})
   }
 
-  const printType: string = 'web_printing'
-
-  const invoiceRef = useRef(document.createElement('div'))
-  const handlePrintInvoice = useReactToPrint({
-    content: () => invoiceRef?.current,
-    documentTitle: 'Invoice',
-  })
-
-  const handlePrintLabel = () => {
+  const handlePrint = () => {
     if (!isQzTrayAvailable) {
-      notify('Label printing is not available on this device', 'error')
+      notify('Receipt printing is not available on this device', 'error')
       return
     }
-    handleThermalPrint({
-      items: dialog.payment?.transactions?.map(item => ({
-        description: item.product?.name?.English || item.description,
-        qty: item.quantity,
-        hasThermalPrinting: item.product?.category?.hasThermalPrinting,
-        options: item.options?.map(option => ({
-          name: option.property?.name?.English,
-          value: option.name?.English
-        }))
-      })) || [],
-      createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-      invoice: dialog.payment?.invoice
-    }, printerSetting.thermalPrinterName, {
-      width: Number(printerSetting.thermalPrinterWidth),
-      height: Number(printerSetting.thermalPrinterHeight),
-      gap: Number(printerSetting.thermalPrinterGap)
-    }).catch(err => notify(err.message, 'error'))
-  }
-
-  const handlePrint = () => {
-      if (printType === 'network_printing') {
-        setIsLoading(true)
-        directPrinting({
-            name: storeInfo?.name,
-            invoice: dialog.payment?.invoice,
-            cashier: dialog.payment?.createdBy?.username,
-            createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-            transactions: dialog.payment?.transactions?.map(item => ({
-                item: item.description,
-                qty: item.quantity,
-                disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
-                price: currencyFormat(item.price, item.currency, 0, true),
-            })),
-            subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
-            discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
-            tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
-            total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
-            address: storeInfo?.address,
-            footer: storeInfo?.other
-        }, 'USB', 'thermal')
-            .then(console.log)
-            .catch(handlePrintInvoice)
-            .finally(() => setIsLoading(false))
-      } else {
-        if (!isQzTrayAvailable) {
-          notify('Receipt printing is not available on this device', 'error')
-          return
-        }
-        handleReceiptPrint({
-          name: storeInfo?.name as string,
-          invoice: dialog.payment?.invoice,
-          cashier: dialog.payment?.createdBy?.username,
-          createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-          transactions: dialog.payment?.transactions?.map(item => ({
-              item: item.description,
-              qty: item.quantity,
-              disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
-              price: currencyFormat(item.price, item.currency, 0, true),
-              total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
-          })),
-          subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
-          discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
-          tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
-          total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
-          address: storeInfo?.address,
-          footer: storeInfo?.other,
-          paymentMethod: dialog.payment?.paymentMethod,
-        }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
-        handleReceiptPrint({
-          name: storeInfo?.name as string,
-          invoice: dialog.payment?.invoice,
-          cashier: dialog.payment?.createdBy?.username,
-          createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
-          transactions: dialog.payment?.transactions?.map(item => ({
-              item: item.product?.name?.English || item.description,
-              qty: item.quantity,
-              total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
-          })),
-          subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
-          discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
-          tax: currencyFormat(dialog.payment?.services[0]?.value, dialog.payment?.services[0]?.type, 0, true),
-          total: currencyFormat(dialog.payment?.total?.value, dialog.payment?.total?.currency, 0, true),
-          address: storeInfo?.address,
-          footer: storeInfo?.other,
-          paymentMethod: dialog.payment?.paymentMethod,
-        }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
-      }
+    handleReceiptPrint({
+      name: storeInfo?.name as string,
+      invoice: payment?.invoice,
+      cashier: payment?.createdBy?.username,
+      createdAt: timeFormat(payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+      transactions: payment?.transactions?.map(item => ({
+          item: item.description,
+          qty: item.quantity,
+          disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
+          price: currencyFormat(item.price, item.currency, 0, true),
+          total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+      })),
+      subtotal: currencyFormat(payment?.subtotal?.USD, 'USD', 0, true),
+      discount: currencyFormat(payment?.discounts[0]?.value, payment?.discounts[0]?.type, 0, true) + (payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+      tax: currencyFormat(payment?.services[0]?.value, payment?.services[0]?.type, 0, true),
+      total: currencyFormat(payment?.total?.value, payment?.total?.currency, 0, true),
+      address: storeInfo?.address,
+      footer: storeInfo?.other,
+      paymentMethod: payment?.paymentMethod,
+    }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
+    handleReceiptPrint({
+      name: storeInfo?.name as string,
+      invoice: payment?.invoice,
+      cashier: payment?.createdBy?.username,
+      createdAt: timeFormat(payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+      transactions: payment?.transactions?.map(item => ({
+          item: item.product?.name?.English || item.description,
+          qty: item.quantity,
+          total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+      })),
+      subtotal: currencyFormat(payment?.subtotal?.USD, 'USD', 0, true),
+      discount: currencyFormat(payment?.discounts[0]?.value, payment?.discounts[0]?.type, 0, true) + (payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
+      tax: currencyFormat(payment?.services[0]?.value, payment?.services[0]?.type, 0, true),
+      total: currencyFormat(payment?.total?.value, payment?.total?.currency, 0, true),
+      address: storeInfo?.address,
+      footer: storeInfo?.other,
+      paymentMethod: payment?.paymentMethod,
+    }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
   }
 
   const ticketRef = useRef(document.createElement('div'))
@@ -488,7 +430,7 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
               }}
             >
               <SelectTab
-                selected={paymentMethod || paymentMethods[0]?.value}
+                selected={paymentMethod ?? paymentMethods[0]?.value}
                 options={paymentMethods}
                 onChange={handleChangePaymentMethod}
               />
@@ -741,73 +683,39 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
                         />{' '}
                         {language['PRINT_RECEIPT']}
                       </CustomButton>
-                      <CustomButton
-                        isLoading={isLoading}
-                        onClick={handlePrintLabel}
-                        styled={theme}
-                        style={{
-                          backgroundColor: `${theme.color.warning}22`,
-                          color: theme.color.warning,
-                          width: '100%',
-                        }}
-                      >
-                        <PrintRoundedIcon
-                          style={{ fontSize: 19, marginRight: 5 }}
-                        />{' '}
-                        {language['PRINT_LABEL']}
-                      </CustomButton>
                       {user?.privilege?.queue?.create && <CustomButton
                         isLoading={isLoading}
                         onClick={handleAddToQueue}
                         styled={theme}
                         style={{
-                          backgroundColor: !!queue ? `${theme.text.secondary}22` : `${theme.color.info}22`,
-                          color: !!queue ? theme.text.secondary : theme.color.info,
+                          backgroundColor: queue ? `${theme.text.secondary}22` : `${theme.color.info}22`,
+                          color: queue ? theme.text.secondary : theme.color.info,
                           width: '100%',
                         }}
-                        disabled={!!queue}
+                        disabled={queue}
                       >
                         <ConfirmationNumberRoundedIcon
                           style={{ fontSize: 19, marginRight: 5 }}
                         />{' '}
-                        {!!queue ? language['ADDED_TO_QUEUE'] : language['ADD_TO_QUEUE']}
+                        {queue ? language['ADDED_TO_QUEUE'] : language['ADD_TO_QUEUE']}
                       </CustomButton>}
                     </>
                   ) : (
-                    <>
-                      <CustomButton
-                        isLoading={isLoading}
-                        onClick={handleCheckout}
-                        styled={theme}
-                        style={{
-                          backgroundColor: `${theme.color.success}22`,
-                          color: theme.color.success,
-                          width: '100%',
-                        }}
-                      >
-                        <ReceiptRoundedIcon
-                          style={{ fontSize: 17, marginRight: 5 }}
-                        />{' '}
-                        {language['CHECKOUT']}
-                      </CustomButton>
-                      {
-                        source === 'payment' && <CustomButton
-                          isLoading={isLoading}
-                          onClick={handlePrintLabel}
-                          styled={theme}
-                          style={{
-                            backgroundColor: `${theme.color.warning}22`,
-                            color: theme.color.warning,
-                            width: '100%',
-                          }}
-                        >
-                          <PrintRoundedIcon
-                            style={{ fontSize: 19, marginRight: 5 }}
-                          />{' '}
-                          {language['PRINT_LABEL']}
-                        </CustomButton>
-                      }
-                    </>
+                    <CustomButton
+                      isLoading={isLoading}
+                      onClick={handleCheckout}
+                      styled={theme}
+                      style={{
+                        backgroundColor: `${theme.color.success}22`,
+                        color: theme.color.success,
+                        width: '100%',
+                      }}
+                    >
+                      <ReceiptRoundedIcon
+                        style={{ fontSize: 17, marginRight: 5 }}
+                      />{' '}
+                      {language['CHECKOUT']}
+                    </CustomButton>
                   )}
                 </div>
               )}

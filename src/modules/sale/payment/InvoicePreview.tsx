@@ -219,7 +219,7 @@ export const InvoicePreview = ({ payment, customer, onRemove }) => {
                     </span>
                   </div>
                 </div>
-                {payment?.discounts?.map((promotion, key) => {
+                {payment?.discounts?.filter(item => item.value > 0)?.length > 0 && payment?.discounts?.map((promotion, key) => {
                   return (
                     <div
                       key={key}
@@ -236,7 +236,7 @@ export const InvoicePreview = ({ payment, customer, onRemove }) => {
                     </div>
                   )
                 })}
-                {payment?.services?.map((service, key) => {
+                {payment?.services?.filter(item => item.value > 0)?.length > 0 && payment?.services?.map((service, key) => {
                   return (
                     <div
                       key={key}
@@ -253,7 +253,7 @@ export const InvoicePreview = ({ payment, customer, onRemove }) => {
                     </div>
                   )
                 })}
-                {payment?.vouchers?.map((promotion, key) => {
+                {payment?.vouchers?.filter(item => item.value > 0)?.length > 0 && payment?.vouchers?.map((promotion, key) => {
                   return (
                     <div
                       key={key}
