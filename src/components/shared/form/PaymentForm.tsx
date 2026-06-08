@@ -48,6 +48,7 @@ export interface IPaymentInfo {
     KHR: number
   }
   customer?: ICustomerInfo
+  transactions?: Array<any>
 }
 
 declare type PaymentMethod = 'cash' | 'transfer' | 'loan'
@@ -201,7 +202,7 @@ export const PaymentForm = forwardRef(
         }
 
         default:
-          return <CashForm onChange={handleChangeCashes} />
+          return <CashForm onChange={handleChangeCashes} transactionCashes={payment?.transactions?.map((tx) => ({ type: 'transfer', value: tx.total?.value, currency: tx.total?.currency, quantity: 1, color: theme.color.warning }))} />
       }
     }
 

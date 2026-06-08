@@ -376,7 +376,7 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
         return <LoanForm onLoading={setIsLoading} onChange={handleChangeCashes} onPreview={handlePreview} loanButtonRef={loanButtonRef} previewButtonRef={previewButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} formMode={formMode} />
 
       default:
-        return <CashForm onChange={handleChangeCashes} />
+        return <CashForm onChange={handleChangeCashes} transactionCashes={payment?.transactions?.map((tx) => ({ type: 'transfer', value: tx.total?.value, currency: tx.total?.currency, quantity: 1, color: theme.color.warning }))} />
     }
   }
 

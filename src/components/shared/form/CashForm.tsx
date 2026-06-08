@@ -12,6 +12,7 @@ import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded'
 import { ValueLabel } from '../ValueLabel'
 import { QuantityField } from './QuantityField'
 import useLanguage from 'hooks/useLanguage'
+import CropFreeRoundedIcon from '@material-ui/icons/CropFreeRounded'
 
 const initCash = { value: '0', currency: 'USD', quantity: 1 }
 
@@ -96,7 +97,9 @@ export const presetCashes = [
   },
 ]
 
-const CastPreset = ({ theme, onClick }) => {
+interface ICashItem { value: string; currency: string; quantity: number, color: string, type?: 'cash' | 'transfer' }
+
+const CastPreset = ({ theme, onClick, cashes = [] }: { theme: any; onClick: (cash: any) => void; cashes?: ICashItem[] }) => {
   return (
     <Box
       sx={{
@@ -116,8 +119,8 @@ const CastPreset = ({ theme, onClick }) => {
           lineHeight: 1,
         },
       }}
-    >
-      {presetCashes.map((cash, key) => (
+    > 
+      {[...cashes, ...presetCashes].map((cash, key) => (
         <div className='money' onClick={() => onClick(cash)} key={key} style={{ color: cash.color, backgroundColor: `${cash.color}22` }}>
           {currencyFormat(cash.value, cash.currency)}
         </div>
@@ -126,7 +129,7 @@ const CastPreset = ({ theme, onClick }) => {
   )
 }
 
-export const CashForm = ({ onChange }) => {
+export const CashForm = ({ onChange, transactionCashes = [] }: { onChange: (cashes: any[]) => void; transactionCashes?: ICashItem[] }) => {
   const { theme } = useTheme()
   const { language } = useLanguage()
   const [cashForm, setCashForm] = useState(initCash)
@@ -253,7 +256,7 @@ export const CashForm = ({ onChange }) => {
                       />
                   </div>
               </form>
-              <CastPreset theme={theme} onClick={handleAddPreset} />
+              <CastPreset theme={theme} onClick={handleAddPreset} cashes={transactionCashes} />
           </div>
           <div style={{ position: 'relative', height: '100%' }}>
               {cashes?.length === 0 ? (
@@ -316,13 +319,23 @@ const CashItem = ({ cash, onRemove, onChange }) => {
       <span style={{ flex: '30%' }}>
         <ValueLabel
           icon={
-            <PaymentsRoundedIcon
-              style={{
-                margin: '0 5px',
-                fontSize: 15,
-                color: theme.text.quaternary,
-              }}
-            />
+            cash.type === 'transfer' ? (
+              <CropFreeRoundedIcon
+                style={{
+                  margin: '0 5px',
+                  fontSize: 15,
+                  color: theme.text.quaternary,
+                }}
+              />
+            ) : (
+              <PaymentsRoundedIcon
+                style={{
+                  margin: '0 5px',
+                  fontSize: 15,
+                  color: theme.text.quaternary,
+                }}
+              />
+            )
           }
           value={currencyFormat(parseFloat(cash.value), cash.currency)}
         />
