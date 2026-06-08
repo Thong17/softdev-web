@@ -108,6 +108,7 @@ export type ReceiptTransaction = {
   disc?: string;
   price?: string;
   total?: string;
+  options: { name: string, value: string }[]
 };
 
 export type ReceiptData = {

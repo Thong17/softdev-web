@@ -132,11 +132,15 @@ export const Detail = ({
         cashier: dialog.payment?.createdBy?.username,
         createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
         transactions: dialog.payment?.transactions?.map(item => ({
-            item: item.description,
+            item: item.product?.name?.English ?? item.description,
             qty: item.quantity,
             disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
             price: currencyFormat(item.price, item.currency, 0, true),
-            total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+            total: currencyFormat(item.total?.value, item.total?.currency, 0, true),
+            options: item.options?.map(option => ({
+              name: option.property?.name?.English,
+              value: option.name?.English
+            }))
         })),
         subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
         discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
@@ -152,7 +156,7 @@ export const Detail = ({
         cashier: dialog.payment?.createdBy?.username,
         createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
         transactions: dialog.payment?.transactions?.map(item => ({
-            item: item.product?.name?.English || item.description,
+            item: item.product?.name?.English ?? item.description,
             qty: item.quantity,
             total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
         })),
