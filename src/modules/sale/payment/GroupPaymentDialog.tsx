@@ -240,7 +240,7 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
           body,
         })
           .then((data) => {
-            setPayment(data?.data?.group)
+            setPayment({...data?.data?.group, createdBy: data?.data?.createdBy})
             reload()
             onCheckout && onCheckout()
             setFormMode('checkout')
@@ -292,7 +292,12 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
       address: storeInfo?.address,
       footer: storeInfo?.other,
       paymentMethod: item?.paymentMethod,
-    })), printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
+    })), {
+      cashier: payment?.createdBy?.username,
+      invoice: payment?.invoice,
+      createdAt: timeFormat(payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+      paymentMethod: payment?.paymentMethod,
+    }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
     handleGroupReceiptPrinting(dialog.payments?.map(item => ({
       name: storeInfo?.name as string,
       invoice: item?.invoice,
@@ -313,7 +318,12 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
       address: storeInfo?.address,
       footer: storeInfo?.other,
       paymentMethod: item?.paymentMethod,
-    })), printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
+    })), {
+      cashier: payment?.createdBy?.username,
+      invoice: payment?.invoice,
+      createdAt: timeFormat(payment?.createdAt, 'YYYY-MM-DD HH:mm'),
+      paymentMethod: payment?.paymentMethod,
+    }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
   }
 
   const ticketRef = useRef(document.createElement('div'))

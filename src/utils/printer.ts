@@ -380,7 +380,7 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
     }
   };
 
-export const handleGroupReceiptPrinting = async (data: ReceiptData[], printer?: string, charsPerLine: number = 48) => {
+export const handleGroupReceiptPrinting = async (data: ReceiptData[], payment: ReceiptData, printer?: string, charsPerLine: number = 48) => {
   try {
     if (!printer) return
     const config = qz.configs.create(printer);
@@ -448,38 +448,38 @@ export const handleGroupReceiptPrinting = async (data: ReceiptData[], printer?: 
       const headerParts = [init, alignCenter, boldOn, doubleSize, sanitize(paymentMethod || ''), newLine, boldOff, normalSize, newLine];
       const transactionLines: string[] = [];
 
+      transactionLines.push(alignLeft, lineSep, newLine)
+      transactionLines.push(`Invoice: ${sanitize(payment.invoice || '')}`, newLine)
+      transactionLines.push(`Cashier: ${sanitize(payment.cashier || '')}`, newLine)
+      if (payment.table && payment.table !== '--') transactionLines.push(`Table: ${sanitize(payment.table)}`, newLine)
+      transactionLines.push(`Date: ${sanitize(payment.createdAt || '')}`, newLine)
+      transactionLines.push(`Payment Method: ${sanitize(payment.paymentMethod || '')}`, newLine)
+
       for (const r of receipts) {
         // per-receipt header
-        transactionLines.push(alignLeft, lineSep, newLine)
-        transactionLines.push(`Invoice: ${sanitize(r.invoice || '')}`, newLine)
-        transactionLines.push(`Cashier: ${sanitize(r.cashier || '')}`, newLine)
-        if (r.table && r.table !== '--') transactionLines.push(`Table: ${sanitize(r.table)}`, newLine)
-        transactionLines.push(`Date: ${sanitize(r.createdAt || '')}`, newLine)
-        transactionLines.push(`Payment Method: ${sanitize(r.paymentMethod || '')}`, newLine)
         transactionLines.push(lineSep, newLine)
-
         // columns
         if (charsPerLine > 40) {
           const itemWidth = Math.floor(charsPerLine * 0.5)
           const priceW = Math.floor(charsPerLine * 0.18)
-          transactionLines.push(pad('Item', itemWidth), pad('Qty', 4, 'right'), pad('Price', priceW, 'right'), pad('Disc', priceW, 'right'), pad('Total', priceW, 'right'), newLine)
+          const invoicePrefix = ` #${sanitize(r.invoice?.split('-')[1] || '')}`
+          transactionLines.push(pad('Invoice' + invoicePrefix, itemWidth), pad('Qty', 4, 'right'), pad('Price', priceW, 'right'), pad('Disc', priceW, 'right'), pad('Total', priceW, 'right'), newLine)
           transactionLines.push(lineSep, newLine)
 
-          const invoicePrefix = `#${sanitize(r.invoice?.split('-')[1] || '')} `
           for (const t of r.transactions || []) {
-            const wrapped = wrapText(`${invoicePrefix}${sanitize(t.item || '')}`, itemWidth)
+            const wrapped = wrapText(`${sanitize(t.item || '')}`, itemWidth)
             transactionLines.push(pad(wrapped[0], itemWidth), pad((t.qty || 0).toString(), 4, 'right'), pad(sanitize(t.price || ''), priceW, 'right'), pad(sanitize(t.disc || ''), priceW, 'right'), pad(sanitize(t.total || ''), priceW, 'right'), newLine)
             for (let i = 1; i < wrapped.length; i++) transactionLines.push(pad(wrapped[i], itemWidth), pad('', 4, 'right'), pad('', priceW, 'right'), pad('', priceW, 'right'), pad('', priceW, 'right'), newLine)
           }
         } else {
           const nameW = Math.floor(charsPerLine * 0.6)
           const totalW = Math.floor(charsPerLine * 0.3)
-          transactionLines.push(pad('Item', nameW), pad('Qty', 4, 'right'), pad('Total', totalW, 'right'), newLine)
+          const invoicePrefix = ` #${sanitize(r.invoice?.split('-')[1] || '')}`
+          transactionLines.push(pad('Invoice' + invoicePrefix, nameW), pad('Qty', 4, 'right'), pad('Total', totalW, 'right'), newLine)
           transactionLines.push(lineSep, newLine)
 
-          const invoicePrefix = `#${sanitize(r.invoice?.split('-')[1] || '')} `
           for (const t of r.transactions || []) {
-            const wrapped = wrapText(`${invoicePrefix}${sanitize(t.item || '')}`, nameW)
+            const wrapped = wrapText(`${sanitize(t.item || '')}`, nameW)
             transactionLines.push(pad(wrapped[0], nameW), pad((t.qty || 0).toString(), 4, 'right'), pad(sanitize(t.total || ''), totalW, 'right'), newLine)
             for (let i = 1; i < wrapped.length; i++) transactionLines.push(pad(wrapped[i], nameW), pad('', 4, 'right'), pad('', totalW, 'right'), newLine)
           }
