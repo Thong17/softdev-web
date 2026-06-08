@@ -285,6 +285,18 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
             );
           }
 
+          // print options under the item, one per line with a dash prefix
+          for (const opt of (item.options || [])) {
+            rows.push(
+              pad(`- ${sanitize(opt.name)}: ${sanitize(opt.value)}`, itemWidth),
+              pad('', qtyWidth, 'right'),
+              pad('', priceWidth, 'right'),
+              pad('', discWidth, 'right'),
+              pad('', totalWidth, 'right'),
+              newLine,
+            );
+          }
+
           return rows;
         }),
         lineSep,
@@ -322,6 +334,16 @@ export const handleReceiptPrint = async (data: ReceiptData, printer?: string, ch
           for (let i = 1; i < wrappedName.length; i += 1) {
             rows.push(
               pad(wrappedName[i], itemWidth + priceWidth + 4),
+              pad('', qtyWidth, 'right'),
+              pad('', totalWidth, 'right'),
+              newLine,
+            );
+          }
+
+          // print options for narrow layout under the item
+          for (const opt of (item.options || [])) {
+            rows.push(
+              pad(`- ${sanitize(opt.name)}: ${sanitize(opt.value)}`, itemWidth + priceWidth + 4),
               pad('', qtyWidth, 'right'),
               pad('', totalWidth, 'right'),
               newLine,
@@ -445,6 +467,10 @@ export const handleGroupReceiptPrinting = async (data: ReceiptData[], payment: R
 
     const lineSep = '-'.repeat(charsPerLine);
 
+    // per-receipt totals
+    const labelWidth = Math.max(12, charsPerLine - 20)
+    const valueWidth = charsPerLine - labelWidth
+
     for (const [paymentMethod, receipts] of Object.entries(groups)) {
       const headerParts = [init, alignCenter, boldOn, doubleSize, sanitize(paymentMethod || ''), newLine, boldOff, normalSize, newLine];
       const transactionLines: string[] = [];
@@ -459,11 +485,11 @@ export const handleGroupReceiptPrinting = async (data: ReceiptData[], payment: R
       for (const r of receipts) {
         // per-receipt header
         transactionLines.push(lineSep, newLine)
+        const invoicePrefix = ` #${sanitize(r.invoice?.split('-')[1] || '')}`
         // columns
         if (charsPerLine > 40) {
           const itemWidth = Math.floor(charsPerLine * 0.5)
           const priceW = Math.floor(charsPerLine * 0.18)
-          const invoicePrefix = ` #${sanitize(r.invoice?.split('-')[1] || '')}`
           transactionLines.push(pad('Invoice' + invoicePrefix, itemWidth), pad('Qty', 4, 'right'), pad('Price', priceW, 'right'), pad('Disc', priceW, 'right'), pad('Total', priceW, 'right'), newLine)
           transactionLines.push(lineSep, newLine)
 
@@ -471,11 +497,14 @@ export const handleGroupReceiptPrinting = async (data: ReceiptData[], payment: R
             const wrapped = wrapText(`${sanitize(t.item || '')}`, itemWidth)
             transactionLines.push(pad(wrapped[0], itemWidth), pad((t.qty || 0).toString(), 4, 'right'), pad(sanitize(t.price || ''), priceW, 'right'), pad(sanitize(t.disc || ''), priceW, 'right'), pad(sanitize(t.total || ''), priceW, 'right'), newLine)
             for (let i = 1; i < wrapped.length; i++) transactionLines.push(pad(wrapped[i], itemWidth), pad('', 4, 'right'), pad('', priceW, 'right'), pad('', priceW, 'right'), pad('', priceW, 'right'), newLine)
+            // print options under this transaction
+            for (const opt of (t.options || [])) {
+              transactionLines.push(pad(`- ${sanitize(opt.name)}: ${sanitize(opt.value)}`, itemWidth), pad('', 4, 'right'), pad('', priceW, 'right'), pad('', priceW, 'right'), pad('', priceW, 'right'), newLine)
+            }
           }
         } else {
           const nameW = Math.floor(charsPerLine * 0.6)
           const totalW = Math.floor(charsPerLine * 0.3)
-          const invoicePrefix = ` #${sanitize(r.invoice?.split('-')[1] || '')}`
           transactionLines.push(pad('Invoice' + invoicePrefix, nameW), pad('Qty', 4, 'right'), pad('Total', totalW, 'right'), newLine)
           transactionLines.push(lineSep, newLine)
 
@@ -483,12 +512,12 @@ export const handleGroupReceiptPrinting = async (data: ReceiptData[], payment: R
             const wrapped = wrapText(`${sanitize(t.item || '')}`, nameW)
             transactionLines.push(pad(wrapped[0], nameW), pad((t.qty || 0).toString(), 4, 'right'), pad(sanitize(t.total || ''), totalW, 'right'), newLine)
             for (let i = 1; i < wrapped.length; i++) transactionLines.push(pad(wrapped[i], nameW), pad('', 4, 'right'), pad('', totalW, 'right'), newLine)
+            // print options under this transaction (narrow layout)
+            for (const opt of (t.options || [])) {
+              transactionLines.push(pad(`- ${sanitize(opt.name)}: ${sanitize(opt.value)}`, nameW), pad('', 4, 'right'), pad('', totalW, 'right'), newLine)
+            }
           }
         }
-
-        // per-receipt totals
-        const labelWidth = Math.max(12, charsPerLine - 20)
-        const valueWidth = charsPerLine - labelWidth
 
         transactionLines.push(lineSep, newLine)
         transactionLines.push(pad('Subtotal:', labelWidth), pad(sanitize(r.subtotal || ''), valueWidth, 'right'), newLine)
@@ -508,6 +537,10 @@ export const handleGroupReceiptPrinting = async (data: ReceiptData[], payment: R
         transactionLines.push(pad('Total:', labelWidth), pad(sanitize(r.total || ''), valueWidth, 'right'), newLine)
         transactionLines.push(newLine)
       }
+
+      transactionLines.push(lineSep, newLine)
+      transactionLines.push(pad(`Grand Total:`, labelWidth), pad(sanitize(payment.total || ''), valueWidth, 'right'), newLine)
+      transactionLines.push(newLine)
 
       const footerParts = [newLine, newLine]
       const receipt = [...headerParts, ...transactionLines, ...footerParts, ...(paymentMethod === 'cash' ? [drawerPulse] : []), newLine.repeat(3), cut].join('')

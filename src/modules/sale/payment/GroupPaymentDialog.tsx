@@ -278,11 +278,15 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
       cashier: item?.createdBy?.username,
       createdAt: timeFormat(item?.createdAt, 'YYYY-MM-DD HH:mm'),
       transactions: item?.transactions?.map(item => ({
-          item: item.description,
+          item: item.product?.name?.English ?? item.description,
           qty: item.quantity,
           disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
           price: currencyFormat(item.price, item.currency, 0, true),
-          total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+          total: currencyFormat(item.total?.value, item.total?.currency, 0, true),
+          options: item.options?.map(option => ({
+            name: option.property?.name?.English,
+            value: option.name?.English
+          }))
       })),
       subtotal: currencyFormat(item?.subtotal?.USD, 'USD', 0, true),
       discount: currencyFormat(item?.discounts[0]?.value, item?.discounts[0]?.type, 0, true) + (item?.discounts[0]?.isFixed ? ' Fixed' : ''),
@@ -297,6 +301,8 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
       invoice: payment?.invoice,
       createdAt: timeFormat(payment?.createdAt, 'YYYY-MM-DD HH:mm'),
       paymentMethod: payment?.paymentMethod,
+      subtotal: currencyFormat(payment?.subtotal?.USD, 'USD', 0, true),
+      total: currencyFormat(payment?.total?.value, payment?.total?.currency, 0, true),
     }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
     handleGroupReceiptPrinting(dialog.payments?.map(item => ({
       name: storeInfo?.name as string,
@@ -304,11 +310,9 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
       cashier: item?.createdBy?.username,
       createdAt: timeFormat(item?.createdAt, 'YYYY-MM-DD HH:mm'),
       transactions: item?.transactions?.map(item => ({
-          item: item.description,
+          item: item.product?.name?.English ?? item.description,
           qty: item.quantity,
-          disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
-          price: currencyFormat(item.price, item.currency, 0, true),
-          total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+          total: currencyFormat(item.total?.value, item.total?.currency, 0, true),
       })),
       subtotal: currencyFormat(item?.subtotal?.USD, 'USD', 0, true),
       discount: currencyFormat(item?.discounts[0]?.value, item?.discounts[0]?.type, 0, true) + (item?.discounts[0]?.isFixed ? ' Fixed' : ''),
