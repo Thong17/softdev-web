@@ -11,6 +11,8 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded'
 import { ValueLabel } from '../ValueLabel'
 import { QuantityField } from './QuantityField'
+import useLanguage from 'hooks/useLanguage'
+import CropFreeRoundedIcon from '@material-ui/icons/CropFreeRounded'
 
 const initCash = { value: '0', currency: 'USD', quantity: 1 }
 
@@ -95,7 +97,9 @@ export const presetCashes = [
   },
 ]
 
-const CastPreset = ({ theme, onClick }) => {
+interface ICashItem { value: string; currency: string; quantity: number, color: string, type?: 'cash' | 'transfer' }
+
+const CastPreset = ({ theme, onClick, cashes = [] }: { theme: any; onClick: (cash: any) => void; cashes?: ICashItem[] }) => {
   return (
     <Box
       sx={{
@@ -115,8 +119,8 @@ const CastPreset = ({ theme, onClick }) => {
           lineHeight: 1,
         },
       }}
-    >
-      {presetCashes.map((cash, key) => (
+    > 
+      {[...cashes, ...presetCashes].map((cash, key) => (
         <div className='money' onClick={() => onClick(cash)} key={key} style={{ color: cash.color, backgroundColor: `${cash.color}22` }}>
           {currencyFormat(cash.value, cash.currency)}
         </div>
@@ -125,8 +129,9 @@ const CastPreset = ({ theme, onClick }) => {
   )
 }
 
-export const CashForm = ({ onChange }) => {
+export const CashForm = ({ onChange, transactionCashes = [] }: { onChange: (cashes: any[]) => void; transactionCashes?: ICashItem[] }) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const [cashForm, setCashForm] = useState(initCash)
   const [cashes, setCashes] = useState<any[]>([])
 
@@ -158,115 +163,144 @@ export const CashForm = ({ onChange }) => {
   }
 
   return (
-    <div
-      style={{
-        height: '100%',
-        boxSizing: 'border-box',
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 10,
-      }}
-    >
-      <div style={{ display: 'flex', gap: 10, position: 'relative' }}>
-        <form
-          onSubmit={handleSubmit}
+      <div
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            position: 'relative',
+              height: '100%',
+              boxSizing: 'border-box',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 10,
           }}
-        >
-          <div style={{ position: 'relative' }}>
-            <NanoInput
-              onChange={(event) =>
-                setCashForm({ ...cashForm, value: event.target.value })
-              }
-              onFocus={(event) => event.target.select()}
-              type='number'
-              step='any'
-              label='Price'
-              height={33}
-              width={230}
-              placeholder='Cash'
-              value={cashForm.value}
-              icon={
-                <div
-                  style={{ position: 'absolute', right: 0, display: 'flex' }}
-                >
-                  <MiniSelectField
-                    onChange={(event) =>
-                      setCashForm({
-                        ...cashForm,
-                        currency: event.target.value as string,
-                      })
-                    }
-                    value={cashForm.currency}
-                    options={currencyOptions}
-                    name='currency'
-                    width={33}
-                    sx={{
-                      position: 'absolute',
-                      top: -30,
-                      right: 23,
-                      height: 23,
-                      '& div': {
-                        paddingRight: '0 !important',
-                      },
-                      '& .MuiSelect-select': {
-                        position: 'absolute',
-                        top: -2,
-                      },
-                      '& .MuiSvgIcon-root': {
-                        top: -1,
-                        right: 0,
-                      },
-                    }}
-                  />
-                  <IconButton
-                    type='submit'
-                    style={{
-                      width: 30,
-                      height: 30,
-                      color: theme.text.secondary,
-                      position: 'absolute',
-                      top: -31,
-                      right: 1,
-                    }}
-                  >
-                    <AddRoundedIcon style={{ fontSize: 18 }} />
-                  </IconButton>
-                </div>
-              }
-            />
+      >
+          <div style={{ display: 'flex', gap: 10, position: 'relative' }}>
+              <form
+                  onSubmit={handleSubmit}
+                  style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      position: 'relative',
+                  }}
+              >
+                  <div style={{ position: 'relative' }}>
+                      <NanoInput
+                          onChange={(event) =>
+                              setCashForm({
+                                  ...cashForm,
+                                  value: event.target.value,
+                              })
+                          }
+                          onFocus={(event) => event.target.select()}
+                          type='number'
+                          step='any'
+                          label='Price'
+                          height={33}
+                          width={230}
+                          placeholder='Cash'
+                          value={cashForm.value}
+                          icon={
+                              <div
+                                  style={{
+                                      position: 'absolute',
+                                      right: 0,
+                                      display: 'flex',
+                                  }}
+                              >
+                                  <MiniSelectField
+                                      onChange={(event) =>
+                                          setCashForm({
+                                              ...cashForm,
+                                              currency: event.target
+                                                  .value as string,
+                                          })
+                                      }
+                                      value={cashForm.currency}
+                                      options={currencyOptions}
+                                      name='currency'
+                                      width={33}
+                                      sx={{
+                                          position: 'absolute',
+                                          top: -30,
+                                          right: 23,
+                                          height: 23,
+                                          '& div': {
+                                              paddingRight: '0 !important',
+                                          },
+                                          '& .MuiSelect-select': {
+                                              position: 'absolute',
+                                              top: -2,
+                                          },
+                                          '& .MuiSvgIcon-root': {
+                                              top: -1,
+                                              right: 0,
+                                          },
+                                      }}
+                                  />
+                                  <IconButton
+                                      type='submit'
+                                      style={{
+                                          width: 30,
+                                          height: 30,
+                                          color: theme.text.secondary,
+                                          position: 'absolute',
+                                          top: -31,
+                                          right: 1,
+                                      }}
+                                  >
+                                      <AddRoundedIcon
+                                          style={{ fontSize: 18 }}
+                                      />
+                                  </IconButton>
+                              </div>
+                          }
+                      />
+                  </div>
+              </form>
+              <CastPreset theme={theme} onClick={handleAddPreset} cashes={transactionCashes} />
           </div>
-        </form>
-        <CastPreset theme={theme} onClick={handleAddPreset} />
+          <div style={{ position: 'relative', height: '100%' }}>
+              {cashes?.length === 0 ? (
+                  <div
+                      style={{
+                          backgroundColor:
+                              cashes?.length > 0
+                                  ? 'transparent'
+                                  : `${theme.color.error}11`,
+                          color: theme.color.error,
+                          height: '100%',
+                          borderRadius: theme.radius.primary,
+                          display: 'grid',
+                          placeItems: 'center',
+                          boxSizing: 'border-box',
+                      }}
+                  >
+                      <h2 style={{ fontWeight: 500 }}>{ language['PAYMENT_ADD_CASH_DESCRIPTION'] }</h2>
+                  </div>
+              ) : (
+                  <div
+                      style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 10,
+                          overflowY: 'auto',
+                          boxSizing: 'border-box',
+                          maxHeight: '100%',
+                          width: '100%',
+                          position: 'absolute',
+                      }}
+                  >
+                      {cashes?.map((cash, key) => (
+                          <CashItem
+                              key={key}
+                              cash={cash}
+                              onRemove={handleRemoveCash}
+                              onChange={handleChangeQuantity}
+                          />
+                      ))}
+                  </div>
+              )}
+          </div>
       </div>
-      <div style={{ position: 'relative', height: '100%' }}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 10,
-            overflowY: 'auto',
-            boxSizing: 'border-box',
-            maxHeight: '100%',
-            width: '100%',
-            position: 'absolute',
-          }}
-        >
-          {cashes?.map((cash, key) => (
-            <CashItem
-              key={key}
-              cash={cash}
-              onRemove={handleRemoveCash}
-              onChange={handleChangeQuantity}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
   )
 }
 
@@ -285,13 +319,23 @@ const CashItem = ({ cash, onRemove, onChange }) => {
       <span style={{ flex: '30%' }}>
         <ValueLabel
           icon={
-            <PaymentsRoundedIcon
-              style={{
-                margin: '0 5px',
-                fontSize: 15,
-                color: theme.text.quaternary,
-              }}
-            />
+            cash.type === 'transfer' ? (
+              <CropFreeRoundedIcon
+                style={{
+                  margin: '0 5px',
+                  fontSize: 15,
+                  color: theme.text.quaternary,
+                }}
+              />
+            ) : (
+              <PaymentsRoundedIcon
+                style={{
+                  margin: '0 5px',
+                  fontSize: 15,
+                  color: theme.text.quaternary,
+                }}
+              />
+            )
           }
           value={currencyFormat(parseFloat(cash.value), cash.currency)}
         />

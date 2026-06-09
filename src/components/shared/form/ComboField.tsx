@@ -13,7 +13,29 @@ const ComboField = ({ onChange, defaultValue, selectOption, name = '', checkbox 
   const [check, setCheck] = useState(defaultValue.check || false)
 
   const handleChangeInput = (event) => {
-    setInput(event.target.value)
+    const v = event.target.value
+    if (v === '') {
+      setInput(v)
+      return
+    }
+    const num = parseFloat(v)
+    if (Number.isNaN(num)) {
+      setInput('')
+      return
+    }
+    // enforce non-negative values
+    if (num < 0) {
+      setInput(String(Math.abs(num)))
+      return
+    }
+    setInput(v)
+  }
+
+  const handleKeyDownInput = (event) => {
+    // prevent entering invalid characters: e, E, +, - (exponent/negative)
+    if (event.key === 'e' || event.key === 'E' || event.key === '+' || event.key === '-') {
+      event.preventDefault()
+    }
   }
 
   const handleChangeSelect = (event) => {
@@ -38,6 +60,8 @@ const ComboField = ({ onChange, defaultValue, selectOption, name = '', checkbox 
         position: 'relative',
       }}
     >
+      <style>{`.combo-number-input::-webkit-outer-spin-button, .combo-number-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+      .combo-number-input { -moz-appearance: textfield; appearance: textfield; }`}</style>
       <input
         onFocus={(event) => event.target.select()}
         autoFocus
@@ -45,7 +69,10 @@ const ComboField = ({ onChange, defaultValue, selectOption, name = '', checkbox 
         placeholder={name}
         type='number'
         step='any'
+        min={0}
+        onKeyDown={handleKeyDownInput}
         onChange={handleChangeInput}
+        className='combo-number-input'
         style={{
           width: 37,
           padding: '2px 5px 2px 2px',

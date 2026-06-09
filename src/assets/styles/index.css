@@ -7,3 +7,26 @@
     font-family: 'PTSans';
     src: url('/src/assets/fonts/PTSansNarrow-Bold.ttf') format('truetype'), url('/src/assets/fonts/PTSansNarrow-Regular.ttf') format('truetype');
 } 
+
+/* Remove spinner controls from number inputs globally */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* Keep legacy class for components that used .combo-number-input */
+.combo-number-input::-webkit-outer-spin-button,
+.combo-number-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.combo-number-input {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}

@@ -16,6 +16,36 @@ import { columnData, createData } from './constant'
 import { PaymentForm } from '../cashing/PaymentForm'
 import GroupPaymentDialog from './GroupPaymentDialog'
 
+export const mergePayments = (data, groupPayment) => {
+    const paymentsData = data || []
+
+    // Build a merged payment object compatible with InvoicePreview
+    const base = {
+        _id: null,
+        invoice: groupPayment?.invoice,
+        total: groupPayment?.total,
+        subtotal: groupPayment?.subtotal,
+        rate: groupPayment?.rate,
+        discounts: [],
+        vouchers: [],
+        services: [],
+        transactions: [],
+        createdBy: groupPayment?.createdBy,
+        returnCashes: [],
+        receiveCashes: [],
+    }
+
+    const merged = {
+        ...base,
+        transactions: paymentsData.flatMap((p) => p.transactions || []),
+        discounts: paymentsData.flatMap((p) => p.discounts || []),
+        vouchers: paymentsData.flatMap((p) => p.vouchers || []),
+        services: paymentsData.flatMap((p) => p.services || []),
+    }
+
+    return { paymentsData, merged }
+}
+
 const GroupPayment = () => {
     const dispatch = useAppDispatch()
     const [rowData, setRowData] = useState<any[]>([])
@@ -38,7 +68,7 @@ const GroupPayment = () => {
 
     const [groupPaymentDialog, setGroupPaymentDialog] = useState<any>({
         open: false,
-        payment: [],
+        payments: [],
     })
 
     const toggleRowExpansion = async (id: string) => {
@@ -103,7 +133,7 @@ const GroupPayment = () => {
             .then((data) => {
                 setPaymentDialog({ payment: data?.data?.data, open: true })
             })
-            .catch((err) => notify(err?.response?.data?.msg))
+            .catch((err) => notify(err?.response?.data?.msg, 'error'))
     }
 
     const handleMerge = (id) => {
@@ -150,19 +180,73 @@ const GroupPayment = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [payments, user, theme, notify, listPaymentSelected])
 
+    const handleOpenGroupPayment = () => {
+        if (listPaymentSelected.length < 2) return notify('Group payment requires at least 2 selected payments', 'warning')
+        Axios({
+            url: '/sale/payment/group-payment',
+            method: 'POST',
+            body: {
+                paymentIds: listPaymentSelected,
+            },
+        })
+            .then((response) => {
+                const { paymentsData, merged } = mergePayments(response?.data?.data, response?.data?.group)
+                setGroupPaymentDialog({ payments: paymentsData, payment: merged, open: true })
+            })
+            .catch((err) => notify(err?.response?.data?.msg, 'error'))
+    }
+
+    const handleRemovePayment = (id) => {
+        const remainingSelected = groupPaymentDialog.payments.filter(payment => payment._id !== id)
+        groupPaymentDialog.payments = remainingSelected
+
+        if (remainingSelected.length < 2) {
+            setGroupPaymentDialog({ payments: [], open: false })
+            setListPaymentSelected(prev => prev.filter(item => item !== id))
+            return notify('Group payment requires at least 2 selected payments', 'warning')
+        }
+
+        Axios({
+            url: '/sale/payment/group-payment',
+            method: 'POST',
+            body: {
+                paymentIds: remainingSelected,
+            },
+        })
+            .then((response) => {
+                setListPaymentSelected(prev => prev.filter(item => item !== id))
+                const { paymentsData, merged } = mergePayments(response?.data?.data, response?.data?.group)
+                setGroupPaymentDialog(prev => ({ ...prev, payments: paymentsData, payment: merged }))
+            })
+            .catch((err) => notify(err?.response?.data?.msg, 'error'))
+    }
+
     return (
         <Container
             header={
-                <Header privilege={user?.privilege} styled={theme} listPaymentSelected={listPaymentSelected} onOpenGroupPayment={() => setGroupPaymentDialog({ open: true, payments: listPaymentSelected })} />
+                <Header
+                    privilege={user?.privilege}
+                    styled={theme}
+                    listPaymentSelected={listPaymentSelected}
+                    onOpenGroupPayment={handleOpenGroupPayment}
+                />
             }
-        >   
-            <GroupPaymentDialog dialog={groupPaymentDialog} setDialog={setGroupPaymentDialog} />
+        >
+            <GroupPaymentDialog
+                source='report'
+                dialog={groupPaymentDialog}
+                setDialog={setGroupPaymentDialog}
+                handleRemovePayment={handleRemovePayment}
+                onCheckout={() => {
+                    setListPaymentSelected([])
+                    dispatch(getListPayment({ query: queryParams }))
+                }}
+            />
             <PaymentForm
-                source="report"
+                source='report'
                 dialog={paymentDialog}
                 setDialog={setPaymentDialog}
                 onCheckout={() => {
-                //   setPaymentDialog({ open: false, payment: null })
                     dispatch(getListPayment({ query: queryParams }))
                 }}
             />
@@ -188,7 +272,7 @@ const GroupPayment = () => {
                         ? Number.parseInt(queryParams.get('page') || '0')
                         : 0
                 }
-                />
+            />
         </Container>
     )
 }

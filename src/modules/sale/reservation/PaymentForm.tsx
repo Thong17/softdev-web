@@ -159,6 +159,9 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
       onClearPayment()
       onClear && onClear()
     }
+    setTotalReceive({ KHR: 0, USD: 0, total: 0 })
+    setPaymentMethod(null)
+    setReceiveCashes([])
     setDialog({ ...dialog, open: false })
   }
 
@@ -289,11 +292,15 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
           cashier: dialog.payment?.createdBy?.username,
           createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
           transactions: dialog.payment?.transactions?.map(item => ({
-              item: item.description,
+              item: item.product?.name?.English ?? item.description,
               qty: item.quantity,
               disc: currencyFormat(item.discount?.value, item.discount?.type, 0, true) + (item.discount?.isFixed ? ' Fixed' : ''),
               price: currencyFormat(item.price, item.currency, 0, true),
-              total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
+              total: currencyFormat(item.total?.value, item.total?.currency, 0, true),
+              options: item.options?.map(option => ({
+                name: option.property?.name?.English,
+                value: option.name?.English
+              }))
           })),
           subtotal: currencyFormat(dialog.payment?.subtotal?.USD, 'USD', 0, true),
           discount: currencyFormat(dialog.payment?.discounts[0]?.value, dialog.payment?.discounts[0]?.type, 0, true) + (dialog.payment?.discounts[0]?.isFixed ? ' Fixed' : ''),
@@ -309,7 +316,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
           cashier: dialog.payment?.createdBy?.username,
           createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
           transactions: dialog.payment?.transactions?.map(item => ({
-              item: item.product?.name?.English || item.description,
+              item: item.product?.name?.English ?? item.description,
               qty: item.quantity,
               total: currencyFormat(item.total?.value, item.total?.currency, 0, true)
           })),
@@ -334,7 +341,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
         )
 
       default:
-        return <CashForm onChange={handleChangeCashes} />
+        return <CashForm onChange={handleChangeCashes} transactionCashes={payment?.transactions?.map((tx) => ({ type: 'transfer', value: tx.total?.value, currency: tx.total?.currency, quantity: 1, color: theme.color.info }))} />
     }
   }
 
@@ -444,6 +451,11 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 gap: 0.8,
+                '& span': {
+                  color: Number.isNaN(totalRemain?.USD) 
+                    ? theme.color.error 
+                    : (totalRemain?.USD > 0 ? theme.color.error : theme.color.success),
+                },
                 '&::before': {
                   content: `''`,
                   borderTop: theme.border.dashed,
@@ -514,6 +526,9 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                       borderRadius: theme.radius.primary,
                       color: theme.color.info,
                       lineHeight: 1,
+                      '& span': {
+                        color: theme.color.info + '!important',
+                      },
                     },
                   }}
                 >

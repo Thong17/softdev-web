@@ -2,17 +2,18 @@ import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import React, { useEffect, useState } from 'react'
-import { CustomInvoiceForm } from 'styles/container'
+import { CustomGroupInvoiceForm } from 'styles/container'
 import { currencyFormat, timeFormat } from 'utils'
-import { CustomerStatistic } from '../container/CustomerContainer'
-import { CircleIcon } from '../table/CustomIcon'
 import { IconButton } from '@mui/material'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
 import { handleThermalPrint } from 'utils/printer'
 import useNotify from 'hooks/useNotify'
 import Axios from 'constants/functions/Axios'
+import { CustomerStatistic } from 'components/shared/container/CustomerContainer'
+import { CircleIcon } from 'components/shared/table/CustomIcon'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 
-export const InvoicePreview = ({ payment, customer }) => {
+export const InvoicePreview = ({ payment, customer, onRemove }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   const { language } = useLanguage()
@@ -78,14 +79,20 @@ export const InvoicePreview = ({ payment, customer }) => {
       style={{
         borderRadius: theme.radius.ternary,
         height: '100%',
+        paddingRight: 10,
       }}
     >
-      <CustomInvoiceForm
+      <CustomGroupInvoiceForm
         mode='expand'
         styled={theme}
         device={device}
         height='100%'
       >
+        <IconButton style={{ position: 'absolute', top: 3, right: 10, backgroundColor: `${theme.color.error}11` }} onClick={() => onRemove(payment?._id)}>
+          <CloseRoundedIcon
+            style={{ fontSize: 17, color: theme.color.error }}
+          />
+        </IconButton>
         <div
           style={{
             display: 'flex',
@@ -110,12 +117,11 @@ export const InvoicePreview = ({ payment, customer }) => {
             />
           </div>
           <div
-            style={{ height: '100%', position: 'relative', marginBottom: 10 }}
+            style={{ height: '100%', position: 'relative' }}
           >
             <div
               className='invoice-form'
               style={{
-                position: 'absolute',
                 height: '100%',
                 width: '100%',
                 display: 'flex',
@@ -201,7 +207,7 @@ export const InvoicePreview = ({ payment, customer }) => {
           <div className='invoice-total'>
             <div className='total-container'>
               <div className='charge'>
-                <div className='item preview'>
+                <div className='item'>
                   <span>{language['SUBTOTAL']}</span>
                   <div style={{ display: 'flex', lineHeight: 1 }}>
                     <span>
@@ -213,11 +219,11 @@ export const InvoicePreview = ({ payment, customer }) => {
                     </span>
                   </div>
                 </div>
-                {payment?.discounts?.map((promotion, key) => {
+                {payment?.discounts?.filter(item => item.value > 0)?.length > 0 && payment?.discounts?.map((promotion, key) => {
                   return (
                     <div
                       key={key}
-                      className='item preview'
+                      className='item'
                       style={{
                         color: theme.text.quaternary,
                         fontSize: theme.responsive[device]?.text.quaternary,
@@ -230,11 +236,11 @@ export const InvoicePreview = ({ payment, customer }) => {
                     </div>
                   )
                 })}
-                {payment?.services?.map((service, key) => {
+                {payment?.services?.filter(item => item.value > 0)?.length > 0 && payment?.services?.map((service, key) => {
                   return (
                     <div
                       key={key}
-                      className='item preview'
+                      className='item'
                       style={{
                         color: theme.text.quaternary,
                         fontSize: theme.responsive[device]?.text.quaternary,
@@ -247,11 +253,11 @@ export const InvoicePreview = ({ payment, customer }) => {
                     </div>
                   )
                 })}
-                {payment?.vouchers?.map((promotion, key) => {
+                {payment?.vouchers?.filter(item => item.value > 0)?.length > 0 && payment?.vouchers?.map((promotion, key) => {
                   return (
                     <div
                       key={key}
-                      className='item preview'
+                      className='item'
                       style={{
                         color: theme.text.quaternary,
                         fontSize: theme.responsive[device]?.text.quaternary,
@@ -277,7 +283,7 @@ export const InvoicePreview = ({ payment, customer }) => {
             </div>
           </div>
         </div>
-      </CustomInvoiceForm>
+      </CustomGroupInvoiceForm>
     </div>
   )
 }

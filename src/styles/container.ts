@@ -780,6 +780,187 @@ export const CustomInvoiceForm = styled('div')(
             justifyContent: 'space-between',
             alignItems: 'center',
             height: 31,
+            '&.preview span:hover': {
+              cursor: 'default',
+            },
+            '& span:hover': {
+              color: styled.text.primary,
+              cursor: 'pointer'
+            },
+            '& span svg': {
+              fontSize: 12
+            }
+          }
+        },
+        '& .total': {
+          display: mode === 'expand' ? 'flex' : 'none', 
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          boxSizing: 'border-box',
+          padding: '0 20px',
+          height: 50,
+          width: '100%',
+          backgroundColor: `${styled.background.primary}77`,
+          borderRadius: `11px 11px ${styled.radius.ternary} ${styled.radius.ternary}`,
+          position: 'relative',
+          '&::before': {
+            content: `''`,
+            borderTop: styled.border.dashed,
+            position: 'absolute',
+            top: -1,
+            left: 10,
+            display: 'block',
+            width: 'calc(100% - 20px)'
+          }
+        }
+      }
+    },
+    '.invoice-payment': {
+      height: device === 'laptop' || device === 'desktop' ? 57 : (mode === 'expand' ? 57 : 0),
+      display: 'flex',
+      alignItems: 'center',
+      '& .total-container': {
+        padding: '0 10px',
+        width: '100%',
+        '& .total': {
+          display: mode === 'expand' ? 'block' : 'none',
+          boxSizing: 'border-box',
+          width: '100%',
+        }
+      }
+    }
+  })
+)
+
+export const CustomGroupInvoiceForm = styled('div')(
+  ({
+    styled,
+    device,
+    mode,
+    height = 'fit-content',
+  }: {
+    styled: IThemeStyle
+    device: DeviceOptions
+    mode: 'compact' | 'expand'
+    height?: string
+  }) => ({
+    overflowX: 'hidden',
+    overflowY: 'visible',
+    position: 'sticky',
+    top: 30,
+    boxSizing: 'border-box',
+    background: `linear-gradient(0deg, ${styled.background.secondary}cc, ${styled.background.secondary}77)`,
+    minWidth: device === 'laptop' || device === 'desktop' ? (mode === 'expand' ? 460 : 50) : '100%', 
+    maxWidth: device === 'laptop' || device === 'desktop' ? 460 : '100%',
+    borderRadius: styled.radius.ternary,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    height: height,
+    '.toggle': {
+      width: 50, 
+      height: 50, 
+      display: 'grid', 
+      placeItems: 'center', 
+      cursor: 'pointer',
+      color: styled.text.secondary,
+      '&:hover': {
+        color: styled.color.info
+      }
+    },
+    '.invoice-form': {
+      padding: '0 10px',
+      '& .form': {
+        display: mode === 'expand' ? 'block' : 'none',
+        fontSize: styled.responsive[device]?.text.quaternary,
+        color: styled.text.secondary,
+        '& .item': {
+          position: 'relative',
+          border: styled.border.dashed,
+          borderRadius: styled.radius.ternary,
+          cursor: 'pointer',
+          padding: '7px 11px 7px 9px',
+          marginBottom: 10,
+          '& .item-description': {
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            '& .profile': {
+              marginRight: 10
+            },
+            '& .description': {
+              display: 'flex',
+              flexDirection: 'column',
+              flex: '0 60%',
+            },
+            '& .main-description': {
+              fontSize: 12,
+              color: styled.text.quaternary,
+              wordBreak: 'break-all'
+            },
+            '& .sub-description': {
+              height: 20,
+              lineHeight: 1,
+              display: 'flex',
+              alignItems: 'center',
+            },
+            '& .discount': {
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'start',
+              flex: '0 15%'
+            },
+            '& .quantity': {
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              flex: '0 25%'
+            },
+            '& .total': {
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flex: '0 25%'
+            },
+          },
+          '& .item-form': {
+            padding: '0'
+          },
+          '&.active': {
+            backgroundColor: `${styled.background.primary}88`,
+            borderColor: `${styled.background.primary}11`,
+            cursor: 'auto'
+          }
+        }
+      }
+    },
+    '.invoice-total': {
+      boxSizing: 'border-box',
+      display: 'flex',
+      alignItems: 'center',
+      '& .total-container': {
+        padding: '0 10px 10px 10px',
+        height: '100%',
+        width: '100%',
+        '& .charge': {
+          display: mode === 'expand' ? 'flex' : 'none', 
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'start',
+          boxSizing: 'border-box',
+          padding: '10px 0',
+          height: 'calc(100% - 60px)',
+          width: '100%',
+          backgroundColor: `${styled.background.primary}77`,
+          borderRadius: `${styled.radius.ternary} ${styled.radius.ternary} 11px 11px`,
+          '& .item': {
+            boxSizing: 'border-box',
+            width: '100%',
+            padding: '5px 20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            height: 31,
             '& span:hover': {
               color: styled.text.primary,
               cursor: 'pointer'

@@ -247,6 +247,8 @@ export const languages = {
     GROUP_PAYMENT: 'Group Payment',
     TABLE: 'Table',
     TYPE: 'Type',
+    PAYMENT_ADD_CASH: 'Add Cash',
+    PAYMENT_ADD_CASH_DESCRIPTION: 'Add cash to complete the payment',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -517,5 +519,7 @@ export const languages = {
     GROUP_PAYMENT: 'ការទូទាត់ជាក្រុម',
     TABLE: 'តុ',
     TYPE: 'ប្រភេទ',
+    PAYMENT_ADD_CASH: 'បន្ថែមសាច់ប្រាក់',
+    PAYMENT_ADD_CASH_DESCRIPTION: 'បន្ថែមសាច់ប្រាក់ដើម្បីបញ្ចប់ការទូទាត់',
   }
 }
