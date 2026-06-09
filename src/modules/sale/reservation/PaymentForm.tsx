@@ -341,7 +341,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
         )
 
       default:
-        return <CashForm onChange={handleChangeCashes} transactionCashes={payment?.transactions?.map((tx) => ({ type: 'transfer', value: tx.total?.value, currency: tx.total?.currency, quantity: 1, color: theme.color.warning }))} />
+        return <CashForm onChange={handleChangeCashes} transactionCashes={payment?.transactions?.map((tx) => ({ type: 'transfer', value: tx.total?.value, currency: tx.total?.currency, quantity: 1, color: theme.color.info }))} />
     }
   }
 

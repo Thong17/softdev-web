@@ -35,24 +35,24 @@ const Header = ({ language, theme }) => {
 
 const filterOption = [
   {
+    label: 'Hourly',
+    value: 'hourly',
+  },
+  {
     label: 'Daily',
-    value: 'day',
+    value: 'daily',
   },
   {
     label: 'Weekly',
-    value: 'week',
+    value: 'weekly',
   },
   {
     label: 'Monthly',
-    value: 'month',
+    value: 'monthly',
   },
   {
     label: 'Yearly',
-    value: 'year',
-  },
-  {
-    label: 'Range',
-    value: 'range',
+    value: 'yearly',
   },
 ]
 
@@ -189,7 +189,7 @@ export const SaleReport = () => {
   const { theme } = useTheme()
   const { notify } = useNotify()
   const { user } = useAuth()
-  const [selectedSaleChart, setSelectedSaleChart] = useState('day')
+  const [selectedSaleChart, setSelectedSaleChart] = useState('hourly')
   const [selectedTotalIncome, setSelectedTotalIncome] = useState('day')
   const [selectedTotalProfit, setSelectedTotalProfit] = useState('day')
   const [listSale, setListSale] = useState([])
@@ -211,8 +211,15 @@ export const SaleReport = () => {
   useEffect(() => {
     const _fromDate = queryParams.get('fromDate')
     const _toDate = queryParams.get('toDate')
+    const _totalIncome = queryParams.get('_totalIncome') ?? 'day'
+    const _totalProfit = queryParams.get('_totalProfit') ?? 'day'
+    const _chartData = queryParams.get('_chartData')
+
     if (_fromDate) setFromDate(_fromDate)
     if (_toDate) setToDate(_toDate)
+    if (_chartData) setSelectedSaleChart(_chartData)
+    if (_totalProfit) setSelectedTotalProfit(_totalProfit)
+    if (_totalIncome) setSelectedTotalIncome(_totalIncome)
     // eslint-disable-next-line
   }, [])
 
@@ -244,138 +251,71 @@ export const SaleReport = () => {
   }
 
   useEffect(() => {
-    const _fromDate = queryParams.get('fromDate')
-    const _toDate = queryParams.get('toDate')
-    const _chartData = queryParams.get('_chartData')
-    if (_chartData === 'range' && (!_fromDate || !_toDate)) {
-      return
-    }
-    if (_fromDate && _toDate) {
-      setSelectedSaleChart('range')
-    }
-    dispatch(getListPayment({ query: queryParams }))
-  }, [dispatch, queryParams])
+    const listTransactions = payments.map((payment: any) => {
+      return createData(
+        payment._id,
+        payment.invoice,
+        payment.paymentMethod?.toUpperCase(),
+        currencyFormat(payment.subtotal.BOTH, 'USD'),
+        currencyFormat(
+            payment.vouchers[0]?.value,
+            payment.vouchers[0]?.type,
+        ),
+        currencyFormat(
+            payment.discounts[0]?.value,
+            payment.discounts[0]?.type,
+        ),
+        currencyFormat(
+            payment.services[0]?.value,
+            payment.services[0]?.type,
+        ),
+        currencyFormat(payment.total.value, payment.total.currency),
+        payment.state,
+        payment.createdAt,
+        payment.createdBy?.username,
+        null,
+        theme,
+      )
+    })
 
-  useEffect(() => {
-      const listTransactions = payments.map((payment: any) => {
-        return createData(
-          payment._id,
-          payment.invoice,
-          payment.paymentMethod?.toUpperCase(),
-          currencyFormat(payment.subtotal.BOTH, 'USD'),
-          currencyFormat(
-              payment.vouchers[0]?.value,
-              payment.vouchers[0]?.type,
-          ),
-          currencyFormat(
-              payment.discounts[0]?.value,
-              payment.discounts[0]?.type,
-          ),
-          currencyFormat(
-              payment.services[0]?.value,
-              payment.services[0]?.type,
-          ),
-          currencyFormat(payment.total.value, payment.total.currency),
-          payment.state,
-          payment.createdAt,
-          payment.createdBy?.username,
-          null,
-          theme,
-        )
-      })
-  
-      setReportList(listTransactions)
-    }, [payments, user, theme, notify])
-
-  useEffect(() => {
-    let query = new URLSearchParams()
-    const _totalIncome = queryParams.get('_totalIncome')
-    const _totalProfit = queryParams.get('_totalProfit')
-    if (_totalIncome) query.append('_totalIncome', _totalIncome)
-    if (_totalProfit) query.append('_totalProfit', _totalProfit)
-    query.append('_chartData', 'range')
-
-    if (fromDate === '' || toDate === '') return
-    query.append('fromDate', fromDate)
-    query.append('toDate', toDate)
-    setQueryParams(query)
-
-    getReportListSale({ query })
-      .then((data) => {
-        setListSale(data?.data)
-      })
-      .catch((err) => notify(err?.response?.data?.msg, 'error'))
-    // eslint-disable-next-line
-  }, [fromDate, toDate])
+    setReportList(listTransactions)
+  }, [payments, user, theme, notify])
   
   const handleChangeQuery = (event) => {
     const { name, value } = event.target
-    let query = new URLSearchParams()
-    const _totalIncome = queryParams.get('_totalIncome')
-    const _totalProfit = queryParams.get('_totalProfit')
-    const _chartData = queryParams.get('_chartData')
-
     switch (name) {
       case '_chartData':
         setSelectedSaleChart(value)
-        if (value === 'range' && (fromDate === '' || toDate === '')) return
-        if (_totalIncome) query.append('_totalIncome', _totalIncome)
-        if (_totalProfit) query.append('_totalProfit', _totalProfit)
-        query.append('_chartData', value)
-
-        if (value === 'range') {
-          query.append('fromDate', fromDate)
-          query.append('toDate', toDate)
-        } else {
-          setFromDate('')
-          setToDate('')
+        const query = {
+          _chartData: value,
         }
-        getReportListSale({ query })
-          .then((data) => {
-            setListSale(data?.data)
-          })
-          .catch((err) => notify(err?.response?.data?.msg, 'error'))
+
+        if (fromDate && toDate) {
+          query['fromDate'] = fromDate
+          query['toDate'] = toDate
+        }
+        handleQuery(query)
         break
 
       case '_totalIncome':
-        if (_chartData) query.append('_chartData', _chartData)
-        if (_totalProfit) query.append('_totalProfit', _totalProfit)
-        query.append('_totalIncome', value)
-
         setSelectedTotalIncome(value)
-        getReportSale({ query })
-          .then((data) => {
-            setTotalProfit(data?.data?.totalProfit)
-            setTotalIncome(data?.data?.totalIncome)
-          })
-          .catch((err) => notify(err?.response?.data?.msg, 'error'))
+        handleQuery({
+          _totalIncome: value,
+        })
         break
 
       default:
-        if (_chartData) query.append('_chartData', _chartData)
-        if (_totalIncome) query.append('_totalIncome', _totalIncome)
-        query.append('_totalProfit', value)
-
         setSelectedTotalProfit(value)
-        getReportSale({ query })
-          .then((data) => {
-            setTotalProfit(data?.data?.totalProfit)
-            setTotalIncome(data?.data?.totalIncome)
-          })
-          .catch((err) => notify(err?.response?.data?.msg, 'error'))
+        handleQuery({
+          _totalProfit: value,
+        })
         break
     }
-    setQueryParams(query)
   }
 
   useEffect(() => {
-    const _totalIncome = queryParams.get('_totalIncome')
-    const _totalProfit = queryParams.get('_totalProfit')
-    const _chartData = queryParams.get('_chartData')
-
-    if (_chartData) setSelectedSaleChart(_chartData)
-    if (_totalProfit) setSelectedTotalProfit(_totalProfit)
-    if (_totalIncome) setSelectedTotalIncome(_totalIncome)
+    dispatch(getListPayment({ query: queryParams }))
+    
 
     getReportSale({ query: queryParams })
       .then((data) => {
@@ -390,7 +330,7 @@ export const SaleReport = () => {
       })
       .catch((err) => notify(err?.response?.data?.msg, 'error'))
     // eslint-disable-next-line
-  }, [])
+  }, [queryParams])
 
   const handleQuery = (data) => {
     let { limit, search } = data
@@ -401,12 +341,22 @@ export const SaleReport = () => {
     const _search = queryParams.get('search')
     const _filter = queryParams.get('filter')
     const _sort = queryParams.get('sort')
+    const _chartData = queryParams.get('_chartData')
+    const _totalIncome = queryParams.get('_totalIncome')
+    const _totalProfit = queryParams.get('_totalProfit')
+    const _fromDate = queryParams.get('fromDate')
+    const _toDate = queryParams.get('toDate')
 
     if (_limit) query = { limit: _limit, ...query }
     if (_page) query = { page: _page, ...query }
     if (_search) query = { search: _search, ...query }
     if (_filter) query = { filter: _filter, ...query }
     if (_sort) query = { sort: _sort, ...query }
+    if (_chartData) query = { _chartData, ...query }
+    if (_totalIncome) query = { _totalIncome, ...query }
+    if (_totalProfit) query = { _totalProfit, ...query }
+    if (_fromDate) query = { fromDate: _fromDate, ...query }
+    if (_toDate) query = { toDate: _toDate, ...query }
 
     if (limit || search) return setQueryParams({ ...query, ...data, page: 0 })
     setQueryParams({ ...query, ...data })
@@ -420,6 +370,7 @@ export const SaleReport = () => {
       return
     }
     setFromDate(newFromDate)
+    handleQuery({ fromDate: newFromDate })
   }
 
   const handleToDateChange = (e) => {
@@ -430,6 +381,7 @@ export const SaleReport = () => {
       return
     }
     setToDate(newToDate)
+    handleQuery({ toDate: newToDate })
   }
 
   return (
@@ -602,6 +554,7 @@ export const SaleReport = () => {
               data={listSale.map((item: any) => ({
                 ...item,
                 name: moment(item.name).format(item.format),
+                createdAt: moment(item.name).format('YYYY-MM-DD'),
               }))}
               labels={[{ name: 'value' }]}
               height={370}
