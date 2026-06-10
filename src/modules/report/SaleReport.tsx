@@ -209,8 +209,8 @@ export const SaleReport = () => {
 
   // Load date filter from query params on mount
   useEffect(() => {
-    const _fromDate = queryParams.get('fromDate')
-    const _toDate = queryParams.get('toDate')
+    const _fromDate = queryParams.get('fromDate') ?? new Date().toISOString().split('T')[0]
+    const _toDate = queryParams.get('toDate') ?? new Date().toISOString().split('T')[0]
     const _totalIncome = queryParams.get('_totalIncome') ?? 'day'
     const _totalProfit = queryParams.get('_totalProfit') ?? 'day'
     const _chartData = queryParams.get('_chartData')
@@ -314,14 +314,18 @@ export const SaleReport = () => {
   }
 
   useEffect(() => {
-    dispatch(getListPayment({ query: queryParams }))
-    
+    const fromData = queryParams.get('fromDate') ?? new Date().toISOString().split('T')[0]
+    const toData = queryParams.get('toDate') ?? new Date().toISOString().split('T')[0]
+    const query = new URLSearchParams(queryParams.toString())
+    if (fromData) query.set('fromDate', fromData)
+    if (toData) query.set('toDate', toData)
+    dispatch(getListPayment({ query }))
 
-    getReportSale({ query: queryParams })
+    getReportSale({ query })
       .then((data) => {
         setTotalProfit(data?.data?.totalProfit)
         setTotalIncome(data?.data?.totalIncome)
-        getReportListSale({ query: queryParams })
+        getReportListSale({ query })
           .then((data) => {
             setListSale(data?.data)
             setLoading(false)
@@ -333,7 +337,7 @@ export const SaleReport = () => {
   }, [queryParams])
 
   const handleQuery = (data) => {
-    let { limit, search } = data
+    let { limit, search, fromDate, toDate } = data
 
     let query = {}
     const _limit = queryParams.get('limit')
@@ -358,7 +362,7 @@ export const SaleReport = () => {
     if (_fromDate) query = { fromDate: _fromDate, ...query }
     if (_toDate) query = { toDate: _toDate, ...query }
 
-    if (limit || search) return setQueryParams({ ...query, ...data, page: 0 })
+    if (limit || search || fromDate || toDate) return setQueryParams({ ...query, ...data, page: 0 })
     setQueryParams({ ...query, ...data })
   }
 
