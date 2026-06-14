@@ -44,7 +44,14 @@ const ProductForm = ({ defaultValues, id }: any) => {
     setError,
     getValues,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(productSchema), defaultValues: { ...defaultValues, brand: defaultValues?.brand?._id, category: defaultValues?.category?._id } })
+  } = useForm({ 
+    resolver: yupResolver(productSchema), 
+    defaultValues: { 
+      ...defaultValues, 
+      brand: defaultValues?.brand?._id, 
+      category: defaultValues?.category?._id 
+    } 
+  })
   const navigate = useNavigate()
   const { device } = useWeb()
   const { lang } = useLanguage()
@@ -94,8 +101,11 @@ const ProductForm = ({ defaultValues, id }: any) => {
       .then((response) => {
         if (!id) {
           const firstOption = response.payload.data[0]
-          setValue('brand', firstOption?._id)
-        } 
+          const stored = localStorage.getItem('lastSelectedBrand')
+          const exists = response.payload.data.find((b: any) => b._id === stored)
+          if (stored && exists) setValue('brand', stored)
+          else setValue('brand', firstOption?._id)
+        }
       })
       .catch(console.error)
   }, [dispatch])
@@ -105,8 +115,11 @@ const ProductForm = ({ defaultValues, id }: any) => {
       .then((response) => {
         if (!id) {
           const firstOption = response.payload.data[0]
-          setValue('category', firstOption?._id)
-        } 
+          const stored = localStorage.getItem('lastSelectedCategory')
+          const exists = response.payload.data.find((c: any) => c._id === stored)
+          if (stored && exists) setValue('category', stored)
+          else setValue('category', firstOption?._id)
+        }
       })
       .catch(console.error)
   }, [dispatch])
@@ -250,6 +263,14 @@ const ProductForm = ({ defaultValues, id }: any) => {
             err={errors?.category?.message}
             loading={statusListCategory === 'LOADING' ? true : false}
             {...register('category')}
+            onChange={(e) => {
+              try {
+                localStorage.setItem('lastSelectedCategory', e.target.value as string)
+              } catch (e) {
+                console.error(e)
+              }
+              register('category').onChange(e)
+            }}
           />
         </div>
         <div style={{ gridArea: 'brand' }}>
@@ -261,6 +282,14 @@ const ProductForm = ({ defaultValues, id }: any) => {
             err={errors?.brand?.message}
             loading={statusListBrand === 'LOADING' ? true : false}
             {...register('brand')}
+            onChange={(e) => {
+              try {
+                localStorage.setItem('lastSelectedBrand', e.target.value as string)
+              } catch (e) {
+                console.error(e)
+              }
+              register('brand').onChange(e)
+            }}
           />
         </div>
         <div style={{ gridArea: 'product', marginTop: 20, marginBottom: 20 }}>

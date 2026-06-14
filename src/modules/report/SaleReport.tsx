@@ -255,7 +255,7 @@ export const SaleReport = () => {
       return createData(
         payment._id,
         payment.invoice,
-        payment.paymentMethod?.toUpperCase(),
+        (payment.paymentMethod ?? 'cash')?.toUpperCase(),
         currencyFormat(payment.subtotal.BOTH, 'USD'),
         currencyFormat(
             payment.vouchers[0]?.value,
