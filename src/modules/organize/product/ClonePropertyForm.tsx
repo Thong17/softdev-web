@@ -15,8 +15,6 @@ export const ClonePropertyForm = ({
   const { device } = useWeb()
   const [selections, setSelections] = useState<Record<string, Record<string, boolean>>>({})
 
-  console.log(selections)
-    
   useEffect(() => {
     Axios({
       method: 'GET',
