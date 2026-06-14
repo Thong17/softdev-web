@@ -116,7 +116,8 @@ export const languages = {
     ADD_TO_CART: 'Add\u00a0To\u00a0Cart',
     ADD_TO_QUEUE: 'Add\u00a0To\u00a0Queue',
     ADDED_TO_QUEUE: 'Added\u00a0To\u00a0Queue',
-    ADD_PROPERTY: 'Add\u00a0Section',
+    ADD_PROPERTY: 'Add\u00a0Property',
+    CLONE_PROPERTY: 'Clone\u00a0Property',
     // Drawer Form
     UNIT: 'Unit',
     DRAWER: 'Drawer',
@@ -376,6 +377,7 @@ export const languages = {
     ADD_TO_QUEUE: 'បន្ថែមទៅជួររង់ចាំ',
     ADDED_TO_QUEUE: 'បានបន្ថែមទៅជួររង់ចាំ',
     ADD_PROPERTY: 'បន្ថែមលក្ខណៈ',
+    CLONE_PROPERTY: 'ចំលង\u00a0លក្ខណៈ',
 
     // Drawer Form
     UNIT: 'ឯកតា',

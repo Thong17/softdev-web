@@ -49,6 +49,7 @@ import { TextEllipsis } from 'components/shared/TextEllipsis'
 import RadioButtonCheckedRoundedIcon from '@mui/icons-material/RadioButtonCheckedRounded'
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded'
 import { CustomerOptionForm } from './CustomerOptionForm'
+import { ClonePropertyForm } from './ClonePropertyForm'
 
 const Header = ({ stages }) => {
   return <Breadcrumb stages={stages} title={<StorefrontRoundedIcon />} />
@@ -84,6 +85,10 @@ export const ProductSetup = () => {
     propertyId: null,
     productId: id,
   })
+  const [clonePropertyDialog, setClonePropertyDialog] = useState({
+    open: false,
+    productId: id,
+  })
   const { lang, language } = useLanguage()
   const { device } = useWeb()
   const { theme } = useTheme()
@@ -93,7 +98,7 @@ export const ProductSetup = () => {
   useEffect(() => {
     if (status !== 'SUCCESS') return
 
-    setProperties(product.properties)
+    setProperties(product?.properties)
   }, [product, status])
 
   useEffect(() => {
@@ -374,6 +379,11 @@ export const ProductSetup = () => {
         theme={theme}
         defaultValues={propertyValue}
       />
+      <ClonePropertyForm
+        dialog={clonePropertyDialog}
+        setDialog={setClonePropertyDialog}
+        theme={theme}
+      />
       <div
         style={{
           display: 'grid',
@@ -544,24 +554,43 @@ export const ProductSetup = () => {
               })}
             </CustomColorContainer>
           </Section>
-          <Button
-            fullWidth
-            style={{
-              marginTop: 20,
-              backgroundColor: theme.background.secondary,
-              color: theme.text.secondary,
-              boxShadow: theme.shadow.secondary,
-            }}
-            onClick={() => {
-              setPropertyValue(initProperty)
-              setPropertyDialog({
-                ...propertyDialog,
-                open: true,
-              })
-            }}
-          >
-            {language['ADD_PROPERTY']}
-          </Button>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <Button
+              fullWidth
+              style={{
+                marginTop: 20,
+                backgroundColor: `${theme.color.info}22`,
+                color: theme.color.info,
+                boxShadow: theme.shadow.secondary,
+              }}
+              onClick={() => {
+                setPropertyValue(initProperty)
+                setPropertyDialog({
+                  ...propertyDialog,
+                  open: true,
+                })
+              }}
+            >
+              {language['ADD_PROPERTY']}
+            </Button>
+            <Button
+              fullWidth
+              style={{
+                marginTop: 20,
+                backgroundColor: `${theme.color.warning}22`,
+                color: theme.color.warning,
+                boxShadow: theme.shadow.secondary,
+              }}
+              onClick={() => {
+                setClonePropertyDialog({
+                  ...clonePropertyDialog,
+                  open: true,
+                })
+              }}
+            >
+              {language['CLONE_PROPERTY']}
+            </Button>
+          </div>
           <DragDropContext onDragEnd={handleDropProperty}>
             <Droppable droppableId='properties'>
               {(provided) => (
