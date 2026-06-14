@@ -13,20 +13,37 @@ export const ClonePropertyForm = ({
 }: any) => {
   const [products, setProducts] = useState<any[]>([]);
   const { device } = useWeb()
+  const [selections, setSelections] = useState<Record<string, Record<string, boolean>>>({})
 
+  console.log(selections)
+    
   useEffect(() => {
     Axios({
       method: 'GET',
       url: `/organize/product/property/list`
     }).then((response) => {
-      // save response.data (array of products) for rendering
-      setProducts(response.data?.data || []);
+        const data = response.data?.data || []
+        setProducts(data);
+        const mapSelections = {}
+        const properties = data.flatMap(item => item.properties)
+        properties.forEach(item => {
+            mapSelections[item._id] = {}
+            item.options?.forEach(opt => {
+                mapSelections[item._id][opt._id] = false
+            })
+        });
+        setSelections(mapSelections)
     }).catch(console.error)
   }, []);
   
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false })
   }
+
+    const getPropertyValues = (id) => {
+        const values = Object.values(selections?.[`${id}`] ?? {})
+        return values
+    }
   
   return (
       <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
@@ -53,26 +70,79 @@ export const ClonePropertyForm = ({
                           {product.product_name?.English || 'Product'}
                       </span>
                       <br />
-                      {(product.properties || []).map((prop: any) => (
-                          <div key={prop._id} className='privilege-container'>
-                              <CheckboxField
-                                  label={prop.name?.English}
-                                  name={prop._id}
-                                  defaultChecked={false}
-                              />
-                              <div>
-                                  {(prop.options || []).map(
-                                      (opt: any, idx: number) => (
-                                          <CheckboxField
-                                              key={opt._id || idx}
-                                              label={`${opt.name?.English}${opt.price ? ` (+${opt.price}${opt.currency || ''})` : ''}`}
-                                              name={`${prop._id}.${opt._id}`}
-                                          />
-                                      ),
-                                  )}
+                      {(product.properties || []).map((prop: any) => {
+                          const values = getPropertyValues(prop._id)
+                          const allTrue = values.length > 0 && values.every((v) => v === true)
+                          const someTrue = values.some((v) => v === true) && !allTrue
+
+                          return (
+                              <div key={prop._id} className='privilege-container'>
+                                  <CheckboxField
+                                      label={prop.name?.English}
+                                      name={prop._id}
+                                      checked={allTrue}
+                                      indeterminate={someTrue}
+                                      onChange={(e) => {
+                                          const checked = e.target.checked
+                                          const pId = prop._id
+                                          setSelections((prev) => {
+                                              const nextMap: Record<
+                                                  string,
+                                                  boolean
+                                              > = {}
+                                              ;(prop.options || []).forEach(
+                                                  (o: any) => {
+                                                      nextMap[o._id] = checked
+                                                  },
+                                              )
+                                              const next = {
+                                                  ...prev,
+                                                  [pId]: nextMap,
+                                              }
+                                              return next
+                                          })
+                                      }}
+                                  />
+                                  <div>
+                                      {(prop.options || []).map(
+                                          (opt: any, idx: number) => (
+                                              <CheckboxField
+                                                  key={opt._id || idx}
+                                                  label={`${opt.name?.English}${opt.price ? ` (+${opt.price}${opt.currency || ''})` : ''}`}
+                                                  name={`${prop._id}.${opt._id}`}
+                                                  checked={
+                                                      !!selections[prop._id]?.[
+                                                          opt._id
+                                                      ]
+                                                  }
+                                                  onChange={(e) => {
+                                                      const checked =
+                                                          e.target.checked
+                                                      const names = (
+                                                          e.target.name || ''
+                                                      ).split('.')
+                                                      const [pId, oId] = names
+                                                      setSelections((prev) => {
+                                                          const prevMap =
+                                                              prev[pId] || {}
+                                                          const nextMap = {
+                                                              ...prevMap,
+                                                              [oId]: checked,
+                                                          }
+                                                          const next = {
+                                                              ...prev,
+                                                              [pId]: nextMap,
+                                                          }
+                                                          return next
+                                                      })
+                                                  }}
+                                              />
+                                          ),
+                                      )}
+                                  </div>
                               </div>
-                          </div>
-                      ))}
+                          )
+                      })}
                   </CustomPrivilege>
               ))}
               <div
