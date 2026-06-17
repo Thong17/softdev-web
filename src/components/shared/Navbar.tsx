@@ -15,8 +15,9 @@ import { useEffect, useRef, useState } from 'react'
 import Footer from './Footer'
 import useLanguage from 'hooks/useLanguage'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
-import { IconButton, Menu, MenuItem, Stack } from '@mui/material'
+import { Badge, IconButton, Menu, MenuItem, Stack, Avatar, Typography, Divider } from '@mui/material'
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
+import Axios from 'constants/functions/Axios'
 
 export const MenuBar = ({ toggleSidebar, theme }) => {
   return (
@@ -36,6 +37,7 @@ const Navbar = ({ children }) => {
   const navRef = useRef<HTMLDivElement>(document.createElement('div'))
   const location = useLocation()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
+  const [notifications, setNotifications] = useState([]);
 
   const openNavbar = () => {
     setNavbar(true)
@@ -55,6 +57,15 @@ const Navbar = ({ children }) => {
       document.removeEventListener('mousedown', closeNavbar)
     }
   }, [navbar])
+
+  useEffect(() => {
+    Axios({
+      method: 'GET',
+      url: '/alert/notification',
+    }).then((response) => {
+      setNotifications(response.data?.data)
+    }).catch(console.error)
+  }, [])
 
   return (
     <CustomNavbar
@@ -106,6 +117,13 @@ const Navbar = ({ children }) => {
               color: theme.text.primary,
             }}
           >
+            <Badge
+              badgeContent={notifications?.length}
+              color="error"
+              max={9}
+              sx={{ top: '-10px', left: '18px' }}
+            >
+            </Badge>
             <NotificationsRoundedIcon />
           </IconButton>
           <Menu
@@ -117,8 +135,42 @@ const Navbar = ({ children }) => {
               marginTop: 10,
             }}
           >
-            <MenuItem>
-              Notification
+            {notifications?.length > 0 ? (
+              notifications.map((n: any) => (
+                <MenuItem key={n._id} style={{ padding: '8px 12px', minWidth: 320 }}>
+                  <Stack direction={'row'} gap={1} alignItems={'center'} sx={{ width: '100%' }}>
+                    <Avatar sx={{ width: 40, height: 40 }} src={`${process.env.REACT_APP_API_UPLOADS}${n.product?.images?.[0]?.filename}`}>
+                      {n.product?.name?.English?.charAt(0) || 'N'}
+                    </Avatar>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <Typography style={{ fontSize: 13, fontWeight: 600 }} noWrap>
+                        {n.product?.name?.English || n.product?.name || 'Product'}
+                      </Typography>
+                      <Typography style={{ fontSize: 12, color: '#666' }} noWrap>
+                        Qty: {n.quantity} / {n.totalQuantity}
+                      </Typography>
+                      {n.expireAt && (
+                        <Typography style={{ fontSize: 11, color: '#777' }}>
+                          Expire: {new Date(n.expireAt).toLocaleString()}
+                        </Typography>
+                      )}
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <Typography style={{ fontSize: 13, color: '#333' }}>
+                        {n.cost} {n.currency}
+                      </Typography>
+                    </div>
+                  </Stack>
+                </MenuItem>
+              ))
+            ) : (
+              <MenuItem style={{ minWidth: 240 }}>
+                <Typography style={{ fontSize: 13, color: theme.text.quaternary }}>No notifications</Typography>
+              </MenuItem>
+            )}
+            <Divider />
+            <MenuItem onClick={() => setAnchorEl(null)}>
+              <Typography style={{ fontSize: 13 }}>Close</Typography>
             </MenuItem>
           </Menu>
           <Profile id={user.id} username={user.username} picture={user.photo} />

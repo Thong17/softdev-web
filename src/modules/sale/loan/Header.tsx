@@ -7,12 +7,12 @@ import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getListRequestLoan, selectListRequestLoan } from './redux'
 
-const RequestNotification = ({ qty }) => {
+export const RequestNotification = ({ qty, width=24 }) => {
   const { theme } = useTheme()
   return (
     <Box
       component='span'
-      sx={{ backgroundColor: theme.color.error, color: 'white', width: '24px', height: '24px', borderRadius: '50%', display: 'grid', placeItems: 'center', position: 'absolute', top: '-10px', right: '-10px' }}
+      sx={{ backgroundColor: theme.color.error, color: 'white', width: width, height: width, borderRadius: '50%', display: 'grid', placeItems: 'center', position: 'absolute', top: '-10px', right: '-10px' }}
     >
       {qty}
     </Box>
