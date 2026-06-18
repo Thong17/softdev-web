@@ -238,13 +238,13 @@ export const createStockData = (
       })}
     </MenuDialog>) : null
 
-  const shouldExpire = calculateDay(new Date(expireAt), Date.now())
+  const shouldExpire = expireAt && calculateDay(new Date(expireAt), Date.now())
   const shouldAlertWarning = quantity < alertAt && quantity > 0
   const shouldAlertError = quantity < alertAt && quantity <= 0
 
   let _dataId
   switch (true) {
-    case shouldExpire < CONSTANT.numberExpireDay:
+    case expireAt && shouldExpire < CONSTANT.numberExpireDay:
       _dataId = 'error'
       break;
 
@@ -259,6 +259,8 @@ export const createStockData = (
     default:
       break;
   }
+
+  console.log(_dataId, shouldExpire, shouldAlertError, shouldAlertWarning)
   
   return {
     id,
