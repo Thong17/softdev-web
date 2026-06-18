@@ -238,16 +238,16 @@ export const Stock = () => {
           gridTemplateColumns: width > 1024 ? '400px 1fr' : '1fr',
           gridGap: 20,
           '& tr[data-id="warning"] td': {
-            backgroundColor: theme.color.warning + '22',
-            color: theme.color.warning
+            backgroundColor: theme.color.warning + '11',
+            color: theme.color.warning + '!important'
           },
           '& tr[data-id="error"] td': {
-            backgroundColor: theme.color.error + '22',
-            color: theme.color.error
+            backgroundColor: theme.color.error + '11',
+            color: theme.color.error + '!important'
           },
           '& tr[data-value="0"] td': {
             backgroundColor: theme.text.quaternary + '22',
-            color: theme.text.quaternary
+            color: theme.text.quaternary + '!important'
           },
         }}
       >
