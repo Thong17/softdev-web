@@ -118,6 +118,8 @@ export const StickyTable = ({
                           role='checkbox'
                           tabIndex={-1}
                           key={row.id || index}
+                          data-value={row._dataValue}
+                          data-id={row._dataId}
                           style={{
                             cursor: handleClick ? 'pointer' : 'default',
                           }}
@@ -175,6 +177,8 @@ export const StickyTable = ({
                         role='checkbox'
                         tabIndex={-1}
                         key={row.id || index}
+                        data-value={row._dataValue}
+                        data-id={row._dataId}
                         style={{ cursor: handleClick ? 'pointer' : 'default' }}
                       >
                         {columns.map((column) => {

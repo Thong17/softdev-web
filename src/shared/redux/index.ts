@@ -182,6 +182,17 @@ export const getOperationDashboard = createAsyncThunk(
   }
 )
 
+export const getAlertNotification = createAsyncThunk(
+  'alert/notification',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/alert/notification'
+    })
+    return response?.data
+  }
+)
+
 export const sharedSlice = createSlice({
   name: 'shared',
   initialState,
@@ -375,6 +386,18 @@ export const sharedSlice = createSlice({
         state.operationDashboard.status = 'SUCCESS'
         state.operationDashboard.data = action.payload.data
       })
+
+      // Get Alert Notification from API
+      .addCase(getAlertNotification.pending, (state) => {
+        state.alertNotification.status = 'LOADING'
+      })
+      .addCase(getAlertNotification.rejected, (state) => {
+        state.alertNotification.status = 'FAILED'
+      })
+      .addCase(getAlertNotification.fulfilled, (state, action) => {
+        state.alertNotification.status = 'SUCCESS'
+        state.alertNotification.data = action.payload.data
+      })
   },
 })
 
@@ -393,6 +416,7 @@ export const selectPreRole = (state: RootState) => state.shared.preRole
 export const selectAdminDashboard = (state: RootState) => state.shared.adminDashboard
 export const selectOrganizeDashboard = (state: RootState) => state.shared.organizeDashboard
 export const selectOperationDashboard = (state: RootState) => state.shared.operationDashboard
+export const selectAlertNotification = (state: RootState) => state.shared.alertNotification
 
 export const { clearInfoProduct } = sharedSlice.actions
 

@@ -15,6 +15,7 @@ import { ColorPlate } from 'components/shared/table/ColorPlate'
 import { IThemeStyle } from 'contexts/theme/interface'
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 import { inputDateFormat } from 'utils'
+import { CONSTANT } from 'constants/variables'
 
 export interface IStockBody {
   cost: number
@@ -236,6 +237,28 @@ export const createStockData = (
         )
       })}
     </MenuDialog>) : null
+
+  const shouldExpire = calculateDay(new Date(expireAt), Date.now())
+  const shouldAlertWarning = quantity < alertAt && quantity > 0
+  const shouldAlertError = quantity < alertAt && quantity <= 0
+
+  let _dataId
+  switch (true) {
+    case shouldExpire < CONSTANT.numberExpireDay:
+      _dataId = 'error'
+      break;
+
+    case shouldAlertError:
+      _dataId = 'error'
+      break;
+
+    case shouldAlertWarning:
+      _dataId = 'warning'
+      break;
+  
+    default:
+      break;
+  }
   
   return {
     id,
@@ -251,5 +274,7 @@ export const createStockData = (
     option,
     createdBy,
     action,
+    _dataValue: quantity,
+    _dataId
   }
 }

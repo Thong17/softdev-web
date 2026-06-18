@@ -26,6 +26,7 @@ import { Detail } from './Detail'
 import useAlert from 'hooks/useAlert'
 import { getListProduct } from 'modules/organize/product/redux'
 import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
+import { Box } from '@mui/material'
 
 const Header = ({ stages, styled, onClickAdd }) => {
   return (
@@ -34,8 +35,8 @@ const Header = ({ stages, styled, onClickAdd }) => {
       <CustomButton
         style={{
           marginLeft: 10,
-          backgroundColor: styled.background.secondary,
-          color: styled.text.secondary,
+          backgroundColor: `${styled.color.info}22`,
+          color: styled.color.info,
         }}
         styled={styled}
         onClick={() => onClickAdd()}
@@ -231,11 +232,23 @@ export const Stock = () => {
         theme={theme}
         product={product}
       />
-      <div
-        style={{
+      <Box
+        sx={{
           display: 'grid',
           gridTemplateColumns: width > 1024 ? '400px 1fr' : '1fr',
-          gridGap: 20
+          gridGap: 20,
+          '& tr[data-id="warning"] td': {
+            backgroundColor: theme.color.warning + '22',
+            color: theme.color.warning
+          },
+          '& tr[data-id="error"] td': {
+            backgroundColor: theme.color.error + '22',
+            color: theme.color.error
+          },
+          '& tr[data-value="0"] td': {
+            backgroundColor: theme.text.quaternary + '22',
+            color: theme.text.quaternary
+          },
         }}
       >
         <ProductInfo info={product} loading={status !== 'SUCCESS' ? true : false} />
@@ -243,7 +256,7 @@ export const Stock = () => {
           columns={stockColumnData}
           rows={stockRowData}
         />
-      </div>
+      </Box>
     </Container>
   )
 }

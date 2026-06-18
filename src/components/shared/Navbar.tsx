@@ -17,9 +17,10 @@ import useLanguage from 'hooks/useLanguage'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
 import { Badge, IconButton, Menu, MenuItem, Stack, Avatar, Typography, Divider } from '@mui/material'
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
-import Axios from 'constants/functions/Axios'
 import { calculateDay } from 'utils/index'
 import { CONSTANT } from 'constants/variables'
+import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { getAlertNotification, selectAlertNotification } from 'shared/redux'
 
 export const MenuBar = ({ toggleSidebar, theme }) => {
   return (
@@ -39,8 +40,9 @@ const Navbar = ({ children }) => {
   const navRef = useRef<HTMLDivElement>(document.createElement('div'))
   const location = useLocation()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
-  const [notifications, setNotifications] = useState([]);
+  const { data: notifications } = useAppSelector(selectAlertNotification)
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
 
   const openNavbar = () => {
     setNavbar(true)
@@ -75,12 +77,7 @@ const Navbar = ({ children }) => {
   }
 
   useEffect(() => {
-    Axios({
-      method: 'GET',
-      url: '/alert/notification',
-    }).then((response) => {
-      setNotifications(response.data?.data?.map(item => mapData(item)))
-    }).catch(console.error)
+    dispatch(getAlertNotification())
   }, [])
 
   return (
@@ -153,33 +150,34 @@ const Navbar = ({ children }) => {
             PaperProps={{ sx: { borderRadius: theme.radius.quaternary, backgroundColor: theme.background.secondary } }}
           >
             {notifications?.length > 0 ? (
-              notifications.map((n: any) => (
-                <MenuItem key={n._id} style={{ padding: '8px 12px', minWidth: 320 }} onClick={() => handleClickNotification(n)}>
+              notifications.map((notify: any) => {
+                const item = mapData(notify)
+                return <MenuItem key={item._id} style={{ padding: '8px 12px', minWidth: 320 }} onClick={() => handleClickNotification(item)}>
                   <Stack direction={'row'} gap={1} alignItems={'center'} sx={{ width: '100%' }}>
-                    <Avatar sx={{ width: 40, height: 40 }} src={`${process.env.REACT_APP_API_UPLOADS}${n.product?.images?.[0]?.filename}`}>
-                      {n.product?.name?.English?.charAt(0) || 'N'}
+                    <Avatar sx={{ width: 40, height: 40 }} src={`${process.env.REACT_APP_API_UPLOADS}${item.product?.images?.[0]?.filename}`}>
+                      {item.product?.name?.English?.charAt(0) || 'N'}
                     </Avatar>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <Typography style={{ fontSize: 13, fontWeight: 600, color: theme.text.secondary }} noWrap>
-                        {n.product?.name?.English || n.product?.name || 'Product'}
+                        {item.product?.name?.English || item.product?.name || 'Product'}
                       </Typography>
-                      <Typography style={{ fontSize: 12, color: n.quantity > 0 ? theme.color.warning : theme.color.error }} noWrap>
-                        Quantity: {n.quantity} / Alert At: {n.alertAt}
+                      <Typography style={{ fontSize: 12, color: item.quantity > 0 ? theme.color.warning : theme.color.error }} noWrap>
+                        Quantity: {item.quantity} / Alert At: {item.alertAt}
                       </Typography>
-                      {n.expireAt && (
-                        <Typography style={{ fontSize: 11, color: n.expireDay > CONSTANT.numberExpireDay ? theme.text.secondary : theme.color.error }}>
-                          Expire: {new Date(n.expireAt).toDateString()}
+                      {item.expireAt && (
+                        <Typography style={{ fontSize: 11, color: item.expireDay > CONSTANT.numberExpireDay ? theme.text.secondary : theme.color.error }}>
+                          Expire: {new Date(item.expireAt).toDateString()}
                         </Typography>
                       )}
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <Typography style={{ fontSize: 13, color: theme.text.secondary }}>
-                        {n.cost} {n.currency}
+                        {item.cost} {item.currency}
                       </Typography>
                     </div>
                   </Stack>
                 </MenuItem>
-              ))
+              })
             ) : (
               <MenuItem style={{ minWidth: 240 }}>
                 <Typography style={{ fontSize: 13, color: theme.text.quaternary, textAlign: 'center', width: '100%' }}>No notifications</Typography>
