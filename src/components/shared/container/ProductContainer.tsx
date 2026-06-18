@@ -33,7 +33,7 @@ const mappedProduct = (data, lang, rate) => {
   let alertAt = 0
   let expireAt: any = null
   data.stocks?.forEach((item) => {
-    if (item.expireAt) {
+    if (item.expireAt && item.quantity > 0) {
       const stockExpire = calculateDay(new Date(item.expireAt), Date.now())
       if (expireAt && stockExpire < expireAt) expireAt = stockExpire
       else expireAt = stockExpire

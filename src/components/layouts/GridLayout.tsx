@@ -13,6 +13,7 @@ import useAuth from 'hooks/useAuth'
 import { CircularProgress } from '@mui/material'
 import { compareDate } from 'utils/index'
 import { ExpirationTag } from 'components/shared/ExpirationTag'
+import { CONSTANT } from 'constants/variables'
 
 const Item = (props, ref) => {
   const {
@@ -91,7 +92,7 @@ const Item = (props, ref) => {
         )}
         {action && <div className='action'>{action}</div>}
         {promotion && !compareDate(Date.now(), new Date(promotion.expireAt)) && <PromotionTag data={promotion} />}
-        {(expireAt && expireAt < 10) && <ExpirationTag value={expireAt.toFixed(0)} />}
+        {(expireAt && expireAt < CONSTANT.numberExpireDay) && <ExpirationTag value={expireAt.toFixed(0)} />}
         {favorite !== undefined && (
           <>
             {favorite ? (

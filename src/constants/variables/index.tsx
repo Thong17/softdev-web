@@ -41,3 +41,7 @@ export const tableOptions = [
     };
   }),
 ];
+
+export const CONSTANT = {
+  numberExpireDay: 10
+}
