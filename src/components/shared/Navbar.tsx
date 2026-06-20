@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from 'react'
 import useNotify from 'hooks/useNotify'
 import Footer from './Footer'
 import useLanguage from 'hooks/useLanguage'
+import { keyframes } from '@emotion/react'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
 import { Badge, IconButton, Menu, MenuItem, Stack, Avatar, Typography, Divider } from '@mui/material'
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
@@ -22,6 +23,7 @@ import { calculateDay } from 'utils/index'
 import { CONSTANT } from 'constants/variables'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { selectAlertNotification, updateAlertNotification } from 'shared/redux'
+import { playBellSound } from 'utils/notify'
 
 export const MenuBar = ({ toggleSidebar, theme }) => {
   return (
@@ -46,6 +48,15 @@ const Navbar = ({ children }) => {
   const dispatch = useAppDispatch()
   const { notify } = useNotify()
   const [bumped, setBumped] = useState(false)
+
+  const shake = keyframes`
+    0% { transform: rotate(0deg); }
+    10% { transform: rotate(-15deg); }
+    30% { transform: rotate(10deg); }
+    50% { transform: rotate(-10deg); }
+    70% { transform: rotate(6deg); }
+    100% { transform: rotate(0deg); }
+  `
 
   const openNavbar = () => {
     setNavbar(true)
@@ -102,6 +113,7 @@ const Navbar = ({ children }) => {
 
     if (changedIds.length > 0) {
       setBumped(true)
+      playBellSound()
       const changedItems = (notificationStates || []).filter((n: any) => changedIds.includes(n._id))
       changedItems.forEach((item: any) => {
         const name = item.name?.English
@@ -177,12 +189,11 @@ const Navbar = ({ children }) => {
               sx={{
                 top: '-10px',
                 left: '18px',
-                transform: bumped ? 'scale(1.25)' : 'scale(1)',
-                transition: 'transform 0.35s ease',
+                zIndex: 1000
               }}
             >
             </Badge>
-            <NotificationsRoundedIcon />
+            <NotificationsRoundedIcon sx={{ animation: bumped ? `${shake} 0.8s ease` : 'none', transformOrigin: 'top center' }} />
           </IconButton>
           <Menu
             open={Boolean(anchorEl)}
