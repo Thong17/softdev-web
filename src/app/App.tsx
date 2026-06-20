@@ -22,7 +22,7 @@ const App = () => {
     // poll every 1 minutes to refresh alert notifications
     const intervalId = setInterval(() => {
       dispatch(getAlertNotification())
-    }, 0.1 * 60 * 1000)
+    }, 1 * 60 * 1000)
     return () => clearInterval(intervalId)
   }, [dispatch])
 
