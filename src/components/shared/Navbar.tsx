@@ -80,16 +80,6 @@ const Navbar = ({ children }) => {
   }
 
   useEffect(() => {
-    // initial fetch
-    dispatch(getAlertNotification())
-    // poll every 1 minutes to refresh alert notifications
-    const intervalId = setInterval(() => {
-      dispatch(getAlertNotification())
-    }, 0.1 * 60 * 1000)
-    return () => clearInterval(intervalId)
-  }, [dispatch])
-
-  useEffect(() => {
     const currentMap = (notificationStates || []).reduce((acc: Record<string, string>, n: any) => {
       acc[n._id] = n.updatedAt
       return acc
@@ -114,8 +104,14 @@ const Navbar = ({ children }) => {
       setBumped(true)
       const changedItems = (notificationStates || []).filter((n: any) => changedIds.includes(n._id))
       changedItems.forEach((item: any) => {
-        const name = item.product?.name?.English || item.product?.name || 'Item'
-        notify(`${name} updated`, 'info', { position: 'top-left' })
+        const name = item.name?.English
+        const shouldExpire = item.expireAt && calculateDay(new Date(item.expireAt), Date.now())
+        let description: string[] = []
+        if (shouldExpire < 0) description.push('has expired')
+        else if (item.expireAt && shouldExpire < CONSTANT.numberExpireDay) description.push('almost expire')
+
+        if (item.quantity < item.alertAt) description.push(`only ${item.quantity} left`)
+        notify(`${name} ` + description.join(', '), 'warning', { position: 'top-left' })
       })
       // stop bump after animation duration
       const t = setTimeout(() => setBumped(false), 2000)

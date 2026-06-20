@@ -403,7 +403,7 @@ export const sharedSlice = createSlice({
         state.alertNotification.data = {
           ...state.alertNotification.data,
           notifications: action.payload.data,
-          notificationStates: action.payload.data?.map(item => ({ _id: item._id, updatedAt: item.updatedAt })),
+          notificationStates: action.payload.data?.map(item => ({ _id: item._id, updatedAt: item.updatedAt, name: item.product?.name, alertAt: item.alertAt, quantity: item.quantity, expireAt: item.expireAt })),
         }
       })
   },
