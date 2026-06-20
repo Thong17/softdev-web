@@ -21,7 +21,7 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import { calculateDay } from 'utils/index'
 import { CONSTANT } from 'constants/variables'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getAlertNotification, selectAlertNotification, updateAlertNotification } from 'shared/redux'
+import { selectAlertNotification, updateAlertNotification } from 'shared/redux'
 
 export const MenuBar = ({ toggleSidebar, theme }) => {
   return (
