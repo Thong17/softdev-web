@@ -18,15 +18,15 @@ const initState: ToastOptions = {
 
 export const NotifyContext = createContext({
   ...initState,
-  notify: (message, type?: TypeOptions) => {},
+  notify: (message, type?: TypeOptions, options?: any) => {},
   loadify: (promise) => { Promise.resolve() },
   loading: (message?: string) => '' as any,
   update: (id: string, options: any) => {}
 })
 
 const NotifyProvider = ({ children }) => {
-  const notify = (message: any, type?: TypeOptions) => {
-    toast(message || 'Internal Server Error', { ...initState, type })
+  const notify = (message: any, type?: TypeOptions, options?: any) => {
+    toast(message || 'Internal Server Error', { ...initState, ...options, type })
   }
 
   const loadify = (promise: Promise<Function>) => {

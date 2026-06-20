@@ -200,6 +200,10 @@ export const sharedSlice = createSlice({
     clearInfoProduct(state) {
       state.infoProduct.data = null
     },
+    updateAlertNotification(state, newData) {
+      state.alertNotification.data.prevNotificationStates = newData.payload.prevNotificationStates
+      state.alertNotification.data.isFirstLoaded = false
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -396,7 +400,11 @@ export const sharedSlice = createSlice({
       })
       .addCase(getAlertNotification.fulfilled, (state, action) => {
         state.alertNotification.status = 'SUCCESS'
-        state.alertNotification.data = action.payload.data
+        state.alertNotification.data = {
+          ...state.alertNotification.data,
+          notifications: action.payload.data,
+          notificationStates: action.payload.data?.map(item => ({ _id: item._id, updatedAt: item.updatedAt })),
+        }
       })
   },
 })
@@ -418,6 +426,6 @@ export const selectOrganizeDashboard = (state: RootState) => state.shared.organi
 export const selectOperationDashboard = (state: RootState) => state.shared.operationDashboard
 export const selectAlertNotification = (state: RootState) => state.shared.alertNotification
 
-export const { clearInfoProduct } = sharedSlice.actions
+export const { clearInfoProduct, updateAlertNotification } = sharedSlice.actions
 
 export default sharedSlice.reducer

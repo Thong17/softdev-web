@@ -12,6 +12,7 @@ import {
 import Dialog from './Dialog'
 import useWeb from 'hooks/useWeb'
 import { useEffect, useRef, useState } from 'react'
+import useNotify from 'hooks/useNotify'
 import Footer from './Footer'
 import useLanguage from 'hooks/useLanguage'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
@@ -20,7 +21,7 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import { calculateDay } from 'utils/index'
 import { CONSTANT } from 'constants/variables'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getAlertNotification, selectAlertNotification } from 'shared/redux'
+import { getAlertNotification, selectAlertNotification, updateAlertNotification } from 'shared/redux'
 
 export const MenuBar = ({ toggleSidebar, theme }) => {
   return (
@@ -40,9 +41,11 @@ const Navbar = ({ children }) => {
   const navRef = useRef<HTMLDivElement>(document.createElement('div'))
   const location = useLocation()
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
-  const { data: notifications } = useAppSelector(selectAlertNotification)
+  const { data: { notifications, isFirstLoaded, notificationStates, prevNotificationStates } } = useAppSelector(selectAlertNotification)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const { notify } = useNotify()
+  const [bumped, setBumped] = useState(false)
 
   const openNavbar = () => {
     setNavbar(true)
@@ -77,8 +80,49 @@ const Navbar = ({ children }) => {
   }
 
   useEffect(() => {
+    // initial fetch
     dispatch(getAlertNotification())
-  }, [])
+    // poll every 1 minutes to refresh alert notifications
+    const intervalId = setInterval(() => {
+      dispatch(getAlertNotification())
+    }, 0.1 * 60 * 1000)
+    return () => clearInterval(intervalId)
+  }, [dispatch])
+
+  useEffect(() => {
+    const currentMap = (notificationStates || []).reduce((acc: Record<string, string>, n: any) => {
+      acc[n._id] = n.updatedAt
+      return acc
+    }, {})
+
+    // skip on first load
+    if (isFirstLoaded) {
+      dispatch(updateAlertNotification({ isFirstLoaded: false, prevNotificationStates: notificationStates }))
+      return
+    }
+
+    const changedIds: string[] = []
+    for (const id in currentMap) {
+      if (!prevNotificationStates[id] || prevNotificationStates[id] !== currentMap[id]) {
+        changedIds.push(id)
+      }
+    }
+
+    dispatch(updateAlertNotification({ prevNotificationStates: currentMap }))
+
+    if (changedIds.length > 0) {
+      setBumped(true)
+      const changedItems = (notificationStates || []).filter((n: any) => changedIds.includes(n._id))
+      changedItems.forEach((item: any) => {
+        const name = item.product?.name?.English || item.product?.name || 'Item'
+        notify(`${name} updated`, 'info', { position: 'top-left' })
+      })
+      // stop bump after animation duration
+      const t = setTimeout(() => setBumped(false), 2000)
+      return () => clearTimeout(t)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notificationStates, notify])
 
   return (
     <CustomNavbar
@@ -134,7 +178,12 @@ const Navbar = ({ children }) => {
               badgeContent={notifications?.length}
               color="error"
               max={9}
-              sx={{ top: '-10px', left: '18px' }}
+              sx={{
+                top: '-10px',
+                left: '18px',
+                transform: bumped ? 'scale(1.25)' : 'scale(1)',
+                transition: 'transform 0.35s ease',
+              }}
             >
             </Badge>
             <NotificationsRoundedIcon />

@@ -80,7 +80,12 @@ export const initialState: ShareState = {
     status: 'INIT',
   },
   alertNotification: {
-    data: {},
+    data: {
+      isFirstLoaded: true,
+      notifications: [],
+      notificationStates: [],
+      prevNotificationStates: []
+    },
     status: 'INIT',
   },
   listProduct: {
