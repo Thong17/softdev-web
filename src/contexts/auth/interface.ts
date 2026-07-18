@@ -11,6 +11,10 @@ export interface IUser {
   favorites?: string[]
   drawer?: IDrawer
   isDefault?: boolean
+  companyId?: string
+  storeId?: string
+  company?: { _id?: string, id?: string }
+  store?: { _id?: string, id?: string }
 }
 
 export interface IDrawer {
@@ -25,6 +29,8 @@ export interface IAuthInit {
   isInit: boolean
   isAuthenticated: boolean
   user: IUser | null
+  companyId?: string
+  storeId?: string
 }
 
 export interface IToken {

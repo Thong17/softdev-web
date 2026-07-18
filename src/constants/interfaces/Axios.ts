@@ -5,5 +5,5 @@ export interface IAxiosProps {
   url: string,
   body?: Object,
   params?: URLSearchParams,
-  headers?: AxiosRequestHeaders 
+  headers?: AxiosRequestHeaders & Record<string, string | undefined>
 }
