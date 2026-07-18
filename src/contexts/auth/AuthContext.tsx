@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer, useState } from 'react'
+import { createContext, useCallback, useEffect, useReducer, useState } from 'react'
 import { AuthReducer } from './authReducer'
 import Axios from 'constants/functions/Axios'
 import { EnumAuth } from './authReducer'
@@ -73,10 +73,10 @@ const AuthProvider = ({ children }) => {
     navigate('/login')
   }
 
-  const handleSetTenantScope = (scope: { companyId?: string, storeId?: string } = {}) => {
+  const handleSetTenantScope = useCallback((scope: { companyId?: string, storeId?: string } = {}) => {
     setTenantScope(scope)
     dispatch({ type: EnumAuth.TENANT_SCOPE, payload: scope })
-  }
+  }, [])
   
   if (!state.isInit) return <Loading />
   return (

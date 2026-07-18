@@ -3,7 +3,7 @@ import { AxiosRequestHeaders, Method } from "axios";
 export interface IAxiosProps {
   method: Method,
   url: string,
-  body?: Object,
+  body?: any,
   params?: URLSearchParams,
   headers?: AxiosRequestHeaders & Record<string, string | undefined>
 }

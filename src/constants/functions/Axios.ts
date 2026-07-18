@@ -7,13 +7,21 @@ export const Axios = async ({method, url, body, params, headers}: IAxiosProps): 
   const companyId = window.localStorage.getItem('x-company-id') || ''
   const storeId = window.localStorage.getItem('x-store-id') || ''
   const ts = Date.now().toString()
-  const hash = await generateHash(ts, token, body)
+  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData
+  const payload = method !== 'GET' && method !== 'DELETE' && body && typeof body === 'object' && !isFormData
+    ? {
+        ...(body as Record<string, any>),
+        ...(companyId ? { company: (body as Record<string, any>)?.company || companyId } : {}),
+        ...(storeId ? { store: (body as Record<string, any>)?.store || storeId } : {}),
+      }
+    : body
+  const hash = await generateHash(ts, token, payload)
   const API_HOST = process.env.REACT_APP_API_URL
 
   const response = await axios({
     method,
     url: `${API_HOST}${url}`,
-    data: body,
+    data: payload,
     headers: {
       ...headers,
       'x-company-id': headers?.['x-company-id'] || companyId,

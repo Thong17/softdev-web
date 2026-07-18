@@ -11,19 +11,23 @@ import {
 } from 'styles'
 import Dialog from './Dialog'
 import useWeb from 'hooks/useWeb'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import useNotify from 'hooks/useNotify'
 import Footer from './Footer'
 import useLanguage from 'hooks/useLanguage'
 import { keyframes } from '@emotion/react'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
-import { Badge, IconButton, Menu, MenuItem, Stack, Avatar, Typography, Divider } from '@mui/material'
+import { Badge, IconButton, Menu, MenuItem, Stack, Avatar, Typography, Divider, FormControl, Select } from '@mui/material'
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import { calculateDay } from 'utils/index'
 import { CONSTANT } from 'constants/variables'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { selectAlertNotification, updateAlertNotification } from 'shared/redux'
 import { playBellSound } from 'utils/notify'
+import Axios from 'constants/functions/Axios'
+
+let companyListRequestToken = ''
+let storeListRequestToken = ''
 
 export const MenuBar = ({ toggleSidebar, theme }) => {
   return (
@@ -35,7 +39,7 @@ export const MenuBar = ({ toggleSidebar, theme }) => {
 
 const Navbar = ({ children }) => {
   const [navbar, setNavbar] = useState(false)
-  const { user } = useAuth()
+  const { user, companyId, storeId, setTenantScope } = useAuth()
   const { theme } = useTheme()
   const { language } = useLanguage()
   const { toggleSidebar, sidebar } = useConfig()
@@ -48,6 +52,39 @@ const Navbar = ({ children }) => {
   const dispatch = useAppDispatch()
   const { notify } = useNotify()
   const [bumped, setBumped] = useState(false)
+  const [companies, setCompanies] = useState<any[]>([])
+  const [stores, setStores] = useState<any[]>([])
+  const [loadingCompanies, setLoadingCompanies] = useState(false)
+  const [loadingStores, setLoadingStores] = useState(false)
+  const activeCompanyId = companyId || localStorage.getItem('x-company-id') || ''
+  const activeStoreId = storeId || localStorage.getItem('x-store-id') || ''
+
+  const normalizeList = (payload: any): any[] => {
+    if (Array.isArray(payload)) return payload
+    if (Array.isArray(payload?.data)) return payload.data
+    if (Array.isArray(payload?.companies)) return payload.companies
+    if (Array.isArray(payload?.stores)) return payload.stores
+    if (Array.isArray(payload?.list)) return payload.list
+    if (Array.isArray(payload?.items)) return payload.items
+    return []
+  }
+
+  const userData = user as any
+
+  const profileCompanies = useMemo(() => {
+    const companiesFromUser = userData?.companies ?? []
+    const singleCompany = userData?.company
+    return normalizeList(companiesFromUser.length > 0 ? companiesFromUser : (singleCompany ? [singleCompany] : []))
+  }, [userData?.companies, userData?.company])
+
+  const profileStores = useMemo(() => {
+    const storesFromUser = userData?.stores ?? []
+    const singleStore = userData?.store
+    return normalizeList(storesFromUser.length > 0 ? storesFromUser : (singleStore ? [singleStore] : []))
+  }, [userData?.stores, userData?.store])
+
+  const companyOptions = companies.length > 0 ? companies : profileCompanies
+  const storeOptions = stores.length > 0 ? stores : profileStores
 
   const shake = keyframes`
     0% { transform: rotate(0deg); }
@@ -67,6 +104,18 @@ const Navbar = ({ children }) => {
     if (data.type === 'stock') return navigate(`/sale/stock/item/${data.product?._id}`)
   }
 
+  const handleCompanyChange = (event) => {
+    const nextCompanyId = event.target.value
+    setTenantScope({ companyId: nextCompanyId, storeId: undefined })
+    window.location.reload()
+  }
+
+  const handleStoreChange = (event) => {
+    const nextStoreId = event.target.value
+    setTenantScope({ companyId: activeCompanyId, storeId: nextStoreId })
+    window.location.reload()
+  }
+
   const closeNavbar = (event) => {
     !navRef.current.contains(event.target) && setNavbar(false)
   }
@@ -74,6 +123,105 @@ const Navbar = ({ children }) => {
   useEffect(() => {
     setNavbar(false)
   }, [location])
+
+  useEffect(() => {
+    if (!user?.id) return
+
+    const requestKey = `company:${user.id}`
+    if (companyListRequestToken === requestKey) return
+
+    companyListRequestToken = requestKey
+    let isMounted = true
+
+    const fetchCompanies = async () => {
+      try {
+        setLoadingCompanies(true)
+
+        const fallbackList = profileCompanies
+        if (fallbackList.length > 0) {
+          if (!isMounted) return
+          setCompanies(fallbackList)
+          if (!activeCompanyId) {
+            const fallbackCompanyId = fallbackList[0]?._id || fallbackList[0]?.id
+            if (fallbackCompanyId) setTenantScope({ companyId: fallbackCompanyId })
+          }
+          return
+        }
+
+        const response = await Axios({ method: 'GET', url: '/organize/company/list' })
+        const list = normalizeList(response?.data)
+
+        if (!isMounted) return
+        setCompanies(list)
+
+        if (!activeCompanyId && list.length > 0) {
+          const fallbackCompanyId = list[0]?._id || list[0]?.id
+          if (fallbackCompanyId) {
+            setTenantScope({ companyId: fallbackCompanyId })
+          }
+        }
+      } catch (err) {
+        if (isMounted) setCompanies([])
+      } finally {
+        if (isMounted) setLoadingCompanies(false)
+      }
+    }
+
+    fetchCompanies()
+    return () => { isMounted = false }
+  }, [user?.id, activeCompanyId, profileCompanies, setTenantScope])
+
+  useEffect(() => {
+    if (!activeCompanyId) {
+      const fallbackStores = profileStores
+      setStores(fallbackStores)
+      return
+    }
+
+    const requestKey = `store:${activeCompanyId}`
+    if (storeListRequestToken === requestKey) return
+
+    storeListRequestToken = requestKey
+    let isMounted = true
+
+    const fetchStores = async () => {
+      try {
+        setLoadingStores(true)
+
+        const fallbackList = profileStores
+        if (fallbackList.length > 0) {
+          if (!isMounted) return
+          setStores(fallbackList)
+          if (!activeStoreId) {
+            const fallbackStoreId = fallbackList[0]?._id || fallbackList[0]?.id
+            if (fallbackStoreId) setTenantScope({ companyId: activeCompanyId, storeId: fallbackStoreId })
+          }
+          return
+        }
+
+        const response = await Axios({ method: 'GET', url: `/organize/company/detail/${activeCompanyId}` })
+        const detail = response?.data?.data || response?.data || {}
+        const list = normalizeList(detail?.stores || detail)
+
+        if (!isMounted) return
+        setStores(list)
+
+        if (!activeStoreId && list.length > 0) {
+          const fallbackStoreId = list[0]?._id || list[0]?.id
+          if (fallbackStoreId) {
+            setTenantScope({ companyId: activeCompanyId, storeId: fallbackStoreId })
+          }
+        }
+      } catch (err) {
+        if (isMounted) setStores([])
+      } finally {
+        if (isMounted) setLoadingStores(false)
+      }
+    }
+
+    fetchStores()
+    return () => { isMounted = false }
+  }, [activeCompanyId, activeStoreId, profileStores, setTenantScope])
 
   useEffect(() => {
     navbar && document.addEventListener('mousedown', closeNavbar)
@@ -174,7 +322,49 @@ const Navbar = ({ children }) => {
         <ListNavbar>{children}</ListNavbar>
       )}
       {user?.id ? (
-        <Stack direction={'row'} gap={2} alignItems={'center'}>
+        <Stack direction={'row'} gap={1.5} alignItems={'center'}>
+          <Stack direction={'row'} gap={1} alignItems={'center'} sx={{ minWidth: width > 1280 ? 360 : 280 }}>
+            <FormControl size='small' sx={{ minWidth: width > 1280 ? 160 : 120 }}>
+              <Select
+                value={activeCompanyId || ''}
+                onChange={handleCompanyChange}
+                displayEmpty
+                disabled={loadingCompanies || companyOptions.length === 0}
+                sx={{
+                  color: theme.text.primary,
+                  backgroundColor: theme.background.secondary,
+                  borderRadius: theme.radius.primary,
+                  fontSize: 13,
+                }}
+              >
+                {companyOptions.map((company: any) => (
+                  <MenuItem key={company?._id || company?.id} value={company?._id || company?.id}>
+                    {company?.name?.English || company?.name || company?.legalName || 'Company'}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size='small' sx={{ minWidth: width > 1280 ? 160 : 120 }}>
+              <Select
+                value={activeStoreId || ''}
+                onChange={handleStoreChange}
+                displayEmpty
+                disabled={loadingStores || storeOptions.length === 0}
+                sx={{
+                  color: theme.text.primary,
+                  backgroundColor: theme.background.secondary,
+                  borderRadius: theme.radius.primary,
+                  fontSize: 13,
+                }}
+              >
+                {storeOptions.map((store: any) => (
+                  <MenuItem key={store?._id || store?.id} value={store?._id || store?.id}>
+                    {store?.name?.English || store?.name || 'Store'}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
           <IconButton
             onClick={(event) => setAnchorEl(event.currentTarget)}
             style={{
