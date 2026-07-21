@@ -53,6 +53,7 @@ export const languages = {
     // Organize
     CATEGORY: 'Category',
     BRAND: 'Brand',
+    COMPANY: 'Company',
     STORE: 'Store',
     FLOOR: 'Floor',
     TOTAL_CATEGORY: 'Total\u00a0Category',
@@ -308,6 +309,7 @@ export const languages = {
     // Organize
     CATEGORY: 'ប្រភេទ',
     BRAND: 'ម៉ាក',
+    COMPANY: 'ក្រុមហ៊ុន',
     STORE: 'ហាង',
     FLOOR: 'ជាន់',
     TOTAL_CATEGORY: 'ប្រភេទសរុប',

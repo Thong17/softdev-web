@@ -28,6 +28,10 @@ import {
   CreateBrand,
   DetailBrand,
   UpdateBrand,
+  Companies,
+  CreateCompany,
+  DetailCompany,
+  UpdateCompany,
   Products,
   CreateProduct,
   DetailProduct,
@@ -288,6 +292,40 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'category', action: 'detail' }}>
             <DetailBrand />
+          </AuthGuard>
+        ),
+      },
+
+      // Company
+      {
+        path: 'company',
+        element: (
+          <AuthGuard role={{ route: 'company', action: 'list' }}>
+            <Companies />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'company/create',
+        element: (
+          <AuthGuard role={{ route: 'company', action: 'create' }}>
+            <CreateCompany />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'company/update/:id',
+        element: (
+          <AuthGuard role={{ route: 'company', action: 'update' }}>
+            <UpdateCompany />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'company/detail/:id',
+        element: (
+          <AuthGuard role={{ route: 'company', action: 'detail' }}>
+            <DetailCompany />
           </AuthGuard>
         ),
       },

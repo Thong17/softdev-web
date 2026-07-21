@@ -4,7 +4,7 @@ import { IBreadcrumbs } from 'constants/interfaces/Breadcrumbs'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import useLanguage from 'hooks/useLanguage'
 
-declare type page = 'organize' | 'category' | 'categoryCreate' | 'categoryUpdate' | 'brand' | 'brandCreate' | 'brandUpdate' | 'product' | 'productCreate' | 'productDetail' | 'productUpdate' | 'storeUpdate' | 'storeLayout'
+declare type page = 'organize' | 'category' | 'categoryCreate' | 'categoryUpdate' | 'brand' | 'brandCreate' | 'brandUpdate' | 'company' | 'companyCreate' | 'companyUpdate' | 'product' | 'productCreate' | 'productDetail' | 'productUpdate' | 'storeUpdate' | 'storeLayout'
 
 const StoreBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page, id }) => {
   const { language } = useLanguage()
@@ -89,6 +89,43 @@ const StoreBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page, id }) => {
       },
     ],
   
+    // Company
+    company: [
+      {
+        title: language['ORGANIZE'],
+        path: '/organize'
+      },
+      {
+        title: language['COMPANY'],
+      },
+    ],
+    companyCreate: [
+      {
+        title: language['ORGANIZE'],
+        path: '/organize'
+      },
+      {
+        title: language['COMPANY'],
+        path: '/organize/company'
+      },
+      {
+        title: language['CREATE'],
+      },
+    ],
+    companyUpdate: [
+      {
+        title: language['ORGANIZE'],
+        path: '/organize'
+      },
+      {
+        title: language['COMPANY'],
+        path: '/organize/company'
+      },
+      {
+        title: language['UPDATE'],
+      },
+    ],
+
     // Product
     product: [
       {

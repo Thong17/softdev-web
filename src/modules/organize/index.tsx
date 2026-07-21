@@ -208,6 +208,12 @@ export const Organize = () => {
 
 export { Brands, CreateBrand, DetailBrand, UpdateBrand } from './brand'
 export {
+  Companies,
+  CreateCompany,
+  DetailCompany,
+  UpdateCompany,
+} from './company'
+export {
   Categories,
   CreateCategory,
   DetailCategory,

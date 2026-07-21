@@ -1,6 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import categoryReducer from 'modules/organize/category/redux'
 import brandReducer from 'modules/organize/brand/redux'
+import companyReducer from 'modules/organize/company/redux'
 import productReducer from 'modules/organize/product/redux'
 import storeReducer from 'modules/organize/store/redux'
 import stockReducer from 'modules/sale/stock/redux'
@@ -18,6 +19,7 @@ export const store = configureStore({
   reducer: {
     category: categoryReducer,
     brand: brandReducer,
+    company: companyReducer,
     product: productReducer,
     store: storeReducer,
     stock: stockReducer,
