@@ -3,6 +3,7 @@ import { Layout } from 'components/layouts/Layout'
 import Container from 'components/shared/Container'
 import { TextField } from 'components/shared/form/InputField'
 import Axios from 'constants/functions/Axios'
+import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
@@ -18,11 +19,14 @@ export const UserChangePassword = () => {
   const navigate = useNavigate()
   const { device } = useWeb()
   const { theme } = useTheme()
+  const { user, updateUser } = useAuth()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(changePasswordSchema) })
+
+  const isForced = user?.mustChangePassword && user?.id === id
 
   const submit = async (data) => {
     Axios({
@@ -32,6 +36,10 @@ export const UserChangePassword = () => {
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
+        if (isForced) {
+          updateUser({ mustChangePassword: false })
+          navigate('/home')
+        }
       })
       .catch((err) => notify(err.response?.data?.msg, 'error'))
   }
@@ -39,6 +47,20 @@ export const UserChangePassword = () => {
   return (
     <Layout>
       <Container>
+        {isForced && (
+          <div
+            style={{
+              gridArea: 'form',
+              marginBottom: 20,
+              padding: '12px 16px',
+              borderRadius: 6,
+              backgroundColor: `${theme.color.warning}22`,
+              color: theme.color.warning,
+            }}
+          >
+            For security, you must set a new password before continuing.
+          </div>
+        )}
         <form
           onSubmit={handleSubmit(submit)}
           style={{
@@ -93,16 +115,18 @@ export const UserChangePassword = () => {
               justifyContent: 'end',
             }}
           >
-            <Button
-              variant='contained'
-              style={{
-                backgroundColor: `${theme.color.error}22`,
-                color: theme.color.error,
-              }}
-              onClick={() => navigate(-1)}
-            >
-              Cancel
-            </Button>
+            {!isForced && (
+              <Button
+                variant='contained'
+                style={{
+                  backgroundColor: `${theme.color.error}22`,
+                  color: theme.color.error,
+                }}
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </Button>
+            )}
             <Button
               type='submit'
               variant='contained'

@@ -11,6 +11,7 @@ export interface IUser {
   favorites?: string[]
   drawer?: IDrawer
   isDefault?: boolean
+  mustChangePassword?: boolean
 }
 
 export interface IDrawer {

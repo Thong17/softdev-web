@@ -4,7 +4,8 @@ export enum EnumAuth {
   INIT = 'INIT',
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',
-  REGISTER = 'REGISTER'
+  REGISTER = 'REGISTER',
+  UPDATE_USER = 'UPDATE_USER'
 }
 
 export const AuthReducer = (state: IAuthInit, action: { type; payload }) => {
@@ -37,6 +38,13 @@ export const AuthReducer = (state: IAuthInit, action: { type; payload }) => {
       return {
         ...state,
         isInit: true
+      }
+    }
+
+    case EnumAuth.UPDATE_USER: {
+      return {
+        ...state,
+        user: { ...state.user, ...payload },
       }
     }
 
