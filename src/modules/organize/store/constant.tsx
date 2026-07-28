@@ -15,70 +15,36 @@ export declare type ColumnHeader =
   | 'no'
   | 'icon'
   | 'name'
-  | 'status'
-  | 'description'
+  | 'type'
+  | 'contact'
   | 'createdBy'
   | 'action'
 
 export const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'icon', label: 'Icon' },
   { id: 'name', label: 'Name' },
-  { id: 'description', label: 'Description' },
+  { id: 'type', label: 'Type' },
+  { id: 'contact', label: 'Contact' },
   { id: 'createdBy', label: 'Created\u00a0By' },
-  { id: 'status', label: 'Status' },
   { id: 'action', label: 'Action', align: 'center' },
 ]
 export interface Data {
   id: string
   icon: ReactElement
   name: string
-  description: string
+  type: string
+  contact: string
   createdBy: string
-  status: boolean
   action: ReactElement
 }
-
-export const importColumns = ['_id', 'name', 'description', 'status', 'icon']
-
-export const headerColumns = [
-  {
-    label: '_id',
-    key: '_id',
-  },
-  {
-    label: 'name',
-    key: 'name',
-  },
-  {
-    label: 'description',
-    key: 'description',
-  },
-  {
-    label: 'status',
-    key: 'status',
-  },
-  {
-    label: 'icon',
-    key: 'icon',
-  },
-]
-
-export const importColumnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'no', label: 'No' },
-  { id: 'icon', label: 'Icon' },
-  { id: 'name', label: 'Name' },
-  { id: 'description', label: 'Description' },
-  { id: 'status', label: 'Status' },
-  { id: 'action', label: 'Remove' },
-]
 
 export const createData = (
   id: string,
   icon: string,
   name: string,
-  description: string,
+  type: string,
+  contact: string,
   createdBy: string,
-  status: boolean,
   privilege: any,
   device: DeviceOptions,
   navigate: Function,
@@ -87,28 +53,32 @@ export const createData = (
   let action = (
     <div style={{ float: 'right' }}>
       {device === 'mobile' ? (
-        privilege?.store?.detail && (
-          <MenuDialog label={<ViewButton />}>
+        <MenuDialog label={<ViewButton />}>
+          {privilege?.store?.update && (
             <MenuItem
               component='div'
               onClick={() => navigate(`/organize/store/update/${id}`)}
             >
               Edit
             </MenuItem>
+          )}
+          {privilege?.store?.delete && (
             <MenuItem
               component='div'
               onClick={() => setDialog({ open: true, id })}
             >
               Delete
             </MenuItem>
+          )}
+          {privilege?.store?.detail && (
             <MenuItem
               component='div'
               onClick={() => navigate(`/organize/store/detail/${id}`)}
             >
               View
             </MenuItem>
-          </MenuDialog>
-        )
+          )}
+        </MenuDialog>
       ) : (
         <>
           {privilege?.store?.update && (
@@ -124,7 +94,7 @@ export const createData = (
     </div>
   )
 
-  return { id, icon: <CircleIcon icon={icon} />, name, description, createdBy, status, action }
+  return { id, icon: <CircleIcon icon={icon} />, name, type, contact, createdBy, action }
 }
 
 export const sizeOptions: IOptions[] = [

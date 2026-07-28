@@ -3,23 +3,24 @@ import { RootState } from 'app/store'
 import Axios from 'constants/functions/Axios'
 import { initialState } from './constant'
 
+export const getListStore = createAsyncThunk(
+  'store/list',
+  async ({ query }: { query?: URLSearchParams }) => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/organize/store',
+      params: query
+    })
+    return response?.data
+  }
+)
+
 export const getListTransfer = createAsyncThunk(
   'store/transfer',
   async () => {
     const response = await Axios({
       method: 'GET',
       url: '/organize/store/transfer',
-    })
-    return response?.data
-  }
-)
-
-export const getInfoStore = createAsyncThunk(
-  'store/info',
-  async () => {
-    const response = await Axios({
-      method: 'GET',
-      url: '/organize/store',
     })
     return response?.data
   }
@@ -72,7 +73,7 @@ export const getStore = createAsyncThunk(
     fields.forEach((field) => {
       data[field] = response?.data?.data?.[field]
     })
-    
+
     return { ...response?.data, data }
   }
 )
@@ -83,6 +84,19 @@ export const storeSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // List store
+      .addCase(getListStore.pending, (state) => {
+        state.list.status = 'LOADING'
+      })
+      .addCase(getListStore.rejected, (state) => {
+        state.list.status = 'FAILED'
+      })
+      .addCase(getListStore.fulfilled, (state, action) => {
+        state.list.status = 'SUCCESS'
+        state.list.data = action.payload.data
+        state.list.count = action.payload.length
+      })
+
       // List transfer
       .addCase(getListTransfer.pending, (state) => {
         state.listTransfer.status = 'LOADING'
@@ -93,19 +107,6 @@ export const storeSlice = createSlice({
       .addCase(getListTransfer.fulfilled, (state, action) => {
         state.listTransfer.status = 'SUCCESS'
         state.listTransfer.data = action.payload.data
-      })
-
-      // Info store
-      .addCase(getInfoStore.pending, (state) => {
-        state.store.status = 'LOADING'
-      })
-      .addCase(getInfoStore.rejected, (state) => {
-        state.store.status = 'FAILED'
-      })
-      .addCase(getInfoStore.fulfilled, (state, action) => {
-        const { data, floorCount, roomCount, tableCount } = action.payload
-        state.store.status = 'SUCCESS'
-        state.store.data = { ...data, floorCount, roomCount, tableCount }
       })
 
       // Layout store
@@ -158,11 +159,11 @@ export const storeSlice = createSlice({
   },
 })
 
+export const selectListStore = (state: RootState) => state.store.list
 export const selectListTransfer = (state: RootState) => state.store.listTransfer
 export const selectStore = (state: RootState) => state.store.detail
 export const selectLayoutStore = (state: RootState) => state.store.layout
 export const selectListFloor = (state: RootState) => state.store.floors
 export const selectStructuresStore = (state: RootState) => state.store.structures
-export const selectInfoStore = (state: RootState) => state.store.store
 
 export default storeSlice.reducer

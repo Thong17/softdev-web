@@ -558,9 +558,10 @@ export const InvoiceForm = forwardRef(({
   }
 
   useEffect(() => {
+    if (!user?.activeStoreId) return
     dispatch(
       getStore({
-        id: 'store',
+        id: user.activeStoreId,
         fields: [
           'name',
           'logo',
@@ -574,7 +575,7 @@ export const InvoiceForm = forwardRef(({
       })
     )
     // eslint-disable-next-line
-  }, [])
+  }, [user?.activeStoreId])
 
   const handleChangeTable = (value) => {
     if (paymentId) {

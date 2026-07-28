@@ -109,10 +109,10 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   }, [])
 
   useEffect(() => {
-    if (status !== 'INIT') return
+    if (status !== 'INIT' || !user?.activeStoreId) return
       dispatch(
         getStore({
-          id: 'store',
+          id: user.activeStoreId,
           fields: [
             'name',
             'logo',
@@ -126,7 +126,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
         })
       )
       // eslint-disable-next-line
-    }, [status])
+    }, [status, user?.activeStoreId])
 
   useEffect(() => {
     dispatch(getListTransfer())

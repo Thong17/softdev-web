@@ -1,5 +1,6 @@
 import { Box } from '@mui/system'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
+import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import { getStore, selectStore } from 'modules/organize/store/redux'
 import React, { useEffect, useState } from 'react'
@@ -35,14 +36,16 @@ const mapData = (data) => {
 export const PreviewLoan = ({ width = '100%', loanPreview, loanInfo }: any) => {
   const dispatch = useAppDispatch()
   const { theme } = useTheme()
+  const { user } = useAuth()
   const { data } = useAppSelector(selectStore)
   const [store, setStore] = useState<any | null>(null)
   const { language } = useLanguage()
 
   useEffect(() => {
+    if (!user?.activeStoreId) return
     dispatch(
       getStore({
-        id: 'store',
+        id: user.activeStoreId,
         fields: [
           'name',
           'logo',
@@ -55,7 +58,7 @@ export const PreviewLoan = ({ width = '100%', loanPreview, loanInfo }: any) => {
         ],
       })
     )
-  }, [dispatch])
+  }, [dispatch, user?.activeStoreId])
 
   useEffect(() => {
     setStore(data)

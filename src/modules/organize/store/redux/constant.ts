@@ -1,19 +1,25 @@
 import { IBody } from 'shared/interface'
 
 export interface IStoreBody {
-  name: Object,
-  status: boolean,
-  icon: any,
-  description: string,
+  name: string,
+  type?: string,
+  tax?: number,
+  font?: string,
+  contact?: string,
+  logo?: any,
   address?: string,
   other?: string,
 }
 
 export const initState: IStoreBody = {
   name: '',
-  status: true,
-  icon: null,
-  description: ''
+  type: '',
+  tax: undefined,
+  font: '',
+  contact: '',
+  logo: null,
+  address: '',
+  other: '',
 }
 
 export const initStructure = {
@@ -25,8 +31,8 @@ export const initStructure = {
 }
 
 export interface StoreState {
+  list: IBody<any[]>
   listTransfer: IBody<any[]>
-  store: IBody<any>
   structures: IBody<any[]>
   floors: IBody<any[]>
   layout: IBody<any>
@@ -34,12 +40,13 @@ export interface StoreState {
 }
 
 export const initialState: StoreState = {
-  listTransfer: {
+  list: {
     data: [],
     status: 'INIT',
+    count: 0
   },
-  store: {
-    data: null,
+  listTransfer: {
+    data: [],
     status: 'INIT',
   },
   structures: {

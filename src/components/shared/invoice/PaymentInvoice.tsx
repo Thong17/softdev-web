@@ -1,19 +1,22 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks'
+import useAuth from 'hooks/useAuth'
 import { getStore, selectStore } from 'modules/organize/store/redux'
 import React, { useEffect, useState } from 'react'
 import { InvoiceContainer } from '../container/InvoiceContainer'
 
 export const PaymentInvoice = ({ payment }: any) => {
   const dispatch = useAppDispatch()
+  const { user } = useAuth()
   const { data } = useAppSelector(selectStore)
   const [store, setStore] = useState<any | null>(null)
   const [listTransactions, setListTransactions] = useState<any>([])
   const [info, setInfo] = useState<any | null>(null)
 
   useEffect(() => {
+    if (!user?.activeStoreId) return
     dispatch(
       getStore({
-        id: 'store',
+        id: user.activeStoreId,
         fields: [
           'name',
           'logo',
@@ -26,7 +29,7 @@ export const PaymentInvoice = ({ payment }: any) => {
         ],
       })
     )
-  }, [dispatch])
+  }, [dispatch, user?.activeStoreId])
 
   useEffect(() => {
     setStore(data)

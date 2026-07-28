@@ -132,6 +132,7 @@ export interface ProductState {
   list: IBody<Object[]>
   detail: IBody<IProductBody>
   single: IBody<any>
+  template: IBody<any[]>
 }
 
 export const initialState: ProductState = {
@@ -148,5 +149,10 @@ export const initialState: ProductState = {
   single: {
     data: initState,
     status: 'INIT',
+  },
+  template: {
+    data: [],
+    status: 'INIT',
+    count: 0,
   },
 }

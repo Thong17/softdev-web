@@ -220,4 +220,4 @@ export {
   UpdateProduct,
   ProductSetup,
 } from './product'
-export { Store, UpdateStore, LayoutForm } from './store'
+export { Store, CreateStore, UpdateStore, DetailStore, LayoutForm } from './store'

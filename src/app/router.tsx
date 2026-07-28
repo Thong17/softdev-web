@@ -2,6 +2,7 @@ import { RouteObject } from 'react-router'
 import AuthGuard from '../auth/AuthGuard'
 import { Login } from 'modules/auth/Login'
 import { Register } from 'modules/auth/Register'
+import { SelectStore } from 'modules/auth/SelectStore'
 import {
   Admin,
   Roles,
@@ -34,9 +35,12 @@ import {
   UpdateProduct,
   ProductSetup,
   Store,
+  CreateStore,
   UpdateStore,
+  DetailStore,
   LayoutForm,
 } from 'modules/organize'
+import { ProductTemplates } from 'modules/organize/product/Templates'
 import {
   Cashing,
   Reservation,
@@ -80,6 +84,10 @@ const routes: RouteObject[] = [
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/select-store',
+    element: <SelectStore />,
   },
   {
     path: '/user/:id',
@@ -337,20 +345,49 @@ const routes: RouteObject[] = [
           </AuthGuard>
         ),
       },
+      {
+        path: 'product/template',
+        element: (
+          <AuthGuard role={{ route: 'category', action: 'create' }}>
+            <ProductTemplates />
+            <HintButton playlistId='PLHX_VLeC9D-78msvumaCBdk2x668hpA0x' />
+          </AuthGuard>
+        ),
+      },
 
       // Store
       {
         path: 'store',
-        element: <>
-          <Store />
-          <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
-        </>,
+        element: (
+          <AuthGuard role={{ route: 'store', action: 'list' }}>
+            <Store />
+            <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'store/create',
+        element: (
+          <AuthGuard role={{ route: 'store', action: 'create' }}>
+            <CreateStore />
+            <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
+          </AuthGuard>
+        ),
       },
       {
         path: 'store/update/:id',
         element: (
           <AuthGuard role={{ route: 'store', action: 'update' }}>
             <UpdateStore />
+            <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'store/detail/:id',
+        element: (
+          <AuthGuard role={{ route: 'store', action: 'detail' }}>
+            <DetailStore />
             <HintButton playlistId='PLHX_VLeC9D-7KeYZ8xcW3cUdTm_3xcnhH' />
           </AuthGuard>
         ),

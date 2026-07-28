@@ -5,7 +5,7 @@ import {
   ITransactionItem,
 } from 'components/shared/form/InvoiceForm'
 import useWeb from 'hooks/useWeb'
-import { getInfoStore, selectInfoStore } from 'modules/organize/store/redux'
+import { getStore, selectStore } from 'modules/organize/store/redux'
 import { useEffect, useRef, useState } from 'react'
 import PriceChangeRoundedIcon from '@mui/icons-material/PriceChangeRounded'
 import ReplayRoundedIcon from '@mui/icons-material/ReplayRounded'
@@ -25,7 +25,7 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
   const { notify } = useNotify()
   const { device } = useWeb()
   const dispatch = useAppDispatch()
-  const { data: preview } = useAppSelector(selectInfoStore)
+  const { data: preview } = useAppSelector(selectStore)
   const [paymentId, setPaymentId] = useState(id)
   const [payment, setPayment] = useState(paymentData)
   const { data: listCode } = useAppSelector(selectListCodeProduct)
@@ -47,9 +47,14 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
   const [table, setTable] = useState('--');
 
   useEffect(() => {
-    dispatch(getInfoStore())
+    if (user?.activeStoreId) {
+      dispatch(getStore({
+        id: user.activeStoreId,
+        fields: ['name', 'logo', 'contact', 'address', 'type', 'other', 'font', 'tax'],
+      }))
+    }
     dispatch(getListCodeProduct())
-  }, [dispatch])
+  }, [dispatch, user?.activeStoreId])
 
   useEffect(() => {
     setPayment(paymentData)

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { DefaultHeader } from 'components/shared/table/DefaultHeader'
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded'
 import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded'
+import LibraryAddRoundedIcon from '@mui/icons-material/LibraryAddRounded'
 import { HeaderButton } from 'components/shared/table/HeaderButton'
 import useLanguage from 'hooks/useLanguage'
 import { MenuItem } from '@mui/material'
@@ -18,6 +19,7 @@ export const Header = ({
   handleImport
 }) => {
   const [grid, setGrid] = useState(isGrid)
+  const { language } = useLanguage()
   const [sortObj, setSortObj] = useState({
     name: false,
     createdAt: false,
@@ -62,6 +64,13 @@ export const Header = ({
         }}
       >
         {!grid ? <GridViewRoundedIcon /> : <ViewListRoundedIcon />}
+      </HeaderButton>
+      <HeaderButton
+        style={{ marginLeft: 10 }}
+        title={language['TEMPLATE'] || 'Browse Templates'}
+        onClick={() => navigate('/organize/product/template')}
+      >
+        <LibraryAddRoundedIcon />
       </HeaderButton>
     </DefaultHeader>
   )

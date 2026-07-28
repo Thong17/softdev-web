@@ -42,7 +42,19 @@ export const getProduct = createAsyncThunk(
       url: `/organize/product/detail/${id}`,
       params: query
     })
-    
+
+    return response?.data
+  }
+)
+
+export const getListProductTemplate = createAsyncThunk(
+  'product/template/list',
+  async ({ query }: { query?: URLSearchParams }) => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/organize/product/template',
+      params: query
+    })
     return response?.data
   }
 )
@@ -147,12 +159,26 @@ export const productSlice = createSlice({
         state.single.status = 'SUCCESS'
         state.single.data = action.payload.data
       })
+
+      // List product templates
+      .addCase(getListProductTemplate.pending, (state) => {
+        state.template.status = 'LOADING'
+      })
+      .addCase(getListProductTemplate.rejected, (state) => {
+        state.template.status = 'FAILED'
+      })
+      .addCase(getListProductTemplate.fulfilled, (state, action) => {
+        state.template.status = 'SUCCESS'
+        state.template.data = action.payload.data
+        state.template.count = action.payload.length
+      })
   },
 })
 
 export const selectProduct = (state: RootState) => state.product.single
 export const selectListProduct = (state: RootState) => state.product.list
 export const selectDetailProduct = (state: RootState) => state.product.detail
+export const selectListProductTemplate = (state: RootState) => state.product.template
 export const { updateOption, deleteOption, createOption, updateProperty, deleteProperty, createProperty, updateColor, deleteColor, createColor, createCustomerOption, updateCustomerOption, deleteCustomerOption } = productSlice.actions
 
 export default productSlice.reducer

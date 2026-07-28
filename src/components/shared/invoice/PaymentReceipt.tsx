@@ -1,6 +1,7 @@
 import { Box } from '@mui/system'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { invoiceColumns } from 'constants/variables'
+import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import { getStore, selectStore } from 'modules/organize/store/redux'
 import React, { useEffect, useState } from 'react'
@@ -26,16 +27,17 @@ export const PreBorder = ({ styled }) => {
 export const PaymentReceipt = ({ width = '100%', payment, storeData = null }: any) => {
   const dispatch = useAppDispatch()
   const { theme } = useTheme()
+  const { user } = useAuth()
   const { data, status } = useAppSelector(selectStore)
   const [store, setStore] = useState<any | null>(storeData)
   const [listTransactions, setListTransactions] = useState<any>([])
   const [info, setInfo] = useState<any | null>(null)
 
   useEffect(() => {
-    if (status !== 'INIT' || storeData) return
+    if (status !== 'INIT' || storeData || !user?.activeStoreId) return
     dispatch(
       getStore({
-        id: 'store',
+        id: user.activeStoreId,
         fields: [
           'name',
           'logo',
@@ -48,7 +50,7 @@ export const PaymentReceipt = ({ width = '100%', payment, storeData = null }: an
         ],
       })
     )
-  }, [dispatch, storeData, status])
+  }, [dispatch, storeData, status, user?.activeStoreId])
 
   useEffect(() => {
     setStore(data)

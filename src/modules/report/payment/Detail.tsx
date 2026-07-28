@@ -4,6 +4,7 @@ import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
 import { PaymentReceipt } from 'components/shared/invoice/PaymentReceipt'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import Axios from 'constants/functions/Axios'
+import useAuth from 'hooks/useAuth'
 import useLanguage from 'hooks/useLanguage'
 import useNotify from 'hooks/useNotify'
 import { getStore, selectStore } from 'modules/organize/store/redux'
@@ -21,6 +22,7 @@ export const Detail = ({
  }: any) => {
   const [payment, setPayment] = useState(null)
   const { language } = useLanguage()
+  const { user } = useAuth()
   const { data: storeInfo, status } = useAppSelector(selectStore)
   const dispatch = useAppDispatch()
   const { notify } = useNotify()
@@ -68,10 +70,10 @@ export const Detail = ({
   }, [])
 
   useEffect(() => {
-      if (status !== 'INIT') return
+      if (status !== 'INIT' || !user?.activeStoreId) return
         dispatch(
           getStore({
-            id: 'store',
+            id: user.activeStoreId,
             fields: [
               'name',
               'logo',
@@ -85,7 +87,7 @@ export const Detail = ({
           })
         )
         // eslint-disable-next-line
-  }, [status])
+  }, [status, user?.activeStoreId])
   
   const handleCloseDialog = () => {
     setDialog({ ...dialog, stockId: null, open: false })

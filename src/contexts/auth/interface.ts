@@ -12,6 +12,16 @@ export interface IUser {
   drawer?: IDrawer
   isDefault?: boolean
   mustChangePassword?: boolean
+  stores?: IStoreMembership[]
+  activeStoreId?: string | null
+}
+
+export interface IStoreMembership {
+  id: string
+  name: string
+  logo?: string
+  roleName?: any
+  isDefault?: boolean
 }
 
 export interface IDrawer {

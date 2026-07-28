@@ -17,6 +17,8 @@ import { InvoiceContainer } from 'components/shared/container/InvoiceContainer'
 import useTheme from 'hooks/useTheme'
 import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
 import { useNavigate } from 'react-router-dom'
+import { useAppDispatch } from 'app/hooks'
+import { getListStore } from './redux'
 
 export const fontOption = [
   { label: 'Monospace', value: "monospace" },
@@ -24,6 +26,7 @@ export const fontOption = [
 
 const StoreForm = ({ defaultValues, id }: any) => {
   const {
+    reset,
     watch,
     register,
     handleSubmit,
@@ -34,6 +37,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
   } = useForm({ resolver: yupResolver(storeSchema), defaultValues })
   const { theme } = useTheme()
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const { width } = useWeb()
   const { notify, loadify } = useNotify()
   const [loading, setLoading] = useState(false)
@@ -86,13 +90,20 @@ const StoreForm = ({ defaultValues, id }: any) => {
   }
 
   const submit = async (data) => {
+    setLoading(true)
     Axios({
-      method: 'PUT',
-      url: `/organize/store/update/${id}`,
+      method: id ? 'PUT' : 'POST',
+      url: id ? `/organize/store/update/${id}` : `/organize/store/create`,
       body: data,
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
+        dispatch(getListStore({}))
+        if (!id) {
+          reset(defaultValues)
+          setIconPath(defaultValues?.logo)
+          navigate('/organize/store')
+        }
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {

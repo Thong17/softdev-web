@@ -1,5 +1,6 @@
 import { Box } from '@mui/system'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
+import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import { getStore, selectStore } from 'modules/organize/store/redux'
 import React, { useEffect, useState } from 'react'
@@ -21,13 +22,15 @@ export const PreBorder = ({ styled }) => {
 export const QueueReceipt = ({ width = '100%', info }: any) => {
   const dispatch = useAppDispatch()
   const { theme } = useTheme()
+  const { user } = useAuth()
   const { data } = useAppSelector(selectStore)
   const [store, setStore] = useState<any | null>(null)
 
   useEffect(() => {
+    if (!user?.activeStoreId) return
     dispatch(
       getStore({
-        id: 'store',
+        id: user.activeStoreId,
         fields: [
           'name',
           'logo',
@@ -40,7 +43,7 @@ export const QueueReceipt = ({ width = '100%', info }: any) => {
         ],
       })
     )
-  }, [dispatch])
+  }, [dispatch, user?.activeStoreId])
 
   useEffect(() => {
     setStore(data)

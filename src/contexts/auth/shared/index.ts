@@ -10,6 +10,18 @@ export const setSession = (token) => {
   }
 }
 
+export const getActiveStoreId = (): string | null => {
+  return localStorage.getItem('active-store-id')
+}
+
+export const setActiveStore = (storeId: string | null) => {
+  if (storeId) {
+    localStorage.setItem('active-store-id', storeId)
+  } else {
+    localStorage.removeItem('active-store-id')
+  }
+}
+
 export const getProfile = async (dispatch) => {
   const token = localStorage.getItem('x-access-token')
   if (!isValidToken(token))
