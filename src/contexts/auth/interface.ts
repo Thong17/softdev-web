@@ -11,6 +11,7 @@ export interface IUser {
   favorites?: string[]
   drawer?: IDrawer
   isDefault?: boolean
+  expireAt?: string | null
 }
 
 export interface IDrawer {

@@ -196,6 +196,7 @@ export const languages = {
     NO_OPTIONS: 'No\u00a0Option',
     EXPIRE_IN: 'Expire\u00a0In',
     EXPIRED: 'Expired',
+    TRIAL: 'Trial',
     day: 'day',
     PAGE_NOT_FOUND: 'Page not found',
     PAGE_NOT_FOUND_DESCRIPTION: 'The request destination could not be found on the server',
@@ -463,6 +464,7 @@ export const languages = {
     NO_OPTIONS: 'គ្មានជម្រើស',
     EXPIRE_IN: 'ផុតកំណត់ក្នុង',
     EXPIRED: 'បានផុតកំណត់',
+    TRIAL: 'សាកល្បង',
     day: 'ថ្ងៃ',
     PAGE_NOT_FOUND: 'រកមិនឃើញទំព័រ',
     PAGE_NOT_FOUND_DESCRIPTION:

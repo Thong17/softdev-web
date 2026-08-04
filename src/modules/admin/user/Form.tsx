@@ -109,16 +109,16 @@ export const RoleForm = ({ defaultValues, id }: any) => {
             gridColumnGap: 20,
             gridTemplateAreas:
               device === 'mobile'
-                ? ` 
-                  'username username role' 
+                ? `
+                  'username username role'
                   'password password password'
-                  'email email email'
+                  'email email expireAt'
                   'action action action'
                 `
-                : ` 
-                  'username username role' 
+                : `
+                  'username username role'
                   'password password password'
-                  'email email email'
+                  'email email expireAt'
                   'action action action'
                 `,
           }}
@@ -157,6 +157,14 @@ export const RoleForm = ({ defaultValues, id }: any) => {
               label='Email'
               err={errors.email?.message}
               {...register('email')}
+            />
+          </div>
+          <div style={{ gridArea: 'expireAt' }}>
+            <TextField
+              type='date'
+              label='Trial Expires'
+              err={errors.expireAt?.message}
+              {...register('expireAt')}
             />
           </div>
           <div

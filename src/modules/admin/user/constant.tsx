@@ -15,6 +15,7 @@ export interface IUserBody {
   password: string
   email: string
   role: string
+  expireAt?: Date
 }
 
 export const initState: IUserBody = {
@@ -22,6 +23,7 @@ export const initState: IUserBody = {
   password: '',
   email: '',
   role: '',
+  expireAt: undefined,
 }
 
 export const importColumns = [

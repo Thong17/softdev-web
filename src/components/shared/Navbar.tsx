@@ -2,6 +2,7 @@ import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Profile from './Profile'
+import { TrialBadge } from './TrialBadge'
 import useConfig from 'hooks/useConfig'
 import {
   ListNavbar,
@@ -175,6 +176,7 @@ const Navbar = ({ children }) => {
       )}
       {user?.id ? (
         <Stack direction={'row'} gap={2} alignItems={'center'}>
+          <TrialBadge />
           <IconButton
             onClick={(event) => setAnchorEl(event.currentTarget)}
             style={{
