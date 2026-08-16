@@ -16,7 +16,7 @@ export const TrialBadge = () => {
   const expired = daysLeft <= 0
   const urgent = expired || daysLeft <= 3
   const color = urgent ? theme.color.error : theme.color.warning
-  const dayLabel = daysLeft === 1 ? language['day'] : language['days']
+  const dayLabel = daysLeft > 1 ? language['days'] : language['day']
 
   const label = expired
     ? `${language['TRIAL']} ${language['EXPIRED']}`
