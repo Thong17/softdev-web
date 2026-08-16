@@ -198,6 +198,7 @@ export const languages = {
     EXPIRED: 'Expired',
     TRIAL: 'Trial',
     day: 'day',
+    days: 'days',
     PAGE_NOT_FOUND: 'Page not found',
     PAGE_NOT_FOUND_DESCRIPTION: 'The request destination could not be found on the server',
     NO_PERMISSION: `You don't have permission to access this page`,
@@ -466,6 +467,7 @@ export const languages = {
     EXPIRED: 'បានផុតកំណត់',
     TRIAL: 'សាកល្បង',
     day: 'ថ្ងៃ',
+    days: 'ថ្ងៃ',
     PAGE_NOT_FOUND: 'រកមិនឃើញទំព័រ',
     PAGE_NOT_FOUND_DESCRIPTION:
       'មិនអាចរកឃើញទំព័រដែលបានស្នើនៅលើម៉ាស៊ីនមេ។',
