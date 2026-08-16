@@ -46,6 +46,7 @@ import {
   Stocks,
 } from 'modules/sale'
 import { Home } from 'modules/home'
+import { Menu } from 'modules/menu/Menu'
 import Config from 'modules/config/Config'
 import NotFound from 'components/shared/NotFound'
 import { SaleReport, Report } from 'modules/report'
@@ -80,6 +81,10 @@ const routes: RouteObject[] = [
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/menu',
+    element: <Menu />,
   },
   {
     path: '/user/:id',

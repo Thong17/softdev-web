@@ -1,12 +1,14 @@
 import useAuth from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
+import useWeb from 'hooks/useWeb'
 import { calculateDay } from 'utils'
 
 export const TrialBadge = () => {
   const { user } = useAuth()
   const { theme } = useTheme()
   const { language } = useLanguage()
+  const { device } = useWeb()
 
   if (!user?.expireAt) return null
 
@@ -26,8 +28,8 @@ export const TrialBadge = () => {
         color,
         padding: '4px 10px',
         borderRadius: theme.radius.secondary,
-        fontSize: 12,
-        fontWeight: 600,
+        fontFamily: theme.font.family,
+        fontSize: theme.responsive[device].text.tertiary,
         whiteSpace: 'nowrap',
       }}
     >
