@@ -138,8 +138,8 @@ export const languages = {
     SELL: 'Sell',
     BUY: 'Buy',
     // Homepage
-    HOMEPAGE_TITLE: 'Welcome to SoftDev Management System',
-    HOMEPAGE_DESCRIPTION: 'We develop and design a reliable and high performance web application for your business base on your requirement.',
+    HOMEPAGE_TITLE: 'Welcome to Our Stationery Store',
+    WELCOME_TO: 'Welcome to',
     // Form
     LOGIN: 'Login',
     REGISTER: 'Register',
@@ -251,6 +251,23 @@ export const languages = {
     TYPE: 'Type',
     PAYMENT_ADD_CASH: 'Add Cash',
     PAYMENT_ADD_CASH_DESCRIPTION: 'Add cash to complete the payment',
+    // Public site
+    NAV_CATALOG: 'Catalog',
+    NAV_ABOUT: 'About Us',
+    NAV_CONTACT: 'Contact Us',
+    HOMEPAGE_TAGLINE: 'Your one-stop shop for quality stationery and office supplies.',
+    VIEW_CATALOG: 'View Catalog',
+    OUR_CATEGORIES: 'Our Categories',
+    OUR_BRANDS: 'Our Brands',
+    FEATURED_PRODUCTS: 'Featured Products',
+    NO_CATEGORIES_AVAILABLE: 'No categories available right now.',
+    NO_BRANDS_AVAILABLE: 'No brands available right now.',
+    ABOUT_US_TITLE: 'About Us',
+    ABOUT_US_CONTENT: 'We are a dedicated stationery store offering a wide range of quality products, from everyday office supplies to specialty stationery items. We work with trusted brands to bring you reliable products at fair prices, with a team that is always ready to help you find what you need.',
+    CONTACT_US_TITLE: 'Contact Us',
+    CONTACT_ADDRESS: 'Address',
+    CONTACT_PHONE: 'Phone',
+    CONTACT_INFO_UNAVAILABLE: 'Contact information is not available right now.',
   },
   Khmer: {
     TEST: 'សាកល្បង',
@@ -402,9 +419,8 @@ export const languages = {
     BUY: 'ទិញ',
 
     // Homepage
-    HOMEPAGE_TITLE: 'សូមស្វាគមន៍មកកាន់ប្រព័ន្ធគ្រប់គ្រង SoftDev',
-    HOMEPAGE_DESCRIPTION:
-      'យើងបង្កើត និងរចនាកម្មវិធីគេហទំព័រដែលមានស្ថេរភាព និងដំណើរការលឿនសម្រាប់អាជីវកម្មរបស់អ្នក ជាមួយនឹងចំណុចប្រទាក់អ្នកប្រើទំនើបតាមតម្រូវការ។',
+    HOMEPAGE_TITLE: 'សូមស្វាគមន៍មកកាន់ហាងសម្ភារៈការិយាល័យរបស់យើង',
+    WELCOME_TO: 'សូមស្វាគមន៍មកកាន់',
 
     // Form
     LOGIN: 'ចូលគណនី',
@@ -525,5 +541,23 @@ export const languages = {
     TYPE: 'ប្រភេទ',
     PAYMENT_ADD_CASH: 'បន្ថែមសាច់ប្រាក់',
     PAYMENT_ADD_CASH_DESCRIPTION: 'បន្ថែមសាច់ប្រាក់ដើម្បីបញ្ចប់ការទូទាត់',
+    // Public site
+    NAV_CATALOG: 'ផលិតផល',
+    NAV_ABOUT: 'អំពីយើង',
+    NAV_CONTACT: 'ទាក់ទងយើង',
+    HOMEPAGE_TAGLINE: 'គ្រប់តម្រូវការសម្ភារៈការិយាល័យ និងសម្ភារៈសិក្សារបស់អ្នក នៅកន្លែងតែមួយ។',
+    VIEW_CATALOG: 'មើលផលិតផលទាំងអស់',
+    OUR_CATEGORIES: 'ប្រភេទផលិតផល',
+    OUR_BRANDS: 'ម៉ាកយីហោរបស់យើង',
+    FEATURED_PRODUCTS: 'ផលិតផលពិសេស',
+    NO_CATEGORIES_AVAILABLE: 'មិនទាន់មានប្រភេទផលិតផលនៅឡើយទេ។',
+    NO_BRANDS_AVAILABLE: 'មិនទាន់មានម៉ាកយីហោនៅឡើយទេ។',
+    ABOUT_US_TITLE: 'អំពីយើង',
+    ABOUT_US_CONTENT:
+      'យើងជាហាងលក់សម្ភារៈការិយាល័យ និងសម្ភារៈសិក្សា ដែលផ្តល់ជូននូវផលិតផលគុណភាពជាច្រើនប្រភេទ គិតចាប់ពីសម្ភារៈប្រើប្រាស់ប្រចាំថ្ងៃ រហូតដល់ផលិតផលពិសេស។ យើងសហការជាមួយម៉ាកយីហោដែលទុកចិត្តបាន ដើម្បីនាំមកជូនអ្នកនូវផលិតផលដែលអាចទុកចិត្តបាន និងតម្លៃសមរម្យ ជាមួយក្រុមការងារដែលរួចរាល់ជួយអ្នករកមើលអ្វីដែលអ្នកត្រូវការ។',
+    CONTACT_US_TITLE: 'ទាក់ទងយើង',
+    CONTACT_ADDRESS: 'អាសយដ្ឋាន',
+    CONTACT_PHONE: 'លេខទូរស័ព្ទ',
+    CONTACT_INFO_UNAVAILABLE: 'មិនទាន់មានព័ត៌មានទំនាក់ទំនងនៅឡើយទេ។',
   }
 }
