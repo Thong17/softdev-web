@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
-import { getMenu, IMenuCategory } from 'api/menu.api'
+import { getMenu, getStoreInfo, IMenuCategory, IPublicStore } from 'api/menu.api'
+import { PublicNav } from 'components/shared/PublicNav'
 
 export const Menu = () => {
   const { theme } = useTheme()
   const { lang } = useLanguage()
   const [categories, setCategories] = useState<IMenuCategory[]>([])
+  const [store, setStore] = useState<IPublicStore | null>(null)
   const [status, setStatus] = useState<'IDLE' | 'LOADING' | 'SUCCESS' | 'FAILED'>('IDLE')
 
   useEffect(() => {
@@ -17,6 +19,7 @@ export const Menu = () => {
         setStatus('SUCCESS')
       })
       .catch(() => setStatus('FAILED'))
+    getStoreInfo().then((res) => setStore(res.data?.data || null)).catch(() => setStore(null))
   }, [])
 
   const localize = (name?: Record<string, string>) => name?.[lang] || name?.['English'] || ''
@@ -28,10 +31,11 @@ export const Menu = () => {
         background: theme.background.primary,
         color: theme.text.primary,
         fontFamily: theme.font.family,
-        padding: '20px 16px 80px',
         boxSizing: 'border-box',
       }}
     >
+      <PublicNav storeName={store?.name} />
+      <div style={{ padding: '20px 16px 80px' }}>
       <h1 style={{ fontWeight: 300, marginBottom: 20 }}>Menu</h1>
 
       {status === 'LOADING' && <p style={{ color: theme.text.tertiary }}>Loading menu...</p>}
@@ -102,6 +106,7 @@ export const Menu = () => {
           )}
         </div>
       ))}
+      </div>
     </div>
   )
 }

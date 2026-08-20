@@ -46,6 +46,8 @@ import {
   Stocks,
 } from 'modules/sale'
 import { Home } from 'modules/home'
+import { About } from 'modules/about'
+import { Contact } from 'modules/contact'
 import { Menu } from 'modules/menu/Menu'
 import Config from 'modules/config/Config'
 import NotFound from 'components/shared/NotFound'
@@ -85,6 +87,14 @@ const routes: RouteObject[] = [
   {
     path: '/menu',
     element: <Menu />,
+  },
+  {
+    path: '/about',
+    element: <About />,
+  },
+  {
+    path: '/contact',
+    element: <Contact />,
   },
   {
     path: '/user/:id',
