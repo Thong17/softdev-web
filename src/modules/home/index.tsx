@@ -4,6 +4,7 @@ import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import { PublicNav } from 'components/shared/PublicNav'
 import { SocialNav } from 'components/shared/SocialNav'
+import { ProductPriceTag } from 'components/shared/ProductPriceTag'
 import { getMenu, getBrands, IMenuCategory, IMenuProduct, IPublicBrand, getStoreInfo, IPublicStore } from 'api/menu.api'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
@@ -36,7 +37,7 @@ export const Home = () => {
         fontFamily: theme.font.family,
       }}
     >
-      <PublicNav storeName={store?.name} />
+      <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} />
       <SocialNav />
 
       {/* Hero */}
@@ -161,9 +162,7 @@ export const Home = () => {
                 </div>
                 <div style={{ padding: 10 }}>
                   <div style={{ fontSize: 14, marginBottom: 4 }}>{localize(product.name)}</div>
-                  <div style={{ fontSize: 13, color: theme.color.info }}>
-                    {product.price?.toFixed(2)} {product.currency}
-                  </div>
+                  <ProductPriceTag product={product} />
                 </div>
               </div>
             ))}

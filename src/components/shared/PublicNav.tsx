@@ -12,9 +12,12 @@ const NAV_LINKS: { to: string; labelKey: string }[] = [
 
 interface IPublicNav {
   storeName?: string
+  storeLogo?: string
 }
 
-export const PublicNav = ({ storeName }: IPublicNav) => {
+const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
+
+export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
   const { theme } = useTheme()
   const { language } = useLanguage()
   const { device } = useWeb()
@@ -37,12 +40,22 @@ export const PublicNav = ({ storeName }: IPublicNav) => {
       <Link
         to='/'
         style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
           color: theme.text.primary,
           fontSize: 18,
           fontWeight: 600,
           textDecoration: 'none',
         }}
       >
+        {storeLogo && (
+          <img
+            src={`${IMAGE_HOST}${storeLogo}`}
+            alt={storeName || language['HOME']}
+            style={{ width: 32, height: 32, objectFit: 'cover', borderRadius: '50%' }}
+          />
+        )}
         {storeName || language['HOME']}
       </Link>
       <div style={{ display: 'flex', gap: device === 'mobile' ? 12 : 24, alignItems: 'center' }}>

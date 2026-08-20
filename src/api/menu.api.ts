@@ -7,9 +7,9 @@ export interface IMenuProduct {
   name: Record<string, string>
   price: number
   currency: string
-  description?: string
   profile?: { filename: string }
-  images?: { filename: string }[]
+  salePrice?: number | null
+  promotionLabel?: Record<string, string>
 }
 
 export interface IMenuCategory {
@@ -22,7 +22,6 @@ export interface IMenuCategory {
 export interface IPublicBrand {
   _id: string
   name: Record<string, string>
-  description?: string
   icon?: { filename: string }
 }
 
