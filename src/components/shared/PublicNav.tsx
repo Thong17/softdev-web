@@ -76,19 +76,6 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
             </Link>
           )
         })}
-        <Link
-          to='/login'
-          style={{
-            color: theme.background.secondary,
-            background: theme.color.info,
-            borderRadius: theme.radius.rounded,
-            padding: device === 'mobile' ? '6px 12px' : '8px 18px',
-            fontSize: device === 'mobile' ? 12 : 14,
-            textDecoration: 'none',
-          }}
-        >
-          {language['LOGIN']}
-        </Link>
       </div>
     </div>
   )
