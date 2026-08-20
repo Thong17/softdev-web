@@ -10,6 +10,9 @@ declare type page =
   | 'promotion'
   | 'promotionCreate'
   | 'promotionUpdate'
+  | 'announcement'
+  | 'announcementCreate'
+  | 'announcementUpdate'
 
 interface IBreadcrumbs {
   page: page
@@ -63,6 +66,41 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
       {
         title: language['PROMOTION'],
         path: '/function/promotion',
+      },
+      {
+        title: language['UPDATE'],
+      },
+    ],
+    announcement: [
+      {
+        title: language['FUNCTION'],
+        path: '/function',
+      },
+      {
+        title: language['ANNOUNCEMENT'],
+      },
+    ],
+    announcementCreate: [
+      {
+        title: language['FUNCTION'],
+        path: '/function',
+      },
+      {
+        title: language['ANNOUNCEMENT'],
+        path: '/function/announcement',
+      },
+      {
+        title: language['CREATE'],
+      },
+    ],
+    announcementUpdate: [
+      {
+        title: language['FUNCTION'],
+        path: '/function',
+      },
+      {
+        title: language['ANNOUNCEMENT'],
+        path: '/function/announcement',
       },
       {
         title: language['UPDATE'],

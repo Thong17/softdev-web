@@ -42,10 +42,13 @@ export const languages = {
     RESERVATION: 'Reservation',
     STOCK: 'Stock',
     PROMOTION: 'Promotion',
+    ANNOUNCEMENT: 'Announcement',
+    ORDER: 'Order',
     TOTAL_TRANSACTION: 'Total\u00a0Transaction',
     TOTAL_RESERVATION: 'Total\u00a0Reservation',
     TOTAL_STOCK: 'Total\u00a0Stock',
     TOTAL_PROMOTION: 'Total\u00a0Promotion',
+    TOTAL_ANNOUNCEMENT: 'Total\u00a0Announcement',
     CASHING: 'Cashing',
     INVOICE: 'Invoice',
     // Function
@@ -314,10 +317,13 @@ export const languages = {
     RESERVATION: 'ការកក់',
     STOCK: 'ស្តុក',
     PROMOTION: 'ប្រម៉ូសិន',
+    ANNOUNCEMENT: 'សេចក្តីប្រកាស',
+    ORDER: 'លំដាប់',
     TOTAL_TRANSACTION: 'ប្រតិបត្តិការសរុប',
     TOTAL_RESERVATION: 'ការកក់សរុប',
     TOTAL_STOCK: 'ស្តុកសរុប',
     TOTAL_PROMOTION: 'ប្រម៉ូសិនសរុប',
+    TOTAL_ANNOUNCEMENT: 'សេចក្តីប្រកាសសរុប',
     CASHING: 'ការទូទាត់',
 
     // Function

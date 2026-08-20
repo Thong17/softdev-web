@@ -60,3 +60,10 @@ export {
   UpdatePromotion,
   DetailPromotion,
 } from './promotion'
+
+export {
+  Announcements,
+  CreateAnnouncement,
+  UpdateAnnouncement,
+  DetailAnnouncement,
+} from './announcement'

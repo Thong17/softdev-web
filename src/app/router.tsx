@@ -17,6 +17,10 @@ import {
   CreatePromotion,
   DetailPromotion,
   Function, Promotions, UpdatePromotion,
+  CreateAnnouncement,
+  DetailAnnouncement,
+  Announcements,
+  UpdateAnnouncement,
 } from 'modules/function'
 import {
   Organize,
@@ -224,6 +228,40 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'category', action: 'detail' }}>
             <DetailPromotion />
+          </AuthGuard>
+        ),
+      },
+
+      // Announcement
+      {
+        path: 'announcement',
+        element: (
+          <AuthGuard role={{ route: 'announcement', action: 'list' }}>
+            <Announcements />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'announcement/create',
+        element: (
+          <AuthGuard role={{ route: 'announcement', action: 'create' }}>
+            <CreateAnnouncement />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'announcement/update/:id',
+        element: (
+          <AuthGuard role={{ route: 'announcement', action: 'update' }}>
+            <UpdateAnnouncement />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'announcement/detail/:id',
+        element: (
+          <AuthGuard role={{ route: 'announcement', action: 'detail' }}>
+            <DetailAnnouncement />
           </AuthGuard>
         ),
       },

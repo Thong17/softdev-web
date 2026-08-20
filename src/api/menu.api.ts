@@ -33,6 +33,14 @@ export interface IPublicStore {
   logo?: { filename: string }
 }
 
+export interface IPublicAnnouncement {
+  _id: string
+  title: Record<string, string>
+  description?: Record<string, string>
+  banner?: { filename: string }
+  order: number
+}
+
 export const getMenu = () => {
   return axios.get<{ data: IMenuCategory[] }>(`${API_HOST}/public/menu`)
 }
@@ -43,4 +51,8 @@ export const getBrands = () => {
 
 export const getStoreInfo = () => {
   return axios.get<{ data: IPublicStore }>(`${API_HOST}/public/store`)
+}
+
+export const getAnnouncements = () => {
+  return axios.get<{ data: IPublicAnnouncement[] }>(`${API_HOST}/public/announcements`)
 }

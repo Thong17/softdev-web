@@ -5,7 +5,8 @@ import useLanguage from 'hooks/useLanguage'
 import { PublicNav } from 'components/shared/PublicNav'
 import { SocialNav } from 'components/shared/SocialNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
-import { getMenu, getBrands, IMenuCategory, IMenuProduct, IPublicBrand, getStoreInfo, IPublicStore } from 'api/menu.api'
+import { AnnouncementCarousel } from 'components/shared/AnnouncementCarousel'
+import { getMenu, getBrands, IMenuCategory, IMenuProduct, IPublicBrand, getStoreInfo, IPublicStore, getAnnouncements, IPublicAnnouncement } from 'api/menu.api'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 
@@ -15,11 +16,13 @@ export const Home = () => {
   const [categories, setCategories] = useState<IMenuCategory[]>([])
   const [brands, setBrands] = useState<IPublicBrand[]>([])
   const [store, setStore] = useState<IPublicStore | null>(null)
+  const [announcements, setAnnouncements] = useState<IPublicAnnouncement[]>([])
 
   useEffect(() => {
     getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([]))
     getBrands().then((res) => setBrands(res.data?.data || [])).catch(() => setBrands([]))
     getStoreInfo().then((res) => setStore(res.data?.data || null)).catch(() => setStore(null))
+    getAnnouncements().then((res) => setAnnouncements(res.data?.data || [])).catch(() => setAnnouncements([]))
   }, [])
 
   const localize = (name?: Record<string, string>) => name?.[lang] || name?.['English'] || ''
@@ -39,6 +42,8 @@ export const Home = () => {
     >
       <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} />
       <SocialNav />
+
+      <AnnouncementCarousel announcements={announcements} />
 
       {/* Hero */}
       <div style={{ padding: '64px 24px', textAlign: 'center' }}>
