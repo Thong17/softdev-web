@@ -63,16 +63,14 @@ export const ProductFilterSidebar = ({
 
   const iconSlot = (filename: string | undefined, alt: string) => {
     const style = { width: 20, height: 20, objectFit: 'cover' as const, borderRadius: '50%', flexShrink: 0 }
-    return filename
-      ? <img src={`${IMAGE_HOST}${filename}`} alt={alt} style={style} />
-      : <span style={{ ...style, background: theme.background.tertiary }} />
+    return <img src={`${IMAGE_HOST}${filename || 'default.png'}`} alt={alt} style={style} />
   }
 
   return (
     <div
       style={{
         background: theme.background.secondary,
-        border: `1px solid ${theme.background.tertiary}`,
+        boxShadow: theme.shadow.container,
         borderRadius: 12,
         padding: 20,
         height: 'fit-content',
