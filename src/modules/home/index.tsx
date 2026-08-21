@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import useAuth from 'hooks/useAuth'
+import useWeb from 'hooks/useWeb'
 import { Layout } from 'components/layouts/Layout'
 import { PublicNav } from 'components/shared/PublicNav'
 import { SocialNav } from 'components/shared/SocialNav'
@@ -18,6 +19,7 @@ export const Home = () => {
   const { theme } = useTheme()
   const { lang, language } = useLanguage()
   const { isAuthenticated } = useAuth()
+  const { device } = useWeb()
   const [categories, setCategories] = useState<IMenuCategory[]>([])
   const [brands, setBrands] = useState<IPublicBrand[]>([])
   const [store, setStore] = useState<IPublicStore | null>(null)
@@ -56,62 +58,139 @@ export const Home = () => {
       {!isAuthenticated && <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} />}
       <SocialNav />
 
-      <AnnouncementCarousel announcements={announcements} />
-
       {/* Hero */}
-      <div style={{ padding: '64px 24px', textAlign: 'center' }}>
-        <h1 style={{ fontWeight: 300, fontSize: 32, marginBottom: 16 }}>
-          {store?.name ? `${language['WELCOME_TO']} ${store.name}` : language['HOMEPAGE_TITLE']}
-        </h1>
-        <p style={{ color: theme.text.tertiary, maxWidth: 560, margin: '0 auto 28px' }}>
-          {language['HOMEPAGE_TAGLINE']}
-        </p>
-        <Link
-          to='/menu'
-          style={{
-            display: 'inline-block',
-            background: theme.color.info,
-            color: theme.background.secondary,
-            borderRadius: theme.radius.rounded,
-            padding: '12px 28px',
-            textDecoration: 'none',
-            fontSize: 14,
-          }}
-        >
-          {language['VIEW_CATALOG']}
-        </Link>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: device === 'mobile' || device === 'tablet' ? '1fr' : '1fr 1fr',
+          gap: 40,
+          alignItems: 'center',
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '48px 24px',
+        }}
+      >
+        <div>
+          <div
+            style={{
+              display: 'inline-block',
+              background: theme.background.secondary,
+              color: theme.text.secondary,
+              borderRadius: theme.radius.rounded,
+              padding: '6px 16px',
+              fontSize: 12,
+              marginBottom: 20,
+            }}
+          >
+            {language['HERO_BADGE']}
+          </div>
+          <h1 style={{ fontWeight: 700, fontSize: 40, lineHeight: 1.15, marginBottom: 16 }}>
+            {store?.name ? (
+              <>
+                {language['WELCOME_TO']}{' '}
+                <span style={{ color: theme.color.info }}>{store.name}</span>
+              </>
+            ) : (
+              language['HOMEPAGE_TITLE']
+            )}
+          </h1>
+          <p style={{ color: theme.text.tertiary, maxWidth: 460, marginBottom: 28 }}>
+            {language['HOMEPAGE_TAGLINE']}
+          </p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <Link
+              to='/menu'
+              style={{
+                display: 'inline-block',
+                background: theme.color.info,
+                color: theme.background.secondary,
+                borderRadius: theme.radius.rounded,
+                padding: '12px 28px',
+                textDecoration: 'none',
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              {language['SHOP_NOW']}
+            </Link>
+            <a
+              href='#featured-products'
+              style={{
+                display: 'inline-block',
+                background: theme.background.secondary,
+                color: theme.text.primary,
+                borderRadius: theme.radius.rounded,
+                padding: '12px 28px',
+                textDecoration: 'none',
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              {language['EXPLORE_DEALS']}
+            </a>
+          </div>
+        </div>
+
+        <div style={{ height: 380 }}>
+          {announcements.length > 0 ? (
+            <AnnouncementCarousel announcements={announcements} height='100%' borderRadius={16} />
+          ) : (
+            <div
+              style={{
+                height: '100%',
+                borderRadius: 16,
+                background: `linear-gradient(135deg, ${theme.background.secondary}, ${theme.background.tertiary})`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {store?.logo?.filename && (
+                <img
+                  src={`${IMAGE_HOST}${store.logo.filename}`}
+                  alt={store?.name || ''}
+                  style={{ width: 140, height: 140, objectFit: 'cover', borderRadius: '50%' }}
+                />
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Categories */}
-      <div style={{ padding: '20px 24px 48px', maxWidth: 1100, margin: '0 auto' }}>
+      <div style={{ padding: '20px 24px 48px', maxWidth: 1200, margin: '0 auto' }}>
         <h2 style={{ fontSize: 20, fontWeight: 500, marginBottom: 16, borderBottom: `1px solid ${theme.background.tertiary}`, paddingBottom: 8 }}>
           {language['OUR_CATEGORIES']}
         </h2>
         {categories.length === 0 ? (
           <p style={{ color: theme.text.tertiary, fontSize: 13 }}>{language['NO_CATEGORIES_AVAILABLE']}</p>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 16 }}>
             {categories.map((category) => (
               <Link
                 key={category._id}
                 to='/menu'
                 style={{
                   background: theme.background.secondary,
-                  borderRadius: 8,
-                  padding: 16,
+                  border: `1px solid ${theme.background.tertiary}`,
+                  borderRadius: 12,
+                  padding: '28px 16px',
                   textAlign: 'center',
                   textDecoration: 'none',
                   color: theme.text.primary,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
                 }}
               >
                 {category.icon?.filename && (
                   <img
                     src={`${IMAGE_HOST}${category.icon.filename}`}
                     alt={localize(category.name)}
-                    style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: '50%', marginBottom: 8 }}
+                    style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', marginBottom: 12 }}
                   />
                 )}
-                <div style={{ fontSize: 14 }}>{localize(category.name)}</div>
+                <div style={{ fontSize: 14, fontWeight: 500 }}>{localize(category.name)}</div>
               </Link>
             ))}
           </div>
@@ -153,7 +232,7 @@ export const Home = () => {
 
       {/* Featured products */}
       {featuredProducts.length > 0 && (
-        <div style={{ padding: '0 24px 64px', maxWidth: 1100, margin: '0 auto' }}>
+        <div id='featured-products' style={{ padding: '0 24px 64px', maxWidth: 1100, margin: '0 auto', scrollMarginTop: 24 }}>
           <h2 style={{ fontSize: 20, fontWeight: 500, marginBottom: 16, borderBottom: `1px solid ${theme.background.tertiary}`, paddingBottom: 8 }}>
             {language['FEATURED_PRODUCTS']}
           </h2>

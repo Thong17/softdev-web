@@ -11,9 +11,11 @@ const AUTO_ADVANCE_MS = 5000
 
 interface IAnnouncementCarousel {
   announcements: IPublicAnnouncement[]
+  height?: string
+  borderRadius?: number
 }
 
-export const AnnouncementCarousel = ({ announcements }: IAnnouncementCarousel) => {
+export const AnnouncementCarousel = ({ announcements, height = 'min(60vh, 420px)', borderRadius = 0 }: IAnnouncementCarousel) => {
   const { theme } = useTheme()
   const { lang } = useLanguage()
   const [index, setIndex] = useState(0)
@@ -43,8 +45,9 @@ export const AnnouncementCarousel = ({ announcements }: IAnnouncementCarousel) =
       style={{
         position: 'relative',
         width: '100%',
-        height: 'min(60vh, 420px)',
+        height,
         overflow: 'hidden',
+        borderRadius,
         background: theme.background.tertiary,
       }}
     >
