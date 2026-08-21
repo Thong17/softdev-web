@@ -8,6 +8,7 @@ import { Layout } from 'components/layouts/Layout'
 import { PublicNav } from 'components/shared/PublicNav'
 import { SocialNav } from 'components/shared/SocialNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
+import { ProductNameClamp } from 'components/shared/ProductNameClamp'
 import { AnnouncementCarousel } from 'components/shared/AnnouncementCarousel'
 import { Pagination } from 'components/shared/Pagination'
 import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
@@ -249,7 +250,7 @@ export const Home = () => {
                     />
                   </div>
                   <div style={{ paddingBlock: 10 }}>
-                    <div style={{ fontSize: 14, marginBottom: 4 }}>{localize(product.name)}</div>
+                    <ProductNameClamp>{localize(product.name)}</ProductNameClamp>
                     <ProductPriceTag product={product} />
                   </div>
                 </div>

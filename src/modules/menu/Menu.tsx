@@ -4,6 +4,7 @@ import useLanguage from 'hooks/useLanguage'
 import { getMenu, getStoreInfo, getProducts, IMenuCategory, IMenuProduct, IPublicStore } from 'api/menu.api'
 import { PublicNav } from 'components/shared/PublicNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
+import { ProductNameClamp } from 'components/shared/ProductNameClamp'
 import { Pagination } from 'components/shared/Pagination'
 
 const PAGE_SIZE = 12
@@ -137,7 +138,7 @@ export const Menu = () => {
                   />
                 </div>
                 <div style={{ padding: 10 }}>
-                  <div style={{ fontSize: 14, marginBottom: 4 }}>{localize(product.name)}</div>
+                  <ProductNameClamp>{localize(product.name)}</ProductNameClamp>
                   <ProductPriceTag product={product} />
                 </div>
               </div>
