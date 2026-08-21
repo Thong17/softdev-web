@@ -7,7 +7,7 @@ import { themeMode } from 'contexts/theme/constant'
 import { languages } from 'contexts/language/constant'
 import { ThemeOptions } from 'contexts/theme/interface'
 import { LanguageOptions } from 'contexts/language/interface'
-import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material'
+import { IconButton, Menu, MenuItem, ListItemText } from '@mui/material'
 import PaletteRoundedIcon from '@mui/icons-material/PaletteRounded'
 import TranslateRoundedIcon from '@mui/icons-material/TranslateRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
@@ -126,11 +126,14 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
           PaperProps={{ sx: { backgroundColor: theme.background.secondary, borderRadius: theme.radius.quaternary } }}
         >
           {Object.keys(themeMode).map((option) => (
-            <MenuItem key={option} selected={option === mode} onClick={() => handleSelectTheme(option)}>
-              <ListItemIcon>
-                {option === mode && <CheckRoundedIcon fontSize='small' sx={{ color: theme.color.info }} />}
-              </ListItemIcon>
+            <MenuItem
+              key={option}
+              selected={option === mode}
+              onClick={() => handleSelectTheme(option)}
+              sx={{ display: 'flex', justifyContent: 'space-between', gap: 3, minWidth: 120 }}
+            >
               <ListItemText sx={{ color: theme.text.primary }}>{option}</ListItemText>
+              {option === mode && <CheckRoundedIcon fontSize='small' sx={{ color: theme.color.info }} />}
             </MenuItem>
           ))}
         </Menu>
@@ -150,11 +153,14 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
           PaperProps={{ sx: { backgroundColor: theme.background.secondary, borderRadius: theme.radius.quaternary } }}
         >
           {Object.keys(languages).map((option) => (
-            <MenuItem key={option} selected={option === lang} onClick={() => handleSelectLanguage(option)}>
-              <ListItemIcon>
-                {option === lang && <CheckRoundedIcon fontSize='small' sx={{ color: theme.color.info }} />}
-              </ListItemIcon>
+            <MenuItem
+              key={option}
+              selected={option === lang}
+              onClick={() => handleSelectLanguage(option)}
+              sx={{ display: 'flex', justifyContent: 'space-between', gap: 3, minWidth: 120 }}
+            >
               <ListItemText sx={{ color: theme.text.primary }}>{option}</ListItemText>
+              {option === lang && <CheckRoundedIcon fontSize='small' sx={{ color: theme.color.info }} />}
             </MenuItem>
           ))}
         </Menu>
