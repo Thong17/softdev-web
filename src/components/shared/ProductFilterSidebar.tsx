@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Slider } from '@mui/material'
+import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import { IMenuCategory, IPublicBrand, getProductPriceRange } from 'api/menu.api'
@@ -46,25 +47,52 @@ export const ProductFilterSidebar = ({
 
   const localize = (name?: Record<string, string>) => name?.[lang] || name?.['English'] || ''
 
-  const listItemStyle = (active: boolean) => ({
+  const listItemStyle = {
     display: 'flex',
     alignItems: 'center',
     gap: 10,
     width: '100%',
     textAlign: 'left' as const,
-    background: active ? theme.color.info : 'transparent',
+    background: 'transparent',
     border: 'none',
     borderRadius: theme.radius.rounded,
     cursor: 'pointer',
     padding: '6px 10px',
     fontSize: 13,
     fontWeight: 400,
-    color: active ? theme.background.secondary : theme.text.secondary,
-  })
+    color: theme.text.secondary,
+  }
 
-  const iconSlot = (filename: string | undefined, alt: string) => {
-    const style = { width: 40, height: 40, objectFit: 'cover' as const, borderRadius: '50%', flexShrink: 0 }
-    return <img src={`${IMAGE_HOST}${filename || 'default.png'}`} alt={alt} style={style} />
+  const iconSlot = (filename: string | undefined, alt: string, active: boolean) => {
+    const size = 30
+    return (
+      <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
+        <img
+          src={`${IMAGE_HOST}${filename || 'default.png'}`}
+          alt={alt}
+          style={{ width: size, height: size, objectFit: 'cover', borderRadius: '50%' }}
+        />
+        {active && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: theme.background.primary,
+              opacity: 0.7,
+            }}
+          >
+            <DoneAllRoundedIcon style={{ fontSize: 16, color: theme.text.primary }} />
+          </div>
+        )}
+      </div>
+    )
   }
 
   return (
@@ -108,17 +136,17 @@ export const ProductFilterSidebar = ({
           <div style={{ fontSize: 12, color: theme.text.tertiary }}>{language['NO_BRANDS_AVAILABLE']}</div>
         ) : (
           <>
-            <button style={listItemStyle(!selectedBrand)} onClick={() => onChangeBrand(null)}>
-              {iconSlot(undefined, language['ALL'])}
+            <button style={listItemStyle} onClick={() => onChangeBrand(null)}>
+              {iconSlot(undefined, language['ALL'], !selectedBrand)}
               {language['ALL']}
             </button>
             {brands.map((brand) => (
               <button
                 key={brand._id}
-                style={listItemStyle(selectedBrand === brand._id)}
+                style={listItemStyle}
                 onClick={() => onChangeBrand(selectedBrand === brand._id ? null : brand._id)}
               >
-                {iconSlot(brand.icon?.filename, localize(brand.name))}
+                {iconSlot(brand.icon?.filename, localize(brand.name), selectedBrand === brand._id)}
                 {localize(brand.name)}
               </button>
             ))}
@@ -133,17 +161,17 @@ export const ProductFilterSidebar = ({
           <div style={{ fontSize: 12, color: theme.text.tertiary }}>{language['NO_CATEGORIES_AVAILABLE']}</div>
         ) : (
           <>
-            <button style={listItemStyle(!selectedCategory)} onClick={() => onChangeCategory(null)}>
-              {iconSlot(undefined, language['ALL'])}
+            <button style={listItemStyle} onClick={() => onChangeCategory(null)}>
+              {iconSlot(undefined, language['ALL'], !selectedCategory)}
               {language['ALL']}
             </button>
             {categories.map((category) => (
               <button
                 key={category._id}
-                style={listItemStyle(selectedCategory === category._id)}
+                style={listItemStyle}
                 onClick={() => onChangeCategory(selectedCategory === category._id ? null : category._id)}
               >
-                {iconSlot(category.icon?.filename, localize(category.name))}
+                {iconSlot(category.icon?.filename, localize(category.name), selectedCategory === category._id)}
                 {localize(category.name)}
               </button>
             ))}
