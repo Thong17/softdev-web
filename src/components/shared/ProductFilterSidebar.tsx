@@ -49,20 +49,21 @@ export const ProductFilterSidebar = ({
   const listItemStyle = (active: boolean) => ({
     display: 'flex',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
     width: '100%',
     textAlign: 'left' as const,
-    background: 'transparent',
+    background: active ? theme.color.info : 'transparent',
     border: 'none',
+    borderRadius: theme.radius.rounded,
     cursor: 'pointer',
-    padding: '6px 0',
+    padding: '6px 10px',
     fontSize: 13,
-    color: active ? theme.color.info : theme.text.secondary,
-    fontWeight: active ? 600 : 400,
+    fontWeight: 400,
+    color: active ? theme.background.secondary : theme.text.secondary,
   })
 
   const iconSlot = (filename: string | undefined, alt: string) => {
-    const style = { width: 20, height: 20, objectFit: 'cover' as const, borderRadius: '50%', flexShrink: 0 }
+    const style = { width: 40, height: 40, objectFit: 'cover' as const, borderRadius: '50%', flexShrink: 0 }
     return <img src={`${IMAGE_HOST}${filename || 'default.png'}`} alt={alt} style={style} />
   }
 
@@ -78,7 +79,7 @@ export const ProductFilterSidebar = ({
     >
       {/* Price range */}
       <div style={{ marginBottom: 28 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 12 }}>{language['PRICE']}</div>
+        <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 12 }}>{language['PRICE']}</div>
         {bounds[1] > bounds[0] ? (
           <>
             <Slider
@@ -102,7 +103,7 @@ export const ProductFilterSidebar = ({
 
       {/* Brands */}
       <div style={{ marginBottom: 28 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>{language['OUR_BRANDS']}</div>
+        <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 8 }}>{language['OUR_BRANDS']}</div>
         {brands.length === 0 ? (
           <div style={{ fontSize: 12, color: theme.text.tertiary }}>{language['NO_BRANDS_AVAILABLE']}</div>
         ) : (
@@ -127,7 +128,7 @@ export const ProductFilterSidebar = ({
 
       {/* Categories */}
       <div>
-        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>{language['OUR_CATEGORIES']}</div>
+        <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 8 }}>{language['OUR_CATEGORIES']}</div>
         {categories.length === 0 ? (
           <div style={{ fontSize: 12, color: theme.text.tertiary }}>{language['NO_CATEGORIES_AVAILABLE']}</div>
         ) : (
