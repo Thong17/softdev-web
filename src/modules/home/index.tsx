@@ -14,7 +14,7 @@ import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
 import { getMenu, getBrands, getProducts, IMenuCategory, IMenuProduct, IPublicBrand, getStoreInfo, IPublicStore, getAnnouncements, IPublicAnnouncement } from 'api/menu.api'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
-const FEATURED_PAGE_SIZE = 8
+const FEATURED_PAGE_SIZE = 10
 
 export const Home = () => {
   const { theme } = useTheme()
@@ -210,9 +210,25 @@ export const Home = () => {
         />
 
         <div>
-          <h2 style={{ fontSize: 20, fontWeight: 500, marginBottom: 16, borderBottom: `1px solid ${theme.background.tertiary}`, paddingBottom: 8 }}>
-            {language['FEATURED_PRODUCTS']}
-          </h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'bottom', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 500 }}>
+              {language['FEATURED_PRODUCTS']}
+            </h2>
+            <Link
+              to='/menu'
+              style={{
+                display: 'inline-block',
+                background: theme.color.info,
+                color: theme.background.secondary,
+                borderRadius: theme.radius.rounded,
+                padding: '12px 28px',
+                textDecoration: 'none',
+                fontSize: 14,
+              }}
+            >
+              {language['SHOW_ALL']}
+            </Link>
+          </div>
           {featuredProducts.length === 0 ? (
             <p style={{ color: theme.text.tertiary, fontSize: 13 }}>{language['NO_PRODUCTS_AVAILABLE']}</p>
           ) : (
