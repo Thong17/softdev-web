@@ -249,7 +249,7 @@ export const Home = () => {
                       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   </div>
-                  <div style={{ paddingBlock: 10 }}>
+                  <div style={{ paddingBlock: 10, paddingInline: 4 }}>
                     <ProductNameClamp>{localize(product.name)}</ProductNameClamp>
                     <ProductPriceTag product={product} />
                   </div>
