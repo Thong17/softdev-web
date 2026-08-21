@@ -60,7 +60,7 @@ export const createData = (
   let action = (
     <div style={{ float: 'right' }}>
       {device === 'mobile' ? (
-        privilege?.announcement?.detail && (
+        privilege?.banner?.detail && (
           <MenuDialog label={<ViewButton />}>
             <MenuItem
               component='div'
@@ -84,12 +84,12 @@ export const createData = (
         )
       ) : (
         <>
-          {privilege?.announcement?.update && (
+          {privilege?.banner?.update && (
             <UpdateButton
               onClick={() => navigate(`/function/announcement/update/${id}`)}
             />
           )}
-          {privilege?.announcement?.delete && (
+          {privilege?.banner?.delete && (
             <DeleteButton onClick={() => setDialog({ open: true, id })} />
           )}
         </>

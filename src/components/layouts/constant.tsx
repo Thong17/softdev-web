@@ -35,7 +35,7 @@ export const sideNav: any = [
         route: '/function/announcement',
         title: 'ANNOUNCEMENT',
         icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
-        permission: 'announcement'
+        permission: 'banner'
       },
     ]
   },
