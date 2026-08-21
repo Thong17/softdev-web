@@ -5,7 +5,7 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { initState } from './redux/constant'
 
 const Header = () => {
-    return <><Breadcrumbs page='announcementCreate' /></>
+    return <><Breadcrumbs page='bannerCreate' /></>
 }
 
 export const CreateAnnouncement = () => {

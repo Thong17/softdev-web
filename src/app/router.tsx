@@ -234,7 +234,7 @@ const routes: RouteObject[] = [
 
       // Announcement
       {
-        path: 'announcement',
+        path: 'banner',
         element: (
           <AuthGuard role={{ route: 'banner', action: 'list' }}>
             <Announcements />
@@ -242,7 +242,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: 'announcement/create',
+        path: 'banner/create',
         element: (
           <AuthGuard role={{ route: 'banner', action: 'create' }}>
             <CreateAnnouncement />
@@ -250,7 +250,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: 'announcement/update/:id',
+        path: 'banner/update/:id',
         element: (
           <AuthGuard role={{ route: 'banner', action: 'update' }}>
             <UpdateAnnouncement />
@@ -258,7 +258,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: 'announcement/detail/:id',
+        path: 'banner/detail/:id',
         element: (
           <AuthGuard role={{ route: 'banner', action: 'detail' }}>
             <DetailAnnouncement />

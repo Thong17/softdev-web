@@ -82,7 +82,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
     setLoading(true)
     Axios({
       method: id ? 'PUT' : 'POST',
-      url: id ? `/function/announcement/update/${id}` : `/function/announcement/create`,
+      url: id ? `/function/banner/update/${id}` : `/function/banner/create`,
       body: data,
     })
       .then((data) => {

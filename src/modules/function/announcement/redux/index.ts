@@ -8,7 +8,7 @@ export const getListAnnouncement = createAsyncThunk(
   async ({ query }: { query?: URLSearchParams }) => {
     const response = await Axios({
       method: 'GET',
-      url: '/function/announcement',
+      url: '/function/banner',
       params: query
     })
     return response?.data
@@ -20,7 +20,7 @@ export const getAnnouncement = createAsyncThunk(
   async ({id, query, fields}: { id: string, query?: URLSearchParams, fields: Array<string> }) => {
     const response = await Axios({
       method: 'GET',
-      url: `/function/announcement/detail/${id}`,
+      url: `/function/banner/detail/${id}`,
       params: query
     })
     let data = {}

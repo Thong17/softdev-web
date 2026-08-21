@@ -8,7 +8,7 @@ import { getAnnouncement, selectAnnouncement } from './redux'
 import { inputDateTimeFormat } from 'utils'
 
 const Header = () => {
-    return <><StoreBreadcrumbs page='announcementUpdate' /></>
+    return <><StoreBreadcrumbs page='bannerUpdate' /></>
 }
 
 export const UpdateAnnouncement = () => {

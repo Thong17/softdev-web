@@ -64,7 +64,7 @@ export const createData = (
           <MenuDialog label={<ViewButton />}>
             <MenuItem
               component='div'
-              onClick={() => navigate(`/function/announcement/update/${id}`)}
+              onClick={() => navigate(`/function/banner/update/${id}`)}
             >
               Edit
             </MenuItem>
@@ -76,7 +76,7 @@ export const createData = (
             </MenuItem>
             <MenuItem
               component='div'
-              onClick={() => navigate(`/function/announcement/detail/${id}`)}
+              onClick={() => navigate(`/function/banner/detail/${id}`)}
             >
               View
             </MenuItem>
@@ -86,7 +86,7 @@ export const createData = (
         <>
           {privilege?.banner?.update && (
             <UpdateButton
-              onClick={() => navigate(`/function/announcement/update/${id}`)}
+              onClick={() => navigate(`/function/banner/update/${id}`)}
             />
           )}
           {privilege?.banner?.delete && (

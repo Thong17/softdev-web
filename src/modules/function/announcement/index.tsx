@@ -70,7 +70,7 @@ export const Announcements = () => {
   const handleConfirm = (id) => {
     const response = Axios({
       method: 'DELETE',
-      url: `/function/announcement/disable/${id}`,
+      url: `/function/banner/disable/${id}`,
     })
     loadify(response)
     response.then(() => dispatch(getListAnnouncement({})))
@@ -88,7 +88,7 @@ export const Announcements = () => {
       .then(() => {
         Axios({
           method: 'PUT',
-          url: `/function/announcement/toggleStatus/${id}`,
+          url: `/function/banner/toggleStatus/${id}`,
         })
           .then(() => {
             dispatch(getListAnnouncement({ query: queryParams }))
