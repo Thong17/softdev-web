@@ -5,7 +5,7 @@ import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
 import Axios from 'constants/functions/Axios'
 
-const initState: LanguageOptions = 'English'
+const initState: LanguageOptions = (localStorage.getItem('setting-language') as LanguageOptions) || 'English'
 
 export const LanguageContext = createContext<ILanguageContext>({
   lang: initState,
@@ -26,6 +26,12 @@ const LanguageProvider = ({ children }) => {
   const language = useMemo<ILanguage>(() => languages[lang], [lang])
 
   const changeLanguage = async (language: LanguageOptions) => {
+    if (!user?.id) {
+      setLang(language)
+      localStorage.setItem('setting-language', language)
+      return
+    }
+
     const response = await Axios({
       method: 'POST',
       url: `/user/language/change`,

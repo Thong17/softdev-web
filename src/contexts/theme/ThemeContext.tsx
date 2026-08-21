@@ -31,6 +31,12 @@ const ThemesProvider = ({ children }) => {
   }, [mode])
 
   const changeTheme = async (mode: ThemeOptions) => {
+    if (!user?.id) {
+      setMode(mode)
+      localStorage.setItem('setting-theme', mode)
+      return
+    }
+
     const response = await Axios({
       method: 'POST',
       url: `/user/theme/change`,

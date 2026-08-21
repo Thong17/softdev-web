@@ -3,6 +3,14 @@ import { Link, useLocation } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import useWeb from 'hooks/useWeb'
+import { themeMode } from 'contexts/theme/constant'
+import { languages } from 'contexts/language/constant'
+import { ThemeOptions } from 'contexts/theme/interface'
+import { LanguageOptions } from 'contexts/language/interface'
+import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material'
+import PaletteRoundedIcon from '@mui/icons-material/PaletteRounded'
+import TranslateRoundedIcon from '@mui/icons-material/TranslateRounded'
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 
 const NAV_LINKS: { to: string; labelKey: string }[] = [
   { to: '/', labelKey: 'HOME' },
@@ -19,12 +27,24 @@ interface IPublicNav {
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 
 export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
-  const { theme } = useTheme()
-  const { language } = useLanguage()
+  const { theme, mode, changeTheme } = useTheme()
+  const { lang, language, changeLanguage } = useLanguage()
   const { device } = useWeb()
   const location = useLocation()
   const [hidden, setHidden] = useState(false)
   const lastScrollY = useRef(0)
+  const [themeAnchor, setThemeAnchor] = useState<Element | null>(null)
+  const [langAnchor, setLangAnchor] = useState<Element | null>(null)
+
+  const handleSelectTheme = (option: string) => {
+    changeTheme(option as ThemeOptions)
+    setThemeAnchor(null)
+  }
+
+  const handleSelectLanguage = (option: string) => {
+    changeLanguage(option as LanguageOptions)
+    setLangAnchor(null)
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -90,6 +110,54 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
             </Link>
           )
         })}
+
+        <IconButton
+          size='small'
+          onClick={(event) => setThemeAnchor(event.currentTarget)}
+          style={{ color: theme.text.secondary }}
+          aria-label='change theme'
+        >
+          <PaletteRoundedIcon fontSize='small' />
+        </IconButton>
+        <Menu
+          open={Boolean(themeAnchor)}
+          anchorEl={themeAnchor}
+          onClose={() => setThemeAnchor(null)}
+          PaperProps={{ sx: { backgroundColor: theme.background.secondary, borderRadius: theme.radius.quaternary } }}
+        >
+          {Object.keys(themeMode).map((option) => (
+            <MenuItem key={option} selected={option === mode} onClick={() => handleSelectTheme(option)}>
+              <ListItemIcon>
+                {option === mode && <CheckRoundedIcon fontSize='small' sx={{ color: theme.color.info }} />}
+              </ListItemIcon>
+              <ListItemText sx={{ color: theme.text.primary }}>{option}</ListItemText>
+            </MenuItem>
+          ))}
+        </Menu>
+
+        <IconButton
+          size='small'
+          onClick={(event) => setLangAnchor(event.currentTarget)}
+          style={{ color: theme.text.secondary }}
+          aria-label='change language'
+        >
+          <TranslateRoundedIcon fontSize='small' />
+        </IconButton>
+        <Menu
+          open={Boolean(langAnchor)}
+          anchorEl={langAnchor}
+          onClose={() => setLangAnchor(null)}
+          PaperProps={{ sx: { backgroundColor: theme.background.secondary, borderRadius: theme.radius.quaternary } }}
+        >
+          {Object.keys(languages).map((option) => (
+            <MenuItem key={option} selected={option === lang} onClick={() => handleSelectLanguage(option)}>
+              <ListItemIcon>
+                {option === lang && <CheckRoundedIcon fontSize='small' sx={{ color: theme.color.info }} />}
+              </ListItemIcon>
+              <ListItemText sx={{ color: theme.text.primary }}>{option}</ListItemText>
+            </MenuItem>
+          ))}
+        </Menu>
       </div>
     </div>
   )
