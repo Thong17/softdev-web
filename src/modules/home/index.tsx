@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
+import useAuth from 'hooks/useAuth'
+import { Layout } from 'components/layouts/Layout'
 import { PublicNav } from 'components/shared/PublicNav'
 import { SocialNav } from 'components/shared/SocialNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
@@ -13,6 +15,7 @@ const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 export const Home = () => {
   const { theme } = useTheme()
   const { lang, language } = useLanguage()
+  const { isAuthenticated } = useAuth()
   const [categories, setCategories] = useState<IMenuCategory[]>([])
   const [brands, setBrands] = useState<IPublicBrand[]>([])
   const [store, setStore] = useState<IPublicStore | null>(null)
@@ -31,7 +34,7 @@ export const Home = () => {
     .flatMap((category) => category.products || [])
     .slice(0, 8)
 
-  return (
+  const content = (
     <div
       style={{
         minHeight: '100vh',
@@ -40,7 +43,7 @@ export const Home = () => {
         fontFamily: theme.font.family,
       }}
     >
-      <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} />
+      {!isAuthenticated && <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} />}
       <SocialNav />
 
       <AnnouncementCarousel announcements={announcements} />
@@ -176,4 +179,6 @@ export const Home = () => {
       )}
     </div>
   )
+
+  return isAuthenticated ? <Layout>{content}</Layout> : content
 }
