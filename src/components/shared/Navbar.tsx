@@ -36,6 +36,8 @@ export const MenuBar = ({ toggleSidebar, theme }) => {
 
 const Navbar = ({ children }) => {
   const [navbar, setNavbar] = useState(false)
+  const [hidden, setHidden] = useState(false)
+  const lastScrollY = useRef(0)
   const { user } = useAuth()
   const { theme } = useTheme()
   const { language } = useLanguage()
@@ -82,6 +84,16 @@ const Navbar = ({ children }) => {
       document.removeEventListener('mousedown', closeNavbar)
     }
   }, [navbar])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY
+      setHidden(currentY > lastScrollY.current && currentY > 80)
+      lastScrollY.current = currentY
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const mapData = (data) => {
     const expireDay = calculateDay(new Date(data.expireAt), Date.now())
@@ -135,7 +147,7 @@ const Navbar = ({ children }) => {
 
   return (
     <CustomNavbar
-      className='navbar'
+      className={`navbar${hidden ? ' active' : ''}`}
       direction='row'
       alignItems='center'
       justifyContent='space-between'
