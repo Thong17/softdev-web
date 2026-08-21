@@ -65,6 +65,9 @@ export interface IGetProductsParams {
   brand?: string
   minPrice?: number
   maxPrice?: number
+  search?: string
+  filter?: 'createdAt' | 'price'
+  sort?: 'asc' | 'desc'
 }
 
 export const getProducts = (params: IGetProductsParams = {}) => {

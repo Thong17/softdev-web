@@ -1,20 +1,34 @@
 import { useEffect, useState } from 'react'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
-import { getMenu, getStoreInfo, getProducts, IMenuCategory, IMenuProduct, IPublicStore } from 'api/menu.api'
+import useWeb from 'hooks/useWeb'
+import { getMenu, getBrands, getStoreInfo, getProducts, IMenuCategory, IMenuProduct, IPublicBrand, IPublicStore } from 'api/menu.api'
 import { PublicNav } from 'components/shared/PublicNav'
+import { SocialNav } from 'components/shared/SocialNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
 import { ProductNameClamp } from 'components/shared/ProductNameClamp'
 import { Pagination } from 'components/shared/Pagination'
+import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
+import { debounce } from 'utils'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 
+const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 const PAGE_SIZE = 12
+
+type ISortValue = 'createdAt_desc' | 'price_asc' | 'price_desc'
 
 export const Menu = () => {
   const { theme } = useTheme()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
+  const { device } = useWeb()
   const [categories, setCategories] = useState<IMenuCategory[]>([])
+  const [brands, setBrands] = useState<IPublicBrand[]>([])
   const [store, setStore] = useState<IPublicStore | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
+  const [priceRange, setPriceRange] = useState<[number, number] | null>(null)
+  const [search, setSearch] = useState('')
+  const [sortValue, setSortValue] = useState<ISortValue>('createdAt_desc')
   const [products, setProducts] = useState<IMenuProduct[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [page, setPage] = useState(0)
@@ -22,25 +36,72 @@ export const Menu = () => {
 
   useEffect(() => {
     getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([]))
+    getBrands().then((res) => setBrands(res.data?.data || [])).catch(() => setBrands([]))
     getStoreInfo().then((res) => setStore(res.data?.data || null)).catch(() => setStore(null))
   }, [])
 
   useEffect(() => {
+    if (store?.name) document.title = `${language['NAV_CATALOG']} - ${store.name}`
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store])
+
+  useEffect(() => {
+    const [filter, sort] = sortValue.split('_') as ['createdAt' | 'price', 'asc' | 'desc']
     setStatus('LOADING')
-    getProducts({ page, limit: PAGE_SIZE, category: selectedCategory || undefined })
+    getProducts({
+      page,
+      limit: PAGE_SIZE,
+      category: selectedCategory || undefined,
+      brand: selectedBrand || undefined,
+      minPrice: priceRange?.[0],
+      maxPrice: priceRange?.[1],
+      search: search || undefined,
+      filter,
+      sort,
+    })
       .then((res) => {
         setProducts(res.data?.data || [])
         setTotalCount(res.data?.length || 0)
         setStatus('SUCCESS')
       })
       .catch(() => setStatus('FAILED'))
-  }, [page, selectedCategory])
+  }, [page, selectedCategory, selectedBrand, priceRange, search, sortValue])
 
   const localize = (name?: Record<string, string>) => name?.[lang] || name?.['English'] || ''
 
-  const selectCategory = (categoryId: string | null) => {
+  const changeCategory = (categoryId: string | null) => {
     setSelectedCategory(categoryId)
     setPage(0)
+  }
+
+  const changeBrand = (brandId: string | null) => {
+    setSelectedBrand(brandId)
+    setPage(0)
+  }
+
+  const changePriceRange = (range: [number, number] | null) => {
+    setPriceRange(range)
+    setPage(0)
+  }
+
+  const updateSearch = debounce((value: string) => {
+    setSearch(value)
+    setPage(0)
+  }, 300)
+
+  const changeSort = (value: ISortValue) => {
+    setSortValue(value)
+    setPage(0)
+  }
+
+  const inputStyle = {
+    border: 'none',
+    outline: 'none',
+    borderRadius: theme.radius.rounded,
+    padding: '10px 14px',
+    fontSize: 13,
+    background: theme.background.secondary,
+    color: theme.text.primary,
   }
 
   return (
@@ -54,99 +115,78 @@ export const Menu = () => {
       }}
     >
       <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} />
-      <div style={{ padding: '20px 16px 80px' }}>
-        <h1 style={{ fontWeight: 300, marginBottom: 20 }}>Menu</h1>
+      <SocialNav />
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
-          <button
-            onClick={() => selectCategory(null)}
-            style={{
-              border: 'none',
-              borderRadius: 16,
-              padding: '6px 14px',
-              fontSize: 13,
-              cursor: 'pointer',
-              background: !selectedCategory ? theme.color.info : theme.background.secondary,
-              color: !selectedCategory ? theme.background.secondary : theme.text.primary,
-            }}
-          >
-            All
-          </button>
-          {categories.map((category) => (
-            <button
-              key={category._id}
-              onClick={() => selectCategory(category._id)}
-              style={{
-                border: 'none',
-                borderRadius: 16,
-                padding: '6px 14px',
-                fontSize: 13,
-                cursor: 'pointer',
-                background: selectedCategory === category._id ? theme.color.info : theme.background.secondary,
-                color: selectedCategory === category._id ? theme.background.secondary : theme.text.primary,
-              }}
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: device === 'mobile' ? '20px 16px 64px' : '32px 24px 64px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 24 }}>
+          <h1 style={{ fontWeight: 300, fontSize: 28, margin: 0 }}>{language['NAV_CATALOG']}</h1>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative' }}>
+              <SearchRoundedIcon
+                style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', fontSize: 18, color: theme.text.tertiary }}
+              />
+              <input
+                type='text'
+                placeholder={language['TYPE_TO_SEARCH']}
+                defaultValue={search}
+                onChange={(event) => updateSearch(event.target.value)}
+                style={{ ...inputStyle, paddingLeft: 34, minWidth: 200 }}
+              />
+            </div>
+            <select
+              value={sortValue}
+              onChange={(event) => changeSort(event.target.value as ISortValue)}
+              style={{ ...inputStyle, cursor: 'pointer' }}
             >
-              {localize(category.name)}
-            </button>
-          ))}
+              <option value='createdAt_desc'>{language['SORT_NEWEST']}</option>
+              <option value='price_asc'>{language['SORT_PRICE_LOW_HIGH']}</option>
+              <option value='price_desc'>{language['SORT_PRICE_HIGH_LOW']}</option>
+            </select>
+          </div>
         </div>
 
-        {status === 'LOADING' && <p style={{ color: theme.text.tertiary }}>Loading products...</p>}
-        {status === 'FAILED' && <p style={{ color: theme.color.error }}>Failed to load products. Please try again.</p>}
-        {status === 'SUCCESS' && products.length === 0 && (
-          <p style={{ color: theme.text.tertiary }}>No items available right now.</p>
-        )}
+        <div style={{ display: 'grid', gridTemplateColumns: device === 'mobile' || device === 'tablet' ? '1fr' : '260px 1fr', gap: 24 }}>
+          <ProductFilterSidebar
+            categories={categories}
+            brands={brands}
+            selectedCategory={selectedCategory}
+            selectedBrand={selectedBrand}
+            priceRange={priceRange}
+            onChangeCategory={changeCategory}
+            onChangeBrand={changeBrand}
+            onChangePriceRange={changePriceRange}
+          />
 
-        {products.length > 0 && (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-              gap: 12,
-            }}
-          >
-            {products.map((product) => (
-              <div
-                key={product._id}
-                style={{
-                  background: theme.background.secondary,
-                  borderRadius: 8,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                <div
-                  style={{
-                    width: '100%',
-                    paddingTop: '75%',
-                    position: 'relative',
-                    background: theme.background.tertiary,
-                  }}
-                >
-                  <img
-                    src={`${process.env.REACT_APP_API_UPLOADS}${product.profile?.filename || 'default.png'}`}
-                    alt={localize(product.name)}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
-                </div>
-                <div style={{ padding: 10 }}>
-                  <ProductNameClamp>{localize(product.name)}</ProductNameClamp>
-                  <ProductPriceTag product={product} />
-                </div>
+          <div>
+            {status === 'LOADING' && <p style={{ color: theme.text.tertiary, fontSize: 13 }}>Loading products...</p>}
+            {status === 'FAILED' && <p style={{ color: theme.color.error, fontSize: 13 }}>Failed to load products. Please try again.</p>}
+            {status === 'SUCCESS' && products.length === 0 && (
+              <p style={{ color: theme.text.tertiary, fontSize: 13 }}>{language['NO_PRODUCTS_AVAILABLE']}</p>
+            )}
+
+            {products.length > 0 && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
+                {products.map((product) => (
+                  <div key={product._id} style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ borderRadius: 8, overflow: 'hidden', width: '100%', paddingTop: '75%', position: 'relative' }}>
+                      <img
+                        src={`${IMAGE_HOST}${product.profile?.filename || 'default.png'}`}
+                        alt={localize(product.name)}
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </div>
+                    <div style={{ paddingBlock: 10, paddingInline: 4 }}>
+                      <ProductNameClamp>{localize(product.name)}</ProductNameClamp>
+                      <ProductPriceTag product={product} />
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            )}
 
-        <Pagination page={page} limit={PAGE_SIZE} totalCount={totalCount} onChange={setPage} />
+            <Pagination page={page} limit={PAGE_SIZE} totalCount={totalCount} onChange={setPage} />
+          </div>
+        </div>
       </div>
     </div>
   )
