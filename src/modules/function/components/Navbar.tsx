@@ -10,6 +10,7 @@ const Navbar = () => {
     <>
       {user?.privilege?.function?.queue && <NavLink to='/function/queue'>{language['QUEUE']}</NavLink>}
       {user?.privilege?.function?.promotion && <NavLink to='/function/promotion'>{language['PROMOTION']}</NavLink>}
+      {user?.privilege?.function?.announcement && <NavLink to='/function/announcement'>{language['ANNOUNCEMENT']}</NavLink>}
     </>
   )
 }

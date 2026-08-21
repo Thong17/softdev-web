@@ -97,5 +97,5 @@ export const createData = (
     </div>
   )
 
-  return { id, banner: <CircleIcon icon={banner} />, title, startAt: dateFormat(startAt), expireAt: dateFormat(expireAt), order, status, createdBy, action }
+  return { id, banner: <CircleIcon icon={banner} radius={10} width={50} height={30} />, title, startAt: dateFormat(startAt), expireAt: dateFormat(expireAt), order, status, createdBy, action }
 }
