@@ -62,9 +62,9 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        display: 'flex',
+        display: 'grid',
+        gridTemplateColumns: '1fr auto 1fr',
         alignItems: 'center',
-        justifyContent: 'space-between',
         padding: device === 'mobile' ? '12px 16px' : '16px 40px',
         background: theme.background.secondary,
         boxShadow: theme.shadow.secondary,
@@ -75,6 +75,7 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
       <Link
         to='/'
         style={{
+          justifySelf: 'start',
           display: 'flex',
           alignItems: 'center',
           gap: 10,
@@ -92,7 +93,7 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
         )}
         {storeName || language['HOME']}
       </Link>
-      <div style={{ display: 'flex', gap: device === 'mobile' ? 12 : 24, alignItems: 'center' }}>
+      <div style={{ justifySelf: 'center', display: 'flex', gap: device === 'mobile' ? 12 : 24, alignItems: 'center' }}>
         {NAV_LINKS.map((item) => {
           const active = location.pathname === item.to
           return (
@@ -104,13 +105,15 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
                 fontSize: device === 'mobile' ? 12 : 14,
                 textDecoration: 'none',
                 fontWeight: active ? 600 : 400,
+                whiteSpace: 'nowrap',
               }}
             >
               {language[item.labelKey]}
             </Link>
           )
         })}
-
+      </div>
+      <div style={{ justifySelf: 'end', display: 'flex', alignItems: 'center' }}>
         <IconButton
           size='small'
           onClick={(event) => setThemeAnchor(event.currentTarget)}
