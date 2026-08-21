@@ -40,6 +40,10 @@ export const Home = () => {
   }, [])
 
   useEffect(() => {
+    if (store?.name) document.title = store.name
+  }, [store])
+
+  useEffect(() => {
     getProducts({
       page: featuredPage,
       limit: FEATURED_PAGE_SIZE,
