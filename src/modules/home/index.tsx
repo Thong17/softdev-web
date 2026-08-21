@@ -237,21 +237,18 @@ export const Home = () => {
                 <div
                   key={product._id}
                   style={{
-                    background: theme.background.secondary,
-                    borderRadius: 8,
-                    overflow: 'hidden',
                     display: 'flex',
                     flexDirection: 'column',
                   }}
                 >
-                  <div style={{ width: '100%', paddingTop: '75%', position: 'relative', background: theme.background.tertiary }}>
+                  <div style={{ borderRadius: 8, overflow: 'hidden', width: '100%', paddingTop: '75%', position: 'relative' }}>
                     <img
                       src={`${IMAGE_HOST}${product.profile?.filename || 'default.png'}`}
                       alt={localize(product.name)}
                       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   </div>
-                  <div style={{ padding: 10 }}>
+                  <div style={{ paddingBlock: 10 }}>
                     <div style={{ fontSize: 14, marginBottom: 4 }}>{localize(product.name)}</div>
                     <ProductPriceTag product={product} />
                   </div>
