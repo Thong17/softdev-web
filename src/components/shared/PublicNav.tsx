@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
@@ -22,6 +23,18 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
   const { language } = useLanguage()
   const { device } = useWeb()
   const location = useLocation()
+  const [hidden, setHidden] = useState(false)
+  const lastScrollY = useRef(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY
+      setHidden(currentY > lastScrollY.current && currentY > 80)
+      lastScrollY.current = currentY
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
     <div
@@ -35,6 +48,8 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
         padding: device === 'mobile' ? '12px 16px' : '16px 40px',
         background: theme.background.secondary,
         boxShadow: theme.shadow.secondary,
+        transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
+        transition: '0.3s ease',
       }}
     >
       <Link
