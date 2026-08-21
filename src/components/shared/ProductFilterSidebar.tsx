@@ -63,37 +63,19 @@ export const ProductFilterSidebar = ({
     color: theme.text.secondary,
   }
 
-  const iconSlot = (filename: string | undefined, alt: string, active: boolean) => {
+  const iconSlot = (filename: string | undefined, alt: string) => {
     const size = 30
     return (
-      <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
-        <img
-          src={`${IMAGE_HOST}${filename || 'default.png'}`}
-          alt={alt}
-          style={{ width: size, height: size, objectFit: 'cover', borderRadius: '50%' }}
-        />
-        {active && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: theme.background.primary,
-              opacity: 0.7,
-            }}
-          >
-            <DoneAllRoundedIcon style={{ fontSize: 16, color: theme.text.primary }} />
-          </div>
-        )}
-      </div>
+      <img
+        src={`${IMAGE_HOST}${filename || 'default.png'}`}
+        alt={alt}
+        style={{ width: size, height: size, objectFit: 'cover', borderRadius: '50%', flexShrink: 0 }}
+      />
     )
   }
+
+  const checkSlot = (active: boolean) =>
+    active && <DoneAllRoundedIcon style={{ fontSize: 18, color: theme.color.info, marginLeft: 'auto', flexShrink: 0 }} />
 
   return (
     <div
@@ -137,8 +119,9 @@ export const ProductFilterSidebar = ({
         ) : (
           <>
             <button style={listItemStyle} onClick={() => onChangeBrand(null)}>
-              {iconSlot(undefined, language['ALL'], !selectedBrand)}
+              {iconSlot(undefined, language['ALL'])}
               {language['ALL']}
+              {checkSlot(!selectedBrand)}
             </button>
             {brands.map((brand) => (
               <button
@@ -146,8 +129,9 @@ export const ProductFilterSidebar = ({
                 style={listItemStyle}
                 onClick={() => onChangeBrand(selectedBrand === brand._id ? null : brand._id)}
               >
-                {iconSlot(brand.icon?.filename, localize(brand.name), selectedBrand === brand._id)}
+                {iconSlot(brand.icon?.filename, localize(brand.name))}
                 {localize(brand.name)}
+                {checkSlot(selectedBrand === brand._id)}
               </button>
             ))}
           </>
@@ -162,8 +146,9 @@ export const ProductFilterSidebar = ({
         ) : (
           <>
             <button style={listItemStyle} onClick={() => onChangeCategory(null)}>
-              {iconSlot(undefined, language['ALL'], !selectedCategory)}
+              {iconSlot(undefined, language['ALL'])}
               {language['ALL']}
+              {checkSlot(!selectedCategory)}
             </button>
             {categories.map((category) => (
               <button
@@ -171,8 +156,9 @@ export const ProductFilterSidebar = ({
                 style={listItemStyle}
                 onClick={() => onChangeCategory(selectedCategory === category._id ? null : category._id)}
               >
-                {iconSlot(category.icon?.filename, localize(category.name), selectedCategory === category._id)}
+                {iconSlot(category.icon?.filename, localize(category.name))}
                 {localize(category.name)}
+                {checkSlot(selectedCategory === category._id)}
               </button>
             ))}
           </>
