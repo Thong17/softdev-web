@@ -113,7 +113,7 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
           )
         })}
       </div>
-      <div style={{ justifySelf: 'end', display: 'flex', alignItems: 'center' }}>
+      <div style={{ justifySelf: 'end', display: 'flex', alignItems: 'center', gap: 20 }}>
         <IconButton
           size='small'
           onClick={(event) => setThemeAnchor(event.currentTarget)}
