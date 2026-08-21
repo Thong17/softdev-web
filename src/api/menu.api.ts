@@ -8,6 +8,7 @@ export interface IMenuProduct {
   price: number
   currency: string
   profile?: { filename: string }
+  category?: { _id: string; name: Record<string, string> }
   salePrice?: number | null
   promotionLabel?: Record<string, string>
 }
@@ -55,4 +56,14 @@ export const getStoreInfo = () => {
 
 export const getAnnouncements = () => {
   return axios.get<{ data: IPublicAnnouncement[] }>(`${API_HOST}/public/announcements`)
+}
+
+export interface IGetProductsParams {
+  page?: number
+  limit?: number
+  category?: string
+}
+
+export const getProducts = (params: IGetProductsParams = {}) => {
+  return axios.get<{ data: IMenuProduct[]; length: number }>(`${API_HOST}/public/products`, { params })
 }

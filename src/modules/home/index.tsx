@@ -8,9 +8,11 @@ import { PublicNav } from 'components/shared/PublicNav'
 import { SocialNav } from 'components/shared/SocialNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
 import { AnnouncementCarousel } from 'components/shared/AnnouncementCarousel'
-import { getMenu, getBrands, IMenuCategory, IMenuProduct, IPublicBrand, getStoreInfo, IPublicStore, getAnnouncements, IPublicAnnouncement } from 'api/menu.api'
+import { Pagination } from 'components/shared/Pagination'
+import { getMenu, getBrands, getProducts, IMenuCategory, IMenuProduct, IPublicBrand, getStoreInfo, IPublicStore, getAnnouncements, IPublicAnnouncement } from 'api/menu.api'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
+const FEATURED_PAGE_SIZE = 8
 
 export const Home = () => {
   const { theme } = useTheme()
@@ -20,6 +22,9 @@ export const Home = () => {
   const [brands, setBrands] = useState<IPublicBrand[]>([])
   const [store, setStore] = useState<IPublicStore | null>(null)
   const [announcements, setAnnouncements] = useState<IPublicAnnouncement[]>([])
+  const [featuredProducts, setFeaturedProducts] = useState<IMenuProduct[]>([])
+  const [featuredCount, setFeaturedCount] = useState(0)
+  const [featuredPage, setFeaturedPage] = useState(0)
 
   useEffect(() => {
     getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([]))
@@ -28,11 +33,16 @@ export const Home = () => {
     getAnnouncements().then((res) => setAnnouncements(res.data?.data || [])).catch(() => setAnnouncements([]))
   }, [])
 
-  const localize = (name?: Record<string, string>) => name?.[lang] || name?.['English'] || ''
+  useEffect(() => {
+    getProducts({ page: featuredPage, limit: FEATURED_PAGE_SIZE })
+      .then((res) => {
+        setFeaturedProducts(res.data?.data || [])
+        setFeaturedCount(res.data?.length || 0)
+      })
+      .catch(() => setFeaturedProducts([]))
+  }, [featuredPage])
 
-  const featuredProducts: IMenuProduct[] = categories
-    .flatMap((category) => category.products || [])
-    .slice(0, 8)
+  const localize = (name?: Record<string, string>) => name?.[lang] || name?.['English'] || ''
 
   const content = (
     <div
@@ -175,6 +185,7 @@ export const Home = () => {
               </div>
             ))}
           </div>
+          <Pagination page={featuredPage} limit={FEATURED_PAGE_SIZE} totalCount={featuredCount} onChange={setFeaturedPage} />
         </div>
       )}
     </div>
