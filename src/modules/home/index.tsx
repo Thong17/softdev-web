@@ -114,7 +114,7 @@ export const Home = () => {
           >
             {language['HERO_BADGE']}
           </div>
-          <h1 style={{ fontWeight: 700, fontSize: 40, lineHeight: 1.15, marginBottom: 16 }}>
+          <h1 style={{ fontWeight: 600, fontSize: 40, lineHeight: 1.15, marginBottom: 16 }}>
             {store?.name ? (
               <>
                 {language['WELCOME_TO']}{' '}
@@ -138,7 +138,6 @@ export const Home = () => {
                 padding: '12px 28px',
                 textDecoration: 'none',
                 fontSize: 14,
-                fontWeight: 600,
               }}
             >
               {language['SHOP_NOW']}
@@ -153,7 +152,6 @@ export const Home = () => {
                 padding: '12px 28px',
                 textDecoration: 'none',
                 fontSize: 14,
-                fontWeight: 600,
               }}
             >
               {language['EXPLORE_DEALS']}

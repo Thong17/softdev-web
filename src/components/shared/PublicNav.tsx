@@ -45,7 +45,6 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
           gap: 10,
           color: theme.text.primary,
           fontSize: 18,
-          fontWeight: 600,
           textDecoration: 'none',
         }}
       >
@@ -53,7 +52,7 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
           <img
             src={`${IMAGE_HOST}${storeLogo}`}
             alt={storeName || language['HOME']}
-            style={{ width: 32, height: 32, objectFit: 'cover', borderRadius: '50%' }}
+            style={{ width: 32, height: 32, objectFit: 'cover', borderRadius: '10px' }}
           />
         )}
         {storeName || language['HOME']}
