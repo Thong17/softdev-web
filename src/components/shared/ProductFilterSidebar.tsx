@@ -4,6 +4,8 @@ import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import { IMenuCategory, IPublicBrand, getProductPriceRange } from 'api/menu.api'
 
+const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
+
 interface IProductFilterSidebar {
   categories: IMenuCategory[]
   brands: IPublicBrand[]
@@ -45,7 +47,9 @@ export const ProductFilterSidebar = ({
   const localize = (name?: Record<string, string>) => name?.[lang] || name?.['English'] || ''
 
   const listItemStyle = (active: boolean) => ({
-    display: 'block',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
     width: '100%',
     textAlign: 'left' as const,
     background: 'transparent',
@@ -56,6 +60,13 @@ export const ProductFilterSidebar = ({
     color: active ? theme.color.info : theme.text.secondary,
     fontWeight: active ? 600 : 400,
   })
+
+  const iconSlot = (filename: string | undefined, alt: string) => {
+    const style = { width: 20, height: 20, objectFit: 'cover' as const, borderRadius: '50%', flexShrink: 0 }
+    return filename
+      ? <img src={`${IMAGE_HOST}${filename}`} alt={alt} style={style} />
+      : <span style={{ ...style, background: theme.background.tertiary }} />
+  }
 
   return (
     <div
@@ -99,6 +110,7 @@ export const ProductFilterSidebar = ({
         ) : (
           <>
             <button style={listItemStyle(!selectedBrand)} onClick={() => onChangeBrand(null)}>
+              {iconSlot(undefined, language['ALL'])}
               {language['ALL']}
             </button>
             {brands.map((brand) => (
@@ -107,6 +119,7 @@ export const ProductFilterSidebar = ({
                 style={listItemStyle(selectedBrand === brand._id)}
                 onClick={() => onChangeBrand(selectedBrand === brand._id ? null : brand._id)}
               >
+                {iconSlot(brand.icon?.filename, localize(brand.name))}
                 {localize(brand.name)}
               </button>
             ))}
@@ -122,6 +135,7 @@ export const ProductFilterSidebar = ({
         ) : (
           <>
             <button style={listItemStyle(!selectedCategory)} onClick={() => onChangeCategory(null)}>
+              {iconSlot(undefined, language['ALL'])}
               {language['ALL']}
             </button>
             {categories.map((category) => (
@@ -130,6 +144,7 @@ export const ProductFilterSidebar = ({
                 style={listItemStyle(selectedCategory === category._id)}
                 onClick={() => onChangeCategory(selectedCategory === category._id ? null : category._id)}
               >
+                {iconSlot(category.icon?.filename, localize(category.name))}
                 {localize(category.name)}
               </button>
             ))}
