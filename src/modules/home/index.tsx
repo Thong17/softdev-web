@@ -10,6 +10,7 @@ import { SocialNav } from 'components/shared/SocialNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
 import { AnnouncementCarousel } from 'components/shared/AnnouncementCarousel'
 import { Pagination } from 'components/shared/Pagination'
+import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
 import { getMenu, getBrands, getProducts, IMenuCategory, IMenuProduct, IPublicBrand, getStoreInfo, IPublicStore, getAnnouncements, IPublicAnnouncement } from 'api/menu.api'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
@@ -27,6 +28,9 @@ export const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState<IMenuProduct[]>([])
   const [featuredCount, setFeaturedCount] = useState(0)
   const [featuredPage, setFeaturedPage] = useState(0)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
+  const [priceRange, setPriceRange] = useState<[number, number] | null>(null)
 
   useEffect(() => {
     getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([]))
@@ -36,13 +40,35 @@ export const Home = () => {
   }, [])
 
   useEffect(() => {
-    getProducts({ page: featuredPage, limit: FEATURED_PAGE_SIZE })
+    getProducts({
+      page: featuredPage,
+      limit: FEATURED_PAGE_SIZE,
+      category: selectedCategory || undefined,
+      brand: selectedBrand || undefined,
+      minPrice: priceRange?.[0],
+      maxPrice: priceRange?.[1],
+    })
       .then((res) => {
         setFeaturedProducts(res.data?.data || [])
         setFeaturedCount(res.data?.length || 0)
       })
       .catch(() => setFeaturedProducts([]))
-  }, [featuredPage])
+  }, [featuredPage, selectedCategory, selectedBrand, priceRange])
+
+  const changeCategory = (categoryId: string | null) => {
+    setSelectedCategory(categoryId)
+    setFeaturedPage(0)
+  }
+
+  const changeBrand = (brandId: string | null) => {
+    setSelectedBrand(brandId)
+    setFeaturedPage(0)
+  }
+
+  const changePriceRange = (range: [number, number] | null) => {
+    setPriceRange(range)
+    setFeaturedPage(0)
+  }
 
   const localize = (name?: Record<string, string>) => name?.[lang] || name?.['English'] || ''
 
@@ -157,116 +183,69 @@ export const Home = () => {
         </div>
       </div>
 
-      {/* Categories */}
-      <div style={{ padding: '20px 24px 48px', maxWidth: 1200, margin: '0 auto' }}>
-        <h2 style={{ fontSize: 20, fontWeight: 500, marginBottom: 16, borderBottom: `1px solid ${theme.background.tertiary}`, paddingBottom: 8 }}>
-          {language['OUR_CATEGORIES']}
-        </h2>
-        {categories.length === 0 ? (
-          <p style={{ color: theme.text.tertiary, fontSize: 13 }}>{language['NO_CATEGORIES_AVAILABLE']}</p>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 16 }}>
-            {categories.map((category) => (
-              <Link
-                key={category._id}
-                to='/menu'
-                style={{
-                  background: theme.background.secondary,
-                  border: `1px solid ${theme.background.tertiary}`,
-                  borderRadius: 12,
-                  padding: '28px 16px',
-                  textAlign: 'center',
-                  textDecoration: 'none',
-                  color: theme.text.primary,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
-                {category.icon?.filename && (
-                  <img
-                    src={`${IMAGE_HOST}${category.icon.filename}`}
-                    alt={localize(category.name)}
-                    style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', marginBottom: 12 }}
-                  />
-                )}
-                <div style={{ fontSize: 14, fontWeight: 500 }}>{localize(category.name)}</div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Featured products, with filter sidebar */}
+      <div
+        id='featured-products'
+        style={{
+          display: 'grid',
+          gridTemplateColumns: device === 'mobile' || device === 'tablet' ? '1fr' : '260px 1fr',
+          gap: 24,
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '20px 24px 64px',
+          scrollMarginTop: 24,
+        }}
+      >
+        <ProductFilterSidebar
+          categories={categories}
+          brands={brands}
+          selectedCategory={selectedCategory}
+          selectedBrand={selectedBrand}
+          priceRange={priceRange}
+          onChangeCategory={changeCategory}
+          onChangeBrand={changeBrand}
+          onChangePriceRange={changePriceRange}
+        />
 
-      {/* Brands */}
-      <div style={{ padding: '0 24px 48px', maxWidth: 1100, margin: '0 auto' }}>
-        <h2 style={{ fontSize: 20, fontWeight: 500, marginBottom: 16, borderBottom: `1px solid ${theme.background.tertiary}`, paddingBottom: 8 }}>
-          {language['OUR_BRANDS']}
-        </h2>
-        {brands.length === 0 ? (
-          <p style={{ color: theme.text.tertiary, fontSize: 13 }}>{language['NO_BRANDS_AVAILABLE']}</p>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 12 }}>
-            {brands.map((brand) => (
-              <div
-                key={brand._id}
-                style={{
-                  background: theme.background.secondary,
-                  borderRadius: 8,
-                  padding: 16,
-                  textAlign: 'center',
-                }}
-              >
-                {brand.icon?.filename && (
-                  <img
-                    src={`${IMAGE_HOST}${brand.icon.filename}`}
-                    alt={localize(brand.name)}
-                    style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: '50%', marginBottom: 8 }}
-                  />
-                )}
-                <div style={{ fontSize: 14 }}>{localize(brand.name)}</div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Featured products */}
-      {featuredProducts.length > 0 && (
-        <div id='featured-products' style={{ padding: '0 24px 64px', maxWidth: 1100, margin: '0 auto', scrollMarginTop: 24 }}>
+        <div>
           <h2 style={{ fontSize: 20, fontWeight: 500, marginBottom: 16, borderBottom: `1px solid ${theme.background.tertiary}`, paddingBottom: 8 }}>
             {language['FEATURED_PRODUCTS']}
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
-            {featuredProducts.map((product) => (
-              <div
-                key={product._id}
-                style={{
-                  background: theme.background.secondary,
-                  borderRadius: 8,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                <div style={{ width: '100%', paddingTop: '75%', position: 'relative', background: theme.background.tertiary }}>
-                  {product.profile?.filename && (
-                    <img
-                      src={`${IMAGE_HOST}${product.profile.filename}`}
-                      alt={localize(product.name)}
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                  )}
+          {featuredProducts.length === 0 ? (
+            <p style={{ color: theme.text.tertiary, fontSize: 13 }}>{language['NO_PRODUCTS_AVAILABLE']}</p>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
+              {featuredProducts.map((product) => (
+                <div
+                  key={product._id}
+                  style={{
+                    background: theme.background.secondary,
+                    borderRadius: 8,
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <div style={{ width: '100%', paddingTop: '75%', position: 'relative', background: theme.background.tertiary }}>
+                    {product.profile?.filename && (
+                      <img
+                        src={`${IMAGE_HOST}${product.profile.filename}`}
+                        alt={localize(product.name)}
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    )}
+                  </div>
+                  <div style={{ padding: 10 }}>
+                    <div style={{ fontSize: 14, marginBottom: 4 }}>{localize(product.name)}</div>
+                    <ProductPriceTag product={product} />
+                  </div>
                 </div>
-                <div style={{ padding: 10 }}>
-                  <div style={{ fontSize: 14, marginBottom: 4 }}>{localize(product.name)}</div>
-                  <ProductPriceTag product={product} />
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
           <Pagination page={featuredPage} limit={FEATURED_PAGE_SIZE} totalCount={featuredCount} onChange={setFeaturedPage} />
         </div>
-      )}
+      </div>
     </div>
   )
 

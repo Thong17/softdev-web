@@ -62,8 +62,15 @@ export interface IGetProductsParams {
   page?: number
   limit?: number
   category?: string
+  brand?: string
+  minPrice?: number
+  maxPrice?: number
 }
 
 export const getProducts = (params: IGetProductsParams = {}) => {
   return axios.get<{ data: IMenuProduct[]; length: number }>(`${API_HOST}/public/products`, { params })
+}
+
+export const getProductPriceRange = () => {
+  return axios.get<{ data: { min: number; max: number } }>(`${API_HOST}/public/products/price-range`)
 }
