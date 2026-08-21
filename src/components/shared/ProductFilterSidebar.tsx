@@ -32,6 +32,10 @@ export const ProductFilterSidebar = ({
   const { lang, language } = useLanguage()
   const [bounds, setBounds] = useState<[number, number]>([0, 0])
   const [draft, setDraft] = useState<[number, number]>([0, 0])
+  const [showAllBrands, setShowAllBrands] = useState(false)
+  const [showAllCategories, setShowAllCategories] = useState(false)
+
+  const VISIBLE_LIMIT = 5
 
   useEffect(() => {
     getProductPriceRange()
@@ -76,6 +80,23 @@ export const ProductFilterSidebar = ({
 
   const checkSlot = (active: boolean) =>
     active && <DoneAllRoundedIcon style={{ fontSize: 18, color: theme.color.info, marginLeft: 'auto', flexShrink: 0 }} />
+
+  const showAllButton = (expanded: boolean, onClick: () => void) => (
+    <button
+      onClick={onClick}
+      style={{
+        display: 'block',
+        background: 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+        padding: '6px 10px',
+        fontSize: 12,
+        color: theme.color.info,
+      }}
+    >
+      {expanded ? language['SHOW_LESS'] : language['SHOW_ALL']}
+    </button>
+  )
 
   return (
     <div
@@ -123,7 +144,7 @@ export const ProductFilterSidebar = ({
               {language['ALL']}
               {checkSlot(!selectedBrand)}
             </button>
-            {brands.map((brand) => (
+            {(showAllBrands ? brands : brands.slice(0, VISIBLE_LIMIT)).map((brand) => (
               <button
                 key={brand._id}
                 style={listItemStyle}
@@ -134,6 +155,7 @@ export const ProductFilterSidebar = ({
                 {checkSlot(selectedBrand === brand._id)}
               </button>
             ))}
+            {brands.length > VISIBLE_LIMIT && showAllButton(showAllBrands, () => setShowAllBrands(!showAllBrands))}
           </>
         )}
       </div>
@@ -150,7 +172,7 @@ export const ProductFilterSidebar = ({
               {language['ALL']}
               {checkSlot(!selectedCategory)}
             </button>
-            {categories.map((category) => (
+            {(showAllCategories ? categories : categories.slice(0, VISIBLE_LIMIT)).map((category) => (
               <button
                 key={category._id}
                 style={listItemStyle}
@@ -161,6 +183,7 @@ export const ProductFilterSidebar = ({
                 {checkSlot(selectedCategory === category._id)}
               </button>
             ))}
+            {categories.length > VISIBLE_LIMIT && showAllButton(showAllCategories, () => setShowAllCategories(!showAllCategories))}
           </>
         )}
       </div>

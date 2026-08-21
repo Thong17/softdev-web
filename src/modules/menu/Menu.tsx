@@ -123,20 +123,18 @@ export const Menu = () => {
                     background: theme.background.tertiary,
                   }}
                 >
-                  {product.profile?.filename && (
-                    <img
-                      src={`${process.env.REACT_APP_API_UPLOADS}${product.profile.filename}`}
-                      alt={localize(product.name)}
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                      }}
-                    />
-                  )}
+                  <img
+                    src={`${process.env.REACT_APP_API_UPLOADS}${product.profile?.filename || 'default.png'}`}
+                    alt={localize(product.name)}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
                 </div>
                 <div style={{ padding: 10 }}>
                   <div style={{ fontSize: 14, marginBottom: 4 }}>{localize(product.name)}</div>
