@@ -75,12 +75,19 @@ export const AnnouncementCarousel = ({ announcements, height = 'min(60vh, 420px)
           <div
             style={{
               position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.45) 35%, transparent 70%)',
+              pointerEvents: 'none',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
               left: 0,
               bottom: 0,
               width: '100%',
               boxSizing: 'border-box',
               padding: '32px 40px',
-              background: 'linear-gradient(transparent, rgba(0,0,0,0.65))',
               color: '#ffffff',
             }}
           >
