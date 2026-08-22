@@ -7,10 +7,9 @@ import { themeMode } from 'contexts/theme/constant'
 import { languages } from 'contexts/language/constant'
 import { ThemeOptions } from 'contexts/theme/interface'
 import { LanguageOptions } from 'contexts/language/interface'
-import { IconButton, Menu, MenuItem, ListItemText } from '@mui/material'
+import { IconDropdown } from 'components/shared/IconDropdown'
 import PaletteRoundedIcon from '@mui/icons-material/PaletteRounded'
 import TranslateRoundedIcon from '@mui/icons-material/TranslateRounded'
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 
 const NAV_LINKS: { to: string; labelKey: string }[] = [
   { to: '/', labelKey: 'HOME' },
@@ -33,18 +32,6 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
   const location = useLocation()
   const [hidden, setHidden] = useState(false)
   const lastScrollY = useRef(0)
-  const [themeAnchor, setThemeAnchor] = useState<Element | null>(null)
-  const [langAnchor, setLangAnchor] = useState<Element | null>(null)
-
-  const handleSelectTheme = (option: string) => {
-    changeTheme(option as ThemeOptions)
-    setThemeAnchor(null)
-  }
-
-  const handleSelectLanguage = (option: string) => {
-    changeLanguage(option as LanguageOptions)
-    setLangAnchor(null)
-  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -114,59 +101,20 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
         })}
       </div>
       <div style={{ justifySelf: 'end', display: 'flex', alignItems: 'center', gap: 20 }}>
-        <IconButton
-          size='small'
-          onClick={(event) => setThemeAnchor(event.currentTarget)}
-          style={{ color: theme.text.secondary }}
-          aria-label='change theme'
-        >
-          <PaletteRoundedIcon fontSize='small' />
-        </IconButton>
-        <Menu
-          open={Boolean(themeAnchor)}
-          anchorEl={themeAnchor}
-          onClose={() => setThemeAnchor(null)}
-          PaperProps={{ sx: { backgroundColor: theme.background.secondary, borderRadius: theme.radius.quaternary } }}
-        >
-          {Object.keys(themeMode).map((option) => (
-            <MenuItem
-              key={option}
-              selected={option === mode}
-              onClick={() => handleSelectTheme(option)}
-              sx={{ display: 'flex', justifyContent: 'space-between', gap: 3, minWidth: 120 }}
-            >
-              <ListItemText sx={{ color: theme.text.primary }}>{option}</ListItemText>
-              {option === mode && <CheckRoundedIcon fontSize='small' sx={{ color: theme.color.info }} />}
-            </MenuItem>
-          ))}
-        </Menu>
-
-        <IconButton
-          size='small'
-          onClick={(event) => setLangAnchor(event.currentTarget)}
-          style={{ color: theme.text.secondary }}
-          aria-label='change language'
-        >
-          <TranslateRoundedIcon fontSize='small' />
-        </IconButton>
-        <Menu
-          open={Boolean(langAnchor)}
-          anchorEl={langAnchor}
-          onClose={() => setLangAnchor(null)}
-          PaperProps={{ sx: { backgroundColor: theme.background.secondary, borderRadius: theme.radius.quaternary } }}
-        >
-          {Object.keys(languages).map((option) => (
-            <MenuItem
-              key={option}
-              selected={option === lang}
-              onClick={() => handleSelectLanguage(option)}
-              sx={{ display: 'flex', justifyContent: 'space-between', gap: 3, minWidth: 120 }}
-            >
-              <ListItemText sx={{ color: theme.text.primary }}>{option}</ListItemText>
-              {option === lang && <CheckRoundedIcon fontSize='small' sx={{ color: theme.color.info }} />}
-            </MenuItem>
-          ))}
-        </Menu>
+        <IconDropdown
+          icon={<PaletteRoundedIcon fontSize='small' />}
+          value={mode}
+          options={Object.keys(themeMode).map((option) => ({ value: option, label: option }))}
+          onChange={(option) => changeTheme(option as ThemeOptions)}
+          ariaLabel='change theme'
+        />
+        <IconDropdown
+          icon={<TranslateRoundedIcon fontSize='small' />}
+          value={lang}
+          options={Object.keys(languages).map((option) => ({ value: option, label: option }))}
+          onChange={(option) => changeLanguage(option as LanguageOptions)}
+          ariaLabel='change language'
+        />
       </div>
     </div>
   )

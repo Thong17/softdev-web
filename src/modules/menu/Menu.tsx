@@ -9,8 +9,10 @@ import { ProductPriceTag } from 'components/shared/ProductPriceTag'
 import { ProductNameClamp } from 'components/shared/ProductNameClamp'
 import { Pagination } from 'components/shared/Pagination'
 import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
+import { IconDropdown } from 'components/shared/IconDropdown'
 import { debounce } from 'utils'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
+import SortRoundedIcon from '@mui/icons-material/SortRounded'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 const PAGE_SIZE = 12
@@ -89,10 +91,16 @@ export const Menu = () => {
     setPage(0)
   }, 300)
 
-  const changeSort = (value: ISortValue) => {
-    setSortValue(value)
+  const changeSort = (value: string) => {
+    setSortValue(value as ISortValue)
     setPage(0)
   }
+
+  const sortOptions = [
+    { value: 'createdAt_desc', label: language['SORT_NEWEST'] },
+    { value: 'price_asc', label: language['SORT_PRICE_LOW_HIGH'] },
+    { value: 'price_desc', label: language['SORT_PRICE_HIGH_LOW'] },
+  ]
 
   const inputStyle = {
     border: 'none',
@@ -133,15 +141,15 @@ export const Menu = () => {
                 style={{ ...inputStyle, paddingLeft: 34, minWidth: 200 }}
               />
             </div>
-            <select
-              value={sortValue}
-              onChange={(event) => changeSort(event.target.value as ISortValue)}
-              style={{ ...inputStyle, cursor: 'pointer' }}
-            >
-              <option value='createdAt_desc'>{language['SORT_NEWEST']}</option>
-              <option value='price_asc'>{language['SORT_PRICE_LOW_HIGH']}</option>
-              <option value='price_desc'>{language['SORT_PRICE_HIGH_LOW']}</option>
-            </select>
+            <div style={{ ...inputStyle, padding: '4px 8px', display: 'flex', alignItems: 'center' }}>
+              <IconDropdown
+                icon={<SortRoundedIcon fontSize='small' />}
+                value={sortValue}
+                options={sortOptions}
+                onChange={changeSort}
+                ariaLabel='sort products'
+              />
+            </div>
           </div>
         </div>
 
