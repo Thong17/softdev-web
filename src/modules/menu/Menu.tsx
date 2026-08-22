@@ -15,7 +15,7 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import SortRoundedIcon from '@mui/icons-material/SortRounded'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
-const PAGE_SIZE = 12
+const PAGE_SIZE = 20
 
 type ISortValue = 'createdAt_desc' | 'price_asc' | 'price_desc'
 
@@ -129,7 +129,7 @@ export const Menu = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 24 }}>
           <h1 style={{ fontWeight: 300, fontSize: 28, margin: 0 }}>{language['NAV_CATALOG']}</h1>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative', height: 38 }}>
               <SearchRoundedIcon
                 style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', fontSize: 18, color: theme.text.tertiary }}
               />
@@ -138,7 +138,7 @@ export const Menu = () => {
                 placeholder={language['TYPE_TO_SEARCH']}
                 defaultValue={search}
                 onChange={(event) => updateSearch(event.target.value)}
-                style={{ ...inputStyle, paddingLeft: 34, minWidth: 200 }}
+                style={{ ...inputStyle, height: '18px', paddingLeft: 34, minWidth: 200 }}
               />
             </div>
             <div style={{ ...inputStyle, padding: '4px 8px', display: 'flex', alignItems: 'center' }}>
