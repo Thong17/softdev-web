@@ -8,8 +8,10 @@ import { languages } from 'contexts/language/constant'
 import { ThemeOptions } from 'contexts/theme/interface'
 import { LanguageOptions } from 'contexts/language/interface'
 import { IconDropdown } from 'components/shared/IconDropdown'
+import { IconButton } from '@mui/material'
 import PaletteRoundedIcon from '@mui/icons-material/PaletteRounded'
 import TranslateRoundedIcon from '@mui/icons-material/TranslateRounded'
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
 
 const NAV_LINKS: { to: string; labelKey: string }[] = [
   { to: '/', labelKey: 'HOME' },
@@ -31,7 +33,9 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
   const { device } = useWeb()
   const location = useLocation()
   const [hidden, setHidden] = useState(false)
+  const [navOpen, setNavOpen] = useState(false)
   const lastScrollY = useRef(0)
+  const navRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,16 +47,31 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    setNavOpen(false)
+  }, [location])
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) setNavOpen(false)
+    }
+    if (navOpen) document.addEventListener('mousedown', closeOnOutsideClick)
+    return () => document.removeEventListener('mousedown', closeOnOutsideClick)
+  }, [navOpen])
+
+  const isMobile = device === 'mobile'
+
   return (
     <div
+      ref={navRef}
       style={{
         position: 'sticky',
         top: 0,
         zIndex: 100,
         display: 'grid',
-        gridTemplateColumns: '1fr auto 1fr',
+        gridTemplateColumns: isMobile ? 'auto auto' : '1fr auto 1fr',
         alignItems: 'center',
-        padding: device === 'mobile' ? '12px 16px' : '16px 40px',
+        padding: isMobile ? '12px 16px' : '16px 40px',
         background: theme.background.secondary,
         boxShadow: theme.shadow.secondary,
         transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
@@ -78,29 +97,43 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
             style={{ width: 32, height: 32, objectFit: 'cover', borderRadius: '10px' }}
           />
         )}
-        {storeName || language['HOME']}
+        {!isMobile && (storeName || language['HOME'])}
       </Link>
-      <div style={{ justifySelf: 'center', display: 'flex', gap: device === 'mobile' ? 12 : 24, alignItems: 'center' }}>
-        {NAV_LINKS.map((item) => {
-          const active = location.pathname === item.to
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              style={{
-                color: active ? theme.color.info : theme.text.secondary,
-                fontSize: device === 'mobile' ? 12 : 14,
-                textDecoration: 'none',
-                fontWeight: active ? 600 : 400,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {language[item.labelKey]}
-            </Link>
-          )
-        })}
-      </div>
-      <div style={{ justifySelf: 'end', display: 'flex', alignItems: 'center', gap: 20 }}>
+
+      {!isMobile && (
+        <div style={{ justifySelf: 'center', display: 'flex', gap: 24, alignItems: 'center' }}>
+          {NAV_LINKS.map((item) => {
+            const active = location.pathname === item.to
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                style={{
+                  color: active ? theme.color.info : theme.text.secondary,
+                  fontSize: 14,
+                  textDecoration: 'none',
+                  fontWeight: active ? 600 : 400,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {language[item.labelKey]}
+              </Link>
+            )
+          })}
+        </div>
+      )}
+
+      <div style={{ justifySelf: 'end', display: 'flex', alignItems: 'center', gap: isMobile ? 4 : 20 }}>
+        {isMobile && (
+          <IconButton
+            size='small'
+            onClick={() => setNavOpen((open) => !open)}
+            style={{ color: theme.text.secondary }}
+            aria-label='toggle menu'
+          >
+            <MenuRoundedIcon fontSize='small' />
+          </IconButton>
+        )}
         <IconDropdown
           icon={<PaletteRoundedIcon fontSize='small' />}
           value={mode}
@@ -116,6 +149,44 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
           ariaLabel='change language'
         />
       </div>
+
+      {isMobile && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            maxHeight: navOpen ? 300 : 0,
+            background: theme.background.secondary,
+            boxShadow: navOpen ? theme.shadow.bottom : 'none',
+            transition: '0.3s ease',
+          }}
+        >
+          {NAV_LINKS.map((item) => {
+            const active = location.pathname === item.to
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                style={{
+                  padding: '13px 16px',
+                  textAlign: 'center',
+                  color: active ? theme.color.info : theme.text.secondary,
+                  fontSize: 14,
+                  fontWeight: active ? 600 : 400,
+                  textDecoration: 'none',
+                }}
+              >
+                {language[item.labelKey]}
+              </Link>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
