@@ -3,7 +3,6 @@ import { Slider } from '@mui/material'
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
-import useWeb from 'hooks/useWeb'
 import { IMenuCategory, IPublicBrand, getProductPriceRange } from 'api/menu.api'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
@@ -31,14 +30,12 @@ export const ProductFilterSidebar = ({
 }: IProductFilterSidebar) => {
   const { theme } = useTheme()
   const { lang, language } = useLanguage()
-  const { device } = useWeb()
   const [bounds, setBounds] = useState<[number, number]>([0, 0])
   const [draft, setDraft] = useState<[number, number]>([0, 0])
   const [showAllBrands, setShowAllBrands] = useState(false)
   const [showAllCategories, setShowAllCategories] = useState(false)
 
   const VISIBLE_LIMIT = 5
-  const isChip = device !== 'mobile'
 
   useEffect(() => {
     getProductPriceRange()
@@ -70,25 +67,8 @@ export const ProductFilterSidebar = ({
     color: theme.text.secondary,
   }
 
-  const chipStyle = (active: boolean) => ({
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 6,
-    textAlign: 'left' as const,
-    background: active ? `${theme.color.info}22` : theme.background.tertiary,
-    border: `1px solid ${active ? theme.color.info : 'transparent'}`,
-    borderRadius: theme.radius.rounded,
-    cursor: 'pointer',
-    padding: '4px 10px 4px 4px',
-    fontSize: 12,
-    fontWeight: 400,
-    color: active ? theme.color.info : theme.text.secondary,
-  })
-
-  const itemStyle = (active: boolean) => (isChip ? chipStyle(active) : listItemStyle)
-
   const iconSlot = (filename: string | undefined, alt: string) => {
-    const size = isChip ? 20 : 30
+    const size = 30
     return (
       <img
         src={`${IMAGE_HOST}${filename || 'default.png'}`}
@@ -159,24 +139,22 @@ export const ProductFilterSidebar = ({
           <div style={{ fontSize: 12, color: theme.text.tertiary }}>{language['NO_BRANDS_AVAILABLE']}</div>
         ) : (
           <>
-            <div style={isChip ? { display: 'flex', flexWrap: 'wrap', gap: 8 } : undefined}>
-              <button style={itemStyle(!selectedBrand)} onClick={() => onChangeBrand(null)}>
-                {iconSlot(undefined, language['ALL'])}
-                {language['ALL']}
-                {checkSlot(!selectedBrand)}
+            <button style={listItemStyle} onClick={() => onChangeBrand(null)}>
+              {iconSlot(undefined, language['ALL'])}
+              {language['ALL']}
+              {checkSlot(!selectedBrand)}
+            </button>
+            {(showAllBrands ? brands : brands.slice(0, VISIBLE_LIMIT)).map((brand) => (
+              <button
+                key={brand._id}
+                style={listItemStyle}
+                onClick={() => onChangeBrand(selectedBrand === brand._id ? null : brand._id)}
+              >
+                {iconSlot(brand.icon?.filename, localize(brand.name))}
+                {localize(brand.name)}
+                {checkSlot(selectedBrand === brand._id)}
               </button>
-              {(showAllBrands ? brands : brands.slice(0, VISIBLE_LIMIT)).map((brand) => (
-                <button
-                  key={brand._id}
-                  style={itemStyle(selectedBrand === brand._id)}
-                  onClick={() => onChangeBrand(selectedBrand === brand._id ? null : brand._id)}
-                >
-                  {iconSlot(brand.icon?.filename, localize(brand.name))}
-                  {localize(brand.name)}
-                  {checkSlot(selectedBrand === brand._id)}
-                </button>
-              ))}
-            </div>
+            ))}
             {brands.length > VISIBLE_LIMIT && showAllButton(showAllBrands, () => setShowAllBrands(!showAllBrands))}
           </>
         )}
@@ -189,24 +167,22 @@ export const ProductFilterSidebar = ({
           <div style={{ fontSize: 12, color: theme.text.tertiary }}>{language['NO_CATEGORIES_AVAILABLE']}</div>
         ) : (
           <>
-            <div style={isChip ? { display: 'flex', flexWrap: 'wrap', gap: 8 } : undefined}>
-              <button style={itemStyle(!selectedCategory)} onClick={() => onChangeCategory(null)}>
-                {iconSlot(undefined, language['ALL'])}
-                {language['ALL']}
-                {checkSlot(!selectedCategory)}
+            <button style={listItemStyle} onClick={() => onChangeCategory(null)}>
+              {iconSlot(undefined, language['ALL'])}
+              {language['ALL']}
+              {checkSlot(!selectedCategory)}
+            </button>
+            {(showAllCategories ? categories : categories.slice(0, VISIBLE_LIMIT)).map((category) => (
+              <button
+                key={category._id}
+                style={listItemStyle}
+                onClick={() => onChangeCategory(selectedCategory === category._id ? null : category._id)}
+              >
+                {iconSlot(category.icon?.filename, localize(category.name))}
+                {localize(category.name)}
+                {checkSlot(selectedCategory === category._id)}
               </button>
-              {(showAllCategories ? categories : categories.slice(0, VISIBLE_LIMIT)).map((category) => (
-                <button
-                  key={category._id}
-                  style={itemStyle(selectedCategory === category._id)}
-                  onClick={() => onChangeCategory(selectedCategory === category._id ? null : category._id)}
-                >
-                  {iconSlot(category.icon?.filename, localize(category.name))}
-                  {localize(category.name)}
-                  {checkSlot(selectedCategory === category._id)}
-                </button>
-              ))}
-            </div>
+            ))}
             {categories.length > VISIBLE_LIMIT && showAllButton(showAllCategories, () => setShowAllCategories(!showAllCategories))}
           </>
         )}
