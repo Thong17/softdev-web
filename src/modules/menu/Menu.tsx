@@ -11,6 +11,7 @@ import { Pagination } from 'components/shared/Pagination'
 import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
 import { IconDropdown } from 'components/shared/IconDropdown'
 import { debounce } from 'utils'
+import { Skeleton } from '@mui/material'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import SortRoundedIcon from '@mui/icons-material/SortRounded'
 
@@ -166,13 +167,25 @@ export const Menu = () => {
           />
 
           <div>
-            {status === 'LOADING' && <p style={{ color: theme.text.tertiary, fontSize: 13 }}>Loading products...</p>}
+            {status === 'LOADING' && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
+                {Array.from({ length: PAGE_SIZE }).map((_, index) => (
+                  <div key={index} style={{ display: 'flex', flexDirection: 'column' }}>
+                    <Skeleton variant='rectangular' style={{ borderRadius: 8, width: '100%', paddingTop: '75%' }} />
+                    <div style={{ paddingBlock: 10, paddingInline: 4 }}>
+                      <Skeleton variant='text' width='80%' height={20} />
+                      <Skeleton variant='text' width='40%' height={20} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             {status === 'FAILED' && <p style={{ color: theme.color.error, fontSize: 13 }}>Failed to load products. Please try again.</p>}
             {status === 'SUCCESS' && products.length === 0 && (
               <p style={{ color: theme.text.tertiary, fontSize: 13 }}>{language['NO_PRODUCTS_AVAILABLE']}</p>
             )}
 
-            {products.length > 0 && (
+            {status === 'SUCCESS' && products.length > 0 && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
                 {products.map((product) => (
                   <div key={product._id} style={{ display: 'flex', flexDirection: 'column' }}>
