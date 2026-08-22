@@ -192,11 +192,11 @@ export const Menu = () => {
                     <Skeleton
                       variant='rectangular'
                       animation='wave'
-                      sx={{ bgcolor: theme.background.quaternary, borderRadius: '8px', width: '100%', paddingTop: '75%' }}
+                      sx={{ bgcolor: 'rgba(0, 0, 0, 0.17)', borderRadius: '8px', width: '100%', paddingTop: '75%' }}
                     />
                     <div style={{ paddingBlock: 10, paddingInline: 4 }}>
-                      <Skeleton variant='text' animation='wave' sx={{ bgcolor: theme.background.quaternary }} width='80%' height={20} />
-                      <Skeleton variant='text' animation='wave' sx={{ bgcolor: theme.background.quaternary }} width='40%' height={20} />
+                      <Skeleton variant='text' animation='wave' sx={{ bgcolor: 'rgba(0, 0, 0, 0.17)' }} width='80%' height={20} />
+                      <Skeleton variant='text' animation='wave' sx={{ bgcolor: 'rgba(0, 0, 0, 0.17)' }} width='40%' height={20} />
                     </div>
                   </div>
                 ))}
