@@ -48,9 +48,21 @@ export const Menu = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store])
 
+  const MIN_LOADING_MS = 500
+
   useEffect(() => {
     const [filter, sort] = sortValue.split('_') as ['createdAt' | 'price', 'asc' | 'desc']
+    let cancelled = false
+    const startedAt = Date.now()
     setStatus('LOADING')
+
+    const settle = (apply: () => void) => {
+      const wait = Math.max(0, MIN_LOADING_MS - (Date.now() - startedAt))
+      setTimeout(() => {
+        if (!cancelled) apply()
+      }, wait)
+    }
+
     getProducts({
       page,
       limit: PAGE_SIZE,
@@ -63,11 +75,17 @@ export const Menu = () => {
       sort,
     })
       .then((res) => {
-        setProducts(res.data?.data || [])
-        setTotalCount(res.data?.length || 0)
-        setStatus('SUCCESS')
+        settle(() => {
+          setProducts(res.data?.data || [])
+          setTotalCount(res.data?.length || 0)
+          setStatus('SUCCESS')
+        })
       })
-      .catch(() => setStatus('FAILED'))
+      .catch(() => settle(() => setStatus('FAILED')))
+
+    return () => {
+      cancelled = true
+    }
   }, [page, selectedCategory, selectedBrand, priceRange, search, sortValue])
 
   const localize = (name?: Record<string, string>) => name?.[lang] || name?.['English'] || ''
@@ -171,10 +189,14 @@ export const Menu = () => {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
                 {Array.from({ length: PAGE_SIZE }).map((_, index) => (
                   <div key={index} style={{ display: 'flex', flexDirection: 'column' }}>
-                    <Skeleton variant='rectangular' style={{ borderRadius: 8, width: '100%', paddingTop: '75%' }} />
+                    <Skeleton
+                      variant='rectangular'
+                      animation='wave'
+                      sx={{ bgcolor: theme.background.quaternary, borderRadius: '8px', width: '100%', paddingTop: '75%' }}
+                    />
                     <div style={{ paddingBlock: 10, paddingInline: 4 }}>
-                      <Skeleton variant='text' width='80%' height={20} />
-                      <Skeleton variant='text' width='40%' height={20} />
+                      <Skeleton variant='text' animation='wave' sx={{ bgcolor: theme.background.quaternary }} width='80%' height={20} />
+                      <Skeleton variant='text' animation='wave' sx={{ bgcolor: theme.background.quaternary }} width='40%' height={20} />
                     </div>
                   </div>
                 ))}
