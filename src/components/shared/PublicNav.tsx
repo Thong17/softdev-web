@@ -23,11 +23,12 @@ const NAV_LINKS: { to: string; labelKey: string }[] = [
 interface IPublicNav {
   storeName?: string
   storeLogo?: string
+  storeAddress?: string
 }
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 
-export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
+export const PublicNav = ({ storeName, storeLogo, storeAddress }: IPublicNav) => {
   const { theme, mode, changeTheme } = useTheme()
   const { lang, language, changeLanguage } = useLanguage()
   const { device } = useWeb()
@@ -69,7 +70,7 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
         top: 0,
         zIndex: 100,
         display: 'grid',
-        gridTemplateColumns: isMobile ? 'auto auto' : '1fr auto 1fr',
+        gridTemplateColumns: isMobile ? '1fr auto' : '1fr auto 1fr',
         alignItems: 'center',
         padding: isMobile ? '12px 16px' : '16px 40px',
         background: theme.background.secondary,
@@ -81,23 +82,48 @@ export const PublicNav = ({ storeName, storeLogo }: IPublicNav) => {
       <Link
         to='/'
         style={{
-          justifySelf: 'start',
+          justifySelf: isMobile ? 'stretch' : 'start',
           display: 'flex',
           alignItems: 'center',
           gap: 10,
           color: theme.text.primary,
           fontSize: 18,
           textDecoration: 'none',
+          minWidth: 0,
         }}
       >
         {storeLogo && (
           <img
             src={`${IMAGE_HOST}${storeLogo}`}
             alt={storeName || language['HOME']}
-            style={{ width: 32, height: 32, objectFit: 'cover', borderRadius: '10px' }}
+            style={{ width: 32, height: 32, objectFit: 'cover', borderRadius: '10px', flexShrink: 0 }}
           />
         )}
-        {!isMobile && (storeName || language['HOME'])}
+        <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+          <span
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {storeName || language['HOME']}
+          </span>
+          {isMobile && storeAddress && (
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 400,
+                color: theme.text.tertiary,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {storeAddress}
+            </span>
+          )}
+        </div>
       </Link>
 
       {!isMobile && (
