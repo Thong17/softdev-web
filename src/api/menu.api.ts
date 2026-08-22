@@ -11,6 +11,7 @@ export interface IMenuProduct {
   category?: { _id: string; name: Record<string, string> }
   salePrice?: number | null
   promotionLabel?: Record<string, string>
+  promotion?: { type: string; value: number; isFixed: boolean } | null
 }
 
 export interface IMenuCategory {
