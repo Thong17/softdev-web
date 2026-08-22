@@ -22,16 +22,16 @@ export const PromotionBadge = ({ product }: IPromotionBadge) => {
       title={label}
       style={{
         position: 'absolute',
-        top: 6,
+        top: 5,
         right: -14,
         background: theme.color.error,
         color: '#fff',
         padding: '2px 8px',
         fontSize: 11,
-        fontWeight: 600,
         width: 40,
         textAlign: 'center',
         transform: 'rotate(45deg)',
+        boxShadow: theme.shadow.secondary
       }}
     >
       -{percentOff}%
