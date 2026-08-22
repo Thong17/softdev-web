@@ -7,6 +7,7 @@ import { PublicNav } from 'components/shared/PublicNav'
 import { SocialNav } from 'components/shared/SocialNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
 import { ProductNameClamp } from 'components/shared/ProductNameClamp'
+import { PromotionBadge } from 'components/shared/PromotionBadge'
 import { Pagination } from 'components/shared/Pagination'
 import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
 import { IconDropdown } from 'components/shared/IconDropdown'
@@ -217,6 +218,7 @@ export const Menu = () => {
                         alt={localize(product.name)}
                         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                       />
+                      <PromotionBadge product={product} />
                     </div>
                     <div style={{ paddingBlock: 10, paddingInline: 4 }}>
                       <ProductNameClamp>{localize(product.name)}</ProductNameClamp>

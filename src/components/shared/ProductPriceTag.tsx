@@ -1,5 +1,6 @@
 import useTheme from 'hooks/useTheme'
 import { IMenuProduct } from 'api/menu.api'
+import { currencyFormat } from 'utils'
 
 interface IProductPriceTag {
   product: IMenuProduct
@@ -12,7 +13,7 @@ export const ProductPriceTag = ({ product }: IProductPriceTag) => {
   if (!onSale) {
     return (
       <div style={{ fontSize: 13, color: theme.color.info }}>
-        {product.price?.toFixed(2)} {product.currency}
+        {currencyFormat(product.price, product.currency, 0, true)}
       </div>
     )
   }
@@ -20,10 +21,10 @@ export const ProductPriceTag = ({ product }: IProductPriceTag) => {
   return (
     <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
       <span style={{ fontSize: 13, color: theme.color.error }}>
-        {product.salePrice?.toFixed(2)} {product.currency}
+        {currencyFormat(product.salePrice, product.currency, 0, true)}
       </span>
       <span style={{ fontSize: 11, color: theme.text.tertiary, textDecoration: 'line-through' }}>
-        {product.price?.toFixed(2)}
+        {currencyFormat(product.price, product.currency, 0, true)}
       </span>
     </div>
   )
