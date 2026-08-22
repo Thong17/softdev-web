@@ -12,7 +12,7 @@ export const ProductPriceTag = ({ product }: IProductPriceTag) => {
 
   if (!onSale) {
     return (
-      <div style={{ fontSize: 13, color: theme.color.info }}>
+      <div style={{ fontSize: 15, color: theme.color.info }}>
         {currencyFormat(product.price, product.currency, 0, true)}
       </div>
     )
@@ -20,11 +20,11 @@ export const ProductPriceTag = ({ product }: IProductPriceTag) => {
 
   return (
     <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-      <span style={{ fontSize: 13, color: theme.color.error }}>
+      <span style={{ fontSize: 15, color: theme.color.error }}>
         {currencyFormat(product.salePrice, product.currency, 0, true)}
       </span>
       <span style={{ fontSize: 11, color: theme.text.tertiary, textDecoration: 'line-through' }}>
-        {currencyFormat(product.price, product.currency, 0, true)}
+        {product.price?.toFixed(2)}
       </span>
     </div>
   )
