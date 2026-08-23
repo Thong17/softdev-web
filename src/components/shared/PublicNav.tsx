@@ -116,7 +116,7 @@ export const PublicNav = ({ storeName, storeLogo, storeAddress }: IPublicNav) =>
                 display: 'flex',
                 alignItems: 'center',
                 gap: 4,
-                maxWidth: 70,
+                maxWidth: 250,
                 fontSize: 11,
                 fontWeight: 400,
                 color: theme.text.tertiary,
