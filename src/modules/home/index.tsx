@@ -14,6 +14,7 @@ import { AnnouncementCarousel } from 'components/shared/AnnouncementCarousel'
 import { Pagination } from 'components/shared/Pagination'
 import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
 import { getMenu, getBrands, getProducts, IMenuCategory, IMenuProduct, IPublicBrand, getStoreInfo, IPublicStore, getAnnouncements, IPublicAnnouncement } from 'api/menu.api'
+import { resolveProductImage } from 'utils/productImage'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 const FEATURED_PAGE_SIZE = 10
@@ -245,7 +246,7 @@ export const Home = () => {
                 >
                   <div style={{ borderRadius: 8, overflow: 'hidden', width: '100%', paddingTop: '75%', position: 'relative' }}>
                     <img
-                      src={`${IMAGE_HOST}${product.profile?.filename || 'default.png'}`}
+                      src={resolveProductImage(product.name?.English, product.profile?.filename)}
                       alt={localize(product.name)}
                       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                     />

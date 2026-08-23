@@ -12,11 +12,11 @@ import { Pagination } from 'components/shared/Pagination'
 import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
 import { IconDropdown } from 'components/shared/IconDropdown'
 import { debounce } from 'utils'
+import { resolveProductImage } from 'utils/productImage'
 import { Skeleton } from '@mui/material'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import SortRoundedIcon from '@mui/icons-material/SortRounded'
 
-const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 const PAGE_SIZE = 20
 
 type ISortValue = 'createdAt_desc' | 'price_asc' | 'price_desc'
@@ -214,7 +214,7 @@ export const Menu = () => {
                   <div key={product._id} style={{ display: 'flex', flexDirection: 'column' }}>
                     <div style={{ borderRadius: 8, overflow: 'hidden', width: '100%', paddingTop: '75%', position: 'relative' }}>
                       <img
-                        src={`${IMAGE_HOST}${product.profile?.filename || 'default.png'}`}
+                        src={resolveProductImage(product.name?.English, product.profile?.filename)}
                         alt={localize(product.name)}
                         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                       />
