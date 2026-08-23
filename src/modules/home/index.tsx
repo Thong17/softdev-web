@@ -87,7 +87,7 @@ export const Home = () => {
         fontFamily: theme.font.family,
       }}
     >
-      {!isAuthenticated && <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} storeContact={store?.contact} />}
+      {!isAuthenticated && <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} storeAddress={store?.address} />}
       <SocialNav />
 
       {/* Hero */}

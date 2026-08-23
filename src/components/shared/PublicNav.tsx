@@ -12,7 +12,7 @@ import { IconButton } from '@mui/material'
 import PaletteRoundedIcon from '@mui/icons-material/PaletteRounded'
 import TranslateRoundedIcon from '@mui/icons-material/TranslateRounded'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
-import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded'
+import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded'
 
 const NAV_LINKS: { to: string; labelKey: string }[] = [
   { to: '/', labelKey: 'HOME' },
@@ -24,12 +24,12 @@ const NAV_LINKS: { to: string; labelKey: string }[] = [
 interface IPublicNav {
   storeName?: string
   storeLogo?: string
-  storeContact?: string
+  storeAddress?: string
 }
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 
-export const PublicNav = ({ storeName, storeLogo, storeContact }: IPublicNav) => {
+export const PublicNav = ({ storeName, storeLogo, storeAddress }: IPublicNav) => {
   const { theme, mode, changeTheme } = useTheme()
   const { lang, language, changeLanguage } = useLanguage()
   const { device } = useWeb()
@@ -110,12 +110,13 @@ export const PublicNav = ({ storeName, storeLogo, storeContact }: IPublicNav) =>
           >
             {storeName || language['HOME']}
           </span>
-          {storeContact && (
+          {storeAddress && (
             <span
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: 4,
+                maxWidth: 70,
                 fontSize: 11,
                 fontWeight: 400,
                 color: theme.text.tertiary,
@@ -124,8 +125,8 @@ export const PublicNav = ({ storeName, storeLogo, storeContact }: IPublicNav) =>
                 whiteSpace: 'nowrap',
               }}
             >
-              <PhoneRoundedIcon style={{ fontSize: 12, flexShrink: 0 }} />
-              {storeContact}
+              <PlaceRoundedIcon style={{ fontSize: 12, flexShrink: 0 }} />
+              {storeAddress}
             </span>
           )}
         </div>
