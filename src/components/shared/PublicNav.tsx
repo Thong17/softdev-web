@@ -12,6 +12,7 @@ import { IconButton } from '@mui/material'
 import PaletteRoundedIcon from '@mui/icons-material/PaletteRounded'
 import TranslateRoundedIcon from '@mui/icons-material/TranslateRounded'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
+import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded'
 
 const NAV_LINKS: { to: string; labelKey: string }[] = [
   { to: '/', labelKey: 'HOME' },
@@ -109,9 +110,12 @@ export const PublicNav = ({ storeName, storeLogo, storeContact }: IPublicNav) =>
           >
             {storeName || language['HOME']}
           </span>
-          {isMobile && storeContact && (
+          {storeContact && (
             <span
               style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
                 fontSize: 11,
                 fontWeight: 400,
                 color: theme.text.tertiary,
@@ -120,6 +124,7 @@ export const PublicNav = ({ storeName, storeLogo, storeContact }: IPublicNav) =>
                 whiteSpace: 'nowrap',
               }}
             >
+              <PhoneRoundedIcon style={{ fontSize: 12, flexShrink: 0 }} />
               {storeContact}
             </span>
           )}
