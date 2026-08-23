@@ -142,7 +142,7 @@ export const Menu = () => {
         boxSizing: 'border-box',
       }}
     >
-      <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} storeAddress={store?.address} />
+      <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} storeContact={store?.contact} />
       <SocialNav />
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: device === 'mobile' ? '20px 16px 64px' : '32px 24px 64px' }}>

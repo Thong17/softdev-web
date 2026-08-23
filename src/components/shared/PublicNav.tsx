@@ -23,12 +23,12 @@ const NAV_LINKS: { to: string; labelKey: string }[] = [
 interface IPublicNav {
   storeName?: string
   storeLogo?: string
-  storeAddress?: string
+  storeContact?: string
 }
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 
-export const PublicNav = ({ storeName, storeLogo, storeAddress }: IPublicNav) => {
+export const PublicNav = ({ storeName, storeLogo, storeContact }: IPublicNav) => {
   const { theme, mode, changeTheme } = useTheme()
   const { lang, language, changeLanguage } = useLanguage()
   const { device } = useWeb()
@@ -109,7 +109,7 @@ export const PublicNav = ({ storeName, storeLogo, storeAddress }: IPublicNav) =>
           >
             {storeName || language['HOME']}
           </span>
-          {isMobile && storeAddress && (
+          {isMobile && storeContact && (
             <span
               style={{
                 fontSize: 11,
@@ -120,7 +120,7 @@ export const PublicNav = ({ storeName, storeLogo, storeAddress }: IPublicNav) =>
                 whiteSpace: 'nowrap',
               }}
             >
-              {storeAddress}
+              {storeContact}
             </span>
           )}
         </div>

@@ -22,7 +22,7 @@ export const About = () => {
         fontFamily: theme.font.family,
       }}
     >
-      <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} storeAddress={store?.address} />
+      <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} storeContact={store?.contact} />
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
         <h1 style={{ fontWeight: 300, marginBottom: 20 }}>{language['ABOUT_US_TITLE']}</h1>
         <p style={{ color: theme.text.secondary, lineHeight: 1.7 }}>{language['ABOUT_US_CONTENT']}</p>
