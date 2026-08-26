@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
@@ -16,7 +16,7 @@ import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
 import { getMenu, getBrands, getProducts, IMenuCategory, IMenuProduct, IPublicBrand, getStoreInfo, IPublicStore, getAnnouncements, IPublicAnnouncement } from 'api/menu.api'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
-const FEATURED_PAGE_SIZE = 10
+const FEATURED_PAGE_SIZE = 15
 
 export const Home = () => {
   const { theme } = useTheme()
@@ -33,6 +33,7 @@ export const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null)
+  const productCardRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
   useEffect(() => {
     getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([]))
@@ -60,6 +61,23 @@ export const Home = () => {
       })
       .catch(() => setFeaturedProducts([]))
   }, [featuredPage, selectedCategory, selectedBrand, priceRange])
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          const el = entry.target as HTMLElement
+          const delay = Math.min(Number(el.dataset.index || 0) * 0.05, 0.5)
+          el.style.animation = `fadeInUp 0.5s ease-out ${delay}s forwards`
+          obs.unobserve(el)
+        })
+      },
+      { threshold: 0.15 }
+    )
+    productCardRefs.current.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [featuredProducts])
 
   const changeCategory = (categoryId: string | null) => {
     setSelectedCategory(categoryId)
@@ -112,11 +130,22 @@ export const Home = () => {
               padding: '6px 16px',
               fontSize: 12,
               marginBottom: 20,
+              opacity: 0,
+              animation: 'fadeInUp 0.6s ease-out forwards',
             }}
           >
             {language['HERO_BADGE']}
           </div>
-          <h1 style={{ fontWeight: 600, fontSize: 40, lineHeight: 1.15, marginBottom: 16 }}>
+          <h1
+            style={{
+              fontWeight: 600,
+              fontSize: 40,
+              lineHeight: 1.15,
+              marginBottom: 16,
+              opacity: 0,
+              animation: 'fadeInUp 0.6s ease-out 0.15s forwards',
+            }}
+          >
             {store?.name ? (
               <>
                 {language['WELCOME_TO']}{' '}
@@ -126,7 +155,15 @@ export const Home = () => {
               language['HOMEPAGE_TITLE']
             )}
           </h1>
-          <p style={{ color: theme.text.tertiary, maxWidth: 460, marginBottom: 28 }}>
+          <p
+            style={{
+              color: theme.text.tertiary,
+              maxWidth: 460,
+              marginBottom: 28,
+              opacity: 0,
+              animation: 'fadeInUp 0.6s ease-out 0.3s forwards',
+            }}
+          >
             {language['HOMEPAGE_TAGLINE']}
           </p>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
@@ -140,6 +177,8 @@ export const Home = () => {
                 padding: '12px 28px',
                 textDecoration: 'none',
                 fontSize: 14,
+                opacity: 0,
+                animation: 'fadeInUp 0.6s ease-out 0.45s forwards',
               }}
             >
               {language['SHOP_NOW']}
@@ -154,6 +193,8 @@ export const Home = () => {
                 padding: '12px 28px',
                 textDecoration: 'none',
                 fontSize: 14,
+                opacity: 0,
+                animation: 'fadeInUp 0.6s ease-out 0.55s forwards',
               }}
             >
               {language['EXPLORE_DEALS']}
@@ -161,7 +202,7 @@ export const Home = () => {
           </div>
         </div>
 
-        <div style={{ height: 380 }}>
+        <div style={{ height: 380, opacity: 0, animation: 'fadeInRight 0.6s ease-out 0.2s forwards' }}>
           {announcements.length > 0 ? (
             <AnnouncementCarousel announcements={announcements} height='100%' borderRadius={16} />
           ) : (
@@ -200,16 +241,18 @@ export const Home = () => {
           scrollMarginTop: 24,
         }}
       >
-        <ProductFilterSidebar
-          categories={categories}
-          brands={brands}
-          selectedCategory={selectedCategory}
-          selectedBrand={selectedBrand}
-          priceRange={priceRange}
-          onChangeCategory={changeCategory}
-          onChangeBrand={changeBrand}
-          onChangePriceRange={changePriceRange}
-        />
+        <div style={{ opacity: 0, animation: 'fadeInLeft 0.6s ease-out forwards' }}>
+          <ProductFilterSidebar
+            categories={categories}
+            brands={brands}
+            selectedCategory={selectedCategory}
+            selectedBrand={selectedBrand}
+            priceRange={priceRange}
+            onChangeCategory={changeCategory}
+            onChangeBrand={changeBrand}
+            onChangePriceRange={changePriceRange}
+          />
+        </div>
 
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'bottom', marginBottom: 16 }}>
@@ -235,12 +278,18 @@ export const Home = () => {
             <p style={{ color: theme.text.tertiary, fontSize: 13 }}>{language['NO_PRODUCTS_AVAILABLE']}</p>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
-              {featuredProducts.map((product) => (
+              {featuredProducts.map((product, index) => (
                 <div
                   key={product._id}
+                  ref={(el) => {
+                    if (el) productCardRefs.current.set(product._id, el)
+                    else productCardRefs.current.delete(product._id)
+                  }}
+                  data-index={index}
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
+                    opacity: 0,
                   }}
                 >
                   <div style={{ borderRadius: 8, overflow: 'hidden', width: '100%', paddingTop: '75%', position: 'relative' }}>
