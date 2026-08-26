@@ -28,6 +28,10 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
   const { theme } = useTheme()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const normalizedDefaultValues = {
+    ...defaultValues,
+    banner: typeof defaultValues?.banner === 'object' ? defaultValues.banner?._id : defaultValues?.banner,
+  }
   const {
     reset,
     watch,
@@ -37,7 +41,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
     getValues,
     setError,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(announcementSchema), defaultValues })
+  } = useForm({ resolver: yupResolver(announcementSchema), defaultValues: normalizedDefaultValues })
   const { device } = useWeb()
   const { notify } = useNotify()
   const [loading, setLoading] = useState(false)
@@ -80,10 +84,11 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
 
   const submit = async (data) => {
     setLoading(true)
+    const banner = data?.banner && typeof data.banner === 'object' ? data.banner._id : data.banner
     Axios({
       method: id ? 'PUT' : 'POST',
       url: id ? `/function/banner/update/${id}` : `/function/banner/create`,
-      body: data,
+      body: { ...data, banner },
     })
       .then((data) => {
         dispatch(getListAnnouncement({}))
@@ -122,7 +127,8 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
           gridColumnGap: 20,
           gridTemplateAreas: `
                               'title title title'
-                              'status banner banner'
+                              'status status status'
+                              'banner banner banner'
                               'startAt startAt expireAt'
                               'order order order'
                               'description description description'
@@ -150,8 +156,9 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
         </div>
         <div style={{ gridArea: 'banner' }}>
           <FileField
+            height={200}
             images={bannerPath && [bannerPath]}
-            selected={getValues('banner')?._id}
+            selected={bannerPath?._id}
             name='banner'
             label='Banner'
             accept='image/png, image/jpeg'
