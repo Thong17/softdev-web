@@ -50,6 +50,7 @@ import {
   Stocks,
 } from 'modules/sale'
 import { Home } from 'modules/home'
+import { PublicLayout } from 'components/layouts/PublicLayout'
 import { About } from 'modules/about'
 import { Contact } from 'modules/contact'
 import { Menu } from 'modules/menu/Menu'
@@ -73,14 +74,6 @@ import { PaymentDetail } from 'modules/sale/payment/PaymentDetail'
 
 const routes: RouteObject[] = [
   {
-    path: '/',
-    element: <Home />,
-  },
-  {
-    path: '/home',
-    element: <Home />,
-  },
-  {
     path: '/login',
     element: <Login />,
   },
@@ -89,16 +82,14 @@ const routes: RouteObject[] = [
     element: <Register />,
   },
   {
-    path: '/menu',
-    element: <Menu />,
-  },
-  {
-    path: '/about',
-    element: <About />,
-  },
-  {
-    path: '/contact',
-    element: <Contact />,
+    element: <PublicLayout />,
+    children: [
+      { path: '/', element: <Home /> },
+      { path: '/home', element: <Home /> },
+      { path: '/menu', element: <Menu /> },
+      { path: '/about', element: <About /> },
+      { path: '/contact', element: <Contact /> },
+    ],
   },
   {
     path: '/user/:id',

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useOutletContext } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import useWeb from 'hooks/useWeb'
-import { getMenu, getBrands, getStoreInfo, getProducts, IMenuCategory, IMenuProduct, IPublicBrand, IPublicStore } from 'api/menu.api'
-import { PublicNav } from 'components/shared/PublicNav'
+import { getMenu, getBrands, getProducts, IMenuCategory, IMenuProduct, IPublicBrand } from 'api/menu.api'
+import { IPublicLayoutContext } from 'components/layouts/PublicLayout'
 import { SocialNav } from 'components/shared/SocialNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
 import { ProductNameClamp } from 'components/shared/ProductNameClamp'
@@ -29,7 +30,7 @@ export const Menu = () => {
   const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [brands, setBrands] = useState<IPublicBrand[]>([])
   const [brandsLoading, setBrandsLoading] = useState(true)
-  const [store, setStore] = useState<IPublicStore | null>(null)
+  const { store } = useOutletContext<IPublicLayoutContext>()
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null)
@@ -43,7 +44,6 @@ export const Menu = () => {
   useEffect(() => {
     getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([])).finally(() => setCategoriesLoading(false))
     getBrands().then((res) => setBrands(res.data?.data || [])).catch(() => setBrands([])).finally(() => setBrandsLoading(false))
-    getStoreInfo().then((res) => setStore(res.data?.data || null)).catch(() => setStore(null))
   }, [])
 
   useEffect(() => {
@@ -144,7 +144,6 @@ export const Menu = () => {
         boxSizing: 'border-box',
       }}
     >
-      <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} storeAddress={store?.address} />
       <SocialNav />
 
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: device === 'mobile' ? '20px 16px 64px' : '32px 24px 64px' }}>
@@ -214,8 +213,16 @@ export const Menu = () => {
 
             {status === 'SUCCESS' && products.length > 0 && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
-                {products.map((product) => (
-                  <div key={product._id} style={{ display: 'flex', flexDirection: 'column' }}>
+                {products.map((product, index) => (
+                  <div
+                    key={product._id}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      opacity: 0,
+                      animation: `fadeInUp 0.5s ease-out ${Math.min(index * 0.05, 0.5)}s forwards`,
+                    }}
+                  >
                     <div style={{ borderRadius: 8, overflow: 'hidden', width: '100%', paddingTop: '75%', position: 'relative' }}>
                       <img
                         src={`${IMAGE_HOST}${product.profile?.filename || 'default.png'}`}

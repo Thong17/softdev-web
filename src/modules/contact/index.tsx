@@ -1,18 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useOutletContext } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
-import { PublicNav } from 'components/shared/PublicNav'
 import { SocialNav } from 'components/shared/SocialNav'
-import { getStoreInfo, IPublicStore } from 'api/menu.api'
+import { IPublicLayoutContext } from 'components/layouts/PublicLayout'
 
 export const Contact = () => {
   const { theme } = useTheme()
   const { language } = useLanguage()
-  const [store, setStore] = useState<IPublicStore | null>(null)
-
-  useEffect(() => {
-    getStoreInfo().then((res) => setStore(res.data?.data || null)).catch(() => setStore(null))
-  }, [])
+  const { store } = useOutletContext<IPublicLayoutContext>()
 
   return (
     <div
@@ -23,7 +18,6 @@ export const Contact = () => {
         fontFamily: theme.font.family,
       }}
     >
-      <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} storeAddress={store?.address} />
       <SocialNav />
       <div style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
         <h1 style={{ fontWeight: 300, marginBottom: 20 }}>{language['CONTACT_US_TITLE']}</h1>

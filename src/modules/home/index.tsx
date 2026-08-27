@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import useAuth from 'hooks/useAuth'
 import useWeb from 'hooks/useWeb'
 import { Layout } from 'components/layouts/Layout'
-import { PublicNav } from 'components/shared/PublicNav'
+import { IPublicLayoutContext } from 'components/layouts/PublicLayout'
 import { SocialNav } from 'components/shared/SocialNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
 import { ProductNameClamp } from 'components/shared/ProductNameClamp'
@@ -13,7 +13,7 @@ import { PromotionBadge } from 'components/shared/PromotionBadge'
 import { AnnouncementCarousel } from 'components/shared/AnnouncementCarousel'
 import { Pagination } from 'components/shared/Pagination'
 import { ProductFilterSidebar } from 'components/shared/ProductFilterSidebar'
-import { getMenu, getBrands, getProducts, IMenuCategory, IMenuProduct, IPublicBrand, getStoreInfo, IPublicStore, getAnnouncements, IPublicAnnouncement } from 'api/menu.api'
+import { getMenu, getBrands, getProducts, IMenuCategory, IMenuProduct, IPublicBrand, getAnnouncements, IPublicAnnouncement } from 'api/menu.api'
 
 const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 const FEATURED_PAGE_SIZE = 15
@@ -27,7 +27,7 @@ export const Home = () => {
   const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [brands, setBrands] = useState<IPublicBrand[]>([])
   const [brandsLoading, setBrandsLoading] = useState(true)
-  const [store, setStore] = useState<IPublicStore | null>(null)
+  const { store } = useOutletContext<IPublicLayoutContext>()
   const [announcements, setAnnouncements] = useState<IPublicAnnouncement[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<IMenuProduct[]>([])
   const [featuredCount, setFeaturedCount] = useState(0)
@@ -40,7 +40,6 @@ export const Home = () => {
   useEffect(() => {
     getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([])).finally(() => setCategoriesLoading(false))
     getBrands().then((res) => setBrands(res.data?.data || [])).catch(() => setBrands([])).finally(() => setBrandsLoading(false))
-    getStoreInfo().then((res) => setStore(res.data?.data || null)).catch(() => setStore(null))
     getAnnouncements().then((res) => setAnnouncements(res.data?.data || [])).catch(() => setAnnouncements([]))
   }, [])
 
@@ -107,7 +106,6 @@ export const Home = () => {
         fontFamily: theme.font.family,
       }}
     >
-      {!isAuthenticated && <PublicNav storeName={store?.name} storeLogo={store?.logo?.filename} storeAddress={store?.address} />}
       <SocialNav />
 
       {/* Hero */}
