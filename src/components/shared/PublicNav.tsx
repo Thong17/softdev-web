@@ -8,7 +8,7 @@ import { languages } from 'contexts/language/constant'
 import { ThemeOptions } from 'contexts/theme/interface'
 import { LanguageOptions } from 'contexts/language/interface'
 import { IconDropdown } from 'components/shared/IconDropdown'
-import { IconButton } from '@mui/material'
+import { IconButton, Tooltip } from '@mui/material'
 import PaletteRoundedIcon from '@mui/icons-material/PaletteRounded'
 import TranslateRoundedIcon from '@mui/icons-material/TranslateRounded'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
@@ -111,23 +111,32 @@ export const PublicNav = ({ storeName, storeLogo, storeAddress }: IPublicNav) =>
             {storeName || language['HOME']}
           </span>
           {storeAddress && (
-            <span
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-                maxWidth: 250,
-                fontSize: 11,
-                fontWeight: 400,
-                color: theme.text.tertiary,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <PlaceRoundedIcon style={{ fontSize: 12, flexShrink: 0 }} />
-              {storeAddress}
-            </span>
+            <Tooltip title={storeAddress}>
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  maxWidth: 250,
+                  fontSize: 11,
+                  fontWeight: 400,
+                  color: theme.text.tertiary,
+                  minWidth: 0,
+                }}
+              >
+                <PlaceRoundedIcon style={{ fontSize: 12, flexShrink: 0 }} />
+                <span
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    minWidth: 0,
+                  }}
+                >
+                  {storeAddress}
+                </span>
+              </span>
+            </Tooltip>
           )}
         </div>
       </Link>
