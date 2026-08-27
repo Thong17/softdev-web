@@ -24,7 +24,9 @@ export const Home = () => {
   const { isAuthenticated } = useAuth()
   const { device } = useWeb()
   const [categories, setCategories] = useState<IMenuCategory[]>([])
+  const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [brands, setBrands] = useState<IPublicBrand[]>([])
+  const [brandsLoading, setBrandsLoading] = useState(true)
   const [store, setStore] = useState<IPublicStore | null>(null)
   const [announcements, setAnnouncements] = useState<IPublicAnnouncement[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<IMenuProduct[]>([])
@@ -36,8 +38,8 @@ export const Home = () => {
   const productCardRefs = useRef<Map<string, HTMLDivElement>>(new Map())
 
   useEffect(() => {
-    getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([]))
-    getBrands().then((res) => setBrands(res.data?.data || [])).catch(() => setBrands([]))
+    getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([])).finally(() => setCategoriesLoading(false))
+    getBrands().then((res) => setBrands(res.data?.data || [])).catch(() => setBrands([])).finally(() => setBrandsLoading(false))
     getStoreInfo().then((res) => setStore(res.data?.data || null)).catch(() => setStore(null))
     getAnnouncements().then((res) => setAnnouncements(res.data?.data || [])).catch(() => setAnnouncements([]))
   }, [])
@@ -244,7 +246,9 @@ export const Home = () => {
         <div style={{ opacity: 0, animation: 'fadeInLeft 0.6s ease-out forwards' }}>
           <ProductFilterSidebar
             categories={categories}
+            categoriesLoading={categoriesLoading}
             brands={brands}
+            brandsLoading={brandsLoading}
             selectedCategory={selectedCategory}
             selectedBrand={selectedBrand}
             priceRange={priceRange}

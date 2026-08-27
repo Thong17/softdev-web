@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Slider } from '@mui/material'
+import { Skeleton, Slider } from '@mui/material'
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
@@ -9,7 +9,9 @@ const IMAGE_HOST = process.env.REACT_APP_API_UPLOADS
 
 interface IProductFilterSidebar {
   categories: IMenuCategory[]
+  categoriesLoading?: boolean
   brands: IPublicBrand[]
+  brandsLoading?: boolean
   selectedCategory: string | null
   selectedBrand: string | null
   priceRange: [number, number] | null
@@ -20,7 +22,9 @@ interface IProductFilterSidebar {
 
 export const ProductFilterSidebar = ({
   categories,
+  categoriesLoading = false,
   brands,
+  brandsLoading = false,
   selectedCategory,
   selectedBrand,
   priceRange,
@@ -34,6 +38,7 @@ export const ProductFilterSidebar = ({
   const [draft, setDraft] = useState<[number, number]>([0, 0])
   const [showAllBrands, setShowAllBrands] = useState(false)
   const [showAllCategories, setShowAllCategories] = useState(false)
+  const [priceRangeLoading, setPriceRangeLoading] = useState(true)
 
   const VISIBLE_LIMIT = 5
 
@@ -46,6 +51,7 @@ export const ProductFilterSidebar = ({
         setDraft(priceRange || [min, max])
       })
       .catch(() => {})
+      .finally(() => setPriceRangeLoading(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -67,6 +73,11 @@ export const ProductFilterSidebar = ({
     color: theme.text.secondary,
   }
 
+  const fadeInLeftStyle = (index: number) => ({
+    opacity: 0,
+    animation: `fadeInLeft 0.4s ease-out ${Math.min(index * 0.06, 0.6)}s forwards`,
+  })
+
   const iconSlot = (filename: string | undefined, alt: string) => {
     const size = 30
     return (
@@ -80,6 +91,14 @@ export const ProductFilterSidebar = ({
 
   const checkSlot = (active: boolean) =>
     active && <DoneAllRoundedIcon style={{ fontSize: 18, color: theme.color.info, marginLeft: 'auto', flexShrink: 0 }} />
+
+  const skeletonListItems = (count: number) =>
+    Array.apply(null, Array(count)).map((_, index) => (
+      <div key={index} style={{ ...listItemStyle, cursor: 'default' }}>
+        <Skeleton variant='circular' width={30} height={30} />
+        <Skeleton variant='text' width='60%' height={20} />
+      </div>
+    ))
 
   const showAllButton = (expanded: boolean, onClick: () => void) => (
     <button
@@ -111,7 +130,15 @@ export const ProductFilterSidebar = ({
       {/* Price range */}
       <div style={{ marginBottom: 28 }}>
         <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 12 }}>{language['PRICE']}</div>
-        {bounds[1] > bounds[0] ? (
+        {priceRangeLoading ? (
+          <>
+            <Skeleton variant='rectangular' height={6} width='100%' style={{ borderRadius: theme.radius.rounded }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
+              <Skeleton variant='text' width={40} height={16} />
+              <Skeleton variant='text' width={40} height={16} />
+            </div>
+          </>
+        ) : bounds[1] > bounds[0] ? (
           <>
             <Slider
               value={draft}
@@ -135,19 +162,21 @@ export const ProductFilterSidebar = ({
       {/* Brands */}
       <div style={{ marginBottom: 28 }}>
         <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 8 }}>{language['OUR_BRANDS']}</div>
-        {brands.length === 0 ? (
+        {brandsLoading ? (
+          skeletonListItems(VISIBLE_LIMIT)
+        ) : brands.length === 0 ? (
           <div style={{ fontSize: 12, color: theme.text.tertiary }}>{language['NO_BRANDS_AVAILABLE']}</div>
         ) : (
           <>
-            <button style={listItemStyle} onClick={() => onChangeBrand(null)}>
+            <button style={{ ...listItemStyle, ...fadeInLeftStyle(0) }} onClick={() => onChangeBrand(null)}>
               {iconSlot(undefined, language['ALL'])}
               {language['ALL']}
               {checkSlot(!selectedBrand)}
             </button>
-            {(showAllBrands ? brands : brands.slice(0, VISIBLE_LIMIT)).map((brand) => (
+            {(showAllBrands ? brands : brands.slice(0, VISIBLE_LIMIT)).map((brand, index) => (
               <button
                 key={brand._id}
-                style={listItemStyle}
+                style={{ ...listItemStyle, ...fadeInLeftStyle(index + 1) }}
                 onClick={() => onChangeBrand(selectedBrand === brand._id ? null : brand._id)}
               >
                 {iconSlot(brand.icon?.filename, localize(brand.name))}
@@ -163,19 +192,21 @@ export const ProductFilterSidebar = ({
       {/* Categories */}
       <div>
         <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 8 }}>{language['OUR_CATEGORIES']}</div>
-        {categories.length === 0 ? (
+        {categoriesLoading ? (
+          skeletonListItems(VISIBLE_LIMIT)
+        ) : categories.length === 0 ? (
           <div style={{ fontSize: 12, color: theme.text.tertiary }}>{language['NO_CATEGORIES_AVAILABLE']}</div>
         ) : (
           <>
-            <button style={listItemStyle} onClick={() => onChangeCategory(null)}>
+            <button style={{ ...listItemStyle, ...fadeInLeftStyle(0) }} onClick={() => onChangeCategory(null)}>
               {iconSlot(undefined, language['ALL'])}
               {language['ALL']}
               {checkSlot(!selectedCategory)}
             </button>
-            {(showAllCategories ? categories : categories.slice(0, VISIBLE_LIMIT)).map((category) => (
+            {(showAllCategories ? categories : categories.slice(0, VISIBLE_LIMIT)).map((category, index) => (
               <button
                 key={category._id}
-                style={listItemStyle}
+                style={{ ...listItemStyle, ...fadeInLeftStyle(index + 1) }}
                 onClick={() => onChangeCategory(selectedCategory === category._id ? null : category._id)}
               >
                 {iconSlot(category.icon?.filename, localize(category.name))}

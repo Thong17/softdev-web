@@ -26,7 +26,9 @@ export const Menu = () => {
   const { lang, language } = useLanguage()
   const { device } = useWeb()
   const [categories, setCategories] = useState<IMenuCategory[]>([])
+  const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [brands, setBrands] = useState<IPublicBrand[]>([])
+  const [brandsLoading, setBrandsLoading] = useState(true)
   const [store, setStore] = useState<IPublicStore | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null)
@@ -39,8 +41,8 @@ export const Menu = () => {
   const [status, setStatus] = useState<'IDLE' | 'LOADING' | 'SUCCESS' | 'FAILED'>('IDLE')
 
   useEffect(() => {
-    getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([]))
-    getBrands().then((res) => setBrands(res.data?.data || [])).catch(() => setBrands([]))
+    getMenu().then((res) => setCategories(res.data?.data || [])).catch(() => setCategories([])).finally(() => setCategoriesLoading(false))
+    getBrands().then((res) => setBrands(res.data?.data || [])).catch(() => setBrands([])).finally(() => setBrandsLoading(false))
     getStoreInfo().then((res) => setStore(res.data?.data || null)).catch(() => setStore(null))
   }, [])
 
@@ -176,7 +178,9 @@ export const Menu = () => {
         <div style={{ display: 'grid', gridTemplateColumns: device === 'mobile' || device === 'tablet' ? '1fr' : '260px 1fr', gap: 24 }}>
           <ProductFilterSidebar
             categories={categories}
+            categoriesLoading={categoriesLoading}
             brands={brands}
+            brandsLoading={brandsLoading}
             selectedCategory={selectedCategory}
             selectedBrand={selectedBrand}
             priceRange={priceRange}
