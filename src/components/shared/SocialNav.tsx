@@ -30,7 +30,8 @@ export const SocialNav = () => {
         padding: '20px 15px',
         borderRadius: theme.radius.ternary,
         boxShadow: theme.shadow.secondary,
-        zIndex: 1000
+        zIndex: 1000,
+        animation: 'elasticInRight 0.85s ease 1.3s both',
       }}
     >
       <NavItem styled={theme} href={process.env.REACT_APP_FACEBOOK_PAGE_URL} target='_blank'>
