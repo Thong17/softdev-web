@@ -1,6 +1,7 @@
 import Container from 'components/shared/Container'
 import Breadcrumb from 'components/shared/Breadcrumbs'
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded'
+import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import {
   selectListStock,
   getListStock,
@@ -28,10 +29,10 @@ import { getListProduct } from 'modules/organize/product/redux'
 import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 import { Box } from '@mui/material'
 
-const Header = ({ stages, styled, onClickAdd }) => {
+const Header = ({ stages, icon, styled, onClickAdd }) => {
   return (
     <>
-      <Breadcrumb stages={stages} title={<AttachMoneyRoundedIcon />} />
+      <Breadcrumb stages={stages} title={icon} />
       <CustomButton
         style={{
           marginLeft: 10,
@@ -47,11 +48,12 @@ const Header = ({ stages, styled, onClickAdd }) => {
   )
 }
 
-export const Stock = () => {
+// The same stock screen is reachable from Sale › Stock and from Organize › Product
+export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) => {
   const dispatch = useAppDispatch()
   const { data: product, status } = useAppSelector(selectProduct)
   const { data: stocks } = useAppSelector(selectListStock)
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { theme } = useTheme()
   const { id } = useParams()
   const [stockDialog, setStockDialog] = useState({
@@ -71,7 +73,27 @@ export const Stock = () => {
   const confirm = useAlert()
   const { width } = useWeb()
 
-  const stockBreadcrumb = [
+  const stockBreadcrumb = section === 'organize' ? [
+    {
+      title: language['ORGANIZE'],
+      path: '/organize',
+    },
+    {
+      title: language['PRODUCT'],
+      path: '/organize/product',
+    },
+    {
+      title: language['UPDATE'],
+      path: `/organize/product/update/${id}`,
+    },
+    {
+      title: language['SETUP'],
+      path: `/organize/product/update/property/${id}`,
+    },
+    {
+      title: language['STOCK'],
+    },
+  ] : [
     {
       title: 'Sale',
       path: '/sale',
@@ -210,6 +232,7 @@ export const Stock = () => {
       header={
         <Header
           stages={stockBreadcrumb}
+          icon={section === 'organize' ? <StorefrontRoundedIcon /> : <AttachMoneyRoundedIcon />}
           styled={theme}
           onClickAdd={handleAddStock}
         />

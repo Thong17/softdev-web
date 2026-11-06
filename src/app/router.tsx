@@ -381,6 +381,14 @@ const routes: RouteObject[] = [
           </AuthGuard>
         ),
       },
+      {
+        path: 'product/stock/:id',
+        element: (
+          <AuthGuard role={{ route: 'product', action: 'update' }}>
+            <Stock section='organize' />
+          </AuthGuard>
+        ),
+      },
 
       // Store
       {

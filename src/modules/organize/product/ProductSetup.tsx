@@ -128,6 +128,10 @@ export const ProductSetup = () => {
     {
       title: language['SETUP'],
     },
+    {
+      title: language['STOCK'],
+      path: `/organize/product/stock/${id}`,
+    },
   ]
 
   const handleEditProperty = (propId) => {

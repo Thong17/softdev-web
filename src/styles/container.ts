@@ -73,6 +73,19 @@ export const CustomGridContainer = styled('div')(
         '&.active': {
           cursor: 'pointer'
         },
+        // Dark inset shadow in the top-right corner, behind the action buttons
+        '&.vignette::after': {
+          content: '""',
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          // Shadow for the edges plus a gradient so the corner stays dark on bright images
+          boxShadow: 'inset -55px 55px 50px -30px rgba(0, 0, 0, 0.85)',
+          background: 'radial-gradient(circle at top right, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 35%, rgba(0, 0, 0, 0) 60%)',
+        },
+        '&.vignette > *:not(img)': {
+          zIndex: 1,
+        },
         '& .selected': {
           position: 'absolute',
           width: '100%',

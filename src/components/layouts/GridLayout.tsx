@@ -30,6 +30,7 @@ const Item = (props, ref) => {
     favorite,
     active,
     expireAt,
+    vignette,
     ...prop
   } = props
   const { notify } = useNotify()
@@ -77,7 +78,7 @@ const Item = (props, ref) => {
       style={{ display: display || 'block' }}
     >
       <div
-        className={ selected !== undefined ? 'img active' : active !== undefined ? 'img active' : 'img'}
+        className={`${selected !== undefined ? 'img active' : active !== undefined ? 'img active' : 'img'}${vignette ? ' vignette' : ''}`}
         {...prop}
       >
         {selected && (

@@ -179,6 +179,27 @@ export const Products = () => {
     setDialog({ open: false, id: null })
   }
 
+  const handleEnableStock = (id) => {
+    confirm({
+      title: 'Are you sure you want to enable stock?',
+      description:
+        'This product stock is currently not enabled. By confirm this you will enable stock for this product.',
+      variant: 'info',
+    })
+      .then(() => {
+        Axios({
+          method: 'PUT',
+          url: `/organize/product/stock/${id}/enable`,
+        })
+          .then((result) => {
+            notify(result?.data?.msg, 'success')
+            navigate(`/organize/product/stock/${id}`)
+          })
+          .catch((err) => notify(err?.response?.data?.msg, 'error'))
+      })
+      .catch(() => null)
+  }
+
   const changeLayout = () => {
     setIsGrid(!isGrid)
     toggleDisplay(isGrid ? 'list' : 'grid')
@@ -217,7 +238,8 @@ export const Products = () => {
             user?.drawer?.buyRate,
             device,
             navigate,
-            setDialog
+            setDialog,
+            handleEnableStock
           )
         })
 
@@ -407,11 +429,13 @@ export const Products = () => {
                       }
                       action={obj.action}
                       status={obj.status}
+                      vignette
                     />
                   )
                 } else {
                   return (
                     <GridItem
+                      vignette
                       key={index}
                       title={obj.name}
                       picture={obj.profile}

@@ -2,6 +2,7 @@ import { DeviceOptions } from 'contexts/web/interface'
 import { MenuDialog } from 'components/shared/MenuDialog'
 import {
   DeleteButton,
+  StockButton,
   UpdateButton,
   ViewButton,
 } from 'components/shared/table/ActionButton'
@@ -65,8 +66,10 @@ export const createData = (
   rate: any,
   device: DeviceOptions,
   navigate: Function,
-  setDialog: Function
+  setDialog: Function,
+  handleEnableStock: Function
 ): Data => {
+  const handleStock = () => isStock ? navigate(`/organize/product/stock/${id}`) : handleEnableStock(id)
   let action = (
     <>
       {device === 'mobile' ? (
@@ -78,6 +81,11 @@ export const createData = (
             >
               Edit
             </MenuItem>
+            {privilege?.product?.update && (
+              <MenuItem component='div' onClick={handleStock}>
+                Stock
+              </MenuItem>
+            )}
             <MenuItem
               component='div'
               onClick={() => setDialog({ open: true, id })}
@@ -93,17 +101,27 @@ export const createData = (
           </MenuDialog>
         )
       ) : (
-        <>
+        // Two columns so the stock button sits directly beneath delete
+        <div style={{ display: 'grid', gridTemplateColumns: 'auto auto', rowGap: 5 }}>
           {privilege?.product?.update && (
-            <UpdateButton
-              style={{ margin: 0 }}
-              onClick={() => navigate(`/organize/product/update/${id}`)}
-            />
+            <div style={{ gridColumn: 1, gridRow: 1 }}>
+              <UpdateButton
+                style={{ margin: 0 }}
+                onClick={() => navigate(`/organize/product/update/${id}`)}
+              />
+            </div>
           )}
           {privilege?.product?.delete && (
-            <DeleteButton onClick={() => setDialog({ open: true, id })} />
+            <div style={{ gridColumn: 2, gridRow: 1 }}>
+              <DeleteButton onClick={() => setDialog({ open: true, id })} />
+            </div>
           )}
-        </>
+          {privilege?.product?.update && (
+            <div style={{ gridColumn: 2, gridRow: 2 }}>
+              <StockButton onClick={handleStock} isStock={isStock} />
+            </div>
+          )}
+        </div>
       )}
     </>
   )
