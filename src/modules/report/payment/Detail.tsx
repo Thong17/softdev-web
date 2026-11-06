@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
 import { PaymentReceipt } from 'components/shared/invoice/PaymentReceipt'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
-import Axios from 'constants/functions/Axios'
 import useLanguage from 'hooks/useLanguage'
 import useNotify from 'hooks/useNotify'
 import { getStore, selectStore } from 'modules/organize/store/redux'
@@ -12,7 +11,7 @@ import { useReactToPrint } from 'react-to-print'
 import { CustomDetailContainer } from 'styles/container'
 import { CustomButton } from 'styles/index'
 import { currencyFormat, timeFormat } from 'utils/index'
-import { handleReceiptPrint, initQzTray } from 'utils/printer'
+import { printReceipt } from 'utils/printer'
 
 export const Detail = ({
   theme,
@@ -26,46 +25,6 @@ export const Detail = ({
   const { notify } = useNotify()
   const [isLoading, setIsLoading] = useState(false)
   const printType: string = 'web_printing'
-  const [printerSetting, setPrinterSetting] = useState({
-    receiptPrinterName: '',
-    receiptPrinterCharPerLine: 0,
-    storePrinterName: '',
-    storePrinterCharPerLine: 0,
-    thermalPrinterName: '',
-    thermalPrinterWidth: 0,
-    thermalPrinterHeight: 0,
-    thermalPrinterGap: 0
-  });
-  const [isQzTrayAvailable, setIsQzTrayAvailable] = useState(false);
-
-  useEffect(() => {
-    initQzTray().then(() => setIsQzTrayAvailable(true)).catch(err => console.error('QZ Tray init failed:', err))
-    return () => {
-      // Optional: clean up connection on unmount if desired
-    };
-  }, []);
-
-  useEffect(() => {
-    Axios({
-      method: 'GET',
-      url: '/organize/store/getTelegramSetting'
-    })
-      .then((res) => {
-        const data = res.data.data
-        setPrinterSetting({
-          receiptPrinterName: data.receiptPrinterName || '',
-          receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
-          storePrinterName: data.storePrinterName || '',
-          storePrinterCharPerLine: data.storePrinterCharPerLine || 0,
-          thermalPrinterName: data.thermalPrinterName || '',
-          thermalPrinterWidth: data.thermalPrinterWidth || 0,
-          thermalPrinterHeight: data.thermalPrinterHeight || 0,
-          thermalPrinterGap: data.thermalPrinterGap || 0
-        })
-      })
-      .catch(err => notify(err?.response?.data?.msg, 'error'))
-    //eslint-disable-next-line
-  }, [])
 
   useEffect(() => {
       if (status !== 'INIT') return
@@ -122,11 +81,7 @@ export const Detail = ({
           .catch(handlePrintInvoice)
           .finally(() => setIsLoading(false))
     } else {
-      if (!isQzTrayAvailable) {
-        notify('Receipt printing is not available on this device', 'error')
-        return
-      }
-      handleReceiptPrint({
+      printReceipt({
         name: storeInfo?.name as string,
         invoice: dialog.payment?.invoice,
         cashier: dialog.payment?.createdBy?.username,
@@ -149,8 +104,8 @@ export const Detail = ({
         address: storeInfo?.address,
         footer: storeInfo?.other,
         paymentMethod: dialog.payment?.paymentMethod,
-      }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
-      handleReceiptPrint({
+      }, 'receipt').catch(err => notify(err.message, 'error'))
+      printReceipt({
         name: storeInfo?.name as string,
         invoice: dialog.payment?.invoice,
         cashier: dialog.payment?.createdBy?.username,
@@ -167,7 +122,7 @@ export const Detail = ({
         address: storeInfo?.address,
         footer: storeInfo?.other,
         paymentMethod: dialog.payment?.paymentMethod,
-      }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
+      }, 'store').catch(err => notify(err.message, 'error'))
     }
 }
 

@@ -30,6 +30,7 @@ const Config = () => {
     getValues,
     setValue,
     register,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(telegramConfigSchema), 
@@ -49,8 +50,10 @@ const Config = () => {
       receiptPrinterCharPerLine: 0,
       storePrinterName: '',
       storePrinterCharPerLine: 0,
-    } 
+      printMode: 'web',
+    }
   })
+  const printMode = watch('printMode')
 
   useEffect(() => {
     Axios({
@@ -175,13 +178,26 @@ const Config = () => {
                   gridTemplateColumns: '1fr 200px 200px 200px',
                   gridColumnGap: 20,
                   gridTemplateAreas:
-                    ` 
+                    `
+                      'printMode printMode printMode printMode'
                       'thermalPrinterName thermalPrinterWidth thermalPrinterHeight thermalPrinterGap'
                       'receiptPrinterName receiptPrinterName receiptPrinterName receiptPrinterCharPerLine'
                       'storePrinterName storePrinterName storePrinterName storePrinterCharPerLine'
                     `
                 }}
               >
+                <div style={{ gridArea: 'printMode' }}>
+                  <SelectField
+                    label='Printing Mode'
+                    value={printMode}
+                    options={[
+                      { label: 'Web (QZ Tray on each device)', value: 'web' },
+                      { label: 'API (QZ Tray on the server)', value: 'api' },
+                    ]}
+                    err={errors.printMode?.message}
+                    {...register('printMode')}
+                  />
+                </div>
                 <div style={{ gridArea: 'thermalPrinterName' }}>
                   <TextField
                     type='text'

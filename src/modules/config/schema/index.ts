@@ -8,4 +8,5 @@ export const telegramConfigSchema = yup.object().shape({
     SENT_AFTER_OPEN_DRAWER: yup.boolean(),
     SENT_AFTER_CLOSE_DRAWER: yup.boolean(),
   }),
+  printMode: yup.string().oneOf(['web', 'api']),
 })

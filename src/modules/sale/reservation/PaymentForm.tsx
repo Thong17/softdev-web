@@ -27,7 +27,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
 import { directPrinting } from 'api/receipt.api'
-import { initQzTray, handleReceiptPrint, handleThermalPrint } from 'utils/printer'
+import { printReceipt, printLabel } from 'utils/printer'
 
 export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout }: any, ref) => {
   const confirm = useAlert()
@@ -50,52 +50,11 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   const { data: listTransfer } = useAppSelector(selectListTransfer)
   const dispatch = useAppDispatch()
   const { data: storeInfo, status } = useAppSelector(selectStore)
-  const [printerSetting, setPrinterSetting] = useState({
-    receiptPrinterName: '',
-    receiptPrinterCharPerLine: 0,
-    storePrinterName: '',
-    storePrinterCharPerLine: 0,
-    thermalPrinterName: '',
-    thermalPrinterWidth: 0,
-    thermalPrinterHeight: 0,
-    thermalPrinterGap: 0
-  });
-  const [isQzTrayAvailable, setIsQzTrayAvailable] = useState(false);
 
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
     { label: language['TRANSFER'], value: 'transfer' },
   ]
-
-  useEffect(() => {
-    initQzTray().then(() => setIsQzTrayAvailable(true)).catch(err => console.error('QZ Tray init failed:', err))
-    return () => {
-      // Optional: clean up connection on unmount if desired
-    };
-  }, []);
-
-  
-  useEffect(() => {
-    Axios({
-      method: 'GET',
-      url: '/organize/store/getTelegramSetting'
-    })
-      .then((res) => {
-        const data = res.data.data
-        setPrinterSetting({
-          receiptPrinterName: data.receiptPrinterName || '',
-          receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
-          storePrinterName: data.storePrinterName || '',
-          storePrinterCharPerLine: data.storePrinterCharPerLine || 0,
-          thermalPrinterName: data.thermalPrinterName || '',
-          thermalPrinterWidth: data.thermalPrinterWidth || 0,
-          thermalPrinterHeight: data.thermalPrinterHeight || 0,
-          thermalPrinterGap: data.thermalPrinterGap || 0
-        })
-      })
-      .catch(err => notify(err?.response?.data?.msg, 'error'))
-    //eslint-disable-next-line
-  }, [])
 
   useEffect(() => {
     if (status !== 'INIT') return
@@ -234,11 +193,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   const printType: string = 'web_printing'
 
   const handlePrintLabel = () => {
-    if (!isQzTrayAvailable) {
-      notify('Label printing is not available on this device', 'error')
-      return
-    }
-    handleThermalPrint({
+    printLabel({
       items: dialog.payment?.transactions?.map(item => ({
         description: item.product?.name?.English || item.description,
         qty: item.quantity,
@@ -250,10 +205,6 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
       })) || [],
       createdAt: timeFormat(dialog.payment?.createdAt, 'YYYY-MM-DD HH:mm'),
       invoice: dialog.payment?.invoice
-    }, printerSetting.thermalPrinterName, {
-      width: Number(printerSetting.thermalPrinterWidth),
-      height: Number(printerSetting.thermalPrinterHeight),
-      gap: Number(printerSetting.thermalPrinterGap)
     }).catch(err => notify(err.message, 'error'))
   }
 
@@ -282,11 +233,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
             .catch(console.error)
             .finally(() => setIsLoading(false))
       } else {
-        if (!isQzTrayAvailable) {
-          notify('Receipt printing is not available on this device', 'error')
-          return
-        }
-        handleReceiptPrint({
+        printReceipt({
           name: storeInfo?.name as string,
           invoice: dialog.payment?.invoice,
           cashier: dialog.payment?.createdBy?.username,
@@ -309,8 +256,8 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
           address: storeInfo?.address,
           footer: storeInfo?.other,
           paymentMethod: dialog.payment?.paymentMethod,
-        }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
-        handleReceiptPrint({
+        }, 'receipt').catch(err => notify(err.message, 'error'))
+        printReceipt({
           name: storeInfo?.name as string,
           invoice: dialog.payment?.invoice,
           cashier: dialog.payment?.createdBy?.username,
@@ -327,7 +274,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
           address: storeInfo?.address,
           footer: storeInfo?.other,
           paymentMethod: dialog.payment?.paymentMethod,
-        }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
+        }, 'store').catch(err => notify(err.message, 'error'))
       }
   }
 

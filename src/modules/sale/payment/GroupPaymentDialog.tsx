@@ -29,7 +29,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import useLanguage from 'hooks/useLanguage'
 import { LoanForm } from 'components/shared/form/LoanForm'
-import { initQzTray, handleGroupReceiptPrinting } from 'utils/printer'
+import { printGroupReceipt } from 'utils/printer'
 import { InvoicePreview } from './InvoicePreview'
 
 export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout, handleRemovePayment }: any, ref) => {
@@ -55,53 +55,12 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
   const dispatch = useAppDispatch()
   const [formMode, setFormMode] = useState('pending');
   const { data: storeInfo, status } = useAppSelector(selectStore)
-  const [printerSetting, setPrinterSetting] = useState({
-    receiptPrinterName: '',
-    receiptPrinterCharPerLine: 0,
-    storePrinterName: '',
-    storePrinterCharPerLine: 0,
-    thermalPrinterName: '',
-    thermalPrinterWidth: 0,
-    thermalPrinterHeight: 0,
-    thermalPrinterGap: 0
-  });
-  const [isQzTrayAvailable, setIsQzTrayAvailable] = useState(false);
 
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
     { label: language['TRANSFER'], value: 'transfer' },
     { label: language['LOAN'], value: 'loan' },
   ]
-
-  useEffect(() => {
-    initQzTray().then(() => setIsQzTrayAvailable(true)).catch(err => console.error('QZ Tray init failed:', err))
-    return () => {
-      // Optional: clean up connection on unmount if desired
-    };
-  }, []);
-
-  
-  useEffect(() => {
-    Axios({
-      method: 'GET',
-      url: '/organize/store/getTelegramSetting'
-    })
-      .then((res) => {
-        const data = res.data.data
-        setPrinterSetting({
-          receiptPrinterName: data.receiptPrinterName || '',
-          receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
-          storePrinterName: data.storePrinterName || '',
-          storePrinterCharPerLine: data.storePrinterCharPerLine || 0,
-          thermalPrinterName: data.thermalPrinterName || '',
-          thermalPrinterWidth: data.thermalPrinterWidth || 0,
-          thermalPrinterHeight: data.thermalPrinterHeight || 0,
-          thermalPrinterGap: data.thermalPrinterGap || 0
-        })
-      })
-      .catch(err => notify(err?.response?.data?.msg, 'error'))
-    //eslint-disable-next-line
-  }, [])
 
   useEffect(() => {
     if (status !== 'INIT') return
@@ -268,11 +227,7 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
   }
 
   const handlePrint = () => {
-    if (!isQzTrayAvailable) {
-      notify('Receipt printing is not available on this device', 'error')
-      return
-    }
-    handleGroupReceiptPrinting(dialog.payments?.map(item => ({
+    printGroupReceipt(dialog.payments?.map(item => ({
       name: storeInfo?.name as string,
       invoice: item?.invoice,
       cashier: item?.createdBy?.username,
@@ -303,8 +258,8 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
       paymentMethod: payment?.paymentMethod,
       subtotal: currencyFormat(payment?.subtotal?.USD, 'USD', 0, true),
       total: currencyFormat(payment?.total?.value, payment?.total?.currency, 0, true),
-    }, printerSetting.receiptPrinterName, printerSetting.receiptPrinterCharPerLine).catch(err => notify(err.message, 'error'))
-    handleGroupReceiptPrinting(dialog.payments?.map(item => ({
+    }, 'receipt').catch(err => notify(err.message, 'error'))
+    printGroupReceipt(dialog.payments?.map(item => ({
       name: storeInfo?.name as string,
       invoice: item?.invoice,
       cashier: item?.createdBy?.username,
@@ -327,7 +282,7 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
       invoice: payment?.invoice,
       createdAt: timeFormat(payment?.createdAt, 'YYYY-MM-DD HH:mm'),
       paymentMethod: payment?.paymentMethod,
-    }, printerSetting.storePrinterName, printerSetting.storePrinterCharPerLine).catch(err => notify(err.message, 'error'))
+    }, 'store').catch(err => notify(err.message, 'error'))
   }
 
   const ticketRef = useRef(document.createElement('div'))
@@ -747,6 +702,5 @@ const CashReturn = ({ cash }) => (
     <span style={{ marginLeft: 5 }}>x{cash.quantity}</span>
   </div>
 )
-
 
 export default GroupPaymentDialog

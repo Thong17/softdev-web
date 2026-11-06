@@ -1,14 +1,13 @@
 import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { CustomGroupInvoiceForm } from 'styles/container'
 import { currencyFormat, timeFormat } from 'utils'
 import { IconButton } from '@mui/material'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
-import { handleThermalPrint } from 'utils/printer'
+import { printLabel } from 'utils/printer'
 import useNotify from 'hooks/useNotify'
-import Axios from 'constants/functions/Axios'
 import { CustomerStatistic } from 'components/shared/container/CustomerContainer'
 import { CircleIcon } from 'components/shared/table/CustomIcon'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
@@ -19,43 +18,10 @@ export const InvoicePreview = ({ payment, customer, onRemove }) => {
   const { language } = useLanguage()
   const { notify } = useNotify()
 
-  useEffect(() => {
-    Axios({
-      method: 'GET',
-      url: '/organize/store/getTelegramSetting'
-    })
-      .then((res) => {
-        const data = res.data.data
-        setPrinterSetting({
-          receiptPrinterName: data.receiptPrinterName || '',
-          receiptPrinterCharPerLine: data.receiptPrinterCharPerLine || 0,
-          storePrinterName: data.storePrinterName || '',
-          storePrinterCharPerLine: data.storePrinterCharPerLine || 0,
-          thermalPrinterName: data.thermalPrinterName || '',
-          thermalPrinterWidth: data.thermalPrinterWidth || 0,
-          thermalPrinterHeight: data.thermalPrinterHeight || 0,
-          thermalPrinterGap: data.thermalPrinterGap || 0
-        })
-      })
-      .catch(err => notify(err?.response?.data?.msg, 'error'))
-    //eslint-disable-next-line
-  }, [])
-
-  const [printerSetting, setPrinterSetting] = useState({
-    receiptPrinterName: '',
-    receiptPrinterCharPerLine: 0,
-    storePrinterName: '',
-    storePrinterCharPerLine: 0,
-    thermalPrinterName: '',
-    thermalPrinterWidth: 0,
-    thermalPrinterHeight: 0,
-    thermalPrinterGap: 0
-  });
-
   const handlePrintTransaction = (event, transaction) => {
     event.stopPropagation()
     // Implementation for printing transaction
-    handleThermalPrint({
+    printLabel({
       items: [{
         description: transaction.product?.name?.English || transaction.description,
         qty: transaction.quantity,
@@ -67,10 +33,6 @@ export const InvoicePreview = ({ payment, customer, onRemove }) => {
       }],
       createdAt: timeFormat(payment?.createdAt, 'YYYY-MM-DD HH:mm'),
       invoice: payment?.invoice
-    }, printerSetting.thermalPrinterName, {
-      width: Number(printerSetting.thermalPrinterWidth),
-      height: Number(printerSetting.thermalPrinterHeight),
-      gap: Number(printerSetting.thermalPrinterGap)
     }).catch(err => notify(err.message, 'error'))
   }
   
