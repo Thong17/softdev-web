@@ -18,7 +18,12 @@ import { CustomButton } from 'styles'
 import useTheme from 'hooks/useTheme'
 import { Form } from './Form'
 import { createStockData, initStock, mapStockBody, stockColumnData } from './constant'
-import { StickyTable } from 'components/shared/table/StickyTable'
+import { StickyTable, ITableColumn } from 'components/shared/table/StickyTable'
+import { ConvertForm } from './ConvertForm'
+import { AlertDialog } from 'components/shared/table/AlertDialog'
+import { DialogTitle } from 'components/shared/DialogTitle'
+import { useNavigate } from 'react-router-dom'
+import { timeFormat } from 'utils'
 import useAuth from 'hooks/useAuth'
 import useWeb from 'hooks/useWeb'
 import Axios from 'constants/functions/Axios'
@@ -29,24 +34,67 @@ import { getListProduct } from 'modules/organize/product/redux'
 import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 import { Box } from '@mui/material'
 
-const Header = ({ stages, icon, styled, onClickAdd }) => {
+const Header = ({ stages, icon, styled, onClickAdd, onClickConvert, onClickHistory }) => {
   return (
     <>
       <Breadcrumb stages={stages} title={icon} />
-      <CustomButton
-        style={{
-          marginLeft: 10,
-          backgroundColor: `${styled.color.info}22`,
-          color: styled.color.info,
-        }}
-        styled={styled}
-        onClick={() => onClickAdd()}
-      >
-        Add Stock
-      </CustomButton>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        {onClickHistory && (
+          <CustomButton
+            style={{
+              marginLeft: 10,
+              backgroundColor: `${styled.text.secondary}22`,
+              color: styled.text.secondary,
+            }}
+            styled={styled}
+            onClick={() => onClickHistory()}
+          >
+            History
+          </CustomButton>
+        )}
+        {onClickConvert && (
+          <CustomButton
+            style={{
+              marginLeft: 10,
+              backgroundColor: `${styled.color.success}22`,
+              color: styled.color.success,
+            }}
+            styled={styled}
+            onClick={() => onClickConvert()}
+          >
+            Convert
+          </CustomButton>
+        )}
+        <CustomButton
+          style={{
+            marginLeft: 10,
+            backgroundColor: `${styled.color.info}22`,
+            color: styled.color.info,
+          }}
+          styled={styled}
+          onClick={() => onClickAdd()}
+        >
+          Add Stock
+        </CustomButton>
+      </div>
     </>
   )
 }
+
+declare type ConversionColumn = 'date' | 'from' | 'to' | 'quantity' | 'produced' | 'unitCost' | 'createdBy'
+
+const conversionColumnData: ITableColumn<ConversionColumn>[] = [
+  { id: 'date', label: 'DATE', minWidth: 130 },
+  { id: 'from', label: 'FROM', minWidth: 140 },
+  { id: 'to', label: 'TO', minWidth: 140 },
+  { id: 'quantity', label: 'CONVERTED' },
+  { id: 'produced', label: 'PRODUCED' },
+  { id: 'unitCost', label: 'UNIT COST' },
+  { id: 'createdBy', label: 'BY' },
+]
+
+// Non-breaking spaces keep each history cell on one line
+const noWrap = (value) => String(value ?? '').replace(/ /g, ' ')
 
 // The same stock screen is reachable from Sale › Stock and from Organize › Product
 export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) => {
@@ -72,6 +120,56 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
   const [detailValue, setDetailValue] = useState(initStock)
   const confirm = useAlert()
   const { width } = useWeb()
+  const navigate = useNavigate()
+  const [convertDialog, setConvertDialog] = useState({ open: false })
+  const [historyDialog, setHistoryDialog] = useState({ open: false })
+  const [conversions, setConversions] = useState<any[]>([])
+
+  const stockPath = (productId) => section === 'organize'
+    ? `/organize/product/stock/${productId}`
+    : `/sale/stock/item/${productId}`
+
+  const fetchConversions = () => {
+    if (!id) return
+    Axios({ method: 'GET', url: `/sale/stock/conversion/${id}` })
+      .then((response) => setConversions(response?.data?.data || []))
+      .catch(() => setConversions([]))
+  }
+
+  useEffect(() => {
+    fetchConversions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
+
+  // From the stock list (not product.stocks, which only loads with the page) so
+  // adding, editing or deleting a batch updates the Convert button right away
+  const availableStock = (stocks || []).reduce((total, stock: any) => total + (stock.quantity || 0), 0)
+  const canConvert = status === 'SUCCESS' && availableStock > 0 && !!user?.privilege?.product?.update
+
+  const handleConverted = () => {
+    const params = new URLSearchParams()
+    params.append('productId', id as string)
+    dispatch(getProduct({ id: id as string }))
+    dispatch(getListStock({ query: params }))
+    fetchConversions()
+  }
+
+  const conversionRowData = conversions.map((conversion) => {
+    const nameOf = (item) => item?.name?.[lang] || item?.name?.['English'] || '...'
+    const isSource = conversion.fromProduct?._id === id
+    const unitCost = conversion.producedQuantity ? conversion.totalCost / conversion.producedQuantity : 0
+    return {
+      // Clicking a row opens the other product's stock
+      id: isSource ? conversion.toProduct?._id : conversion.fromProduct?._id,
+      date: noWrap(timeFormat(conversion.createdAt, 'YYYY-MM-DD HH:mm')),
+      from: noWrap(nameOf(conversion.fromProduct)),
+      to: noWrap(nameOf(conversion.toProduct)),
+      quantity: conversion.quantity,
+      produced: noWrap(`${conversion.producedQuantity} (×${conversion.ratio})`),
+      unitCost: conversion.currency === 'KHR' ? `${Math.round(unitCost)}៛` : `$${Number(unitCost.toFixed(4))}`,
+      createdBy: noWrap(conversion.createdBy?.username || '...'),
+    }
+  })
 
   const stockBreadcrumb = section === 'organize' ? [
     {
@@ -194,7 +292,8 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
         theme,
         handleEditStock,
         handleDeleteStock,
-        handleViewStock
+        handleViewStock,
+        stock.conversion?.fromProduct?.name?.[lang] || stock.conversion?.fromProduct?.name?.['English']
       )
     })
     setStockRowData(rowData)
@@ -235,10 +334,35 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
           icon={section === 'organize' ? <StorefrontRoundedIcon /> : <AttachMoneyRoundedIcon />}
           styled={theme}
           onClickAdd={handleAddStock}
+          onClickConvert={canConvert ? () => setConvertDialog({ open: true }) : undefined}
+          onClickHistory={conversionRowData.length > 0 ? () => setHistoryDialog({ open: true }) : undefined}
         />
       }
     >
+      <AlertDialog isOpen={historyDialog.open} handleClose={() => setHistoryDialog({ open: false })}>
+        <DialogTitle title='Conversion History' onClose={() => setHistoryDialog({ open: false })} />
+        <div style={{ width: width < 1024 ? '92vw' : '85vw', maxWidth: 1400, padding: '0 10px 10px 10px', boxSizing: 'border-box' }}>
+          <StickyTable
+            columns={conversionColumnData}
+            rows={conversionRowData}
+            pagination={false}
+            handleClick={(productId) => {
+              if (!productId) return
+              setHistoryDialog({ open: false })
+              navigate(stockPath(productId))
+            }}
+          />
+        </div>
+      </AlertDialog>
       <BarcodeReader onScan={handleScanProduct} onError={() => {}} />
+      <ConvertForm
+        dialog={convertDialog}
+        setDialog={setConvertDialog}
+        product={product}
+        stocks={stocks}
+        theme={theme}
+        onConverted={handleConverted}
+      />
       <Form
         dialog={stockDialog}
         setDialog={setStockDialog}

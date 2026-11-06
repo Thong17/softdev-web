@@ -200,7 +200,8 @@ export const createStockData = (
   theme: IThemeStyle,
   onEditStock: Function,
   onDeleteStock: Function,
-  onViewStock: Function
+  onViewStock: Function,
+  convertedFrom?: string
 ) => {
   let action = (
     <div style={{ float: 'right' }}>
@@ -264,7 +265,12 @@ export const createStockData = (
   
   return {
     id,
-    cost: currencyFormat(cost, currency),
+    cost: convertedFrom ? (
+      <>
+        {currencyFormat(cost, currency)}
+        <div style={{ fontSize: 11, color: theme.text.quaternary }}>from {convertedFrom}</div>
+      </>
+    ) : currencyFormat(cost, currency),
     currency,
     quantity,
     remain,
