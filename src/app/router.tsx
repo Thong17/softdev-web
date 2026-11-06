@@ -43,6 +43,8 @@ import {
 } from 'modules/organize'
 import {
   Cashing,
+  Quotation,
+  QuotationList,
   Reservation,
   ReservationForm,
   Sale,
@@ -452,9 +454,35 @@ const routes: RouteObject[] = [
       {
         path: 'cashing',
         element: <>
-          <Cashing />        
+          <Cashing />
           <HintButton playlistId='PLHX_VLeC9D-68Mw8MY1B7w9R_jdN5LJ4C' />
         </>
+      },
+
+      // Quotation
+      {
+        path: 'quotation',
+        element: (
+          <AuthGuard role={{ route: 'quotation', action: 'create' }}>
+            <Quotation />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'quotation/list',
+        element: (
+          <AuthGuard role={{ route: 'quotation', action: 'list' }}>
+            <QuotationList />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'quotation/:id',
+        element: (
+          <AuthGuard role={{ route: 'quotation', action: 'update' }}>
+            <Quotation />
+          </AuthGuard>
+        ),
       },
 
       // Reservation

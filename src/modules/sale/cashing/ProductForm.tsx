@@ -24,8 +24,14 @@ import { QuantityStatus } from 'components/shared/QuantityStatus'
 import useNotify from 'hooks/useNotify'
 import Axios from 'constants/functions/Axios'
 import { NanoInput } from 'components/shared/form/InputField'
+import { calculateTransactionTotal } from 'components/shared/form/InvoiceForm'
+import useAuth from 'hooks/useAuth'
 
-export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
+// `quotation` mode builds the item locally instead of calling the transaction
+// API, which would deduct stock
+export const ProductForm = ({ dialog, setDialog, addTransaction, mode = 'payment' }: any) => {
+  const isQuotation = mode === 'quotation'
+  const { user } = useAuth()
   const { theme } = useTheme()
   const { device } = useWeb()
   const { notify, loading, update } = useNotify()
@@ -46,6 +52,31 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
   const [totalDescription, setTotalDescription] = useState('')
   const [requireFields, setRequireFields] = useState<any[]>([])
   const [loadingId, setLoadingId] = useState('');
+
+  // Returns the item in the same shape the transaction API responds with, with
+  // the product's active promotion applied the way cashing applies it
+  const buildQuotationItem = (body) => {
+    const promotion = product?.promotionDetail
+    const hasPromotion = promotion && new Date(promotion.expireAt).getTime() > Date.now()
+    const discount = hasPromotion
+      ? { value: promotion.value, type: promotion.type, isFixed: promotion.isFixed }
+      : { value: 0, type: 'PCT', isFixed: false }
+    const { total, currency } = calculateTransactionTotal(
+      { value: body.price, currency: body.currency },
+      { value: discount.value, currency: discount.type, isFixed: discount.isFixed },
+      body.quantity,
+      { sellRate: user?.drawer?.sellRate, buyRate: user?.drawer?.buyRate }
+    )
+    return {
+      ...body,
+      _id: `quotation-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      product: { _id: product._id, profile: product.profile },
+      discount,
+      total: { value: total, currency },
+    }
+  }
+
+  const exceedStockMsg = 'Order quantity has exceed our current stock'
 
   useEffect(() => {
     let total = 0
@@ -87,26 +118,37 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
       }
         
       if (product.isStock && quantity > total) {
-        if (loadingId) return update(loadingId, { render: 'Order quantity has exceed our current stock', type: 'error', isLoading: false })
-        else return notify('Order quantity has exceed our current stock', 'error')
+        if (isQuotation) notify(`${exceedStockMsg} (${total} left)`, 'warning')
+        else if (loadingId) return update(loadingId, { render: exceedStockMsg, type: 'error', isLoading: false })
+        else return notify(exceedStockMsg, 'error')
+      }
+      const body = {
+        product: product._id,
+        description: `${product.name[lang] || product.name['English']}`,
+        color: null,
+        price: product.price,
+        currency: product.currency,
+        total: {
+          value: product.price * quantity,
+          currency: product.currency,
+        },
+        quantity,
+        options: [],
+        promotion: product.promotion,
+      }
+      if (isQuotation) {
+        addTransaction(buildQuotationItem(body))
+        setQuantity(1)
+        handleCloseDialog()
+        // Resolve the loading toast opened when the product was selected
+        if (loadingId) update(loadingId, { render: 'Added to cart', type: 'success', isLoading: false, autoClose: 1000 })
+        setLoadingId('')
+        return
       }
       const axios = Axios({
         method: 'POST',
         url: '/sale/transaction/add',
-        body: {
-          product: product._id,
-          description: `${product.name[lang] || product.name['English']}`,
-          color: null,
-          price: product.price,
-          currency: product.currency,
-          total: {
-            value: product.price * quantity,
-            currency: product.currency,
-          },
-          quantity,
-          options: [],
-          promotion: product.promotion,
-        },
+        body,
       })
       axios.then((data) => {
         addTransaction(data?.data?.data, data?.data?.stockRemain)
@@ -305,8 +347,38 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
     }
       
     if (product.isStock && quantity > totalStock) {
-      if (loadingId) return update(loadingId, { render: 'Order quantity has exceed our current stock', type: 'error', isLoading: false })
-      else return notify('Order quantity has exceed our current stock', 'error')
+      if (isQuotation) notify(`${exceedStockMsg} (${totalStock} left)`, 'warning')
+      else if (loadingId) return update(loadingId, { render: exceedStockMsg, type: 'error', isLoading: false })
+      else return notify(exceedStockMsg, 'error')
+    }
+
+    const body = {
+      product: product._id,
+      description: `${product.name[lang] || product.name['English']} ${
+        productColor?.name[lang] || productColor?.name['English'] || ''
+      } ${totalDescription}`,
+      color: productColor?._id,
+      price: totalOptions + totalColor + totalCustomerOption,
+      currency: product?.currency,
+      total: {
+        value: (totalOptions + totalColor + totalCustomerOption) * quantity,
+        currency: product?.currency,
+      },
+      quantity,
+      options: productOptions,
+      customer: productCustomerOption?._id,
+      promotion: product.promotion,
+    }
+
+    if (isQuotation) {
+      addTransaction(buildQuotationItem(body))
+      handleCloseDialog()
+      setProductColor(undefined)
+      setProductCustomerOption(undefined)
+      setTotalColor(0)
+      setTotalCustomerOption(0)
+      setQuantity(1)
+      return
     }
 
     const newLoadingId = loading('Adding to cart')
@@ -314,23 +386,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction }: any) => {
     Axios({
       method: 'POST',
       url: '/sale/transaction/add',
-      body: {
-        product: product._id,
-        description: `${product.name[lang] || product.name['English']} ${
-          productColor?.name[lang] || productColor?.name['English'] || ''
-        } ${totalDescription}`,
-        color: productColor?._id,
-        price: totalOptions + totalColor + totalCustomerOption,
-        currency: product?.currency,
-        total: {
-          value: (totalOptions + totalColor + totalCustomerOption) * quantity,
-          currency: product?.currency,
-        },
-        quantity,
-        options: productOptions,
-        customer: productCustomerOption?._id,
-        promotion: product.promotion,
-      },
+      body,
     })
       .then((data) => {
         addTransaction(data?.data?.data, data?.data?.stockRemain)

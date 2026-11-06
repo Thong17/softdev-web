@@ -230,3 +230,4 @@ export const Sale = () => {
 export { Reservation, ReservationForm } from './reservation'
 export { Cashing } from './cashing'
 export { Stocks, Stock } from './stock'
+export { Quotation, QuotationList } from './quotation'

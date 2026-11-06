@@ -1,6 +1,6 @@
 import useTheme from 'hooks/useTheme'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react'
-import { CustomButton, CustomInvoiceForm } from 'styles'
+import { CustomButton, CustomInvoiceForm, CustomMenu } from 'styles'
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
 import { FlexBetween } from '../container/FlexBetween'
 import useWeb from 'hooks/useWeb'
@@ -16,7 +16,7 @@ import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutline
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { transactionSchema } from 'shared/schema'
-import { IconButton } from '@mui/material'
+import { IconButton, MenuItem } from '@mui/material'
 import useAlert from 'hooks/useAlert'
 import useConfig from 'hooks/useConfig'
 import { NotificationLabel } from '../NotificationLabel'
@@ -33,6 +33,10 @@ import ReceiptDialog from '../dialog/ReceiptDialog'
 import { getStore, selectStore } from 'modules/organize/store/redux'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import TableBarRoundedIcon from '@mui/icons-material/TableBarRounded'
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded'
+import TableViewRoundedIcon from '@mui/icons-material/TableViewRounded'
+import SaveRoundedIcon from '@mui/icons-material/SaveRounded'
+import FileDownloadRoundedIcon from '@mui/icons-material/FileDownloadRounded'
 import { tableOptions } from 'constants/variables'
 
 export const currencyOptions: IOptions[] = [
@@ -152,6 +156,7 @@ export interface ICurrency {
 
 export interface ITransactionItem {
   id: string | null
+  product?: string
   description: string
   discount: ICurrency
   price: ICurrency
@@ -192,8 +197,15 @@ export const InvoiceForm = forwardRef(({
   table,
   setTable,
   disableForm = false,
-  invoice = null
+  invoice = null,
+  // `quotation` keeps items in local state only (no transaction API calls, so
+  // stock is never touched) and swaps the checkout buttons for save/export
+  mode = 'payment',
+  onSave,
+  onExportExcel,
+  onExportPdf,
 }: any, ref) => {
+  const isQuotation = mode === 'quotation'
   const {
     register,
     handleSubmit,
@@ -262,8 +274,50 @@ export const InvoiceForm = forwardRef(({
   useImperativeHandle(ref, () => ({
     callClearPayment() {
       onClearPayment()
-    }
+    },
+    loadQuotation(data) {
+      const customerData = data.customer
+        ? {
+            displayName: data.customer.displayName,
+            id: data.customer._id,
+            fullName: data.customer.fullName,
+            address: data.customer.address,
+            point: data.customer.point || 0,
+          }
+        : { displayName: null, id: null, fullName: null, address: null, point: 0 }
+      setCustomer(customerData)
+      onChangeCustomer(customerData)
+      setTransactions(
+        (data.items || []).map((item) => ({
+          id: item._id,
+          product: item.product,
+          description: item.description,
+          price: { value: item.price, currency: item.currency },
+          discount: {
+            value: item.discount?.value || 0,
+            currency: item.discount?.type || 'PCT',
+            isFixed: item.discount?.isFixed || false,
+          },
+          quantity: item.quantity,
+          total: item.total,
+          note: item.note,
+          profile: item.profile,
+        }))
+      )
+      const [savedDiscount] = data.discounts || []
+      const [savedTax] = data.services || []
+      const [savedVoucher] = data.vouchers || []
+      if (savedDiscount) setDiscount({ title: 'Discount', value: savedDiscount.value || 0, type: savedDiscount.type || 'PCT', isFixed: savedDiscount.isFixed || false, isEditing: false })
+      if (savedTax) setTax({ title: 'Tax', value: savedTax.value || 0, type: savedTax.type || 'PCT', isEditing: false })
+      if (savedVoucher) setVoucher({ title: 'Voucher', value: savedVoucher.value || 0, type: savedVoucher.type || 'PCT', isFixed: savedVoucher.isFixed || false, isEditing: false })
+    },
   }))
+
+  // Quotation items are recalculated locally with the same rule the cart uses
+  const calculateItemTotal = (item) => {
+    const { total, currency } = calculateTransactionTotal(item.price, item.discount, item.quantity, exchangeRate)
+    return { value: total, currency }
+  }
 
   const onClearPayment = () => {
     setPaymentId(null)
@@ -363,6 +417,19 @@ export const InvoiceForm = forwardRef(({
       quantity: data.quantity
     }
 
+    if (isQuotation) {
+      const item = {
+        ...data,
+        price: { ...data.price, value: Number(data.price.value) },
+        discount: { ...data.discount, value: Number(data.discount?.value) || 0 },
+        quantity: Number(data.quantity),
+      }
+      if (!(item.quantity > 0)) return notify('Please select at least 1 quantity', 'error')
+      setTransactions((prev) => prev.map((transaction) => transaction.id === id ? { ...transaction, ...item, total: calculateItemTotal(item) } : transaction))
+      reset({})
+      return
+    }
+
     Axios({
       method: 'PUT',
       url: `/sale/transaction/update/${id}`,
@@ -389,6 +456,10 @@ export const InvoiceForm = forwardRef(({
       variant: 'error',
     })
       .then(() => {
+        if (isQuotation) {
+          setTransactions((prev) => prev.filter((transaction) => transaction.id !== id))
+          return
+        }
         Axios({
           method: 'DELETE',
           url: `/sale/transaction/remove/${id}`,
@@ -506,9 +577,40 @@ export const InvoiceForm = forwardRef(({
     setCustomerDialog({ ...customerDialog, open: true })
   }
 
+  const changeQuotationQuantity = (id, change) => {
+    setTransactions((prev) => prev.map((transaction) => {
+      if (transaction.id !== id) return transaction
+      const quantity = transaction.quantity + change
+      if (quantity < 1) return transaction
+      const item = { ...transaction, quantity }
+      return { ...item, total: calculateItemTotal(item) }
+    }))
+  }
+
+  // Everything the quotation page needs to save or export the current invoice
+  const getQuotationData = () => ({
+    transactions,
+    discount,
+    tax,
+    voucher,
+    customer,
+    subtotal,
+    total: calculatePaymentTotal(subtotal, discount, tax, voucher, exchangeRate),
+    rate: exchangeRate,
+  })
+
+  const handleQuotationAction = (action) => {
+    setExportAnchor(null)
+    if (transactions.length < 1) return notify('No transaction added', 'error')
+    action?.(getQuotationData())
+  }
+
+  const [exportAnchor, setExportAnchor] = useState<Element | null>(null)
+
   const handleIncreaseQuantity = (event, transactionId) => {
     event.stopPropagation()
     const id = transactionId
+    if (isQuotation) return changeQuotationQuantity(id, 1)
 
     Axios({
       method: 'PUT',
@@ -530,6 +632,7 @@ export const InvoiceForm = forwardRef(({
   const handleDecreaseQuantity = (event, transactionId) => {
     event.stopPropagation()
     const id = transactionId
+    if (isQuotation) return changeQuotationQuantity(id, -1)
 
     Axios({
       method: 'PUT',
@@ -1100,6 +1203,53 @@ export const InvoiceForm = forwardRef(({
                 >
                   {language['CLEAR']}
                 </CustomButton>
+                {isQuotation ? <>
+                  <CustomButton
+                    styled={theme}
+                    fullWidth
+                    onClick={() => handleQuotationAction(onSave)}
+                    style={{
+                      backgroundColor: `${theme.color.success}22`,
+                      color: theme.color.success,
+                      borderRadius: theme.radius.secondary,
+                    }}
+                  >
+                    <SaveRoundedIcon style={{ fontSize: 19, marginRight: 5 }} />
+                    {language['SAVE']}
+                  </CustomButton>
+                  <CustomButton
+                    styled={theme}
+                    fullWidth
+                    aria-controls='quotation-export-menu'
+                    onClick={(event) => setExportAnchor(event.currentTarget)}
+                    style={{
+                      backgroundColor: `${theme.color.info}22`,
+                      color: theme.color.info,
+                      borderRadius: theme.radius.secondary,
+                    }}
+                  >
+                    <FileDownloadRoundedIcon style={{ fontSize: 19, marginRight: 5 }} />
+                    Export
+                  </CustomButton>
+                  <CustomMenu
+                    id='quotation-export-menu'
+                    open={Boolean(exportAnchor)}
+                    anchorEl={exportAnchor}
+                    onClose={() => setExportAnchor(null)}
+                    styled={theme}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                  >
+                    <MenuItem onClick={() => handleQuotationAction(onExportPdf)}>
+                      <PictureAsPdfRoundedIcon style={{ fontSize: 19, marginRight: 8, color: theme.color.error }} />
+                      PDF
+                    </MenuItem>
+                    <MenuItem onClick={() => handleQuotationAction(onExportExcel)}>
+                      <TableViewRoundedIcon style={{ fontSize: 19, marginRight: 8, color: theme.color.success }} />
+                      Excel
+                    </MenuItem>
+                  </CustomMenu>
+                </> : <>
                 {paymentId ?
                   <CustomButton
                     onClick={handleClickPrint}
@@ -1142,6 +1292,7 @@ export const InvoiceForm = forwardRef(({
                 >
                   {language['PAYMENT']}
                 </CustomButton>}
+                </>}
               </FlexBetween>
             </div>
           </div>

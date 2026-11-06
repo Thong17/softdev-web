@@ -75,6 +75,12 @@ export const sideNav: any = [
         icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'payment'
       },
+      {
+        route: '/sale/quotation',
+        title: 'QUOTATION',
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
+        permission: 'quotation'
+      },
     ]
   },
   {

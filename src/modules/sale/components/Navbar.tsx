@@ -13,6 +13,7 @@ const Navbar = () => {
       {user?.privilege?.operation?.stock && <NavLink to='/sale/stock'>{language['STOCK']}</NavLink>}
       {user?.privilege?.operation?.loan && <NavLink to='/sale/loan'>{language['LOAN']}</NavLink>}
       {user?.privilege?.operation?.payment && <NavLink to='/sale/payment'>{language['PAYMENT']}</NavLink>}
+      {user?.privilege?.operation?.quotation && <NavLink to='/sale/quotation'>{language['QUOTATION']}</NavLink>}
     </>
   )
 }
