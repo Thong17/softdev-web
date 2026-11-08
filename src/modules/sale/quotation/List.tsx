@@ -1,56 +1,69 @@
 import Container from 'components/shared/Container'
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { MenuItem } from '@mui/material'
+import { MenuItem, Tooltip } from '@mui/material'
 import { StickyTable, ITableColumn } from 'components/shared/table/StickyTable'
 import { DefaultHeader } from 'components/shared/table/DefaultHeader'
 import { DeleteDialog } from 'components/shared/table/DeleteDialog'
-import { DeleteButton, UpdateButton, ViewButton } from 'components/shared/table/ActionButton'
+import { DeleteButton, DetailButton, UpdateButton, ViewButton } from 'components/shared/table/ActionButton'
+import PointOfSaleRoundedIcon from '@mui/icons-material/PointOfSaleRounded'
+import useAlert from 'hooks/useAlert'
 import { MenuDialog } from 'components/shared/MenuDialog'
 import { CustomButton } from 'styles'
-import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded'
-import TableViewRoundedIcon from '@mui/icons-material/TableViewRounded'
 import Axios from 'constants/functions/Axios'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
-import useLanguage from 'hooks/useLanguage'
-import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { getStore, selectStore } from 'modules/organize/store/redux'
 import { currencyFormat, debounce, timeFormat } from 'utils'
 import SaleBreadcrumbs from '../components/Breadcrumbs'
-import { exportQuotationExcel } from './api'
-import { QuotationPdfExporter } from './QuotationDocument'
+import { convertQuotation, quotationStatus } from './api'
+import { StatusChip } from './StatusChip'
 
-declare type ColumnHeader = 'invoice' | 'customer' | 'items' | 'total' | 'createdBy' | 'createdAt' | 'action'
+declare type ColumnHeader = 'invoice' | 'customer' | 'items' | 'total' | 'status' | 'expireAt' | 'createdBy' | 'createdAt' | 'action'
 
+// Sized to their content so the table fits without scrolling sideways
 const columnData: ITableColumn<ColumnHeader>[] = [
-  { id: 'invoice', label: 'No', minWidth: 140 },
-  { id: 'customer', label: 'Customer', minWidth: 150 },
-  { id: 'items', label: 'Items', minWidth: 70 },
-  { id: 'total', label: 'Total', minWidth: 100 },
-  { id: 'createdBy', label: 'Created By', minWidth: 100 },
-  { id: 'createdAt', label: 'Created At', minWidth: 140 },
-  { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
+  { id: 'invoice', label: 'No', minWidth: 110 },
+  { id: 'customer', label: 'Customer', minWidth: 100 },
+  { id: 'items', label: 'Items', minWidth: 45 },
+  { id: 'total', label: 'Total', minWidth: 70 },
+  { id: 'status', label: 'Status', minWidth: 90 },
+  { id: 'expireAt', label: 'Valid Until', minWidth: 85 },
+  { id: 'createdBy', label: 'Created By', minWidth: 80 },
+  { id: 'createdAt', label: 'Created At', minWidth: 115 },
+  { id: 'action', label: 'Action', minWidth: 120, align: 'right' },
 ]
 
 export const QuotationList = () => {
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const { theme } = useTheme()
   const { device } = useWeb()
   const { user } = useAuth()
-  const { lang } = useLanguage()
   const { notify, loadify } = useNotify()
-  const { data: store } = useAppSelector(selectStore)
   const [queryParams, setQueryParams] = useSearchParams()
   const [quotations, setQuotations] = useState<any[]>([])
   const [count, setCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [dialog, setDialog] = useState({ open: false, id: null })
-  const [pdfQuotation, setPdfQuotation] = useState<any>(null)
   const privilege = user?.privilege?.quotation
+  // Sending to cashing creates cart items, so it also needs the cashing privilege
+  const canSendToCash = !!privilege?.detail && !!user?.privilege?.transaction?.create
+  const confirm = useAlert()
+
+  const handleToCash = (quotation) => {
+    confirm({
+      title: 'Send to cashing?',
+      description: 'The items will be added to the cashing cart at the quoted prices and taken from stock. The quotation locks once the sale is paid.',
+      variant: 'info',
+    })
+      .then(() => {
+        const response = convertQuotation(quotation._id)
+        loadify(response)
+        response.then((result) => navigate('/sale/cashing', { state: { fromQuotation: result } }))
+      })
+      .catch(() => {})
+  }
 
   const fetchQuotations = () => {
     setLoading(true)
@@ -68,10 +81,6 @@ export const QuotationList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryParams])
 
-  useEffect(() => {
-    dispatch(getStore({ id: 'store', fields: ['name', 'logo', 'contact', 'address', 'other', 'font'] }))
-  }, [dispatch])
-
   const handleQuery = (data) => {
     const query = Object.fromEntries(queryParams)
     if (data.limit || data.search !== undefined) return setQueryParams({ ...query, ...data, page: 0 })
@@ -87,37 +96,40 @@ export const QuotationList = () => {
     setDialog({ open: false, id: null })
   }
 
-  const handleExcel = (id) => {
-    exportQuotationExcel(id, lang).catch((err) => notify(err?.response?.data?.msg, 'error'))
-  }
-
   const rows = quotations.map((quotation) => {
     const open = () => navigate(`/sale/quotation/${quotation._id}`)
+    // Converted quotations are locked: they open read-only and can't be deleted
+    const converted = quotation.status === 'CONVERTED'
+    const canDelete = privilege?.delete && !converted
+    const toCash = canSendToCash && quotationStatus(quotation) === 'Draft'
     const action = device === 'mobile' ? (
       <MenuDialog label={<ViewButton />}>
-        <MenuItem component='div' onClick={open}>Open</MenuItem>
-        <MenuItem component='div' onClick={() => setPdfQuotation(quotation)}>PDF</MenuItem>
-        <MenuItem component='div' onClick={() => handleExcel(quotation._id)}>Excel</MenuItem>
-        {privilege?.delete && <MenuItem component='div' onClick={() => setDialog({ open: true, id: quotation._id })}>Delete</MenuItem>}
+        <MenuItem component='div' onClick={open}>{converted ? 'View' : 'Open'}</MenuItem>
+        {toCash && <MenuItem component='div' onClick={() => handleToCash(quotation)}>To Cash</MenuItem>}
+        {canDelete && <MenuItem component='div' onClick={() => setDialog({ open: true, id: quotation._id })}>Delete</MenuItem>}
       </MenuDialog>
     ) : (
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-        {privilege?.update && <UpdateButton style={{ margin: 0 }} onClick={open} />}
-        <CustomButton
-          styled={theme}
-          onClick={() => setPdfQuotation(quotation)}
-          style={{ marginLeft: 5, minWidth: 0, padding: '0 7px', height: 30, color: theme.color.error, backgroundColor: `${theme.color.error}22` }}
-        >
-          <PictureAsPdfRoundedIcon style={{ fontSize: 18 }} />
-        </CustomButton>
-        <CustomButton
-          styled={theme}
-          onClick={() => handleExcel(quotation._id)}
-          style={{ marginLeft: 5, minWidth: 0, padding: '0 7px', height: 30, color: theme.color.info, backgroundColor: `${theme.color.info}22` }}
-        >
-          <TableViewRoundedIcon style={{ fontSize: 18 }} />
-        </CustomButton>
-        {privilege?.delete && <DeleteButton onClick={() => setDialog({ open: true, id: quotation._id })} />}
+        {privilege?.update && (converted
+          ? (
+            <DetailButton
+              onClick={open}
+              style={{ margin: 0, borderRadius: theme.radius.primary, color: theme.text.secondary, backgroundColor: `${theme.text.secondary}22` }}
+            />
+          )
+          : <UpdateButton style={{ margin: 0 }} onClick={open} />)}
+        {toCash && (
+          <Tooltip title='To Cash'>
+            <CustomButton
+              styled={theme}
+              onClick={() => handleToCash(quotation)}
+              style={{ marginLeft: 5, minWidth: 0, padding: '0 7px', height: 30, color: theme.color.success, backgroundColor: `${theme.color.success}22` }}
+            >
+              <PointOfSaleRoundedIcon style={{ fontSize: 18 }} />
+            </CustomButton>
+          </Tooltip>
+        )}
+        {canDelete && <DeleteButton onClick={() => setDialog({ open: true, id: quotation._id })} />}
       </div>
     )
 
@@ -127,6 +139,8 @@ export const QuotationList = () => {
       customer: quotation.customer?.displayName || quotation.customer?.fullName || '...',
       items: quotation.items?.length || 0,
       total: currencyFormat(quotation.total?.value, quotation.total?.currency),
+      status: <StatusChip quotation={quotation} />,
+      expireAt: quotation.expireAt ? timeFormat(quotation.expireAt, 'YYYY-MM-DD') : '...',
       createdBy: quotation.createdBy?.username || '...',
       createdAt: timeFormat(quotation.createdAt, 'YYYY-MM-DD HH:mm'),
       action,
@@ -145,14 +159,6 @@ export const QuotationList = () => {
         />
       }
     >
-      <QuotationPdfExporter
-        quotation={pdfQuotation}
-        store={store}
-        onDone={(err) => {
-          if (err) notify(err?.message || 'Failed to export PDF', 'error')
-          setPdfQuotation(null)
-        }}
-      />
       <DeleteDialog
         id={dialog.id}
         isOpen={dialog.open}

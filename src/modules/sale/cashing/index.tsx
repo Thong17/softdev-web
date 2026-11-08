@@ -20,6 +20,22 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 import { getListCodeProduct, selectListCodeProduct } from 'shared/redux'
+import { useLocation, useNavigate } from 'react-router-dom'
+
+// Cart items from the API in the shape the invoice panel uses
+const toTransactionItem = (data): ITransactionItem => ({
+  id: data._id,
+  description: data.description,
+  discount: {
+    value: data.discount?.value || 0,
+    currency: data.discount?.type || 'PCT',
+    isFixed: data.discount?.isFixed || false,
+  },
+  price: { value: data.price, currency: data.currency },
+  quantity: data.quantity,
+  total: data.total,
+  profile: data.product?.profile?.filename,
+})
 
 export const Cashing = () => {
   const { user } = useAuth()
@@ -45,11 +61,35 @@ export const Cashing = () => {
   const [transaction, setTransaction] = useState<ITransactionItem | null>(null)
   const [reload, setReload] = useState(false)
   const [table, setTable] = useState('--');
+  // Set when the cart came from a quotation; the payment links back to it
+  const [quotationId, setQuotationId] = useState<string | null>(null)
+  const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(getInfoStore())
     dispatch(getListCodeProduct())
   }, [dispatch])
+
+  // "To Cash" on a quotation opens this page with its cart items
+  useEffect(() => {
+    const fromQuotation = (location.state as any)?.fromQuotation
+    if (!fromQuotation) return
+    const { quotation, transactions } = fromQuotation
+    invoiceRef.current?.loadCart({
+      transactions: transactions.map(toTransactionItem),
+      customer: quotation.customer,
+      discounts: quotation.discounts,
+      services: quotation.services,
+      vouchers: quotation.vouchers,
+    })
+    setQuotationId(quotation._id)
+    setReload((prev) => !prev)
+    notify(`Loaded quotation ${quotation.invoice}`, 'success')
+    // Clear the state so a refresh doesn't load the same items again
+    navigate(location.pathname, { replace: true, state: null })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleClickProduct = (id) => {
     setProductDialog({ ...productDialog, productId: id })
@@ -71,6 +111,7 @@ export const Cashing = () => {
       vouchers: [data.voucher],
       services: [data.tax],
       customer: paymentDialog.customer?.id,
+      ...(quotationId && { quotation: quotationId }),
     }
 
     Axios({
@@ -144,6 +185,7 @@ export const Cashing = () => {
     })
     setDisableProduct(false)
     setTable('--')
+    setQuotationId(null)
   }
 
   const handleChangePayment = (data) => {
@@ -198,19 +240,7 @@ export const Cashing = () => {
 
   const handleAddTransaction = (data, stockRemain) => {
     setStockProducts(stockRemain)
-    setTransaction({
-      id: data._id,
-      description: data.description,
-      discount: {
-        value: data.discount?.value || 0,
-        currency: data.discount?.type || 'PCT',
-        isFixed: data.discount?.isFixed || false,
-      },
-      price: { value: data.price, currency: data.currency },
-      quantity: data.quantity,
-      total: data.total,
-      profile: data.product?.profile?.filename
-    })
+    setTransaction(toTransactionItem(data))
   }
 
   return (

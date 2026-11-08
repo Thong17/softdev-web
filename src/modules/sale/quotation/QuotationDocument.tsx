@@ -52,6 +52,7 @@ export const QuotationDocument = forwardRef(({ quotation, store }: any, ref: any
           <div style={{ fontSize: 26, fontWeight: 'bold', letterSpacing: 2 }}>QUOTATION</div>
           <div style={{ marginTop: 5 }}>No. <b>{quotation?.invoice}</b></div>
           <div>Date: {timeFormat(quotation?.createdAt, 'YYYY-MM-DD')}</div>
+          {quotation?.expireAt && <div>Valid until: {timeFormat(quotation.expireAt, 'YYYY-MM-DD')}</div>}
         </div>
       </div>
 

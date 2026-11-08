@@ -166,6 +166,9 @@ export interface ITransactionItem {
   total: ICurrency
   hasThermalPrinting?: boolean
   options?: any[]
+  // Quotation items: which stock to take when converted to cashing
+  color?: string | null
+  customerOption?: string | null
 }
 
 export const recalculatePayment = (paymentId, data) => {
@@ -275,18 +278,9 @@ export const InvoiceForm = forwardRef(({
     callClearPayment() {
       onClearPayment()
     },
+    // Shows a saved quotation for editing (quotation mode)
     loadQuotation(data) {
-      const customerData = data.customer
-        ? {
-            displayName: data.customer.displayName,
-            id: data.customer._id,
-            fullName: data.customer.fullName,
-            address: data.customer.address,
-            point: data.customer.point || 0,
-          }
-        : { displayName: null, id: null, fullName: null, address: null, point: 0 }
-      setCustomer(customerData)
-      onChangeCustomer(customerData)
+      applyCustomer(data.customer)
       setTransactions(
         (data.items || []).map((item) => ({
           id: item._id,
@@ -302,16 +296,47 @@ export const InvoiceForm = forwardRef(({
           total: item.total,
           note: item.note,
           profile: item.profile,
+          color: item.color,
+          options: item.options,
+          customerOption: item.customerOption,
         }))
       )
-      const [savedDiscount] = data.discounts || []
-      const [savedTax] = data.services || []
-      const [savedVoucher] = data.vouchers || []
-      if (savedDiscount) setDiscount({ title: 'Discount', value: savedDiscount.value || 0, type: savedDiscount.type || 'PCT', isFixed: savedDiscount.isFixed || false, isEditing: false })
-      if (savedTax) setTax({ title: 'Tax', value: savedTax.value || 0, type: savedTax.type || 'PCT', isEditing: false })
-      if (savedVoucher) setVoucher({ title: 'Voucher', value: savedVoucher.value || 0, type: savedVoucher.type || 'PCT', isFixed: savedVoucher.isFixed || false, isEditing: false })
+      applyAdjustments(data)
+    },
+    // Fills the cart with existing cart items, e.g. converted from a quotation
+    loadCart({ transactions, customer, discounts, services, vouchers }) {
+      applyCustomer(customer)
+      setTransactions(transactions)
+      applyAdjustments({ discounts, services, vouchers })
+    },
+    getQuotationData() {
+      return getQuotationData()
     },
   }))
+
+  const applyCustomer = (data) => {
+    const customerData = data
+      ? {
+          displayName: data.displayName,
+          id: data._id,
+          fullName: data.fullName,
+          address: data.address,
+          point: data.point || 0,
+        }
+      : { displayName: null, id: null, fullName: null, address: null, point: 0 }
+    setCustomer(customerData)
+    onChangeCustomer(customerData)
+  }
+
+  // The invoice-level discount, tax and voucher
+  const applyAdjustments = ({ discounts, services, vouchers }) => {
+    const [savedDiscount] = discounts || []
+    const [savedTax] = services || []
+    const [savedVoucher] = vouchers || []
+    if (savedDiscount) setDiscount({ title: 'Discount', value: savedDiscount.value || 0, type: savedDiscount.type || 'PCT', isFixed: savedDiscount.isFixed || false, isEditing: false })
+    if (savedTax) setTax({ title: 'Tax', value: savedTax.value || 0, type: savedTax.type || 'PCT', isEditing: false })
+    if (savedVoucher) setVoucher({ title: 'Voucher', value: savedVoucher.value || 0, type: savedVoucher.type || 'PCT', isFixed: savedVoucher.isFixed || false, isEditing: false })
+  }
 
   // Quotation items are recalculated locally with the same rule the cart uses
   const calculateItemTotal = (item) => {
@@ -1204,7 +1229,8 @@ export const InvoiceForm = forwardRef(({
                   {language['CLEAR']}
                 </CustomButton>
                 {isQuotation ? <>
-                  <CustomButton
+                  {/* A locked (converted) quotation can still be exported, not saved */}
+                  {!disableForm && <CustomButton
                     styled={theme}
                     fullWidth
                     onClick={() => handleQuotationAction(onSave)}
@@ -1216,7 +1242,7 @@ export const InvoiceForm = forwardRef(({
                   >
                     <SaveRoundedIcon style={{ fontSize: 19, marginRight: 5 }} />
                     {language['SAVE']}
-                  </CustomButton>
+                  </CustomButton>}
                   <CustomButton
                     styled={theme}
                     fullWidth
