@@ -115,7 +115,7 @@ export const Quotation = () => {
   const handleClear = () => {
     invoiceRef?.current?.callClearPayment()
     setSaved(null)
-    if (id) navigate('/sale/quotation', { replace: true })
+    if (id) navigate('/sale/quotation/create', { replace: true })
   }
 
   return (
@@ -157,7 +157,7 @@ export const Quotation = () => {
               <>
                 <Tooltip title={language['QUOTATION_LIST']}>
                   <IconButton
-                    onClick={() => navigate('/sale/quotation/list')}
+                    onClick={() => navigate('/sale/quotation')}
                     style={{
                       color: theme.color.info,
                       width: 30,

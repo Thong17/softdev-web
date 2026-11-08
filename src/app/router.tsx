@@ -1,4 +1,5 @@
 import { RouteObject } from 'react-router'
+import { Navigate } from 'react-router-dom'
 import AuthGuard from '../auth/AuthGuard'
 import { Login } from 'modules/auth/Login'
 import { Register } from 'modules/auth/Register'
@@ -459,9 +460,17 @@ const routes: RouteObject[] = [
         </>
       },
 
-      // Quotation
+      // Quotation: the menu opens the list; quotes are built at `create`
       {
         path: 'quotation',
+        element: (
+          <AuthGuard role={{ route: 'quotation', action: 'list' }}>
+            <QuotationList />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'quotation/create',
         element: (
           <AuthGuard role={{ route: 'quotation', action: 'create' }}>
             <Quotation />
@@ -469,12 +478,9 @@ const routes: RouteObject[] = [
         ),
       },
       {
+        // Old address of the list; without this it would match `quotation/:id`
         path: 'quotation/list',
-        element: (
-          <AuthGuard role={{ route: 'quotation', action: 'list' }}>
-            <QuotationList />
-          </AuthGuard>
-        ),
+        element: <Navigate to='/sale/quotation' replace />,
       },
       {
         path: 'quotation/:id',

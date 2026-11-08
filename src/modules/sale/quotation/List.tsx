@@ -141,7 +141,7 @@ export const QuotationList = () => {
           navigate={navigate}
           handleSearch={(event) => updateSearch(event.target.value)}
           breadcrumb={<SaleBreadcrumbs page='quotationList' />}
-          createUrl={privilege?.create ? '/sale/quotation' : undefined}
+          createUrl={privilege?.create ? '/sale/quotation/create' : undefined}
         />
       }
     >

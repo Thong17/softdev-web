@@ -54,10 +54,6 @@ const SaleBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page }) => {
       },
       {
         title: language['QUOTATION'],
-        path: '/sale/quotation',
-      },
-      {
-        title: language['QUOTATION_LIST'],
       },
     ],
   }
