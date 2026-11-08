@@ -165,7 +165,7 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
       from: noWrap(nameOf(conversion.fromProduct)),
       to: noWrap(nameOf(conversion.toProduct)),
       quantity: conversion.quantity,
-      produced: noWrap(`${conversion.producedQuantity} (×${conversion.ratio})`),
+      produced: noWrap(`${conversion.producedQuantity} (${conversion.direction === 'merge' ? '÷' : '×'}${conversion.ratio})`),
       unitCost: conversion.currency === 'KHR' ? `${Math.round(unitCost)}៛` : `$${Number(unitCost.toFixed(4))}`,
       createdBy: noWrap(conversion.createdBy?.username || '...'),
     }

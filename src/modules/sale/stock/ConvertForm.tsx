@@ -57,6 +57,8 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
   const [newProduct, setNewProduct] = useState<any>(initNewProduct)
   const [ratio, setRatio] = useState<any>('')
   const [quantity, setQuantity] = useState<any>(1)
+  // `split`: 1 of this = ratio of target. `merge`: ratio of this = 1 of target.
+  const [direction, setDirection] = useState<'split' | 'merge'>('split')
   const [errors, setErrors] = useState<any>({})
   const [isLoading, setIsLoading] = useState(false)
 
@@ -78,6 +80,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
     setMode(last?.product ? 'existing' : 'new')
     setToProduct(last?.product || '')
     setRatio(last?.ratio || '')
+    setDirection(last?.direction === 'merge' ? 'merge' : 'split')
     setQuantity(1)
     setNewProduct({
       ...initNewProduct,
@@ -107,11 +110,14 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
 
   const ratioValue = parseInt(ratio) || 0
   const quantityValue = parseInt(quantity) || 0
-  const produced = ratioValue * quantityValue
+  const isMerge = direction === 'merge'
+  // Break down: the input is how many to convert. Combine: how many to make.
+  const consumedQuantity = isMerge ? quantityValue * ratioValue : quantityValue
+  const produced = isMerge ? quantityValue : quantityValue * ratioValue
 
   // Same cost rule as the API: consumed batch cost spread over the new units
   const preview = useMemo(() => {
-    let remaining = quantityValue
+    let remaining = consumedQuantity
     const consumed: any[] = []
     for (const stock of batches) {
       if (remaining < 1) break
@@ -124,7 +130,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
     const sellRate = user?.drawer?.sellRate || 4000
     const totalCost = consumed.reduce((total, item) => total + (currency === 'USD' && item.currency === 'KHR' ? item.cost / sellRate : item.cost), 0)
     return { currency, unitCost: produced > 0 ? totalCost / produced : 0 }
-  }, [batches, quantityValue, produced, user?.drawer?.sellRate])
+  }, [batches, consumedQuantity, produced, user?.drawer?.sellRate])
 
   const targetName = mode === 'existing'
     ? productOptions.find((option) => option.value === toProduct)?.label
@@ -172,7 +178,11 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
     }
     if (!Number.isInteger(Number(ratio)) || ratioValue < 1) err.ratio = 'Must be a whole number of at least 1'
     if (!Number.isInteger(Number(quantity)) || quantityValue < 1) err.quantity = 'Must be a whole number of at least 1'
-    else if (quantityValue > available) err.quantity = `Only ${available} available`
+    else if (consumedQuantity > available) {
+      err.quantity = isMerge
+        ? `Needs ${consumedQuantity}, only ${available} available`
+        : `Only ${available} available`
+    }
     setErrors(err)
     return Object.keys(err).length === 0
   }
@@ -198,8 +208,10 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
                 }),
               },
             }),
+        direction,
         ratio: ratioValue,
-        quantity: quantityValue,
+        // The API always takes the number of this product's units used
+        quantity: consumedQuantity,
       },
     })
       .then((response) => {
@@ -309,7 +321,9 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
               />
               {!errors.price && ratioValue > 0 && product?.price > 0 && (
                 <HelperText theme={theme}>
-                  Bundle price ÷ {ratioValue} = {Number((product.price / ratioValue).toFixed(4))}
+                  {isMerge
+                    ? <>{productName(product)} price × {ratioValue} = {Number((product.price * ratioValue).toFixed(4))}</>
+                    : <>{productName(product)} price ÷ {ratioValue} = {Number((product.price / ratioValue).toFixed(4))}</>}
                 </HelperText>
               )}
             </div>
@@ -364,20 +378,33 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
           </div>
         )}
 
+        <div style={{ display: 'flex', gap: 10 }}>
+          <Button style={toggleStyle(!isMerge)} onClick={() => setDirection('split')}>
+            Break Down (1 → many)
+          </Button>
+          <Button style={toggleStyle(isMerge)} onClick={() => setDirection('merge')}>
+            Combine (many → 1)
+          </Button>
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridColumnGap: 20 }}>
           <div>
             <TextField
               type='number'
               step='1'
               min='1'
-              label={`1 ${productName(product)} =`}
+              label={isMerge
+                ? `${productName(product)} per 1 ${targetName || 'target'}`
+                : `1 ${productName(product)} =`}
               err={errors.ratio}
               value={ratio}
               onChange={(event) => setRatio(event.target.value)}
             />
             {!errors.ratio && (
               <HelperText theme={theme}>
-                units of {targetName || 'the target product'}
+                {isMerge
+                  ? `${ratioValue || 'N'} ${productName(product)} = 1 ${targetName || 'target product'}`
+                  : `units of ${targetName || 'the target product'}`}
               </HelperText>
             )}
           </div>
@@ -386,15 +413,16 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
               type='number'
               step='1'
               min='1'
-              max={available}
-              label='Number to Convert'
+              label={isMerge ? 'Number to Make' : 'Number to Convert'}
               err={errors.quantity}
               value={quantity}
               onChange={(event) => setQuantity(event.target.value)}
             />
             {!errors.quantity && (
               <HelperText theme={theme}>
-                {available} {productName(product)} available
+                {isMerge
+                  ? `Uses ${consumedQuantity} of ${available} ${productName(product)}`
+                  : `${available} ${productName(product)} available`}
               </HelperText>
             )}
           </div>
@@ -410,14 +438,14 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
           }}
         >
           <div>
-            <b>{quantityValue || 0} {productName(product)}</b> → <b>{produced.toLocaleString()} {targetName || '...'}</b>
+            <b>{consumedQuantity.toLocaleString()} {productName(product)}</b> → <b>{produced.toLocaleString()} {targetName || '...'}</b>
           </div>
           <div>
             Unit cost: {preview.currency === 'KHR'
               ? currencyFormat(preview.unitCost, 'KHR', 2)
               : `$${Number(preview.unitCost.toFixed(4))}`}
           </div>
-          <div>Remaining {productName(product)}: {Math.max(available - quantityValue, 0)}</div>
+          <div>Remaining {productName(product)}: {Math.max(available - consumedQuantity, 0)}</div>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'end' }}>
