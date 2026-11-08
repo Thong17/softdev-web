@@ -17,6 +17,7 @@ import { useAppDispatch } from 'app/hooks'
 import { IImage } from 'components/shared/form/UploadField'
 import useTheme from 'hooks/useTheme'
 import { useNavigate } from 'react-router-dom'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 
 const statusOption = [
   { label: 'Enabled', value: true },
@@ -35,8 +36,9 @@ const CategoryForm = ({ defaultValues, id }: any) => {
     setValue,
     getValues,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(categorySchema), defaultValues })
+  const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const { device } = useWeb()
   const { notify } = useNotify()
   const [status, setStatus] = useState(defaultValues?.status)
@@ -89,6 +91,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
     })
       .then((data) => {
         dispatch(getListCategory({}))
+        markSaved()
         notify(data?.data?.msg, 'success')
         if (!id) {
           reset(defaultValues)
@@ -107,6 +110,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
 
   return (
     <form
+      {...trackChanges}
       onSubmit={handleSubmit(submit)}
       style={{
         display: 'grid',

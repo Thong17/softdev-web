@@ -3,6 +3,7 @@ import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { colorSchema } from './schema'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import {
   DetailField,
   FileField,
@@ -31,8 +32,9 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
     setValue,
     setError,
     getValues,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(colorSchema), defaultValues })
+  const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
   const dispatch = useAppDispatch()
   const { notify, loadify } = useNotify()
   const { width, device } = useWeb()
@@ -165,10 +167,14 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
       })
   }
 
+  // ✕, Cancel and the backdrop ask before discarding changes; closing after a save does not
+  const handleCancelDialog = guardClose(handleCloseDialog)
+
   return (
-    <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
-      <DialogTitle title='Color Form' onClose={handleCloseDialog} />
+    <AlertDialog isOpen={dialog.open} handleClose={handleCancelDialog}>
+      <DialogTitle title='Color Form' onClose={handleCancelDialog} />
       <form
+        {...trackChanges}
         style={{
           fontFamily: theme.font.family,
           display: 'grid',
@@ -281,7 +287,7 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
         >
           <CustomButton
             styled={theme}
-            onClick={handleCloseDialog}
+            onClick={handleCancelDialog}
             style={{
               backgroundColor: `${theme.color.error}22`,
               color: theme.color.error,

@@ -6,6 +6,7 @@ import { DetailField, TextField } from 'components/shared/form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { floorSchema } from './schema'
 import { useForm } from 'react-hook-form'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { DeleteButton, UpdateButton } from 'components/shared/table/ActionButton'
 import { TextEllipsis } from 'components/shared/TextEllipsis'
 import DragHandleRoundedIcon from '@mui/icons-material/DragHandleRounded'
@@ -26,8 +27,9 @@ export const FloorForm = ({
     setValue,
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(floorSchema) })
+  const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
   const dispatch = useAppDispatch()
   const { notify } = useNotify()
   const confirm = useAlert()
@@ -83,9 +85,12 @@ export const FloorForm = ({
     reset()
   }
 
+  // ✕, Cancel and the backdrop ask before discarding changes; closing after a save does not
+  const handleCancelDialog = guardClose(handleCloseDialog)
+
   return (
-    <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
-      <DialogTitle title='Floor Form' onClose={handleCloseDialog} />
+    <AlertDialog isOpen={dialog.open} handleClose={handleCancelDialog}>
+      <DialogTitle title='Floor Form' onClose={handleCancelDialog} />
       <div style={{ padding: 20, boxSizing: 'border-box' }}>
         <div
           style={{
@@ -122,6 +127,7 @@ export const FloorForm = ({
           })}
         </div>
         <form
+          {...trackChanges}
           style={{
             fontFamily: theme.font.family,
             display: 'grid',
@@ -168,7 +174,7 @@ export const FloorForm = ({
             }}
           >
             {
-              floorId ? <Button onClick={handleCancelForm}>Cancel</Button> : <Button onClick={handleCloseDialog}>Close</Button>
+              floorId ? <Button onClick={handleCancelForm}>Cancel</Button> : <Button onClick={handleCancelDialog}>Close</Button>
             }
             <CustomButton
               type='submit'

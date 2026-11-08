@@ -17,6 +17,7 @@ import { InvoiceContainer } from 'components/shared/container/InvoiceContainer'
 import useTheme from 'hooks/useTheme'
 import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
 import { useNavigate } from 'react-router-dom'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 
 export const fontOption = [
   { label: 'Monospace', value: "monospace" },
@@ -30,8 +31,9 @@ const StoreForm = ({ defaultValues, id }: any) => {
     setValue,
     getValues,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(storeSchema), defaultValues })
+  const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const { theme } = useTheme()
   const navigate = useNavigate()
   const { width } = useWeb()
@@ -92,6 +94,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
       body: data,
     })
       .then((data) => {
+        markSaved()
         notify(data?.data?.msg, 'success')
       })
       .catch((err) => {
@@ -115,6 +118,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
       }}
     >
       <form
+        {...trackChanges}
         onSubmit={handleSubmit(submit)}
         style={{
           height: 'fit-content',

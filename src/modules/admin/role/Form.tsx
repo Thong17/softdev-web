@@ -16,6 +16,7 @@ import useNotify from 'hooks/useNotify'
 import { useEffect, useState } from 'react'
 import useTheme from 'hooks/useTheme'
 import { useNavigate } from 'react-router-dom'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import useLanguage from 'hooks/useLanguage'
 
 export const RoleForm = ({ defaultValues, id }: any) => {
@@ -25,8 +26,9 @@ export const RoleForm = ({ defaultValues, id }: any) => {
     setValue,
     getValues,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(roleSchema), defaultValues })
+  const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const { device } = useWeb()
   const { notify } = useNotify()
   const { theme } = useTheme()
@@ -57,6 +59,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
       body: data,
     })
       .then((data) => {
+        markSaved()
         notify(data?.data?.msg, 'success')
         dispatch(getListRole())
         if (!id) {
@@ -84,6 +87,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
     }}>
       <div style={{ gridArea: 'form' }}>
         <form
+          {...trackChanges}
           onSubmit={handleSubmit(submit)}
           style={{
             display: 'grid',

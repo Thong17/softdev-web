@@ -19,6 +19,7 @@ import useAuth from 'hooks/useAuth'
 import useLanguage from 'hooks/useLanguage'
 import useNotify from 'hooks/useNotify'
 import useWeb from 'hooks/useWeb'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { useEffect, useMemo, useState } from 'react'
 import { currencyFormat } from 'utils'
 
@@ -137,6 +138,9 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
     : newProduct.name?.[lang] || newProduct.name?.['English']
 
   const handleClose = () => setDialog({ ...dialog, open: false })
+  // Typing in the dialog counts as a change; ✕, Cancel and the backdrop ask first
+  const { guardClose, trackChanges } = useUnsavedChanges({ enabled: !!dialog.open })
+  const handleCancel = guardClose(handleClose)
 
   // Same upload flow as the product form
   const handleChangeImages = (event) => {
@@ -231,9 +235,10 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
   })
 
   return (
-    <AlertDialog isOpen={dialog.open} handleClose={handleClose}>
-      <DialogTitle title='Convert Stock' onClose={handleClose} />
+    <AlertDialog isOpen={dialog.open} handleClose={handleCancel}>
+      <DialogTitle title='Convert Stock' onClose={handleCancel} />
       <div
+        {...trackChanges}
         style={{
           fontFamily: theme.font.family,
           width: width < 1024 ? '80vw' : '50vw',
@@ -450,7 +455,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
 
         <div style={{ display: 'flex', justifyContent: 'end' }}>
           <Button
-            onClick={handleClose}
+            onClick={handleCancel}
             style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}
           >
             Cancel

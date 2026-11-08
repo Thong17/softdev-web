@@ -10,6 +10,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useNavigate, useParams } from 'react-router-dom'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { changePasswordSchema } from './schema'
 
 export const UserChangePassword = () => {
@@ -21,8 +22,9 @@ export const UserChangePassword = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(changePasswordSchema) })
+  const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
 
   const submit = async (data) => {
     Axios({
@@ -31,6 +33,7 @@ export const UserChangePassword = () => {
       body: data,
     })
       .then((data) => {
+        markSaved()
         notify(data?.data?.msg, 'success')
       })
       .catch((err) => notify(err.response?.data?.msg, 'error'))
@@ -40,6 +43,7 @@ export const UserChangePassword = () => {
     <Layout>
       <Container>
         <form
+          {...trackChanges}
           onSubmit={handleSubmit(submit)}
           style={{
             position: 'relative',

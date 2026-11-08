@@ -19,6 +19,7 @@ import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import useTheme from 'hooks/useTheme'
 import { ProductContainer } from 'components/shared/container/ProductContainer'
 import { useNavigate } from 'react-router-dom'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 
 const typeOption = [
   ...currencyOptions,
@@ -37,8 +38,9 @@ const PromotionForm = ({ defaultValues, id }: any) => {
     setValue,
     getValues,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(promotionSchema), defaultValues })
+  const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const { device } = useWeb()
   const { theme } = useTheme()
   const { notify } = useNotify()
@@ -81,6 +83,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
     })
       .then((data) => {
         dispatch(getListPromotion({}))
+        markSaved()
         notify(data?.data?.msg, 'success')
       })
       .catch((err) => {
@@ -97,6 +100,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
 
   return (
     <form
+      {...trackChanges}
       onSubmit={handleSubmit(submit)}
       style={{
         display: 'grid',

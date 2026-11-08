@@ -13,8 +13,10 @@ import useNotify from 'hooks/useNotify'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import useWeb from 'hooks/useWeb'
 import useLanguage from 'hooks/useLanguage'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
+import useAlert from 'hooks/useAlert'
 
-const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
+const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues, theme, id }) => {
   const {
     reset,
     register,
@@ -22,11 +24,16 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
     // getValues,
     // setValue,
     setFocus,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
     resolver: yupResolver(customerSchema),
     defaultValues,
   })
+  const { hasChanges, guardClose, resetChanges, trackChanges } = useUnsavedChanges({ isDirty })
+  // Lets the customer dialog ask before closing while this form has changes
+  useEffect(() => {
+    onChangesChange?.(hasChanges)
+  }, [hasChanges, onChangesChange])
   const { notify } = useNotify()
   const { language } = useLanguage()
   // const [profilePath, setProfilePath] = useState<IImage>(defaultValues?.picture)
@@ -47,6 +54,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
     })
       .then((data) => {
         notify(data?.data?.msg, 'success')
+        resetChanges()
         reset()
         onChange()
         onClose()
@@ -77,6 +85,7 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
 
   return (
     <form
+      {...trackChanges}
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
@@ -148,10 +157,10 @@ const CustomerForm = ({ onClose, onChange, defaultValues, theme, id }) => {
             backgroundColor: `${theme.color.error}22`,
           }}
           fullWidth
-          onClick={() => {
+          onClick={guardClose(() => {
             reset()
             onClose()
-          }}
+          })}
         >
           {language['CANCEL']}
         </Button>
@@ -179,9 +188,27 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
   const [reload, setReload] = useState(false)
   const [customerForm, setCustomerForm] = useState({})
   const [customerId, setCustomerId] = useState(null)
+  const [formHasChanges, setFormHasChanges] = useState(false)
+  const confirm = useAlert()
 
   const handleCloseDialog = () => {
     setDialog({ ...dialog, open: false })
+  }
+
+  // ✕ and the backdrop ask first while the customer form has unsaved changes
+  const handleCancelDialog = () => {
+    if (!(showForm && formHasChanges)) return handleCloseDialog()
+    confirm({
+      title: 'Discard unsaved changes?',
+      description: 'You have changes that have not been saved. They will be lost if you continue.',
+      variant: 'warning',
+    })
+      .then(() => {
+        setShowForm(false)
+        setFormHasChanges(false)
+        handleCloseDialog()
+      })
+      .catch(() => {})
   }
 
   const handleClickCustomer = (data) => {
@@ -207,7 +234,7 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
     <AlertContainer
       justify='start'
       isOpen={dialog.open}
-      handleClose={handleCloseDialog}
+      handleClose={handleCancelDialog}
     >
       <div
         style={{
@@ -218,7 +245,7 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
           flexDirection: 'column',
         }}
       >
-        <DialogTitle title={language['CUSTOMER']} onClose={handleCloseDialog} />
+        <DialogTitle title={language['CUSTOMER']} onClose={handleCancelDialog} />
         <div
           style={{
             padding: '10px 20px 20px 20px',
@@ -240,8 +267,10 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
           </div>
           {showForm ? (
             <CustomerForm
+              onChangesChange={setFormHasChanges}
               onClose={() => {
                 setShowForm(false)
+                setFormHasChanges(false)
                 setCustomerForm({})
                 setCustomerId(null)
               }}

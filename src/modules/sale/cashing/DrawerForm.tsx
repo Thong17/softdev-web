@@ -1,6 +1,7 @@
 import { AlertContainer } from 'components/shared/container/AlertContainer'
 import useTheme from 'hooks/useTheme'
 import { useForm } from 'react-hook-form'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { drawerSchema } from 'shared/schema'
 import Button from 'components/shared/Button'
@@ -137,10 +138,11 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
     setValue,
     getValues,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
     resolver: yupResolver(drawerSchema),
   })
+  const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
   const { language } = useLanguage()
   const [cashObj, setCashObj] = useState(initCash)
   const [listCash, setListCash] = useState<any[]>(
@@ -385,11 +387,14 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
       .catch(() => {})
   }
 
+  // ✕, Cancel and the backdrop ask before discarding changes; closing after a save does not
+  const handleCancelDialog = guardClose(handleCloseDialog)
+
   return (
     <AlertContainer
       justify='center'
       isOpen={dialog.open}
-      handleClose={handleCloseDialog}
+      handleClose={handleCancelDialog}
     >
       <div
         style={{
@@ -401,8 +406,9 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
           flexDirection: 'column',
         }}
       >
-        <DialogTitle title={language['DRAWER']} onClose={handleCloseDialog} />
+        <DialogTitle title={language['DRAWER']} onClose={handleCancelDialog} />
         <form
+          {...trackChanges}
           onSubmit={handleSubmit(submit)}
           style={{
             display: 'grid',
@@ -457,7 +463,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
               </Button>
             ) : (
               <Button
-                onClick={handleCloseDialog}
+                onClick={handleCancelDialog}
                 style={{
                   color: theme.color.error,
                   backgroundColor: `${theme.color.error}22`,

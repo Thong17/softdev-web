@@ -9,6 +9,7 @@ import { DetailField, TextField } from 'components/shared/form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { structureSchema } from './schema'
 import { useForm } from 'react-hook-form'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { currencyOptions } from 'components/shared/form/InvoiceForm'
 
 const durationOptions = [
@@ -52,8 +53,9 @@ export const StructureForm = ({
     register,
     setValue,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(structureSchema), defaultValues })
+  const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
   const [size, setSize] = useState('small')
   const [align, setAlign] = useState('center')
   const [justify, setJustify] = useState('center')
@@ -134,13 +136,17 @@ export const StructureForm = ({
     handleCloseDialog()
   }
 
+  // ✕, Cancel and the backdrop ask before discarding changes; closing after a save does not
+  const handleCancelDialog = guardClose(handleCloseDialog)
+
   return (
     <AlertDialog
       isOpen={dialog.open}
-      handleClose={handleCloseDialog}
+      handleClose={handleCancelDialog}
     >
-      <DialogTitle title='Structure Form' onClose={handleCloseDialog} />
+      <DialogTitle title='Structure Form' onClose={handleCancelDialog} />
       <form
+        {...trackChanges}
         style={{
           fontFamily: theme.font.family,
           display: 'grid',
@@ -280,7 +286,7 @@ export const StructureForm = ({
         </div>
         <div style={{ gridArea: 'action', display: 'flex', justifyContent: 'end' }}>
           <Button
-            onClick={handleCloseDialog}
+            onClick={handleCancelDialog}
             style={{
               backgroundColor: `${theme.color.error}22`,
               color: theme.color.error,

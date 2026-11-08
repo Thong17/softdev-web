@@ -7,6 +7,7 @@ import { FileField, TextField } from 'components/shared/form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { transferSchema } from './schema'
 import { useForm } from 'react-hook-form'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { IImage } from 'components/shared/form/UploadField'
@@ -25,8 +26,9 @@ export const TransferForm = ({
     setValue,
     getValues,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(transferSchema), defaultValues })
+  const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
   const { notify } = useNotify()
   const [imagePath, setImagePath] = useState<IImage>(defaultValues?.image)
   const dispatch = useAppDispatch()
@@ -81,13 +83,17 @@ export const TransferForm = ({
     })
   }
 
+  // ✕, Cancel and the backdrop ask before discarding changes; closing after a save does not
+  const handleCancelDialog = guardClose(handleCloseDialog)
+
   return (
     <AlertDialog
       isOpen={dialog.open}
-      handleClose={handleCloseDialog}
+      handleClose={handleCancelDialog}
     >
-      <DialogTitle title='Transfer' onClose={handleCloseDialog} />
+      <DialogTitle title='Transfer' onClose={handleCancelDialog} />
       <form
+        {...trackChanges}
         style={{
           minWidth: 500,
           display: 'grid',
@@ -123,7 +129,7 @@ export const TransferForm = ({
         </div>
         <div style={{ gridArea: 'action', display: 'flex', justifyContent: 'end' }}>
           <Button
-            onClick={handleCloseDialog}
+            onClick={handleCancelDialog}
             style={{
               backgroundColor: `${theme.color.error}22`,
               color: theme.color.error,

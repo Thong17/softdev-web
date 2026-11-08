@@ -15,6 +15,7 @@ import useLanguage from 'hooks/useLanguage'
 import Loading from 'components/shared/Loading'
 import useTheme from 'hooks/useTheme'
 import { useNavigate } from 'react-router-dom'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 
 export const RoleForm = ({ defaultValues, id }: any) => {
   const dispatch = useAppDispatch()
@@ -25,8 +26,9 @@ export const RoleForm = ({ defaultValues, id }: any) => {
     watch,
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(id ? updateUserSchema : createUserSchema), defaultValues })
+  const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const { device } = useWeb()
   const { theme } = useTheme()
   const navigate = useNavigate()
@@ -47,6 +49,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
     })
       .then((data) => {
         dispatch(getListUser({}))
+        markSaved()
         notify(data?.data?.msg, 'success')
         if (!id) {
           reset(defaultValues)
@@ -83,6 +86,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
 
   return (
     <form
+      {...trackChanges}
       onSubmit={handleSubmit(submit)}
       style={{
         display: 'grid',

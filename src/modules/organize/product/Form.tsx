@@ -23,6 +23,7 @@ import { currencyOptions } from 'constants/variables'
 import CropFreeIcon from '@mui/icons-material/CropFree'
 import { getListProduct } from './redux'
 import { useNavigate } from 'react-router-dom'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { IImage } from 'components/shared/form/UploadField'
 import useTheme from 'hooks/useTheme'
 
@@ -43,15 +44,16 @@ const ProductForm = ({ defaultValues, id }: any) => {
     setValue,
     setError,
     getValues,
-    formState: { errors },
-  } = useForm({ 
-    resolver: yupResolver(productSchema), 
-    defaultValues: { 
-      ...defaultValues, 
-      brand: defaultValues?.brand?._id, 
-      category: defaultValues?.category?._id 
-    } 
+    formState: { errors, isDirty },
+  } = useForm({
+    resolver: yupResolver(productSchema),
+    defaultValues: {
+      ...defaultValues,
+      brand: defaultValues?.brand?._id,
+      category: defaultValues?.category?._id
+    }
   })
+  const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const navigate = useNavigate()
   const { device } = useWeb()
   const { lang } = useLanguage()
@@ -211,6 +213,8 @@ const ProductForm = ({ defaultValues, id }: any) => {
       body: data,
     })
       .then((data) => {
+        // Before navigating to the setup page, so it isn't blocked
+        markSaved()
         notify(data?.data?.msg, 'success')
         dispatch(getListProduct({}))
         !id && navigate(`/organize/product/create/property/${data?.data?.data?._id}`)
@@ -229,6 +233,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
 
   return (
     <form
+      {...trackChanges}
       onSubmit={handleSubmit(submit)}
       style={{
         display: 'grid',

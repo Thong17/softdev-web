@@ -1,6 +1,7 @@
 import { Box, IconButton } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { CustomButton } from 'styles/index'
 import { CustomerDialog } from '../dialog/CustomerDialog'
 import useTheme from 'hooks/useTheme'
@@ -342,11 +343,12 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
     setValue,
     getValues,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
     resolver: yupResolver(reservationSchema),
     defaultValues,
   })
+  const { markSaved, guardClose, trackChanges } = useUnsavedChanges({ isDirty })
   const { language } = useLanguage()
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -398,6 +400,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
         body: data
     })
         .then((data) => {
+            markSaved()
             notify(data?.data?.msg, 'success')
             onSave()
         })
@@ -406,6 +409,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
 
   return (
     <form
+      {...trackChanges}
       onSubmit={handleSubmit(submit)}
       style={{
         display: 'grid',
@@ -526,7 +530,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
         }}
       >
         <Button
-          onClick={() => onClose()}
+          onClick={guardClose(() => onClose())}
           style={{
             color: theme.color.error,
             backgroundColor: `${theme.color.error}22`,

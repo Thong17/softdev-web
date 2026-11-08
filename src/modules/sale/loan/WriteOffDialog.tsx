@@ -7,6 +7,7 @@ import useLanguage from 'hooks/useLanguage'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import { useFieldArray, useForm } from 'react-hook-form'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { writeOffSchema } from './schema'
 import { conditionOptions, writeOffTypeOptions } from './constants'
 import { currencySymbolOptions } from 'constants/variables'
@@ -23,8 +24,9 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(writeOffSchema), defaultValues })
+  const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
 
   const { fields } = useFieldArray({
     control,
@@ -79,13 +81,16 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
       })
   }
 
+  // ✕, Cancel and the backdrop ask before discarding changes; closing after a save does not
+  const handleCancelDialog = guardClose(handleCloseDialog)
+
   return (
-    <AlertDialog isOpen={dialog.open} handleClose={handleCloseDialog}>
+    <AlertDialog isOpen={dialog.open} handleClose={handleCancelDialog}>
       <DialogTitle
         title={language['WRITE_OFF_LOAN']}
-        onClose={handleCloseDialog}
+        onClose={handleCancelDialog}
       />
-      <form onSubmit={handleSubmit(submit)}>
+      <form {...trackChanges} onSubmit={handleSubmit(submit)}>
         <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {
             fields?.map((item: any, key) => (
@@ -266,7 +271,7 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
         </div>
         <div style={{ gridArea: 'action', display: 'flex', justifyContent: 'end', padding: '0 20px 20px' }}>
           <Button
-            onClick={handleCloseDialog}
+            onClick={handleCancelDialog}
             style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}
           >
             Cancel

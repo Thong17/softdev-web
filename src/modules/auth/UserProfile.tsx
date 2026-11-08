@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useNavigate, useParams } from 'react-router-dom'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { updateProfileSchema } from './schema'
 import { FileField, IImage } from 'components/shared/form/UploadField'
 
@@ -44,8 +45,9 @@ export const UserProfile = () => {
     setValue,
     getValues,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(updateProfileSchema) })
+  const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const [gender, setGender] = useState('')
   const genderId = watch('gender')
   const [photoPath, setPhotoPath] = useState<IImage | undefined>(undefined)
@@ -97,6 +99,7 @@ export const UserProfile = () => {
       body: data,
     })
       .then((data) => {
+        markSaved()
         notify(data?.data?.msg, 'success')
       })
       .catch((err) => notify(err.response?.data?.[0]?.path, 'error'))
@@ -106,6 +109,7 @@ export const UserProfile = () => {
     <Layout>
       <Container>
         <form
+          {...trackChanges}
           onSubmit={handleSubmit(submit)}
           style={{
             position: 'relative',

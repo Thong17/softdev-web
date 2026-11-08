@@ -15,6 +15,7 @@ import { telegramConfigSchema } from './schema'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { useEffect } from 'react'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 
 declare type TelegramPrivilegeOptions = "telegramPrivilege.SENT_AFTER_PAYMENT" | "telegramPrivilege.SENT_AFTER_OPEN_DRAWER" | "telegramPrivilege.SENT_AFTER_CLOSE_DRAWER"
 interface ICheckboxTarget { name: TelegramPrivilegeOptions, checked: boolean }
@@ -31,8 +32,8 @@ const Config = () => {
     setValue,
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm({ resolver: yupResolver(telegramConfigSchema), 
+    formState: { errors, isDirty },
+  } = useForm({ resolver: yupResolver(telegramConfigSchema),
     defaultValues: {
       telegramAPIKey: '',
       telegramChatID: '',
@@ -49,8 +50,9 @@ const Config = () => {
       receiptPrinterCharPerLine: 0,
       storePrinterName: '',
       storePrinterCharPerLine: 0,
-    } 
+    }
   })
+  const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
 
   useEffect(() => {
     Axios({
@@ -72,7 +74,10 @@ const Config = () => {
       url: '/organize/store/updateTelegramSetting',
       body: data
     })
-      .then(res => notify(res?.data?.msg, 'success'))
+      .then(res => {
+        markSaved()
+        notify(res?.data?.msg, 'success')
+      })
       .catch(err => notify(err?.response?.data?.msg, 'error'))
   }
 
@@ -120,7 +125,7 @@ const Config = () => {
           </div>
         </div>
         {
-          user?.isDefault && <form onSubmit={handleSubmit(submit)}>
+          user?.isDefault && <form {...trackChanges} onSubmit={handleSubmit(submit)}>
             <Section describe='Telegram Configuration'>
               <div
                 style={{

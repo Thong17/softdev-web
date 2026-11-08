@@ -18,6 +18,7 @@ import { getListAnnouncement } from './redux'
 import { IImage } from 'components/shared/form/UploadField'
 import useTheme from 'hooks/useTheme'
 import { useNavigate } from 'react-router-dom'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 
 const statusOption = [
   { label: 'Enabled', value: true },
@@ -40,8 +41,9 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
     setValue,
     getValues,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(announcementSchema), defaultValues: normalizedDefaultValues })
+  const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const { device } = useWeb()
   const { notify } = useNotify()
   const [loading, setLoading] = useState(false)
@@ -92,6 +94,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
     })
       .then((data) => {
         dispatch(getListAnnouncement({}))
+        markSaved()
         notify(data?.data?.msg, 'success')
         if (!id) {
           reset(defaultValues)
@@ -112,6 +115,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
 
   return (
     <form
+      {...trackChanges}
       onSubmit={handleSubmit(submit)}
       style={{
         display: 'grid',

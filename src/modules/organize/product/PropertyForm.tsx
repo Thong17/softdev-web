@@ -2,6 +2,7 @@ import { CustomButton } from 'styles'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
+import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import {
   DetailField,
   LocaleField,
@@ -52,8 +53,9 @@ export const PropertyForm = ({
     setValue,
     getValues,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(propertySchema), defaultValues })
+  const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
 
   const dispatch = useAppDispatch()
   const { notify } = useNotify()
@@ -120,13 +122,17 @@ export const PropertyForm = ({
       })
   }
   
+  // ✕, Cancel and the backdrop ask before discarding changes; closing after a save does not
+  const handleCancelDialog = guardClose(handleCloseDialog)
+
   return (
     <AlertDialog
       isOpen={dialog.open}
-      handleClose={handleCloseDialog}
+      handleClose={handleCancelDialog}
     >
-      <DialogTitle title='Property Form' onClose={handleCloseDialog} />
+      <DialogTitle title='Property Form' onClose={handleCancelDialog} />
       <form
+        {...trackChanges}
         style={{
           fontFamily: theme.font.family,
           display: 'grid',
@@ -180,7 +186,7 @@ export const PropertyForm = ({
         <div style={{ gridArea: 'action', display: 'flex', justifyContent: 'end' }}>
           <CustomButton
             styled={theme}
-            onClick={handleCloseDialog}
+            onClick={handleCancelDialog}
             style={{ 
               backgroundColor: `${theme.color.error}22`,
               color: theme.color.error 
