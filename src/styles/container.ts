@@ -79,9 +79,10 @@ export const CustomGridContainer = styled('div')(
           position: 'absolute',
           inset: 0,
           pointerEvents: 'none',
-          // Shadow for the edges plus a gradient so the corner stays dark on bright images
-          boxShadow: 'inset -55px 55px 50px -30px rgba(0, 0, 0, 0.85)',
-          background: 'radial-gradient(circle at top right, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 35%, rgba(0, 0, 0, 0) 60%)',
+          // Light glow behind the action buttons: a shadow for the edges plus a
+          // gradient so the corner stays light on dark or busy images
+          boxShadow: 'inset -55px 55px 50px -30px rgba(255, 255, 255, 0.85)',
+          background: 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.25) 35%, rgba(255, 255, 255, 0) 60%)',
         },
         '&.vignette > *:not(img)': {
           zIndex: 1,
