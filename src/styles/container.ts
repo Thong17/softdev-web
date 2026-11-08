@@ -81,8 +81,20 @@ export const CustomGridContainer = styled('div')(
           pointerEvents: 'none',
           // Light glow behind the action buttons: a shadow for the edges plus a
           // gradient so the corner stays light on dark or busy images
-          boxShadow: 'inset -55px 55px 50px -30px rgba(255, 255, 255, 0.85)',
-          background: 'radial-gradient(circle at top right, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.25) 35%, rgba(255, 255, 255, 0) 60%)',
+          boxShadow: 'inset -20px 10px 50px -50px rgba(150,150,150, 1)',
+          background: 'radial-gradient(circle at top right, rgba(150,150,150, 0.7) 0%, rgba(150,150,150, 0.55) 25%, rgba(150,150,150, 0) 60%)',
+        },
+        // Frosted blur under the glow, faded out from the corner by the mask
+        // (kept on its own layer so the mask doesn't clip the glow's edges)
+        '&.vignette::before': {
+          content: '""',
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(6px)',
+          maskImage: 'radial-gradient(circle at top right, black 0%, black 20%, transparent 55%)',
+          WebkitMaskImage: 'radial-gradient(circle at top right, black 0%, black 20%, transparent 55%)',
         },
         '&.vignette > *:not(img)': {
           zIndex: 1,
