@@ -2,9 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
-import useAuth from 'hooks/useAuth'
 import useWeb from 'hooks/useWeb'
-import { Layout } from 'components/layouts/Layout'
 import { IPublicLayoutContext } from 'components/layouts/PublicLayout'
 import { SocialNav } from 'components/shared/SocialNav'
 import { ProductPriceTag } from 'components/shared/ProductPriceTag'
@@ -21,7 +19,6 @@ const FEATURED_PAGE_SIZE = 15
 export const Home = () => {
   const { theme } = useTheme()
   const { lang, language } = useLanguage()
-  const { isAuthenticated } = useAuth()
   const { device } = useWeb()
   const [categories, setCategories] = useState<IMenuCategory[]>([])
   const [categoriesLoading, setCategoriesLoading] = useState(true)
@@ -316,5 +313,6 @@ export const Home = () => {
     </div>
   )
 
-  return isAuthenticated ? <Layout>{content}</Layout> : content
+  // PublicLayout adds the admin layout for signed-in users
+  return content
 }

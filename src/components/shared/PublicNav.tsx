@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import useWeb from 'hooks/useWeb'
@@ -20,6 +20,21 @@ const NAV_LINKS: { to: string; labelKey: string }[] = [
   { to: '/about', labelKey: 'NAV_ABOUT' },
   { to: '/contact', labelKey: 'NAV_CONTACT' },
 ]
+
+// The same links for signed-in users, shown in the admin top bar like the
+// other sections' navbars (e.g. modules/sale/components/Navbar.tsx)
+export const PublicNavbarLinks = () => {
+  const { language } = useLanguage()
+  return (
+    <>
+      {NAV_LINKS.map((item) => (
+        <NavLink key={item.to} to={item.to} end={item.to === '/'}>
+          {language[item.labelKey]}
+        </NavLink>
+      ))}
+    </>
+  )
+}
 
 interface IPublicNav {
   storeName?: string
