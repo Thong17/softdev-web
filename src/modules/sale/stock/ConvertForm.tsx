@@ -1,4 +1,5 @@
 import Button from 'components/shared/ButtonWrapper'
+import { HelperText } from './HelperText'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { DetailField, FileField, LocaleField, SelectField, TextField } from 'components/shared/form'
@@ -25,14 +26,6 @@ import { currencyFormat } from 'utils'
 
 const initNewProduct = { name: {}, price: '', currency: 'USD', code: '', brand: '', category: '', status: true, description: '' }
 
-// Shown under a field; the shared `hint` prop is drawn over the floating label.
-// It sits in the 20px space TextField keeps under the input for its error
-// message, so callers hide it while the field has an error.
-const HelperText = ({ theme, children }: any) => (
-  <div style={{ fontSize: 12, color: theme.text.quaternary, marginTop: -18, paddingLeft: 7 }}>
-    {children}
-  </div>
-)
 
 const statusOptions = [
   { label: 'Enabled', value: true },
@@ -61,10 +54,14 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
   // `split`: 1 of this = ratio of target. `merge`: ratio of this = 1 of target.
   const [direction, setDirection] = useState<'split' | 'merge'>('split')
   const [errors, setErrors] = useState<any>({})
+  // Optional new selling price for an existing target product
+  const [newPrice, setNewPrice] = useState<any>('')
+  const [newPriceCurrency, setNewPriceCurrency] = useState('USD')
   const [isLoading, setIsLoading] = useState(false)
 
   const productName = (item) => item?.name?.[lang] || item?.name?.['English'] || ''
   const canCreateProduct = !!user?.privilege?.product?.create
+  const canChangePrice = !!user?.privilege?.product?.update
 
   // Batches oldest first, the order the API takes them in
   const batches = useMemo(() => [...(stocks || [])]
@@ -83,6 +80,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
     setRatio(last?.ratio || '')
     setDirection(last?.direction === 'merge' ? 'merge' : 'split')
     setQuantity(1)
+    setNewPrice('')
     setNewProduct({
       ...initNewProduct,
       currency: product?.currency || 'USD',
@@ -133,6 +131,14 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
     return { currency, unitCost: produced > 0 ? totalCost / produced : 0 }
   }, [batches, consumedQuantity, produced, user?.drawer?.sellRate])
 
+  const targetProduct: any = mode === 'existing' ? listProduct.find((item: any) => item._id === toProduct) : null
+
+  // Follow the target's currency until the user picks one
+  useEffect(() => {
+    if (targetProduct?.currency) setNewPriceCurrency(targetProduct.currency)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toProduct])
+
   const targetName = mode === 'existing'
     ? productOptions.find((option) => option.value === toProduct)?.label
     : newProduct.name?.[lang] || newProduct.name?.['English']
@@ -180,6 +186,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
       if (!newProduct.brand) err.brand = 'Brand is required'
       if (!newProduct.category) err.category = 'Category is required'
     }
+    if (mode === 'existing' && newPrice !== '' && !(Number(newPrice) >= 0)) err.newPrice = 'Invalid price'
     if (!Number.isInteger(Number(ratio)) || ratioValue < 1) err.ratio = 'Must be a whole number of at least 1'
     if (!Number.isInteger(Number(quantity)) || quantityValue < 1) err.quantity = 'Must be a whole number of at least 1'
     else if (consumedQuantity > available) {
@@ -200,7 +207,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
       body: {
         fromProduct: product._id,
         ...(mode === 'existing'
-          ? { toProduct }
+          ? { toProduct, ...(newPrice !== '' && { newPrice: Number(newPrice), newPriceCurrency }) }
           : {
               newProduct: {
                 ...newProduct,
@@ -261,14 +268,41 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
         </div>
 
         {mode === 'existing' ? (
-          <SelectField
-            search={true}
-            label='Convert To'
-            value={toProduct}
-            options={productOptions}
-            err={errors.toProduct}
-            onChange={(event) => setToProduct(event.target.value as string)}
-          />
+          <div>
+            <SelectField
+              search={true}
+              label='Convert To'
+              value={toProduct}
+              options={productOptions}
+              err={errors.toProduct}
+              onChange={(event) => setToProduct(event.target.value as string)}
+            />
+            {canChangePrice && toProduct && (
+              <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gridColumnGap: 20 }}>
+                <div>
+                  <TextField
+                    type='number'
+                    step='any'
+                    label='New Price'
+                    err={errors.newPrice}
+                    value={newPrice}
+                    onChange={(event) => setNewPrice(event.target.value)}
+                  />
+                  {!errors.newPrice && (
+                    <HelperText theme={theme}>
+                      Current price: {targetProduct ? currencyFormat(targetProduct.price, targetProduct.currency) : '--'} · leave blank to keep it
+                    </HelperText>
+                  )}
+                </div>
+                <SelectField
+                  label='Currency'
+                  value={newPriceCurrency}
+                  options={currencyOptions}
+                  onChange={(event) => setNewPriceCurrency(event.target.value as string)}
+                />
+              </div>
+            )}
+          </div>
         ) : (
           // Same layout as the product form (modules/organize/product/Form.tsx)
           <div

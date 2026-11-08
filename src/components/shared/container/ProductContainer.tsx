@@ -27,6 +27,7 @@ import { IconButton } from '@mui/material'
 import { QuantityStatus } from '../QuantityStatus'
 import useAuth from 'hooks/useAuth'
 import { CircleIcon } from '../table/CustomIcon'
+import { StockCostDialog } from '../dialog/StockCostDialog'
 
 const mappedProduct = (data, lang, rate) => {
   let stock = 0
@@ -76,6 +77,9 @@ export const ProductContainer = ({
 }: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
+  // Stock cost dialog, for roles allowed to see cost prices
+  const canViewCost = !!user?.privilege?.product?.viewCost
+  const [costProductId, setCostProductId] = useState<string | null>(null)
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
   const {
@@ -360,6 +364,18 @@ export const ProductContainer = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, data, lang, hasMoreProduct, countProduct])
 
+
+  // The box under the image (name, price, stock) opens the stock cost dialog
+  const costProps = (product) => {
+    if (!canViewCost || !product.isStock) return {}
+    return {
+      onClickContent: () => setCostProductId(product.id),
+      contentTooltip: 'Click to see full stock cost',
+    }
+  }
+
+
+
   return (
     <div>
       <div
@@ -489,6 +505,7 @@ export const ProductContainer = ({
             }}
           ></div>
         )}
+        <StockCostDialog productId={costProductId} onClose={() => setCostProductId(null)} />
         <GridLayout>
           {!loading
             ? products?.map((product: any, index) => {
@@ -501,6 +518,7 @@ export const ProductContainer = ({
                       title={product.name}
                       picture={product.profile}
                       subLeft={product.priceTag}
+                      {...costProps(product)}
                       subRight={
                         product.isStock ? (
                           <QuantityStatus
@@ -529,6 +547,7 @@ export const ProductContainer = ({
                     title={product.name}
                     picture={product.profile}
                     subLeft={product.priceTag}
+                      {...costProps(product)}
                     subRight={
                       product.isStock ? (
                         <QuantityStatus

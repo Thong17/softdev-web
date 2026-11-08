@@ -10,7 +10,7 @@ import { PromotionTag } from 'components/shared/PromotionTag'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useAuth from 'hooks/useAuth'
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, Tooltip } from '@mui/material'
 import { compareDate } from 'utils/index'
 import { ExpirationTag } from 'components/shared/ExpirationTag'
 import { CONSTANT } from 'constants/variables'
@@ -31,6 +31,8 @@ const Item = (props, ref) => {
     active,
     expireAt,
     vignette,
+    onClickContent,
+    contentTooltip,
     ...prop
   } = props
   const { notify } = useNotify()
@@ -118,15 +120,27 @@ const Item = (props, ref) => {
           loading='lazy'
         />
       </div>
-      <div className='content'>
-        <div className='title'>
-          <TextEllipsis title={title}>{title}</TextEllipsis>
-        </div>
-        <div className='sub-title'>
-          <TextEllipsis className='sub-left'>{subLeft}</TextEllipsis>
-          <TextEllipsis className='sub-right'>{subRight}</TextEllipsis>
-        </div>
-      </div>
+      {(() => {
+        // The box under the image can have its own click (e.g. stock cost),
+        // separate from clicking the image
+        const content = (
+          <div
+            className='content'
+            role={onClickContent ? 'button' : undefined}
+            onClick={onClickContent}
+            style={onClickContent ? { cursor: 'pointer' } : undefined}
+          >
+            <div className='title'>
+              <TextEllipsis title={onClickContent ? undefined : title}>{title}</TextEllipsis>
+            </div>
+            <div className='sub-title'>
+              <TextEllipsis className='sub-left'>{subLeft}</TextEllipsis>
+              <TextEllipsis className='sub-right'>{subRight}</TextEllipsis>
+            </div>
+          </div>
+        )
+        return contentTooltip ? <Tooltip title={contentTooltip}>{content}</Tooltip> : content
+      })()}
     </div>
   )
 }

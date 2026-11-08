@@ -1,5 +1,6 @@
 import Container from 'components/shared/Container'
 import ReportBreadcrumbs from './components/Breadcrumbs'
+import { ExportButton, reportRange } from './components/ExportButton'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { CardContainer } from 'components/shared/container/CardContainer'
@@ -15,10 +16,11 @@ import { styled } from '@mui/material'
 import { IThemeStyle } from 'contexts/theme/interface'
 import useTheme from 'hooks/useTheme'
 
-const Header = () => {
+const Header = ({ actions }: { actions?: any }) => {
   return (
     <>
       <ReportBreadcrumbs page='productReport' />
+      {actions && <div style={{ display: 'flex', alignItems: 'center' }}>{actions}</div>}
     </>
   )
 }
@@ -105,6 +107,10 @@ export const ProductReport = () => {
   const [loading, setLoading] = useState(true)
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+  // Export the same period as the chart: the picked range, or this day/week/month/year
+  const exportRange = () => selectedSaleChart === 'range'
+    ? reportRange(fromDate, toDate)
+    : reportRange(undefined, undefined, selectedSaleChart)
 
   useEffect(() => {
     let query = new URLSearchParams()
@@ -189,7 +195,10 @@ export const ProductReport = () => {
   }, [])
 
   return (
-    <Container header={<Header />}>
+    <Container header={<Header actions={<>
+        <ExportButton type='product' range={exportRange} />
+        <ExportButton type='inventory' label='Export Inventory' />
+      </>} />}>
       <div
         style={{
           display: 'grid',

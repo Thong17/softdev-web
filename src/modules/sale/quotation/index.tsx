@@ -9,7 +9,6 @@ import useWeb from 'hooks/useWeb'
 import { getInfoStore, selectInfoStore, selectStore } from 'modules/organize/store/redux'
 import { useEffect, useRef, useState } from 'react'
 import ReplayRoundedIcon from '@mui/icons-material/ReplayRounded'
-import ListAltRoundedIcon from '@mui/icons-material/ListAltRounded'
 import { IconButton, Tooltip } from '@mui/material'
 import useTheme from 'hooks/useTheme'
 import { ProductForm } from '../cashing/ProductForm'
@@ -273,19 +272,6 @@ export const Quotation = () => {
             isDisabled={locked}
             actions={
               <>
-                <Tooltip title={language['QUOTATION_LIST']}>
-                  <IconButton
-                    onClick={() => navigate('/sale/quotation')}
-                    style={{
-                      color: theme.color.info,
-                      width: 30,
-                      height: 30,
-                      marginRight: 10,
-                    }}
-                  >
-                    <ListAltRoundedIcon style={{ fontSize: 22 }} />
-                  </IconButton>
-                </Tooltip>
                 <IconButton
                   onClick={() => setReload(!reload)}
                   style={{

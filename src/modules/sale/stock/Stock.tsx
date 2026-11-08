@@ -23,7 +23,7 @@ import { ConvertForm } from './ConvertForm'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { useNavigate } from 'react-router-dom'
-import { timeFormat } from 'utils'
+import { currencyFormat, timeFormat } from 'utils'
 import useAuth from 'hooks/useAuth'
 import useWeb from 'hooks/useWeb'
 import Axios from 'constants/functions/Axios'
@@ -34,11 +34,24 @@ import { getListProduct } from 'modules/organize/product/redux'
 import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 import { Box } from '@mui/material'
 
-const Header = ({ stages, icon, styled, onClickAdd, onClickConvert, onClickHistory }) => {
+const Header = ({ stages, icon, styled, onClickAdd, onClickConvert, onClickHistory, onClickPriceHistory }) => {
   return (
     <>
       <Breadcrumb stages={stages} title={icon} />
       <div style={{ display: 'flex', alignItems: 'center' }}>
+        {onClickPriceHistory && (
+          <CustomButton
+            style={{
+              marginLeft: 10,
+              backgroundColor: `${styled.text.secondary}22`,
+              color: styled.text.secondary,
+            }}
+            styled={styled}
+            onClick={() => onClickPriceHistory()}
+          >
+            Price&nbsp;History
+          </CustomButton>
+        )}
         {onClickHistory && (
           <CustomButton
             style={{
@@ -93,6 +106,19 @@ const conversionColumnData: ITableColumn<ConversionColumn>[] = [
   { id: 'createdBy', label: 'BY' },
 ]
 
+declare type PriceColumn = 'date' | 'oldPrice' | 'newPrice' | 'cost' | 'source' | 'createdBy'
+
+const priceColumnData: ITableColumn<PriceColumn>[] = [
+  { id: 'date', label: 'DATE', minWidth: 130 },
+  { id: 'oldPrice', label: 'OLD PRICE' },
+  { id: 'newPrice', label: 'NEW PRICE' },
+  { id: 'cost', label: 'BATCH COST' },
+  { id: 'source', label: 'CHANGED WHEN' },
+  { id: 'createdBy', label: 'BY' },
+]
+
+const priceSources = { STOCK_CREATE: 'Adding stock', STOCK_UPDATE: 'Editing stock', CONVERSION: 'Converting stock' }
+
 // Non-breaking spaces keep each history cell on one line
 const noWrap = (value) => String(value ?? '').replace(/ /g, ' ')
 
@@ -124,6 +150,8 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
   const [convertDialog, setConvertDialog] = useState({ open: false })
   const [historyDialog, setHistoryDialog] = useState({ open: false })
   const [conversions, setConversions] = useState<any[]>([])
+  const [priceDialog, setPriceDialog] = useState({ open: false })
+  const [priceHistory, setPriceHistory] = useState<any[]>([])
 
   const stockPath = (productId) => section === 'organize'
     ? `/organize/product/stock/${productId}`
@@ -136,10 +164,35 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
       .catch(() => setConversions([]))
   }
 
+  const fetchPriceHistory = () => {
+    if (!id) return
+    Axios({ method: 'GET', url: `/sale/stock/price-history/${id}` })
+      .then((response) => setPriceHistory(response?.data?.data || []))
+      .catch(() => setPriceHistory([]))
+  }
+
   useEffect(() => {
     fetchConversions()
+    fetchPriceHistory()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  // After a New Price is saved, show the new price and history
+  const handleStockSaved = ({ priceChanged }) => {
+    if (!priceChanged) return
+    dispatch(getProduct({ id: id as string }))
+    fetchPriceHistory()
+  }
+
+  const priceRowData = priceHistory.map((item) => ({
+    id: item._id,
+    date: noWrap(timeFormat(item.createdAt, 'YYYY-MM-DD HH:mm')),
+    oldPrice: item.oldPrice !== undefined && item.oldPrice !== null ? noWrap(currencyFormat(item.oldPrice, item.oldCurrency)) : '--',
+    newPrice: <b>{noWrap(currencyFormat(item.newPrice, item.newCurrency))}</b>,
+    cost: item.cost !== undefined && item.cost !== null ? noWrap(currencyFormat(item.cost, item.costCurrency)) : '--',
+    source: noWrap(priceSources[item.source] || '--'),
+    createdBy: noWrap(item.createdBy?.username || '--'),
+  }))
 
   // From the stock list (not product.stocks, which only loads with the page) so
   // adding, editing or deleting a batch updates the Convert button right away
@@ -152,6 +205,7 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
     dispatch(getProduct({ id: id as string }))
     dispatch(getListStock({ query: params }))
     fetchConversions()
+    fetchPriceHistory()
   }
 
   const conversionRowData = conversions.map((conversion) => {
@@ -336,6 +390,7 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
           onClickAdd={handleAddStock}
           onClickConvert={canConvert ? () => setConvertDialog({ open: true }) : undefined}
           onClickHistory={conversionRowData.length > 0 ? () => setHistoryDialog({ open: true }) : undefined}
+          onClickPriceHistory={priceRowData.length > 0 ? () => setPriceDialog({ open: true }) : undefined}
         />
       }
     >
@@ -352,6 +407,12 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
               navigate(stockPath(productId))
             }}
           />
+        </div>
+      </AlertDialog>
+      <AlertDialog isOpen={priceDialog.open} handleClose={() => setPriceDialog({ open: false })}>
+        <DialogTitle title='Price History' onClose={() => setPriceDialog({ open: false })} />
+        <div style={{ width: width < 1024 ? '92vw' : '70vw', maxWidth: 1100, padding: '0 10px 10px 10px', boxSizing: 'border-box' }}>
+          <StickyTable columns={priceColumnData} rows={priceRowData} pagination={false} />
         </div>
       </AlertDialog>
       <BarcodeReader onScan={handleScanProduct} onError={() => {}} />
@@ -371,6 +432,9 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
         colors={product?.colors || []}
         properties={product?.properties || []}
         options={product?.options || []}
+        product={product}
+        stocks={stocks}
+        onSaved={handleStockSaved}
       />
       <Detail
         dialog={detailDialog}

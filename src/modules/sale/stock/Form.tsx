@@ -19,6 +19,9 @@ import { Section } from 'components/shared/Section'
 import useLanguage from 'hooks/useLanguage'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { getListProduct } from 'modules/organize/product/redux'
+import useAuth from 'hooks/useAuth'
+import { currencyFormat, timeFormat } from 'utils'
+import { HelperText } from './HelperText'
 
 export const Form = ({
   dialog,
@@ -28,6 +31,9 @@ export const Form = ({
   colors,
   properties,
   options,
+  product,
+  stocks,
+  onSaved,
 }: any) => {
   const {
     reset,
@@ -49,6 +55,32 @@ export const Form = ({
   const [color, setColor] = useState(defaultValues?.color)
   const [isLoading, setIsLoading] = useState(false);
   const colorValue = watch('color')
+  const { user } = useAuth()
+  // Changing the selling price is a product update
+  const canChangePrice = !!user?.privilege?.product?.update
+  const newPriceCurrencyValue = watch('newPriceCurrency')
+  const costValue = watch('cost')
+  const newPriceValue = watch('newPrice')
+  // New Price below this batch's cost would sell at a loss; compared in USD
+  const rate = user?.drawer?.buyRate || 4000
+  const toUSD = (value, valueCurrency) => valueCurrency === 'KHR' ? Number(value) / rate : Number(value)
+  const belowCostMsg = (() => {
+    if (newPriceValue === '' || newPriceValue === null || newPriceValue === undefined) return ''
+    if (costValue === '' || costValue === null || costValue === undefined || isNaN(Number(costValue)) || isNaN(Number(newPriceValue))) return ''
+    const priceCurrency = newPriceCurrencyValue || product?.currency || 'USD'
+    const costCurrency = currencyValue || 'USD'
+    if (toUSD(newPriceValue, priceCurrency) >= toUSD(costValue, costCurrency)) return ''
+    // Plain text: currencyFormat returns JSX, which can't go in a message string
+    const cost = Number(costValue)
+    const costText = costCurrency === 'KHR'
+      ? `${Math.round(cost).toLocaleString()}៛`
+      : `$${cost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`
+    return `Below the cost of ${costText}`
+  })()
+  // Most recent other batch, as a reference while typing the cost
+  const previousStock = [...(stocks || [])]
+    .filter((stock: any) => stock._id !== dialog.stockId)
+    .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
 
   useEffect(() => {
     const selectedCurrency = currencyOptions.find(
@@ -67,12 +99,14 @@ export const Form = ({
   }, [colorValue, colors])
 
   useEffect(() => {
-    reset(defaultValues)
+    // New Price starts blank, in the product's currency
+    reset({ ...defaultValues, newPrice: '', newPriceCurrency: product?.currency || 'USD' })
     let obj = {}
     defaultValues?.options?.forEach((option) => {
       obj = { ...obj, [option?.property?.name?.['English']]: option._id }
     })
     setOptionObj(obj)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValues, reset])
 
   const handleCloseDialog = () => {
@@ -88,12 +122,19 @@ export const Form = ({
 
   const submit = (data) => {
     setIsLoading(true)
+    const { newPrice, newPriceCurrency, ...stock } = data
+    const priceChange = canChangePrice && newPrice !== null && newPrice !== undefined
+    if (priceChange && belowCostMsg) {
+      setIsLoading(false)
+      return
+    }
     Axios({
       method: dialog.stockId ? 'PUT' : 'POST',
       url: dialog.stockId ? `/sale/stock/update/${dialog.stockId}` : `/sale/stock/create`,
       body: {
-        ...data,
+        ...stock,
         product: dialog.productId,
+        ...(priceChange && { newPrice, newPriceCurrency: newPriceCurrency || product?.currency || 'USD' }),
       },
     })
       .then((data) => {
@@ -102,6 +143,7 @@ export const Form = ({
           ? dispatch(updateStock(data?.data?.data))
           : dispatch(createStock(data?.data?.data))
         dispatch(getListProduct({}))
+        onSaved?.({ priceChanged: priceChange })
         handleCloseDialog()
         setOptionObj({})
         reset()
@@ -146,6 +188,7 @@ export const Form = ({
           gridColumnGap: 20,
           gridTemplateAreas: `
                             'cost cost currency'
+                            ${canChangePrice ? "'newPrice newPrice newPriceCurrency'" : ''}
                             'quantity code code'
                             'expireAt expireAt alertAt'
                             'option option option'
@@ -161,6 +204,11 @@ export const Form = ({
             err={errors?.cost?.message}
             {...register('cost')}
           />
+          {!errors?.cost && previousStock && (
+            <HelperText theme={theme}>
+              Previous cost: {currencyFormat(previousStock.cost, previousStock.currency)} · added {timeFormat(previousStock.createdAt, 'YYYY-MM-DD')}
+            </HelperText>
+          )}
         </div>
         <div style={{ gridArea: 'currency' }}>
           <SelectField
@@ -171,6 +219,32 @@ export const Form = ({
             {...register('currency')}
           />
         </div>
+        {canChangePrice && (
+          <>
+            <div style={{ gridArea: 'newPrice' }}>
+              <TextField
+                type='number'
+                step='any'
+                label='New Price'
+                err={belowCostMsg || errors?.newPrice?.message}
+                {...register('newPrice')}
+              />
+              {!errors?.newPrice && !belowCostMsg && (
+                <HelperText theme={theme}>
+                  Current price: {product ? currencyFormat(product.price, product.currency) : '--'} · leave blank to keep it
+                </HelperText>
+              )}
+            </div>
+            <div style={{ gridArea: 'newPriceCurrency' }}>
+              <SelectField
+                value={newPriceCurrencyValue || product?.currency || 'USD'}
+                options={currencyOptions}
+                label='Currency'
+                {...register('newPriceCurrency')}
+              />
+            </div>
+          </>
+        )}
         <div style={{ gridArea: 'quantity' }}>
           <TextField
             type='number'

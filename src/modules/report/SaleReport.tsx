@@ -1,5 +1,6 @@
 import Container from 'components/shared/Container'
 import ReportBreadcrumbs from './components/Breadcrumbs'
+import { ExportButton, reportRange } from './components/ExportButton'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { CardContainer } from 'components/shared/container/CardContainer'
@@ -25,10 +26,11 @@ import { getListPayment, selectListPayment } from './payment/redux'
 import { columnData, createData } from './payment/constant'
 import Axios from 'constants/functions/Axios'
 
-const Header = ({ language, theme }) => {
+const Header = ({ language, theme, actions }: any) => {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
       <ReportBreadcrumbs page='saleReport' />
+      {actions}
     </div>
   )
 }
@@ -393,6 +395,7 @@ export const SaleReport = () => {
       <Header
         language={language}
         theme={theme}
+        actions={<ExportButton type='sale' range={() => reportRange(fromDate, toDate)} />}
       />
     }>
       <div

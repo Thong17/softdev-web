@@ -12,4 +12,9 @@ export const stockSchema = yup.object().shape({
   color: yup.string().optional(),
   options: yup.array().optional(),
   customers: yup.array().optional(),
+  // Optional new selling price for the product; blank keeps the current one
+  newPrice: yup.number().min(0).nullable()
+    .transform((curr, orig) => orig === '' || orig === null || orig === undefined ? null : curr)
+    .typeError('Invalid price'),
+  newPriceCurrency: yup.string().optional(),
 })
