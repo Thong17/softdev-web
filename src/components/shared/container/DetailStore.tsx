@@ -12,7 +12,7 @@ export const DetailStore = ({
   icon,
   onEdit,
   children,
-}) => {
+}: any) => {
   const { theme } = useTheme()
   const { device } = useWeb()
   const { language } = useLanguage()
@@ -24,12 +24,13 @@ export const DetailStore = ({
         position: 'relative',
         display: 'flex',
         justifyContent: 'start',
-        alignItems: 'end',
+        // Top-aligned: the right-hand panel can be taller than the store card
+        alignItems: 'flex-start',
         boxSizing: 'border-box',
         marginBottom: 20,
       }}
     >
-      <div style={{ padding: 10, boxShadow: theme.shadow.primary, borderRadius: theme.radius.primary }}>
+      <div style={{ padding: 10, boxShadow: theme.shadow.primary, borderRadius: theme.radius.primary, ...(!children && { width: '100%', boxSizing: 'border-box' }) }}>
         <div
           style={{
             minWidth: 370,
@@ -117,7 +118,8 @@ export const DetailStore = ({
           {language['EDIT']}
         </Button>
       </div>
-      <div style={{ width: '100%', height: '100%', marginLeft: 20, padding: 10, boxShadow: theme.shadow.primary, borderRadius: theme.radius.primary }}>{children}</div>
+      {/* Optional side panel; without one the store card takes the full width */}
+      {children && <div style={{ width: '100%', minWidth: 0, marginLeft: 20, padding: 10, boxSizing: 'border-box', boxShadow: theme.shadow.primary, borderRadius: theme.radius.primary }}>{children}</div>}
     </div>
   )
 }

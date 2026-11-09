@@ -3,15 +3,13 @@ import { FeatureGate } from 'hooks/useStoreFeatures'
 import Container from 'components/shared/Container'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import { DetailStore } from 'components/shared/container/DetailStore'
-import { DetailTitle } from 'components/shared/container/DetailTitle'
-import Button from 'components/shared/Button'
-import useTheme from 'hooks/useTheme'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { getInfoStore, selectInfoStore } from './redux'
 import { useNavigate } from 'react-router-dom'
 import { StructureContainer } from 'components/shared/container/StructureContainer'
 import { useEffect } from 'react'
 import useLanguage from 'hooks/useLanguage'
+import { StoreSummary } from './StoreSummary'
 
 const Header = ({ stages }) => {
   return (
@@ -24,7 +22,6 @@ const Header = ({ stages }) => {
 export const Store = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { theme } = useTheme()
   const { language } = useLanguage()
   const { data } = useAppSelector(selectInfoStore)
 
@@ -48,18 +45,8 @@ export const Store = () => {
 
   return (
     <Container header={<Header stages={stages} />}>
-      <DetailStore id={data?._id} detail={data?.address} name={data?.name} icon={data?.logo?.filename} type={data?.type} onEdit={handleEditStore}>
-        <FeatureGate feature='tables'>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
-          <DetailTitle title='Floor' value={data?.floorCount} />
-          <DetailTitle title='Room' value={data?.roomCount} />
-          <DetailTitle title='Table' value={data?.tableCount} />
-          </div>
-          <Button fullWidth style={{ backgroundColor: `${theme.color.info}22`, color: theme.color.info }} onClick={() => navigate(`/organize/store/${data?._id}/layout`)}>{language['EDIT']}</Button>
-        </div>
-        </FeatureGate>
-      </DetailStore>
+      <DetailStore id={data?._id} detail={data?.address} name={data?.name} icon={data?.logo?.filename} type={data?.type} onEdit={handleEditStore} />
+      <StoreSummary storeId={data?._id} layout={{ floors: data?.floorCount, rooms: data?.roomCount, tables: data?.tableCount }} />
       <FeatureGate feature='tables'>
         <StructureContainer />
       </FeatureGate>
