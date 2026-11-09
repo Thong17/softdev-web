@@ -1,4 +1,5 @@
 import { directPrinting } from 'api/receipt.api'
+import { SoftInvoiceActions } from 'components/shared/invoice/SoftInvoiceActions'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
 import { PaymentReceipt } from 'components/shared/invoice/PaymentReceipt'
@@ -213,6 +214,8 @@ export const Detail = ({
           >
             {language['PRINT']}
           </CustomButton>
+          {/* A4 / A5 invoice (Store Config › Soft Invoice) */}
+          {dialog.payment?._id && <SoftInvoiceActions paymentId={dialog.payment._id} style={{ borderRadius: theme.radius.secondary }} />}
         </div>
       </CustomDetailContainer>
     </AlertDialog>

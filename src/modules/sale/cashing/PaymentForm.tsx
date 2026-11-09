@@ -1,4 +1,5 @@
 import { Box } from '@mui/system'
+import { SoftInvoiceActions } from 'components/shared/invoice/SoftInvoiceActions'
 import { AlertContainer } from 'components/shared/container/AlertContainer'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { ExchangeRate } from 'components/shared/ExchangeRate'
@@ -733,6 +734,8 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                         />{' '}
                         {language['PRINT_RECEIPT']}
                       </CustomButton>
+                      {/* A4 / A5 invoice (Store Config › Soft Invoice) */}
+                      {payment?._id && <SoftInvoiceActions paymentId={payment._id} />}
                       <CustomButton
                         isLoading={isLoading}
                         onClick={handlePrintLabel}
@@ -782,6 +785,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                         />{' '}
                         {language['CHECKOUT']}
                       </CustomButton>
+                      {payment?._id && <SoftInvoiceActions paymentId={payment._id} />}
                       {
                         source === 'payment' && <CustomButton
                           isLoading={isLoading}

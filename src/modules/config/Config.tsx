@@ -14,7 +14,8 @@ import { useForm } from 'react-hook-form'
 import { telegramConfigSchema } from './schema'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { SoftInvoiceSetting, ISoftInvoiceSetting } from './SoftInvoiceSetting'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 
 declare type TelegramPrivilegeOptions = "telegramPrivilege.SENT_AFTER_PAYMENT" | "telegramPrivilege.SENT_AFTER_OPEN_DRAWER" | "telegramPrivilege.SENT_AFTER_CLOSE_DRAWER"
@@ -53,6 +54,8 @@ const Config = () => {
     }
   })
   const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
+  // Saved separately from the Telegram/printer form (its own endpoint)
+  const [softInvoice, setSoftInvoice] = useState<Partial<ISoftInvoiceSetting> | null>(null)
 
   useEffect(() => {
     Axios({
@@ -60,8 +63,9 @@ const Config = () => {
       url: '/organize/store/getTelegramSetting'
     })
       .then((res) => {
-        const data = res.data.data
+        const { softInvoice: invoiceSetting, ...data } = res.data.data || {}
         reset(data)
+        setSoftInvoice(invoiceSetting || {})
       })
       .catch(err => notify(err?.response?.data?.msg, 'error'))
     //eslint-disable-next-line
@@ -124,6 +128,7 @@ const Config = () => {
             />
           </div>
         </div>
+        {user?.isDefault && <SoftInvoiceSetting initial={softInvoice} />}
         {
           user?.isDefault && <form {...trackChanges} onSubmit={handleSubmit(submit)}>
             <Section describe='Telegram Configuration'>
