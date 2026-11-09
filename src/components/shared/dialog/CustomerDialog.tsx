@@ -170,7 +170,7 @@ export const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues
         }}
       >
         <a
-          href={id ? `/function/customer-rm/update/${id}` : '/function/customer-rm/create'}
+          href={id ? `/function/customer/update/${id}` : '/function/customer/create'}
           target='_blank'
           rel='noreferrer'
           style={{ marginRight: 'auto', paddingRight: 20, color: theme.color.info, fontSize: 13, whiteSpace: 'nowrap' }}

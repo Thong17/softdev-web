@@ -116,7 +116,7 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
         path: '/function',
       },
       {
-        title: language['CUSTOMER_RM'],
+        title: language['CUSTOMER'],
       },
     ],
     customerCreate: [
@@ -125,8 +125,8 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
         path: '/function',
       },
       {
-        title: language['CUSTOMER_RM'],
-        path: '/function/customer-rm',
+        title: language['CUSTOMER'],
+        path: '/function/customer',
       },
       {
         title: language['CREATE'],
@@ -138,8 +138,8 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
         path: '/function',
       },
       {
-        title: language['CUSTOMER_RM'],
-        path: '/function/customer-rm',
+        title: language['CUSTOMER'],
+        path: '/function/customer',
       },
       {
         title: 'Tier',
@@ -151,8 +151,8 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
         path: '/function',
       },
       {
-        title: language['CUSTOMER_RM'],
-        path: '/function/customer-rm',
+        title: language['CUSTOMER'],
+        path: '/function/customer',
       },
       {
         title: language['UPDATE'],

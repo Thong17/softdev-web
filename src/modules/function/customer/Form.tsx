@@ -174,7 +174,7 @@ export const CustomerProfileForm = ({ id, defaultValues }: { id?: string, defaul
         notify(response?.data?.msg, 'success')
         markSaved()
         // Back to the list once saved; markSaved lets this navigation through
-        setTimeout(() => navigate('/function/customer-rm'))
+        setTimeout(() => navigate('/function/customer'))
       })
       .catch((err) => {
         const fieldError = Array.isArray(err?.response?.data) ? err.response.data[0] : null

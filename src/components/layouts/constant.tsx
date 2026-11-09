@@ -37,6 +37,12 @@ export const sideNav: any = [
         icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
         permission: 'banner'
       },
+      {
+        route: '/function/customer',
+        title: 'CUSTOMER',
+        icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
+        permission: 'customer'
+      },
     ]
   },
   {

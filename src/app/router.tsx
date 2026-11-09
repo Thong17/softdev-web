@@ -230,25 +230,25 @@ const routes: RouteObject[] = [
         ),
       },
 
-      // Customer RM
+      // Customer
       {
-        path: 'customer-rm',
+        path: 'customer',
         element: (
-          <AuthGuard role={{ route: 'function', action: 'customerRm' }}>
+          <AuthGuard role={{ route: 'function', action: 'customer' }}>
             <CustomerRM />
           </AuthGuard>
         ),
       },
       {
-        path: 'customer-rm/tier',
+        path: 'customer/tier',
         element: (
-          <AuthGuard role={{ route: 'function', action: 'customerRm' }}>
+          <AuthGuard role={{ route: 'function', action: 'customer' }}>
             <CustomerTiers />
           </AuthGuard>
         ),
       },
       {
-        path: 'customer-rm/create',
+        path: 'customer/create',
         element: (
           <AuthGuard role={{ route: 'customer', action: 'create' }}>
             <CreateCustomer />
@@ -256,7 +256,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: 'customer-rm/update/:id',
+        path: 'customer/update/:id',
         element: (
           <AuthGuard role={{ route: 'customer', action: 'update' }}>
             <UpdateCustomer />

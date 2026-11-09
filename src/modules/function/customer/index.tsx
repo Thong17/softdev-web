@@ -151,7 +151,7 @@ export const CustomerRM = () => {
 
   const rows = customers.map((customer) => {
     const link = mapLink(customer.location?.lat !== undefined ? customer.location : null)
-    const edit = () => navigate(`/function/customer-rm/update/${customer._id}`)
+    const edit = () => navigate(`/function/customer/update/${customer._id}`)
     const remove = () => setDeleteDialog({ open: true, id: customer._id })
     const action = device === 'mobile' ? (
       <MenuDialog label={<ViewButton />}>
@@ -267,7 +267,7 @@ export const CustomerRM = () => {
           </div>
           <CustomButton
             styled={theme}
-            onClick={() => navigate('/function/customer-rm/tier')}
+            onClick={() => navigate('/function/customer/tier')}
             style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
           >
             Tiers
@@ -275,7 +275,7 @@ export const CustomerRM = () => {
           {privilege?.create && (
             <CustomButton
               styled={theme}
-              onClick={() => navigate('/function/customer-rm/create')}
+              onClick={() => navigate('/function/customer/create')}
               style={{ marginLeft: 10, backgroundColor: `${theme.color.success}22`, color: theme.color.success }}
             >
               {language['CREATE']}
