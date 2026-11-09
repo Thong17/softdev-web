@@ -36,9 +36,10 @@ const syncHistoryBlock = (navigator: any) => {
 }
 
 // Every field's current value inside a form, in order. Dropdown menus render in
-// a portal outside the form, so their search boxes aren't included.
+// a portal outside the form, so their search boxes aren't included. Inputs
+// marked data-unsaved-ignore (e.g. the map's place search) aren't form data.
 const snapshotFields = (container: HTMLElement) =>
-  Array.from(container.querySelectorAll<HTMLInputElement>('input, textarea, select'))
+  Array.from(container.querySelectorAll<HTMLInputElement>('input:not([data-unsaved-ignore]), textarea, select'))
     .map((field) => {
       if (field.type === 'checkbox' || field.type === 'radio') return String(field.checked)
       if (field.type === 'file') return String(field.files?.length || 0)

@@ -726,6 +726,15 @@ export const InvoiceForm = forwardRef(({
           onClickCustomer={(data) => {
             onChangeCustomer(data)
             setCustomer(data)
+            // The customer's own discount, else their tier's, fills an
+            // invoice that has no discount yet
+            const ownDiscount = Number(data?.discount) || 0
+            const tierDiscount = Number(data?.tier?.discount) || 0
+            const customerDiscount = ownDiscount || tierDiscount
+            if (customerDiscount > 0 && !Number(discount.value)) {
+              handleChangeDiscount({ input: customerDiscount, select: 'PCT', check: false })
+              notify(ownDiscount ? `Applied ${customerDiscount}% customer discount` : `Applied ${customerDiscount}% ${data.tier.name} discount`, 'info')
+            }
           }}
         />
         {status === 'SUCCESS' && <ReceiptDialog dialog={receiptDialog} setDialog={setReceiptDialog} defaultValues={data} />}

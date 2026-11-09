@@ -22,6 +22,10 @@ import {
   DetailAnnouncement,
   Announcements,
   UpdateAnnouncement,
+  CustomerRM,
+  CreateCustomer,
+  UpdateCustomer,
+  CustomerTiers,
 } from 'modules/function'
 import {
   Organize,
@@ -222,6 +226,40 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'category', action: 'detail' }}>
             <DetailPromotion />
+          </AuthGuard>
+        ),
+      },
+
+      // Customer RM
+      {
+        path: 'customer-rm',
+        element: (
+          <AuthGuard role={{ route: 'function', action: 'customerRm' }}>
+            <CustomerRM />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'customer-rm/tier',
+        element: (
+          <AuthGuard role={{ route: 'function', action: 'customerRm' }}>
+            <CustomerTiers />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'customer-rm/create',
+        element: (
+          <AuthGuard role={{ route: 'customer', action: 'create' }}>
+            <CreateCustomer />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'customer-rm/update/:id',
+        element: (
+          <AuthGuard role={{ route: 'customer', action: 'update' }}>
+            <UpdateCustomer />
           </AuthGuard>
         ),
       },

@@ -67,3 +67,7 @@ export {
   UpdateAnnouncement,
   DetailAnnouncement,
 } from './announcement'
+
+export { CustomerRM } from './customer'
+export { CreateCustomer, UpdateCustomer } from './customer/Profile'
+export { CustomerTiers } from './customer/Tier'

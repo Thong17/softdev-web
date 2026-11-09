@@ -13,6 +13,10 @@ declare type page =
   | 'banner'
   | 'bannerCreate'
   | 'bannerUpdate'
+  | 'customerRm'
+  | 'customerCreate'
+  | 'customerUpdate'
+  | 'customerTier'
 
 interface IBreadcrumbs {
   page: page
@@ -101,6 +105,54 @@ const Breadcrumbs: FC<IBreadcrumbs> = ({ page }) => {
       {
         title: language['BANNER'],
         path: '/function/banner',
+      },
+      {
+        title: language['UPDATE'],
+      },
+    ],
+    customerRm: [
+      {
+        title: language['FUNCTION'],
+        path: '/function',
+      },
+      {
+        title: language['CUSTOMER_RM'],
+      },
+    ],
+    customerCreate: [
+      {
+        title: language['FUNCTION'],
+        path: '/function',
+      },
+      {
+        title: language['CUSTOMER_RM'],
+        path: '/function/customer-rm',
+      },
+      {
+        title: language['CREATE'],
+      },
+    ],
+    customerTier: [
+      {
+        title: language['FUNCTION'],
+        path: '/function',
+      },
+      {
+        title: language['CUSTOMER_RM'],
+        path: '/function/customer-rm',
+      },
+      {
+        title: 'Tier',
+      },
+    ],
+    customerUpdate: [
+      {
+        title: language['FUNCTION'],
+        path: '/function',
+      },
+      {
+        title: language['CUSTOMER_RM'],
+        path: '/function/customer-rm',
       },
       {
         title: language['UPDATE'],

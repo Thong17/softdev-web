@@ -15,14 +15,16 @@ import useWeb from 'hooks/useWeb'
 import useLanguage from 'hooks/useLanguage'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import useAlert from 'hooks/useAlert'
+import { MapPicker } from '../form/MapPicker'
 
-const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues, theme, id }) => {
+export const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues, theme, id }) => {
   const {
     reset,
     register,
     handleSubmit,
     // getValues,
-    // setValue,
+    setValue,
+    watch,
     setFocus,
     formState: { errors, isDirty },
   } = useForm({
@@ -36,6 +38,7 @@ const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues, theme
   }, [hasChanges, onChangesChange])
   const { notify } = useNotify()
   const { language } = useLanguage()
+  const location = watch('location')
   // const [profilePath, setProfilePath] = useState<IImage>(defaultValues?.picture)
 
   useEffect(() => {
@@ -89,7 +92,7 @@ const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues, theme
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
-        gridTemplateAreas: `'displayName fullName fullName''contact contact dateOfBirth''profile profile profile''address address address''action action action'`,
+        gridTemplateAreas: `'displayName fullName fullName''contact contact dateOfBirth''profile profile profile''address address address''location location location''action action action'`,
         gridColumnGap: 20,
       }}
     >
@@ -143,14 +146,37 @@ const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues, theme
           {...register('address')}
         />
       </div>
+      <div style={{ gridArea: 'location', marginTop: 5 }}>
+        <MapPicker
+          label={language['LOCATION'] || 'Location'}
+          value={location}
+          height={180}
+          // A picked or dragged pin is a change; the device location filled in
+          // for a new customer is not, so it doesn't trigger the unsaved prompt
+          onChange={(value) => setValue('location', value, { shouldDirty: true })}
+          onDefault={(value) => setValue('location', value)}
+          onPlace={(place) => {
+            if (!String(watch('address') || '').trim()) setValue('address', place.label, { shouldDirty: true })
+          }}
+        />
+      </div>
       <div
         style={{
           gridArea: 'action',
           marginTop: 10,
           display: 'flex',
           justifyContent: 'end',
+          alignItems: 'center',
         }}
       >
+        <a
+          href={id ? `/function/customer-rm/update/${id}` : '/function/customer-rm/create'}
+          target='_blank'
+          rel='noreferrer'
+          style={{ marginRight: 'auto', paddingRight: 20, color: theme.color.info, fontSize: 13, whiteSpace: 'nowrap' }}
+        >
+          Open full profile
+        </a>
         <Button
           style={{
             color: theme.color.error,
@@ -223,7 +249,8 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
       dateOfBirth: customer?.dateOfBirth,
       contact: customer?.contact,
       address: customer?.address,
-      picture: customer?.picture
+      picture: customer?.picture,
+      location: customer?.location?.lat !== undefined ? customer.location : null,
     }
     setCustomerForm(body)
     setCustomerId(customer?._id)

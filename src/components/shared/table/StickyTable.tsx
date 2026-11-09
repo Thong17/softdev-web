@@ -85,7 +85,8 @@ export const StickyTable = ({
     <CustomTableContainer color={backgroundColor} styled={theme} device={device} style={style}>
       {loading && <Loading />}
       <div className='table-container'>
-        <TableContainer className='table'>
+        {/* The bottom space is room for the page controls; none without them */}
+        <TableContainer className='table' style={pagination ? undefined : { paddingBottom: 0 }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>

@@ -184,12 +184,17 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
     fetchPriceHistory()
   }
 
+  // currencyFormat returns JSX, so it is kept on one line with a nowrap span
+  // rather than noWrap (which only works on text)
+  const money = (value, currency) => value !== undefined && value !== null
+    ? <span style={{ whiteSpace: 'nowrap' }}>{currencyFormat(value, currency)}</span>
+    : '--'
   const priceRowData = priceHistory.map((item) => ({
     id: item._id,
     date: noWrap(timeFormat(item.createdAt, 'YYYY-MM-DD HH:mm')),
-    oldPrice: item.oldPrice !== undefined && item.oldPrice !== null ? noWrap(currencyFormat(item.oldPrice, item.oldCurrency)) : '--',
-    newPrice: <b>{noWrap(currencyFormat(item.newPrice, item.newCurrency))}</b>,
-    cost: item.cost !== undefined && item.cost !== null ? noWrap(currencyFormat(item.cost, item.costCurrency)) : '--',
+    oldPrice: money(item.oldPrice, item.oldCurrency),
+    newPrice: <b>{money(item.newPrice, item.newCurrency)}</b>,
+    cost: money(item.cost, item.costCurrency),
     source: noWrap(priceSources[item.source] || '--'),
     createdBy: noWrap(item.createdBy?.username || '--'),
   }))
