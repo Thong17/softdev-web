@@ -16,6 +16,7 @@ import useLanguage from 'hooks/useLanguage'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import useAlert from 'hooks/useAlert'
 import { MapPicker } from '../form/MapPicker'
+import { PriceHistoryDialog } from './PriceHistoryDialog'
 
 export const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues, theme, id }) => {
   const {
@@ -206,7 +207,7 @@ export const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues
   )
 }
 
-export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
+export const CustomerDialog = ({ dialog, setDialog, onClickCustomer, cartProducts }: any) => {
   const { theme } = useTheme()
   const { language } = useLanguage()
   const { width } = useWeb()
@@ -215,6 +216,8 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
   const [customerForm, setCustomerForm] = useState({})
   const [customerId, setCustomerId] = useState(null)
   const [formHasChanges, setFormHasChanges] = useState(false)
+  // Customer whose price history is open
+  const [historyCustomer, setHistoryCustomer] = useState<any>(null)
   const confirm = useAlert()
 
   const handleCloseDialog = () => {
@@ -263,6 +266,7 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
       isOpen={dialog.open}
       handleClose={handleCancelDialog}
     >
+      <PriceHistoryDialog customer={historyCustomer} cartProducts={cartProducts} onClose={() => setHistoryCustomer(null)} />
       <div
         style={{
           height: '100vh',
@@ -287,6 +291,7 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer }: any) => {
           >
             <CustomerContainer
               onEditCustomer={handleEditCustomer}
+              onHistoryCustomer={(customer) => customer && setHistoryCustomer({ _id: customer._id, name: customer.fullName || customer.displayName })}
               onClickCustomer={handleClickCustomer}
               toggleReload={reload}
               height={showForm ? '19.3vh' : '100%'}

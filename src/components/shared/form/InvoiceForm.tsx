@@ -723,6 +723,10 @@ export const InvoiceForm = forwardRef(({
         <CustomerDialog
           dialog={customerDialog}
           setDialog={setCustomerDialog}
+          // Products in this cart, offered first in a customer's price history
+          cartProducts={transactions
+            .filter((item: any) => item.product)
+            .map((item: any) => ({ _id: typeof item.product === 'object' ? item.product._id : item.product, name: item.description }))}
           onClickCustomer={(data) => {
             onChangeCustomer(data)
             setCustomer(data)

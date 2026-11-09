@@ -25,6 +25,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 // Cart items from the API in the shape the invoice panel uses
 const toTransactionItem = (data): ITransactionItem => ({
   id: data._id,
+  product: data.product?._id || data.product,
   description: data.description,
   discount: {
     value: data.discount?.value || 0,
@@ -210,6 +211,7 @@ export const Cashing = () => {
         setReload(!reload)
         setTransaction({
           id: data._id,
+          product: data.product?._id || data.product,
           description: data.description,
           discount: {
             value: data.discount?.value || 0,

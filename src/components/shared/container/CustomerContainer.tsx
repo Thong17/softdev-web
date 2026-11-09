@@ -72,6 +72,7 @@ const mappedCustomer = (data) => {
 export const CustomerContainer = ({
   onClickCustomer,
   onEditCustomer,
+  onHistoryCustomer,
   actions,
   filterSelected,
   filterPromotion,
@@ -237,6 +238,11 @@ export const CustomerContainer = ({
     onEditCustomer(customer)
   }
 
+  const handleHistoryCustomer = (id) => {
+    const customer = customers.find(item => item._id === id)
+    onHistoryCustomer && onHistoryCustomer(customer)
+  }
+
   const handleDeleteCustomer = (id) => {
     confirm({
       title: language['CONFIRM_DELETE_CUSTOMER'],
@@ -382,6 +388,7 @@ export const CustomerContainer = ({
                         })
                       }
                       onEdit={handleEditCustomer}
+                      onHistory={onHistoryCustomer ? handleHistoryCustomer : undefined}
                       onDelete={handleDeleteCustomer}
                       picture={customer.picture?.filename}
                     />
@@ -405,6 +412,7 @@ export const CustomerContainer = ({
                       })
                     }
                     onEdit={handleEditCustomer}
+                    onHistory={onHistoryCustomer ? handleHistoryCustomer : undefined}
                     onDelete={handleDeleteCustomer}
                     picture={customer.picture?.filename}
                   />

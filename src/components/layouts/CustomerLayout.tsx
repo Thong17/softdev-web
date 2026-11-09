@@ -10,13 +10,20 @@ import Edit from '@mui/icons-material/Edit'
 import { IconButton } from '@mui/material'
 import { RankStatus } from 'components/shared/RankStatus'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
+import { Tooltip } from '@mui/material'
 
-const Item = ({ id, name, contact, address, picture, point, onClick, onEdit, onDelete, display }, ref) => {
+const Item = ({ id, name, contact, address, picture, point, onClick, onEdit, onDelete, onHistory, display }: any, ref) => {
   const { theme } = useTheme()
 
   const handleEdit = (event) => {
     event.stopPropagation()
     onEdit(id)
+  }
+
+  const handleHistory = (event) => {
+    event.stopPropagation()
+    onHistory(id)
   }
 
   const handleDelete = (event) => {
@@ -40,6 +47,21 @@ const Item = ({ id, name, contact, address, picture, point, onClick, onEdit, onD
         </div>
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
+        {onHistory && (
+          <Tooltip title='Price history'>
+            <IconButton
+              onClick={handleHistory}
+              sx={{
+                width: 30,
+                height: 30,
+                color: `${theme.text.secondary}cc`,
+                '&:hover': { color: theme.text.primary },
+              }}
+            >
+              <HistoryRoundedIcon style={{ fontSize: 19 }} />
+            </IconButton>
+          </Tooltip>
+        )}
         <IconButton
           onClick={handleEdit}
           sx={{

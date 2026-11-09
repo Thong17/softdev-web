@@ -32,7 +32,7 @@ const StyledTabs = styled((props: StyledTabsProps) => (
 }))
 
 interface StyledTabProps {
-  label: string
+  label: React.ReactNode
   value: any
 }
 

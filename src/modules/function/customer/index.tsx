@@ -5,6 +5,9 @@ import { MenuItem, Tooltip } from '@mui/material'
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded'
 import LockRoundedIcon from '@mui/icons-material/LockRounded'
 import { TierBadge } from 'components/shared/TierBadge'
+import { PriceHistoryDialog } from 'components/shared/dialog/PriceHistoryDialog'
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
+import { IconButton } from '@mui/material'
 import { StickyTable, ITableColumn } from 'components/shared/table/StickyTable'
 import { DefaultHeader } from 'components/shared/table/DefaultHeader'
 import { DeleteDialog } from 'components/shared/table/DeleteDialog'
@@ -34,7 +37,7 @@ const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'invoiceCount', label: 'Invoices', minWidth: 60 },
   { id: 'recentSpent', label: 'Spent (12 months)', minWidth: 95 },
   { id: 'totalSpent', label: 'Total Spent', minWidth: 85 },
-  { id: 'action', label: 'Action', minWidth: 90, align: 'right' },
+  { id: 'action', label: 'Action', minWidth: 120, align: 'right' },
 ]
 
 // Customer relationship list: who bought when, highlighting customers who
@@ -52,6 +55,7 @@ export const CustomerRM = () => {
   const navigate = useNavigate()
   const [groups, setGroups] = useState<string[]>([])
   const [tiers, setTiers] = useState<any[]>([])
+  const [historyCustomer, setHistoryCustomer] = useState<any>(null)
   // Months counted for tiers (Tiers page setting)
   const [months, setMonths] = useState(12)
   const [deleteDialog, setDeleteDialog] = useState({ open: false, id: null })
@@ -153,13 +157,20 @@ export const CustomerRM = () => {
     const link = mapLink(customer.location?.lat !== undefined ? customer.location : null)
     const edit = () => navigate(`/function/customer/update/${customer._id}`)
     const remove = () => setDeleteDialog({ open: true, id: customer._id })
+    const showHistory = () => setHistoryCustomer({ _id: customer._id, name: customer.fullName || customer.displayName })
     const action = device === 'mobile' ? (
       <MenuDialog label={<ViewButton />}>
+        <MenuItem component='div' onClick={showHistory}>Price history</MenuItem>
         {privilege?.update && <MenuItem component='div' onClick={edit}>{language['UPDATE'] || 'Edit'}</MenuItem>}
         {privilege?.delete && <MenuItem component='div' onClick={remove}>Delete</MenuItem>}
       </MenuDialog>
     ) : (
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <Tooltip title='Price history'>
+          <IconButton size='small' onClick={showHistory} style={{ color: theme.text.secondary, marginRight: 5 }}>
+            <HistoryRoundedIcon style={{ fontSize: 20 }} />
+          </IconButton>
+        </Tooltip>
         {privilege?.update && <UpdateButton style={{ margin: 0 }} onClick={edit} />}
         {privilege?.delete && <DeleteButton onClick={remove} />}
       </div>
@@ -284,6 +295,7 @@ export const CustomerRM = () => {
         </DefaultHeader>
       }
     >
+      <PriceHistoryDialog customer={historyCustomer} onClose={() => setHistoryCustomer(null)} />
       <DeleteDialog
         id={deleteDialog.id}
         isOpen={deleteDialog.open}

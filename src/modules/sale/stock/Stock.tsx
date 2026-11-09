@@ -33,25 +33,14 @@ import useAlert from 'hooks/useAlert'
 import { getListProduct } from 'modules/organize/product/redux'
 import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 import { Box } from '@mui/material'
+import { PriceHistoryPanel } from 'components/shared/dialog/PriceHistoryDialog'
+import { SelectTab } from 'components/shared/form/SelectTab'
 
-const Header = ({ stages, icon, styled, onClickAdd, onClickConvert, onClickHistory, onClickPriceHistory }) => {
+const Header = ({ stages, icon, styled, onClickAdd, onClickConvert, onClickHistory }) => {
   return (
     <>
       <Breadcrumb stages={stages} title={icon} />
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        {onClickPriceHistory && (
-          <CustomButton
-            style={{
-              marginLeft: 10,
-              backgroundColor: `${styled.text.secondary}22`,
-              color: styled.text.secondary,
-            }}
-            styled={styled}
-            onClick={() => onClickPriceHistory()}
-          >
-            Price&nbsp;History
-          </CustomButton>
-        )}
         {onClickHistory && (
           <CustomButton
             style={{
@@ -148,9 +137,10 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
   const { width } = useWeb()
   const navigate = useNavigate()
   const [convertDialog, setConvertDialog] = useState({ open: false })
+  // One History dialog with tabs: price changes, conversions, customer prices
   const [historyDialog, setHistoryDialog] = useState({ open: false })
+  const [historyTab, setHistoryTab] = useState('price')
   const [conversions, setConversions] = useState<any[]>([])
-  const [priceDialog, setPriceDialog] = useState({ open: false })
   const [priceHistory, setPriceHistory] = useState<any[]>([])
 
   const stockPath = (productId) => section === 'organize'
@@ -229,6 +219,39 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
       createdBy: noWrap(conversion.createdBy?.username || '...'),
     }
   })
+
+  // Tab name with its count in a small tonal circle
+  const tabLabel = (label: string, count: number) => (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+      {label}
+      {count > 0 && (
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minWidth: 20,
+            height: 20,
+            padding: '0 5px',
+            boxSizing: 'border-box',
+            borderRadius: 10,
+            backgroundColor: `${theme.color.info}22`,
+            color: theme.color.info,
+            fontSize: 11,
+            lineHeight: 1,
+          }}
+        >
+          {count}
+        </span>
+      )}
+    </span>
+  )
+
+  const historyTabs = [
+    { label: tabLabel('Price Changes', priceRowData.length), value: 'price' },
+    { label: tabLabel('Conversions', conversionRowData.length), value: 'conversion' },
+    ...(user?.privilege?.product?.detail ? [{ label: 'Customer Prices', value: 'customer' }] : []),
+  ]
 
   const stockBreadcrumb = section === 'organize' ? [
     {
@@ -394,30 +417,46 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
           styled={theme}
           onClickAdd={handleAddStock}
           onClickConvert={canConvert ? () => setConvertDialog({ open: true }) : undefined}
-          onClickHistory={conversionRowData.length > 0 ? () => setHistoryDialog({ open: true }) : undefined}
-          onClickPriceHistory={priceRowData.length > 0 ? () => setPriceDialog({ open: true }) : undefined}
+          onClickHistory={status === 'SUCCESS' ? () => setHistoryDialog({ open: true }) : undefined}
         />
       }
     >
       <AlertDialog isOpen={historyDialog.open} handleClose={() => setHistoryDialog({ open: false })}>
-        <DialogTitle title='Conversion History' onClose={() => setHistoryDialog({ open: false })} />
-        <div style={{ width: width < 1024 ? '92vw' : '85vw', maxWidth: 1400, padding: '0 10px 10px 10px', boxSizing: 'border-box' }}>
-          <StickyTable
-            columns={conversionColumnData}
-            rows={conversionRowData}
-            pagination={false}
-            handleClick={(productId) => {
-              if (!productId) return
-              setHistoryDialog({ open: false })
-              navigate(stockPath(productId))
-            }}
+        <DialogTitle title='History' onClose={() => setHistoryDialog({ open: false })} />
+        {/* Fixed height so switching tabs doesn't resize the dialog; the tab
+            content scrolls under the tabs */}
+        <div style={{ width: width < 1024 ? '92vw' : '85vw', maxWidth: 1300, height: '70vh', padding: '0 20px 10px 20px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: 15 }}>
+          <SelectTab
+            selected={historyTab}
+            options={historyTabs}
+            onChange={(value) => setHistoryTab(value)}
           />
-        </div>
-      </AlertDialog>
-      <AlertDialog isOpen={priceDialog.open} handleClose={() => setPriceDialog({ open: false })}>
-        <DialogTitle title='Price History' onClose={() => setPriceDialog({ open: false })} />
-        <div style={{ width: width < 1024 ? '92vw' : '70vw', maxWidth: 1100, padding: '0 10px 10px 10px', boxSizing: 'border-box' }}>
-          <StickyTable columns={priceColumnData} rows={priceRowData} pagination={false} />
+          <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+          {historyTab === 'price' && (
+            priceRowData.length
+              ? <StickyTable columns={priceColumnData} rows={priceRowData} pagination={false} />
+              : <div style={{ color: theme.text.tertiary, textAlign: 'center', padding: 20 }}>No price changes yet. Set a New Price when adding or converting stock.</div>
+          )}
+          {historyTab === 'conversion' && (
+            conversionRowData.length
+              ? (
+                <StickyTable
+                  columns={conversionColumnData}
+                  rows={conversionRowData}
+                  pagination={false}
+                  handleClick={(productId) => {
+                    if (!productId) return
+                    setHistoryDialog({ open: false })
+                    navigate(stockPath(productId))
+                  }}
+                />
+              )
+              : <div style={{ color: theme.text.tertiary, textAlign: 'center', padding: 20 }}>No conversions yet.</div>
+          )}
+          {historyTab === 'customer' && id && (
+            <PriceHistoryPanel product={{ _id: id, name: product?.name?.[lang] || product?.name?.['English'] }} />
+          )}
+          </div>
         </div>
       </AlertDialog>
       <BarcodeReader onScan={handleScanProduct} onError={() => {}} />
