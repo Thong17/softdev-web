@@ -74,6 +74,8 @@ export const ProductContainer = ({
   toggleReload,
   updateStocks,
   isDisabled,
+  // Shown over the product grid only (e.g. Cashing's "Invoice Paid" screen)
+  overlay,
 }: any) => {
   const { user } = useAuth()
   const dispatch = useAppDispatch()
@@ -492,7 +494,8 @@ export const ProductContainer = ({
           overflow: 'hidden',
         }}
       >
-        {disabled && (
+        {overlay}
+        {disabled && !overlay && (
           <div
             style={{
               backgroundColor: `${theme.background.primary}cc`,

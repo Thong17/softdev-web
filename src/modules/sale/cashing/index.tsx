@@ -21,6 +21,7 @@ import useNotify from 'hooks/useNotify'
 import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 import { getListCodeProduct, selectListCodeProduct } from 'shared/redux'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { PaidOverlay, ICompletedSale } from './PaidOverlay'
 
 // Cart items from the API in the shape the invoice panel uses
 const toTransactionItem = (data): ITransactionItem => ({
@@ -47,6 +48,8 @@ export const Cashing = () => {
   const { data: preview } = useAppSelector(selectInfoStore)
   const [paymentId, setPaymentId] = useState(null)
   const [disableProduct, setDisableProduct] = useState(false)
+  // The checked-out sale; the cart is covered until Clear
+  const [completed, setCompleted] = useState<ICompletedSale | null>(null)
   const [productDialog, setProductDialog] = useState<any>({
     open: false,
     productId: null,
@@ -161,7 +164,9 @@ export const Cashing = () => {
       })
         .then((response) => {
           notify('Payment checkout successfully', 'success')
-          callback(null, response?.data?.data)
+          const paid = response?.data?.data
+          setCompleted({ invoice: paid?.invoice, total: paid?.total, kind: 'later' })
+          callback(null, paid)
         })
         .catch((err) => {
           notify(err?.response?.data?.msg, 'error')
@@ -187,6 +192,7 @@ export const Cashing = () => {
     setDisableProduct(false)
     setTable('--')
     setQuotationId(null)
+    setCompleted(null)
   }
 
   const handleChangePayment = (data) => {
@@ -259,7 +265,10 @@ export const Cashing = () => {
         dialog={paymentDialog}
         setDialog={setPaymentDialog}
         onClear={handleClearPayment}
-        onCheckout={() => setDisableProduct(true)}
+        onCheckout={(paid) => {
+          setDisableProduct(true)
+          if (paid) setCompleted({ invoice: paid.invoice, total: paid.total, kind: paid.paymentMethod === 'loan' ? 'loan' : 'paid' })
+        }}
       />
       <div
         style={{
@@ -281,6 +290,8 @@ export const Cashing = () => {
             toggleReload={reload}
             updateStocks={stockProducts}
             isDisabled={disableProduct}
+            // Covers the product grid once the sale is checked out
+            overlay={completed && <PaidOverlay sale={completed} onClear={handleClearPayment} />}
             actions={
               <>
                 <IconButton

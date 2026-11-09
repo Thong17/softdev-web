@@ -246,7 +246,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
           .then((data) => {
             setPayment(data?.data?.data)
             reload()
-            onCheckout()
+            onCheckout(data?.data?.data)
           })
           .catch((err) => {
             notify(err?.response?.data?.msg, 'error')
@@ -400,7 +400,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   const handleCheckoutLoan = (data) => {
     setPayment(data)
     reload()
-    onCheckout()
+    onCheckout(data)
     setFormMode('checkout')
   }
 
