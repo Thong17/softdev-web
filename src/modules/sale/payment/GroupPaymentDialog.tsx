@@ -1,4 +1,5 @@
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import { FeatureGate } from 'hooks/useStoreFeatures'
 import { SoftInvoiceActions } from 'components/shared/invoice/SoftInvoiceActions'
 import { Box, IconButton } from '@mui/material'
 import './css/index.css'
@@ -690,7 +691,7 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
                       </CustomButton>
                       {/* A4 / A5 invoice for the whole group, once it's checked out */}
                       {formMode === 'checkout' && payment?._id && <SoftInvoiceActions groupId={payment._id} />}
-                      {user?.privilege?.queue?.create && <CustomButton
+                      {user?.privilege?.queue?.create && <FeatureGate feature='queue'><CustomButton
                         isLoading={isLoading}
                         onClick={handleAddToQueue}
                         styled={theme}
@@ -705,7 +706,7 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
                           style={{ fontSize: 19, marginRight: 5 }}
                         />{' '}
                         {queue ? language['ADDED_TO_QUEUE'] : language['ADD_TO_QUEUE']}
-                      </CustomButton>}
+                      </CustomButton></FeatureGate>}
                     </>
                   ) : (
                     <CustomButton

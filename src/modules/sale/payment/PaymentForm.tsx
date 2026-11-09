@@ -1,4 +1,5 @@
 import { Box } from '@mui/system'
+import { FeatureGate } from 'hooks/useStoreFeatures'
 import { AlertContainer } from 'components/shared/container/AlertContainer'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { ExchangeRate } from 'components/shared/ExchangeRate'
@@ -578,7 +579,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                       />{' '}
                       {language['PRINT_RECEIPT']}
                     </CustomButton>
-                    <CustomButton
+                    <FeatureGate feature='labelPrinting'><CustomButton
                       isLoading={isLoading}
                       onClick={handlePrintLabel}
                       styled={theme}
@@ -592,7 +593,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                         style={{ fontSize: 19, marginRight: 5 }}
                       />{' '}
                       {language['PRINT_LABEL']}
-                    </CustomButton>
+                    </CustomButton></FeatureGate>
                   </>
                 ) : (
                   <>
@@ -612,7 +613,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                       {language['CHECKOUT']}
                     </CustomButton>
                     {
-                      source === 'payment' && <CustomButton
+                      source === 'payment' && <FeatureGate feature='labelPrinting'><CustomButton
                         isLoading={isLoading}
                         onClick={handlePrintLabel}
                         styled={theme}
@@ -626,7 +627,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                           style={{ fontSize: 19, marginRight: 5 }}
                         />{' '}
                         {language['PRINT_LABEL']}
-                      </CustomButton>
+                      </CustomButton></FeatureGate>
                     }
                   </>
                 )}

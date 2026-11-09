@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import useStoreFeatures from 'hooks/useStoreFeatures'
 import { sideNav } from '../layouts/constant'
 import useTheme from 'hooks/useTheme'
 import { CustomSideNav, SideNavContainer } from 'styles'
@@ -12,6 +13,7 @@ import { Box } from '@mui/material'
 
 const Sidebar = () => {
   const { user } = useAuth()
+  const features = useStoreFeatures()
   const { theme } = useTheme()
   const { language } = useLanguage()
   const { sidebar, tabs, resetTabs } = useConfig()
@@ -96,7 +98,9 @@ const Sidebar = () => {
                       const permission = sub.permission
                         ? user?.privilege.menu?.[sub.permission]
                         : true
-                      if (permission) {
+                      // Store › Features can switch some entries off
+                      const featureOn = sub.feature ? features[sub.feature] : true
+                      if (permission && featureOn) {
                         return <NavLink key={subIndex} to={sub.route}>
                           {sub.icon}
                           <span>{language?.[sub.title] || sub.title}</span>

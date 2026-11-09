@@ -1,4 +1,5 @@
 import useTheme from 'hooks/useTheme'
+import useStoreFeatures from 'hooks/useStoreFeatures'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react'
 import { CustomButton, CustomInvoiceForm, CustomMenu } from 'styles'
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
@@ -229,6 +230,8 @@ export const InvoiceForm = forwardRef(({
   const { language } = useLanguage()
   const confirm = useAlert()
   const [transactions, setTransactions] = useState<ITransactionItem[]>(listTransactions)
+  // Store › Features: hides the table picker for stores without tables
+  const features = useStoreFeatures()
   const [priceCurrency, setPriceCurrency] = useState('')
   const [discountCurrency, setDiscountCurrency] = useState('')
   const [totalQuantity, setTotalQuantity] = useState(0)
@@ -752,7 +755,7 @@ export const InvoiceForm = forwardRef(({
         >
           {invoiceBar && <CustomerStatistic mode={paymentId ? 'view' : 'edit'} point={customer.point} phone={customer.displayName} name={customer.fullName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} onClear={handleClearCustomer} />}
           <div style={{ display: 'flex' }}>
-            {(invoiceBar && setTable) && <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginRight: '-30px' }}>
+            {(invoiceBar && setTable && features.tables) && <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginRight: '-30px' }}>
               <TableBarRoundedIcon style={{ fontSize: 22 }} />
               <MiniSelectField
                 style={{ minWidth: 50, width: 50 }}

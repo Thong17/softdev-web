@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Container from 'components/shared/Container'
 import { useParams } from 'react-router-dom'
 import Breadcrumb from 'components/shared/Breadcrumbs'
+import { storeStages } from './stages'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import useLanguage from 'hooks/useLanguage'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
@@ -62,23 +63,7 @@ export const PaymentStore = () => {
     dispatch(getListTransfer())
   }, [dispatch])
 
-  const stages = [
-    {
-      title: language['ORGANIZE'],
-      path: '/organize',
-    },
-    {
-      title: language['STORE'],
-      path: '/organize/store',
-    },
-    {
-      title: language['INFO'],
-      path: `/organize/store/update/${id}`,
-    },
-    {
-      title: language['PAYMENT'],
-    },
-  ]
+  const stages = storeStages(language, id, 'payment')
 
   const handleChangeTransfer = (value) => {
     setSelectedMethod(value)

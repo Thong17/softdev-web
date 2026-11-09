@@ -23,7 +23,8 @@ export const sideNav: any = [
         route: '/function/queue',
         title: 'QUEUE',
         icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
-        permission: 'queue'
+        permission: 'queue',
+        feature: 'queue',
       },
       {
         route: '/function/promotion',
@@ -61,7 +62,8 @@ export const sideNav: any = [
         route: '/sale/reservation',
         title: 'RESERVATION',
         icon: <FiberManualRecordIcon sx={{ fontSize: 11 }} />,
-        permission: 'reservation'
+        permission: 'reservation',
+        feature: 'reservation'
       },
       {
         route: '/sale/stock',

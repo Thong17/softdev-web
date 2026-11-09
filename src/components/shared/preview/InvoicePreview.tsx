@@ -1,4 +1,5 @@
 import useLanguage from 'hooks/useLanguage'
+import { FeatureGate } from 'hooks/useStoreFeatures'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import React, { useEffect, useState } from 'react'
@@ -180,7 +181,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                           </div>
                         </div>
                         <div style={{ minWidth: 33 }}>
-                          {(!payment?.status && transaction.product?.category?.hasThermalPrinting) && <IconButton
+                          {(!payment?.status && transaction.product?.category?.hasThermalPrinting) && <FeatureGate feature='labelPrinting'><IconButton
                             onClick={(e) => handlePrintTransaction(e, transaction)}
                             style={{
                               backgroundColor: `${theme.color.info}22`,
@@ -189,7 +190,7 @@ export const InvoicePreview = ({ payment, customer }) => {
                             <PrintRoundedIcon
                               style={{ fontSize: 17, color: theme.color.info }}
                             />
-                          </IconButton>}
+                          </IconButton></FeatureGate>}
                         </div>
                       </div>
                     </div>

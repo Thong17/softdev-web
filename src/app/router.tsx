@@ -1,6 +1,7 @@
 import { RouteObject } from 'react-router'
 import { Navigate } from 'react-router-dom'
 import AuthGuard from '../auth/AuthGuard'
+import { FeatureGuard } from '../auth/FeatureGuard'
 import { Login } from 'modules/auth/Login'
 import { Register } from 'modules/auth/Register'
 import {
@@ -69,6 +70,8 @@ import { StaffReport } from 'modules/report/StaffReport'
 import { Transactions } from 'modules/report/transaction'
 import { Payments } from 'modules/report/payment'
 import { PaymentStore } from 'modules/organize/store/Payment'
+import { PrintingStore } from 'modules/organize/store/Printing'
+import { FeatureStore } from 'modules/organize/store/Features'
 import { UserProfile } from 'modules/auth/UserProfile'
 import { UserChangePassword } from 'modules/auth/UserChangePassword'
 import { HintButton } from 'components/shared/HintButton'
@@ -194,8 +197,10 @@ const routes: RouteObject[] = [
         path: 'queue',
         element: (
           <AuthGuard role={{ route: 'function', action: 'queue' }}>
-            <Queue />
-            <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
+            <FeatureGuard feature='queue'>
+              <Queue />
+              <HintButton playlistId='PLHX_VLeC9D-580BaHqtz7FJFifDvA6lqx' />
+            </FeatureGuard>
           </AuthGuard>
         ),
       },
@@ -458,6 +463,22 @@ const routes: RouteObject[] = [
         ),
       },
       {
+        path: 'store/:id/printing',
+        element: (
+          <AuthGuard role={{ route: 'store', action: 'update' }}>
+            <PrintingStore />
+          </AuthGuard>
+        ),
+      },
+      {
+        path: 'store/:id/features',
+        element: (
+          <AuthGuard role={{ route: 'store', action: 'update' }}>
+            <FeatureStore />
+          </AuthGuard>
+        ),
+      },
+      {
         path: 'store/:id/layout',
         element: (
           <AuthGuard role={{ route: 'store', action: 'update' }}>
@@ -532,14 +553,14 @@ const routes: RouteObject[] = [
       // Reservation
       {
         path: 'reservation',
-        element: <>
-          <Reservation />      
+        element: <FeatureGuard feature='reservation'>
+          <Reservation />
           <HintButton playlistId='PLHX_VLeC9D-68Mw8MY1B7w9R_jdN5LJ4C' />
-        </>
+        </FeatureGuard>
       },
       {
         path: 'reservation/:id',
-        element: <ReservationForm />,
+        element: <FeatureGuard feature='reservation'><ReservationForm /></FeatureGuard>,
       },
 
       // Loan

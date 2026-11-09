@@ -1,4 +1,5 @@
 import Container from 'components/shared/Container'
+import useStoreFeatures from 'hooks/useStoreFeatures'
 import { useEffect, useState } from 'react'
 import { StickyTable } from 'components/shared/table/StickyTable'
 import { useNavigate } from 'react-router'
@@ -30,6 +31,8 @@ import { CustomButton } from 'styles'
 import { languages } from 'contexts/language/constant'
 
 export const Categories = () => {
+  // Store › Features: the thermal (label) column only matters with label printing
+  const features = useStoreFeatures()
   const dispatch = useAppDispatch()
   const { data: categories, count, status } = useAppSelector(selectListCategory)
   const { lang } = useLanguage()
@@ -235,7 +238,7 @@ export const Categories = () => {
         handleClose={() => setDialog({ open: false, id: null })}
       />
       <StickyTable
-        columns={columnData}
+        columns={features.labelPrinting ? columnData : columnData.filter((column) => column.id !== 'hasThermalPrinting')}
         rows={rowData}
         setQuery={handleQuery}
         onToggleStatus={handleToggleStatus}

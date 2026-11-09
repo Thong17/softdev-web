@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import useStoreFeatures from 'hooks/useStoreFeatures'
 import {
   LocaleField,
   FileField,
@@ -25,6 +26,8 @@ const statusOption = [
 ]
 
 const CategoryForm = ({ defaultValues, id }: any) => {
+  // Store › Features: the label (thermal) option only matters with label printing
+  const features = useStoreFeatures()
   const { theme } = useTheme()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -150,7 +153,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
             {...register('status')}
           />
         </div>
-        <div style={{ gridArea: 'hasThermalPrinting' }}>
+        <div style={{ gridArea: 'hasThermalPrinting', display: features.labelPrinting ? undefined : 'none' }}>
           <SelectField
             options={statusOption}
             label='Label Printing'

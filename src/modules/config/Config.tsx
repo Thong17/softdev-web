@@ -14,8 +14,7 @@ import { useForm } from 'react-hook-form'
 import { telegramConfigSchema } from './schema'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
-import { useEffect, useState } from 'react'
-import { SoftInvoiceSetting, ISoftInvoiceSetting } from './SoftInvoiceSetting'
+import { useEffect } from 'react'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 
 declare type TelegramPrivilegeOptions = "telegramPrivilege.SENT_AFTER_PAYMENT" | "telegramPrivilege.SENT_AFTER_OPEN_DRAWER" | "telegramPrivilege.SENT_AFTER_CLOSE_DRAWER"
@@ -43,19 +42,9 @@ const Config = () => {
         SENT_AFTER_OPEN_DRAWER: false,
         SENT_AFTER_CLOSE_DRAWER: false,
       },
-      thermalPrinterName: '',
-      thermalPrinterWidth: '',
-      thermalPrinterHeight: '',
-      thermalPrinterGap: '',
-      receiptPrinterName: '',
-      receiptPrinterCharPerLine: 0,
-      storePrinterName: '',
-      storePrinterCharPerLine: 0,
     }
   })
   const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
-  // Saved separately from the Telegram/printer form (its own endpoint)
-  const [softInvoice, setSoftInvoice] = useState<Partial<ISoftInvoiceSetting> | null>(null)
 
   useEffect(() => {
     Axios({
@@ -63,9 +52,12 @@ const Config = () => {
       url: '/organize/store/getTelegramSetting'
     })
       .then((res) => {
-        const { softInvoice: invoiceSetting, ...data } = res.data.data || {}
-        reset(data)
-        setSoftInvoice(invoiceSetting || {})
+        const data = res.data.data || {}
+        reset({
+          telegramAPIKey: data.telegramAPIKey || '',
+          telegramChatID: data.telegramChatID || '',
+          telegramPrivilege: { ...data.telegramPrivilege },
+        })
       })
       .catch(err => notify(err?.response?.data?.msg, 'error'))
     //eslint-disable-next-line
@@ -128,7 +120,6 @@ const Config = () => {
             />
           </div>
         </div>
-        {user?.isDefault && <SoftInvoiceSetting initial={softInvoice} />}
         {
           user?.isDefault && <form {...trackChanges} onSubmit={handleSubmit(submit)}>
             <Section describe='Telegram Configuration'>
@@ -177,86 +168,6 @@ const Config = () => {
                 <CheckboxField name='telegramPrivilege.SENT_AFTER_CLOSE_DRAWER' defaultChecked={getValues('telegramPrivilege.SENT_AFTER_CLOSE_DRAWER')} label={language['SENT_AFTER_CLOSE_DRAWER']} onChange={handleChangeCheckbox} />
               </div>
               
-            </Section>
-            <Section describe='Printer Configuration' style={{ marginTop: 40 }}>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 200px 200px 200px',
-                  gridColumnGap: 20,
-                  gridTemplateAreas:
-                    ` 
-                      'thermalPrinterName thermalPrinterWidth thermalPrinterHeight thermalPrinterGap'
-                      'receiptPrinterName receiptPrinterName receiptPrinterName receiptPrinterCharPerLine'
-                      'storePrinterName storePrinterName storePrinterName storePrinterCharPerLine'
-                    `
-                }}
-              >
-                <div style={{ gridArea: 'thermalPrinterName' }}>
-                  <TextField
-                    type='text'
-                    label='Label Printer Name'
-                    err={errors.thermalPrinterName?.message}
-                    {...register('thermalPrinterName')}
-                  />
-                </div>
-                <div style={{ gridArea: 'thermalPrinterWidth' }}>
-                  <TextField
-                    type='number'
-                    label='Paper Width (mm)'
-                    err={errors.thermalPrinterWidth?.message}
-                    {...register('thermalPrinterWidth')}
-                  />
-                </div>
-                <div style={{ gridArea: 'thermalPrinterHeight' }}>
-                  <TextField
-                    type='number'
-                    label='Paper Height (mm)'
-                    err={errors.thermalPrinterHeight?.message}
-                    {...register('thermalPrinterHeight')}
-                  />
-                </div>
-                <div style={{ gridArea: 'thermalPrinterGap' }}>
-                  <TextField
-                    type='number'
-                    label='Paper Gap (mm)'
-                    err={errors.thermalPrinterGap?.message}
-                    {...register('thermalPrinterGap')}
-                  />
-                </div>
-                <div style={{ gridArea: 'receiptPrinterName' }}>
-                  <TextField
-                    type='text'
-                    label='Receipt Printer Name'
-                    err={errors.receiptPrinterName?.message}
-                    {...register('receiptPrinterName')}
-                  />
-                </div>
-                <div style={{ gridArea: 'receiptPrinterCharPerLine' }}>
-                  <TextField
-                    type='number'
-                    label='Characters Per Line'
-                    err={errors.receiptPrinterCharPerLine?.message}
-                    {...register('receiptPrinterCharPerLine')}
-                  />
-                </div>
-                <div style={{ gridArea: 'storePrinterName' }}>
-                  <TextField
-                    type='text'
-                    label='Store Printer Name'
-                    err={errors.storePrinterName?.message}
-                    {...register('storePrinterName')}
-                  />
-                </div>
-                <div style={{ gridArea: 'storePrinterCharPerLine' }}>
-                  <TextField
-                    type='number'
-                    label='Characters Per Line'
-                    err={errors.storePrinterCharPerLine?.message}
-                    {...register('storePrinterCharPerLine')}
-                  />
-                </div>
-              </div>
             </Section>
             <div
               style={{

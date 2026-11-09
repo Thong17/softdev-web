@@ -1,4 +1,5 @@
 import { Box } from '@mui/system'
+import { FeatureGate } from 'hooks/useStoreFeatures'
 import { SoftInvoiceActions } from 'components/shared/invoice/SoftInvoiceActions'
 import { AlertContainer } from 'components/shared/container/AlertContainer'
 import { DialogTitle } from 'components/shared/DialogTitle'
@@ -736,7 +737,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                       </CustomButton>
                       {/* A4 / A5 invoice (Store Config › Soft Invoice) */}
                       {payment?._id && <SoftInvoiceActions paymentId={payment._id} />}
-                      <CustomButton
+                      <FeatureGate feature='labelPrinting'><CustomButton
                         isLoading={isLoading}
                         onClick={handlePrintLabel}
                         styled={theme}
@@ -750,8 +751,8 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                           style={{ fontSize: 19, marginRight: 5 }}
                         />{' '}
                         {language['PRINT_LABEL']}
-                      </CustomButton>
-                      {user?.privilege?.queue?.create && <CustomButton
+                      </CustomButton></FeatureGate>
+                      {user?.privilege?.queue?.create && <FeatureGate feature='queue'><CustomButton
                         isLoading={isLoading}
                         onClick={handleAddToQueue}
                         styled={theme}
@@ -766,7 +767,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                           style={{ fontSize: 19, marginRight: 5 }}
                         />{' '}
                         {!!queue ? language['ADDED_TO_QUEUE'] : language['ADD_TO_QUEUE']}
-                      </CustomButton>}
+                      </CustomButton></FeatureGate>}
                     </>
                   ) : (
                     <>
@@ -787,7 +788,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                       </CustomButton>
                       {payment?._id && <SoftInvoiceActions paymentId={payment._id} />}
                       {
-                        source === 'payment' && <CustomButton
+                        source === 'payment' && <FeatureGate feature='labelPrinting'><CustomButton
                           isLoading={isLoading}
                           onClick={handlePrintLabel}
                           styled={theme}
@@ -801,7 +802,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                             style={{ fontSize: 19, marginRight: 5 }}
                           />{' '}
                           {language['PRINT_LABEL']}
-                        </CustomButton>
+                        </CustomButton></FeatureGate>
                       }
                     </>
                   )}

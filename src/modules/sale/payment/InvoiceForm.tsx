@@ -1,4 +1,5 @@
 import useTheme from 'hooks/useTheme'
+import { FeatureGate } from 'hooks/useStoreFeatures'
 import {
   forwardRef,
   useEffect,
@@ -940,7 +941,7 @@ export const InvoiceForm = forwardRef(
                             </span>
                           </div>
                           <div style={{ display: 'flex', gap: 5, minWidth: 70, justifyContent: 'end' }}>
-                            {(!disableForm && transaction.hasThermalPrinting) && <IconButton
+                            {(!disableForm && transaction.hasThermalPrinting) && <FeatureGate feature='labelPrinting'><IconButton
                               onClick={(e) => handlePrintTransaction(e, transaction)}
                               style={{
                                 backgroundColor: `${theme.color.info}22`,
@@ -949,7 +950,7 @@ export const InvoiceForm = forwardRef(
                               <PrintRoundedIcon
                                 style={{ fontSize: 17, color: theme.color.info }}
                               />
-                            </IconButton>}
+                            </IconButton></FeatureGate>}
                             {!disableForm && <IconButton
                               style={{ backgroundColor: `${theme.color.error}22`, }}
                               onClick={(event) =>

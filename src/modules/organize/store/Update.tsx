@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { useParams } from 'react-router-dom'
 import { getStore, selectStore } from './redux'
 import Breadcrumb from 'components/shared/Breadcrumbs'
+import { storeStages } from './stages'
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded'
 import useLanguage from 'hooks/useLanguage'
 
@@ -24,23 +25,7 @@ export const UpdateStore = () => {
     }
   }, [dispatch, id])
 
-  const stages = [
-    {
-      title: language['ORGANIZE'],
-      path: '/organize'
-    },
-    {
-      title: language['STORE'],
-      path: '/organize/store'
-    },
-    {
-      title: language['INFO'],
-    },
-    {
-      title: language['PAYMENT'],
-      path: `/organize/store/${id}/payment`
-    },
-  ]
+  const stages = storeStages(language, id, 'info')
   
   return (
     <Container header={<Header stages={stages} />}>

@@ -1,14 +1,16 @@
 import useAuth from 'hooks/useAuth'
+import useStoreFeatures from 'hooks/useStoreFeatures'
 import useLanguage from 'hooks/useLanguage'
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
 const Navbar = () => {
   const { user } = useAuth()
+  const features = useStoreFeatures()
   const { language } = useLanguage()
   return (
     <>
-      {user?.privilege?.function?.queue && <NavLink to='/function/queue'>{language['QUEUE']}</NavLink>}
+      {user?.privilege?.function?.queue && features.queue && <NavLink to='/function/queue'>{language['QUEUE']}</NavLink>}
       {user?.privilege?.function?.promotion && <NavLink to='/function/promotion'>{language['PROMOTION']}</NavLink>}
       {user?.privilege?.function?.banner && <NavLink to='/function/banner'>{language['BANNER']}</NavLink>}
       {user?.privilege?.function?.customer && <NavLink to='/function/customer'>{language['CUSTOMER']}</NavLink>}
