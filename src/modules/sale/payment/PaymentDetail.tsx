@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { Cashing } from './Cashing'
 import useNotify from 'hooks/useNotify'
 import { getDetailPayment } from 'modules/report/payment/redux'
+import { PayLaterHistory } from './PayLaterHistory'
 
 export const PaymentDetail = () => {
   const { id } = useParams()
@@ -36,6 +37,8 @@ export const PaymentDetail = () => {
   
   return (
     <Container>
+      {/* Pay Later sales: balance, payments received and Collect */}
+      <PayLaterHistory paymentId={id} onChange={handleReloadPayment} />
       <Cashing customer={defaultValue.customer} id={defaultValue.payment?._id} paymentData={defaultValue.payment} transactions={defaultValue.transactions} onReload={handleReloadPayment} />
     </Container>
   )

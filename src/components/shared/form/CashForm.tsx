@@ -129,7 +129,8 @@ const CastPreset = ({ theme, onClick, cashes = [] }: { theme: any; onClick: (cas
   )
 }
 
-export const CashForm = ({ onChange, transactionCashes = [] }: { onChange: (cashes: any[]) => void; transactionCashes?: ICashItem[] }) => {
+// emptyText: shown before any cash is added; null shows nothing (e.g. an optional deposit)
+export const CashForm = ({ onChange, transactionCashes = [], emptyText }: { onChange: (cashes: any[]) => void; transactionCashes?: ICashItem[]; emptyText?: string | null }) => {
   const { theme } = useTheme()
   const { language } = useLanguage()
   const [cashForm, setCashForm] = useState(initCash)
@@ -259,7 +260,7 @@ export const CashForm = ({ onChange, transactionCashes = [] }: { onChange: (cash
               <CastPreset theme={theme} onClick={handleAddPreset} cashes={transactionCashes} />
           </div>
           <div style={{ position: 'relative', height: '100%' }}>
-              {cashes?.length === 0 ? (
+              {cashes?.length === 0 ? (emptyText === null ? null : (
                   <div
                       style={{
                           backgroundColor:
@@ -274,9 +275,9 @@ export const CashForm = ({ onChange, transactionCashes = [] }: { onChange: (cash
                           boxSizing: 'border-box',
                       }}
                   >
-                      <h2 style={{ fontWeight: 500 }}>{ language['PAYMENT_ADD_CASH_DESCRIPTION'] }</h2>
+                      <h2 style={{ fontWeight: 500 }}>{ emptyText ?? language['PAYMENT_ADD_CASH_DESCRIPTION'] }</h2>
                   </div>
-              ) : (
+              )) : (
                   <div
                       style={{
                           display: 'flex',
@@ -310,6 +311,8 @@ const CashItem = ({ cash, onRemove, onChange }) => {
     <div
       style={{
         backgroundColor: theme.background.secondary,
+        // Set here, not inherited: dialogs don't set a text color
+        color: theme.text.secondary,
         padding: '5px 10px',
         borderRadius: theme.radius.primary,
         display: 'flex',

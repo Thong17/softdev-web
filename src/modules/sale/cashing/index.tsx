@@ -126,11 +126,11 @@ export const Cashing = () => {
       .then((data) => {
         callback(null, data?.data?.data)
         if (!isPayment) return
-        setPaymentDialog({
-          ...paymentDialog,
+        setPaymentDialog((prev) => ({
+          ...prev,
           open: true,
           payment: data?.data?.data,
-        })
+        }))
         setPaymentId(data?.data?.data?._id)
       })
       .catch((err) => {
@@ -139,34 +139,26 @@ export const Cashing = () => {
       })
   }
 
+  // Cart shortcut: save as Pay Later with nothing received; the whole total
+  // is owed and collected later from Operation › Payment
   const handleCheckout = (data, callback) => {
+    if (!paymentDialog.customer?.id) {
+      notify('Choose a customer for Pay Later', 'error')
+      return callback('Choose a customer for Pay Later')
+    }
     handlePayment(data, (err, payment) => {
       if (err) return callback(err)
-      setDisableProduct(true)
-      const body = {
-        receiveCashes: [],
-        receiveTotal: {
-          KHR: payment?.total.currency === 'KHR' ? payment?.total.value : 0,
-          USD: payment?.total.currency === 'USD' ? payment?.total.value : 0,
-          total:
-            payment?.total.currency === 'KHR'
-              ? payment?.total.value / payment.rate.buyRate
-              : payment?.total.value,
-        },
-        remainTotal: { USD: 0, KHR: 0 },
-        customer: payment.customer?._id,
-        paymentMethod: 'later',
-      }
       Axios({
         method: 'PUT',
-        url: `/sale/payment/checkout/${payment?._id}`,
-        body,
+        url: `/sale/payment/checkout-later/${payment?._id}`,
+        body: { customer: paymentDialog.customer?.id },
       })
         .then((response) => {
-          notify('Payment checkout successfully', 'success')
-          const paid = response?.data?.data
-          setCompleted({ invoice: paid?.invoice, total: paid?.total, kind: 'later' })
-          callback(null, paid)
+          setDisableProduct(true)
+          notify('Saved as Pay Later', 'success')
+          const saved = response?.data?.data
+          setCompleted({ invoice: saved?.invoice, total: saved?.total, kind: 'later' })
+          callback(null, saved)
         })
         .catch((err) => {
           notify(err?.response?.data?.msg, 'error')
@@ -176,7 +168,9 @@ export const Cashing = () => {
   }
 
   const handleChangeCustomer = (data) => {
-    setPaymentDialog({ ...paymentDialog, customer: data })
+    // Functional updates: a payment refresh fired right after (e.g. the
+    // customer's discount) must not put back the old customer
+    setPaymentDialog((prev) => ({ ...prev, customer: data }))
   }
 
   const invoiceRef = useRef<any>()
@@ -196,10 +190,10 @@ export const Cashing = () => {
   }
 
   const handleChangePayment = (data) => {
-    setPaymentDialog({
-      ...paymentDialog,
+    setPaymentDialog((prev) => ({
+      ...prev,
       payment: data,
-    })
+    }))
   }
 
   const handleScanProduct = (code) => {
@@ -267,7 +261,7 @@ export const Cashing = () => {
         onClear={handleClearPayment}
         onCheckout={(paid) => {
           setDisableProduct(true)
-          if (paid) setCompleted({ invoice: paid.invoice, total: paid.total, kind: paid.paymentMethod === 'loan' ? 'loan' : 'paid' })
+          if (paid) setCompleted({ invoice: paid.invoice, total: paid.total, kind: paid.paymentMethod === 'loan' ? 'loan' : paid.isPayLater && paid.balance?.USD > 0.01 ? 'later' : 'paid' })
         }}
       />
       <div
@@ -346,6 +340,7 @@ export const Cashing = () => {
             table={table}
             setTable={setTable}
             disableForm={disableProduct}
+            isCompleted={!!completed}
             invoice={paymentDialog.payment?.invoice}
           />
         </div>

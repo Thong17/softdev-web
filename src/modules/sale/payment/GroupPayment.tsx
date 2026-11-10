@@ -12,9 +12,32 @@ import useLanguage from 'hooks/useLanguage'
 import { SaleReportRowDetail } from 'modules/report/SaleReport'
 import { currencyFormat } from 'utils/index'
 import useAuth from 'hooks/useAuth'
+import useStoreFeatures from 'hooks/useStoreFeatures'
 import { columnData, createData } from './constant'
 import { PaymentForm } from '../cashing/PaymentForm'
 import GroupPaymentDialog from './GroupPaymentDialog'
+import { CollectDialog } from './CollectDialog'
+import { SelectTab } from 'components/shared/form/SelectTab'
+import { StickyTable, ITableColumn } from 'components/shared/table/StickyTable'
+import { MergeButton } from 'components/shared/table/ActionButton'
+import { IconButton, Tooltip } from '@mui/material'
+import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded'
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded'
+import { timeFormat } from 'utils'
+
+declare type PayLaterColumn = 'invoice' | 'customer' | 'total' | 'paid' | 'balance' | 'dueDate' | 'createdAt' | 'action'
+
+// Operation › Payment › Pay Later: sales sold now and still owing
+const payLaterColumns: ITableColumn<PayLaterColumn>[] = [
+    { id: 'invoice', label: 'INVOICE', minWidth: 110 },
+    { id: 'customer', label: 'CUSTOMER', minWidth: 130 },
+    { id: 'total', label: 'TOTAL', minWidth: 80 },
+    { id: 'paid', label: 'PAID', minWidth: 80 },
+    { id: 'balance', label: 'BALANCE', minWidth: 90 },
+    { id: 'dueDate', label: 'DUE', minWidth: 90 },
+    { id: 'createdAt', label: 'CREATED_AT', minWidth: 110 },
+    { id: 'action', label: 'ACTION', minWidth: 130, align: 'right' },
+]
 
 export const mergePayments = (data, groupPayment) => {
     const paymentsData = data || []
@@ -55,11 +78,17 @@ const GroupPayment = () => {
     const [detailLoading, setDetailLoading] = useState<Record<string, boolean>>({})
     const { data: payments, count, status } = useAppSelector(selectListPayment)
     const { theme } = useTheme()
+    // Store › Features: no Table column for stores without tables
+    const features = useStoreFeatures()
+    const columns = features.tables ? columnData : columnData.filter((column) => column.id !== 'table')
     const { notify } = useNotify()
     const { language } = useLanguage()
     const { user } = useAuth()
     const navigate = useNavigate()
     const [listPaymentSelected, setListPaymentSelected] = useState<string[]>([]);
+    // Unpaid (never checked out) or Pay Later (sold, still owing)
+    const isPayLaterView = queryParams.get('payLater') === 'owing'
+    const [collectPayment, setCollectPayment] = useState<any>(null)
 
     const [paymentDialog, setPaymentDialog] = useState<any>({
         open: false,
@@ -107,7 +136,8 @@ const GroupPayment = () => {
         const _search = queryParams.get('search')
         const _filter = queryParams.get('filter')
         const _sort = queryParams.get('sort')
-        const _state = queryParams.get('state') ?? 'PENDING'
+        const _state = queryParams.get('payLater') ? null : (queryParams.get('state') ?? 'PENDING')
+        const _payLater = queryParams.get('payLater')
 
         if (_limit) query = { limit: _limit, ...query }
         if (_page) query = { page: _page, ...query }
@@ -115,6 +145,7 @@ const GroupPayment = () => {
         if (_filter) query = { filter: _filter, ...query }
         if (_sort) query = { sort: _sort, ...query }
         if (_state) query = { state: _state, ...query }
+        if (_payLater) query = { payLater: _payLater, ...query }
 
         if (limit || search) return setQueryParams({ ...query, ...data, page: 0 })
         setQueryParams({ ...query, ...data })
@@ -221,6 +252,46 @@ const GroupPayment = () => {
             .catch((err) => notify(err?.response?.data?.msg, 'error'))
     }
 
+    const switchView = (view) => {
+        setListPaymentSelected([])
+        setExpandedRows([])
+        setQueryParams(view === 'later' ? { payLater: 'owing' } : { state: 'PENDING' })
+    }
+
+    const payLaterRows = isPayLaterView ? payments.map((payment: any) => {
+        const due = payment.payLater?.dueDate
+        const overdue = due && new Date(due) < new Date()
+        return {
+            id: payment._id,
+            invoice: payment.invoice,
+            customer: payment.customer?.fullName || payment.customer?.companyName || payment.customer?.displayName || '--',
+            total: currencyFormat(payment.total?.value, payment.total?.currency),
+            paid: currencyFormat(payment.paidTotal || 0, 'USD'),
+            balance: <b>{currencyFormat(payment.balance?.USD || 0, 'USD')}</b>,
+            dueDate: due ? <span style={{ color: overdue ? theme.color.error : undefined, whiteSpace: 'nowrap' }}>{timeFormat(due, 'YYYY-MM-DD')}{overdue ? ' · overdue' : ''}</span> : '--',
+            createdAt: timeFormat(payment.createdAt, 'YYYY-MM-DD HH:mm'),
+            action: (
+                <div style={{ display: 'flex', gap: 5, justifyContent: 'end', alignItems: 'center' }}>
+                    {user?.privilege?.payment?.merge && (
+                        <MergeButton isOn={listPaymentSelected.includes(payment._id)} onClick={(event) => { event.stopPropagation(); handleMerge(payment._id) }} />
+                    )}
+                    {user?.privilege?.payment?.update && (
+                        <Tooltip title='Collect payment'>
+                            <IconButton size='small' onClick={() => setCollectPayment(payment)} style={{ backgroundColor: `${theme.color.success}22`, borderRadius: theme.radius.primary, color: theme.color.success }}>
+                                <PaymentsRoundedIcon style={{ fontSize: 18 }} />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                    <Tooltip title='Detail'>
+                        <IconButton size='small' onClick={() => navigate(`/sale/payment/${payment._id}`)} style={{ backgroundColor: `${theme.color.info}22`, borderRadius: theme.radius.primary, color: theme.color.info }}>
+                            <VisibilityRoundedIcon style={{ fontSize: 18 }} />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+            ),
+        }
+    }) : []
+
     return (
         <Container
             header={
@@ -250,8 +321,30 @@ const GroupPayment = () => {
                     dispatch(getListPayment({ query: queryParams }))
                 }}
             />
+            <CollectDialog
+                payment={collectPayment}
+                onClose={() => setCollectPayment(null)}
+                onCollected={() => dispatch(getListPayment({ query: queryParams }))}
+            />
+            <div style={{ padding: '10px 0' }}>
+                <SelectTab
+                    selected={isPayLaterView ? 'later' : 'pending'}
+                    options={[{ label: 'Unpaid', value: 'pending' }, { label: language['PAY_LATER'] || 'Pay Later', value: 'later' }]}
+                    onChange={switchView}
+                />
+            </div>
+            {isPayLaterView ? (
+                <StickyTable
+                    columns={payLaterColumns}
+                    rows={payLaterRows}
+                    setQuery={handleQuery}
+                    count={count}
+                    limit={Number.parseInt(queryParams.get('limit') || '10')}
+                    skip={status === 'SUCCESS' ? Number.parseInt(queryParams.get('page') || '0') : 0}
+                />
+            ) : (
             <ExpandableTable
-                columns={columnData}
+                columns={columns}
                 rows={rowData}
                 setQuery={handleQuery}
                 handleClick={toggleRowExpansion}
@@ -273,6 +366,7 @@ const GroupPayment = () => {
                         : 0
                 }
             />
+            )}
         </Container>
     )
 }

@@ -1,4 +1,5 @@
 import { directPrinting } from 'api/receipt.api'
+import { PayLaterHistory } from 'modules/sale/payment/PayLaterHistory'
 import { SoftInvoiceActions } from 'components/shared/invoice/SoftInvoiceActions'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { PaymentInvoice } from 'components/shared/invoice/PaymentInvoice'
@@ -188,6 +189,8 @@ export const Detail = ({
       </div>
       <CustomDetailContainer styled={theme} width="auto">
         <PaymentInvoice payment={payment} />
+        {/* Pay Later sales: balance and payments received */}
+        {dialog.payment?.isPayLater && <PayLaterHistory paymentId={dialog.payment._id} />}
         <div style={{ display: 'flex', gap: 10 }}>
           <CustomButton
             onClick={handleCloseDialog}

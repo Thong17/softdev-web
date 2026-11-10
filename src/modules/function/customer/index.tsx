@@ -25,7 +25,7 @@ import useLanguage from 'hooks/useLanguage'
 import { currencyFormat, debounce, timeFormat } from 'utils'
 import Breadcrumbs from '../components/Breadcrumbs'
 
-declare type ColumnHeader = 'customer' | 'phone' | 'tier' | 'group' | 'location' | 'lastPurchaseAt' | 'invoiceCount' | 'recentSpent' | 'totalSpent' | 'action'
+declare type ColumnHeader = 'customer' | 'phone' | 'tier' | 'group' | 'location' | 'lastPurchaseAt' | 'invoiceCount' | 'recentSpent' | 'totalSpent' | 'balance' | 'action'
 
 const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'customer', label: 'Customer', minWidth: 120 },
@@ -37,6 +37,7 @@ const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'invoiceCount', label: 'Invoices', minWidth: 60 },
   { id: 'recentSpent', label: 'Spent (12 months)', minWidth: 95 },
   { id: 'totalSpent', label: 'Total Spent', minWidth: 85 },
+  { id: 'balance', label: 'Balance', minWidth: 80 },
   { id: 'action', label: 'Action', minWidth: 120, align: 'right' },
 ]
 
@@ -92,7 +93,7 @@ export const CustomerRM = () => {
   const handleQuery = (data) => {
     const query = Object.fromEntries(queryParams)
     // Filters start again from the first page
-    const next = { ...query, ...data, ...((data.limit || data.search !== undefined || data.inactiveDays !== undefined || data.group !== undefined || data.tier !== undefined) && { page: 0 }) }
+    const next = { ...query, ...data, ...((data.limit || data.search !== undefined || data.inactiveDays !== undefined || data.group !== undefined || data.tier !== undefined || data.owing !== undefined) && { page: 0 }) }
     Object.keys(next).forEach((key) => (next[key] === '' || next[key] === undefined) && delete next[key])
     setQueryParams(next)
   }
@@ -207,6 +208,8 @@ export const CustomerRM = () => {
       invoiceCount: customer.invoiceCount || 0,
       recentSpent: currencyFormat(customer.recentSpent || 0, 'USD'),
       totalSpent: currencyFormat(customer.totalSpent || 0, 'USD'),
+      // Still owed on Pay Later sales
+      balance: (customer.balance || 0) > 0.005 ? <b style={{ color: theme.color.warning }}>{currencyFormat(customer.balance, 'USD')}</b> : '--',
       action,
     }
   })
@@ -254,6 +257,15 @@ export const CustomerRM = () => {
               }}
             />
             days
+          </label>
+          {/* Only customers with a Pay Later balance */}
+          <label style={{ ...filterBox, cursor: 'pointer' }}>
+            <input
+              type='checkbox'
+              checked={queryParams.get('owing') === 'true'}
+              onChange={(event) => handleQuery({ owing: event.target.checked ? 'true' : '' })}
+            />
+            Owing
           </label>
           <div style={filterBox}>
             Tier

@@ -202,6 +202,8 @@ export const InvoiceForm = forwardRef(({
   setTable,
   disableForm = false,
   invoice = null,
+  // The sale is paid/saved: the customer can no longer change
+  isCompleted = false,
   // `quotation` keeps items in local state only (no transaction API calls, so
   // stock is never touched) and swaps the checkout buttons for save/export
   mode = 'payment',
@@ -600,8 +602,22 @@ export const InvoiceForm = forwardRef(({
     })
   }
 
+  // A pending payment can still change customer (e.g. picked in the payment
+  // dialog for Pay Later); only a finished sale locks it
+  const customerLocked = !!checkoutId || isCompleted
+
+  // Saves the customer on the pending payment so checkout and the dialog agree
+  // Returns once saved, so a following update (the customer's discount)
+  // starts after it and can't be overwritten by it
+  const saveCustomer = (customerId): Promise<void> => {
+    if (!paymentId || customerLocked) return Promise.resolve()
+    return recalculatePayment(paymentId, { customer: customerId })
+      .then(() => undefined)
+      .catch((msg) => notify(msg, 'error'))
+  }
+
   const handleClickCustomer = () => {
-    if (paymentId) return
+    if (customerLocked) return
     setCustomerDialog({ ...customerDialog, open: true })
   }
 
@@ -682,6 +698,7 @@ export const InvoiceForm = forwardRef(({
   const handleClearCustomer = () => {
     setCustomer({ displayName: null, id: null, fullName: null, address: null, point: 0 })
     onChangeCustomer({ displayName: null, id: null, fullName: null, address: null, point: 0 })
+    saveCustomer(null)
   }
 
   const handleClickPrint = () => {
@@ -733,15 +750,19 @@ export const InvoiceForm = forwardRef(({
           onClickCustomer={(data) => {
             onChangeCustomer(data)
             setCustomer(data)
-            // The customer's own discount, else their tier's, fills an
-            // invoice that has no discount yet
-            const ownDiscount = Number(data?.discount) || 0
-            const tierDiscount = Number(data?.tier?.discount) || 0
-            const customerDiscount = ownDiscount || tierDiscount
-            if (customerDiscount > 0 && !Number(discount.value)) {
-              handleChangeDiscount({ input: customerDiscount, select: 'PCT', check: false })
-              notify(ownDiscount ? `Applied ${customerDiscount}% customer discount` : `Applied ${customerDiscount}% ${data.tier.name} discount`, 'info')
-            }
+            // Customer first, then the discount: two updates sent together can
+            // save the total in the wrong order
+            saveCustomer(data?.id || data?._id).then(() => {
+              // The customer's own discount, else their tier's, fills an
+              // invoice that has no discount yet
+              const ownDiscount = Number(data?.discount) || 0
+              const tierDiscount = Number(data?.tier?.discount) || 0
+              const customerDiscount = ownDiscount || tierDiscount
+              if (customerDiscount > 0 && !Number(discount.value)) {
+                handleChangeDiscount({ input: customerDiscount, select: 'PCT', check: false })
+                notify(ownDiscount ? `Applied ${customerDiscount}% customer discount` : `Applied ${customerDiscount}% ${data.tier.name} discount`, 'info')
+              }
+            })
           }}
         />
         {status === 'SUCCESS' && <ReceiptDialog dialog={receiptDialog} setDialog={setReceiptDialog} defaultValues={data} />}
@@ -753,7 +774,7 @@ export const InvoiceForm = forwardRef(({
             alignItems: 'center',
           }}
         >
-          {invoiceBar && <CustomerStatistic mode={paymentId ? 'view' : 'edit'} point={customer.point} phone={customer.displayName} name={customer.fullName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: paymentId ? 'default' : 'pointer' }} onClear={handleClearCustomer} />}
+          {invoiceBar && <CustomerStatistic mode={customerLocked ? 'view' : 'edit'} point={customer.point} phone={customer.displayName} name={customer.fullName} address={customer.address} onClick={handleClickCustomer} style={{ marginLeft: 10, cursor: customerLocked ? 'default' : 'pointer' }} onClear={handleClearCustomer} />}
           <div style={{ display: 'flex' }}>
             {(invoiceBar && setTable && features.tables) && <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginRight: '-30px' }}>
               <TableBarRoundedIcon style={{ fontSize: 22 }} />
@@ -1319,7 +1340,8 @@ export const InvoiceForm = forwardRef(({
                       borderRadius: theme.radius.secondary,
                     }}
                   >
-                  {language['CHECKOUT']}
+                  {/* Quick Pay Later: saves the sale with the whole total owed */}
+                  {language['PAY_LATER'] || 'Pay Later'}
                 </CustomButton>}
                 {!checkoutId && <CustomButton
                   isLoading={isLoading}

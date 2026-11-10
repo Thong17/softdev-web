@@ -35,6 +35,10 @@ const L = {
   paid: 'បានបង់ / PAID',
   unpaid: 'មិនទាន់បង់ / UNPAID',
   loan: 'បង់រំលោះ / LOAN',
+  payLater: 'បង់ពេលក្រោយ / PAY LATER',
+  fee: 'កម្រៃ / Fee',
+  paidSoFar: 'បានបង់ / Paid',
+  dueDate: 'ថ្ងៃកំណត់ / Due date',
   saleTotal: 'សរុបវិក្កយបត្រ / Sale total',
   thanks: 'សូមអរគុណ / Thank you',
 }
@@ -58,6 +62,8 @@ const toUSD = (value, currency, rate) => (currency === 'KHR' ? (Number(value) ||
 // Paid, unpaid or loan, from how the sale was settled
 const paymentState = (payment) => {
   if (payment?.paymentMethod === 'loan') return 'loan'
+  // Pay Later: owing until the balance is collected, then paid
+  if (payment?.isPayLater) return (payment.balance?.USD || 0) > 0.005 ? 'payLater' : 'paid'
   if (!payment?.status || payment?.paymentMethod === 'later' || payment?.state === 'PENDING') return 'unpaid'
   return 'paid'
 }
@@ -82,7 +88,8 @@ export const InvoiceDocument = forwardRef(({ data, paperSize = 'A4' }: { data: I
   const customer = sales.find((sale) => sale?.customer)?.customer
   const rate = head.rate || sales[0]?.rate
   const state = paymentState(data.group ? { ...head, status: head.status ?? true } : head)
-  const stamp = { paid: { text: L.paid, color: '#2e7d32' }, unpaid: { text: L.unpaid, color: '#c62828' }, loan: { text: L.loan, color: '#ef6c00' } }[state]
+  const stamp = { paid: { text: L.paid, color: '#2e7d32' }, unpaid: { text: L.unpaid, color: '#c62828' }, loan: { text: L.loan, color: '#ef6c00' }, payLater: { text: L.payLater, color: '#ef6c00' } }[state]
+  const payLater = !data.group && head.isPayLater ? head : null
 
   const cell = { padding: small ? '5px 6px' : '7px 9px', borderBottom: '1px solid #e3e3e3', verticalAlign: 'top' as const }
   const right = { ...cell, textAlign: 'right' as const, whiteSpace: 'nowrap' as const }
@@ -230,9 +237,17 @@ export const InvoiceDocument = forwardRef(({ data, paperSize = 'A4' }: { data: I
           </div>
           <div style={{ marginTop: 10 }}>
             {detailLine(L.method, methodLabel[head.paymentMethod] || head.paymentMethod)}
-            {state === 'paid' && received ? detailLine(L.received, currencyFormat(received, 'USD')) : null}
-            {state === 'paid' && remain < 0 ? detailLine(L.change, <>{currencyFormat(-remain, 'USD')} ({currencyFormat(Math.round(-(head.remainTotal?.KHR || 0)), 'KHR')})</>) : null}
-            {state !== 'paid' && remain > 0 ? detailLine(L.balance, currencyFormat(remain, 'USD')) : null}
+            {payLater ? (
+              <>
+                {payLater.payLater?.fee?.amount > 0 && detailLine(L.fee, currencyFormat(payLater.payLater.fee.amount, 'USD'))}
+                {detailLine(L.paidSoFar, currencyFormat(payLater.paidTotal || 0, 'USD'))}
+                {(payLater.balance?.USD || 0) > 0.005 && detailLine(L.balance, <b>{currencyFormat(payLater.balance.USD, 'USD')}</b>)}
+                {payLater.payLater?.dueDate && (payLater.balance?.USD || 0) > 0.005 && detailLine(L.dueDate, timeFormat(payLater.payLater.dueDate, 'YYYY-MM-DD'))}
+              </>
+            ) : null}
+            {!payLater && state === 'paid' && received ? detailLine(L.received, currencyFormat(received, 'USD')) : null}
+            {!payLater && state === 'paid' && remain < 0 ? detailLine(L.change, <>{currencyFormat(-remain, 'USD')} ({currencyFormat(Math.round(-(head.remainTotal?.KHR || 0)), 'KHR')})</>) : null}
+            {!payLater && state !== 'paid' && remain > 0 ? detailLine(L.balance, currencyFormat(remain, 'USD')) : null}
           </div>
         </div>
         <div style={{ width: small ? 220 : 290 }}>

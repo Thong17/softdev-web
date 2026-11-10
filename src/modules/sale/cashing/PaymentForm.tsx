@@ -1,4 +1,5 @@
 import { Box } from '@mui/system'
+import { PayLaterForm, initPayLater, IPayLaterValue, payLaterAmounts } from './PayLaterForm'
 import { FeatureGate } from 'hooks/useStoreFeatures'
 import { SoftInvoiceActions } from 'components/shared/invoice/SoftInvoiceActions'
 import { AlertContainer } from 'components/shared/container/AlertContainer'
@@ -73,11 +74,17 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
     thermalPrinterGap: 0
   });
   const [isQzTrayAvailable, setIsQzTrayAvailable] = useState(false);
+  // Pay Later tab: due date, one-time fee and note
+  const [payLater, setPayLater] = useState<IPayLaterValue>(initPayLater)
+  // Pay Later's "paid now": cash (the cash list) or transfer (an amount)
+  const [depositMethod, setDepositMethod] = useState<'cash' | 'transfer'>('cash')
+  const [depositTransfer, setDepositTransfer] = useState('')
 
   const paymentMethods = [
     { label: language['CASH'], value: 'cash' },
     { label: language['TRANSFER'], value: 'transfer' },
     { label: language['LOAN'], value: 'loan' },
+    { label: language['PAY_LATER'] || 'Pay\u00a0Later', value: 'later' },
   ]
 
   useEffect(() => {
@@ -149,6 +156,9 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
     setTotalPayment({ value: 0, currency: 'USD' })
     setExchangeRate(null)
     setReceiveCashes([])
+    setPayLater(initPayLater)
+    setDepositMethod('cash')
+    setDepositTransfer('')
   }
 
   useEffect(() => {
@@ -174,7 +184,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
       onClear && onClear()
       setFormMode('pending')
     }
-    setDialog({ ...dialog, open: false })
+    setDialog((prev) => ({ ...prev, open: false }))
   }
 
   const handleChangePaymentMethod = (value) => {
@@ -189,6 +199,8 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
             : totalPayment.value,
       })
     } else setTotalReceive({ KHR: 0, USD: 0, total: 0 })
+    setDepositMethod('cash')
+    setDepositTransfer('')
     setPaymentMethod(value)
   }
 
@@ -208,6 +220,21 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
     })
   }
 
+  // Switching cash/transfer starts the deposit from nothing
+  const handleChangeDepositMethod = (value: 'cash' | 'transfer') => {
+    setDepositMethod(value)
+    setDepositTransfer('')
+    setReceiveCashes([])
+    setTotalReceive({ KHR: 0, USD: 0, total: 0 })
+  }
+
+  const handleChangeDepositTransfer = (value: string) => {
+    const amount = Math.max(0, Number(value) || 0)
+    setDepositTransfer(value)
+    setReceiveCashes([])
+    setTotalReceive({ KHR: 0, USD: amount, total: amount })
+  }
+
   const handleAddToQueue = () => {
     setIsLoading(true)
     Axios({
@@ -223,7 +250,49 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
       .finally(() => setIsLoading(false))
   }
 
+  // Pay Later: sold now; the deposit (if any) is received now and the rest,
+  // plus any fee, is owed and collected later from Operation › Payment
+  const handleCheckoutLater = () => {
+    if (!dialog.customer?.id) return notify('Choose a customer for Pay Later', 'error')
+    const sellRate = exchangeRate?.sellRate || 4000
+    const { paid, fee, balance } = payLaterAmounts(totalPayment.value, totalReceive.total, payLater, sellRate)
+    if (totalReceive.total > totalPayment.value + 0.01) return notify('The deposit is more than the total; use Cash or Transfer instead', 'error')
+    const feeNumber = Number(payLater.feeValue) || 0
+    if (feeNumber < 0 || (payLater.feeType === 'PCT' && feeNumber > 100)) return notify('The fee must be 0 or more, and a % fee at most 100', 'error')
+    confirm({
+      title: 'Save as Pay Later?',
+      description: `Paid now ${paid.toFixed(2)} USD${fee > 0 ? `, fee ${fee.toFixed(2)} USD` : ''}. The customer will owe ${balance.toFixed(2)} USD.`,
+      variant: 'info',
+    })
+      .then(() => {
+        setIsLoading(true)
+        Axios({
+          method: 'PUT',
+          url: `/sale/payment/checkout-later/${dialog.payment?._id}`,
+          body: {
+            customer: dialog.customer?.id,
+            dueDate: payLater.dueDate || null,
+            note: payLater.note,
+            fee: feeNumber ? { value: feeNumber, type: payLater.feeType } : null,
+            receiveCashes,
+            receiveTotal: totalReceive,
+            paymentMethod: depositMethod,
+          },
+        })
+          .then((data) => {
+            notify(data?.data?.msg, 'success')
+            setPayment(data?.data?.data)
+            reload()
+            onCheckout(data?.data?.data)
+          })
+          .catch((err) => notify(err?.response?.data?.msg || err?.response?.data?.[0]?.path, 'error'))
+          .finally(() => setIsLoading(false))
+      })
+      .catch(() => null)
+  }
+
   const handleCheckout = () => {
+    if (paymentMethod === 'later') return handleCheckoutLater()
     confirm({
       title: 'Are you sure you want to check out?',
       description: 'Checkout the payment will update the status to complete.',
@@ -422,6 +491,48 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
           totalRemain: totalRemain,
         }
         return <LoanForm onLoading={setIsLoading} onChange={handleChangeCashes} onPreview={handlePreview} loanButtonRef={loanButtonRef} previewButtonRef={previewButtonRef} paymentId={dialog.payment?._id} payment={body} onCheckoutLoan={handleCheckoutLoan} formMode={formMode} />
+
+      case 'later':
+        // A scroll layer over the box: the taller form scrolls inside it
+        // instead of growing the box past the size the other tabs use
+        return (
+          <div style={{ position: 'absolute', inset: 10, overflowY: 'auto' }}>
+            <PayLaterForm
+              customer={dialog.customer}
+              total={totalPayment.value}
+              deposit={totalReceive.total}
+              sellRate={exchangeRate?.sellRate || 4000}
+              value={payLater}
+              onChange={setPayLater}
+              depositForm={
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <SelectTab
+                    selected={depositMethod}
+                    options={[{ label: 'Cash', value: 'cash' }, { label: 'Transfer', value: 'transfer' }]}
+                    onChange={handleChangeDepositMethod}
+                  />
+                  {depositMethod === 'cash'
+                    // CashForm sizes its list from this box
+                    ? <div style={{ height: 220 }}><CashForm onChange={handleChangeCashes} transactionCashes={[]} emptyText={null} /></div>
+                    : (
+                      <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        <span style={{ fontSize: 12, color: theme.text.tertiary }}>Amount paid now (USD)</span>
+                        <input
+                          type='number'
+                          min='0'
+                          step='any'
+                          placeholder='0'
+                          value={depositTransfer}
+                          onChange={(event) => handleChangeDepositTransfer(event.target.value)}
+                          style={{ height: 36, padding: '0 10px', boxSizing: 'border-box', border: theme.border.quaternary, borderRadius: theme.radius.primary, background: 'transparent', color: theme.text.primary, fontFamily: 'inherit', fontSize: 14, outline: 'none' }}
+                        />
+                      </label>
+                    )}
+                </div>
+              }
+            />
+          </div>
+        )
 
       default:
         return <CashForm onChange={handleChangeCashes} transactionCashes={payment?.transactions?.map((tx) => ({ type: 'transfer', value: tx.total?.value, currency: tx.total?.currency, quantity: 1, color: theme.color.info }))} />

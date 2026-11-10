@@ -271,14 +271,31 @@ export const InvoicePreview = ({ payment, customer, onRemove }) => {
                     </div>
                   )
                 })}
+                {/* Pay Later: the sale total and what's been paid sit here, and
+                    the big line at the bottom shows what this group settles */}
+                {payment?.isPayLater && <>
+                  {payment?.payLater?.fee?.amount > 0 && (
+                    <div className='item'>
+                      <span>Fee</span>
+                      <span>{currencyFormat(payment.payLater.fee.amount, 'USD')}</span>
+                    </div>
+                  )}
+                  <div className='item'>
+                    <span>{language['TOTAL']}</span>
+                    <span>{currencyFormat(payment?.total.value, payment?.total.currency)}</span>
+                  </div>
+                  <div className='item' style={{ color: theme.color.success }}>
+                    <span>Paid</span>
+                    <span>{currencyFormat(payment?.paidTotal || 0, 'USD')}</span>
+                  </div>
+                </>}
               </div>
               <div className='total'>
-                <span>{language['TOTAL']} <span title={payment?.invoice} style={{ color: theme.color.success, fontWeight: 'bold' }}>#{payment?.invoice?.split('-')[1]}</span></span>
+                <span>{payment?.isPayLater ? 'Remaining' : language['TOTAL']} <span title={payment?.invoice} style={{ color: theme.color.success, fontWeight: 'bold' }}>#{payment?.invoice?.split('-')[1]}</span></span>
                 <span>
-                  {currencyFormat(
-                    payment?.total.value,
-                    payment?.total.currency
-                  )}
+                  {payment?.isPayLater
+                    ? currencyFormat(payment?.balance?.USD || 0, 'USD')
+                    : currencyFormat(payment?.total.value, payment?.total.currency)}
                 </span>
               </div>
             </div>
