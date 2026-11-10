@@ -43,7 +43,8 @@ export const PayLaterHistory = ({ paymentId, onChange }: { paymentId?: string | 
   if (!payment?.isPayLater) return null
 
   const owed = Number(payment.balance?.USD) || 0
-  const fee = payment.payLater?.fee?.amount || 0
+  const collectFees = payment.payLater?.collectFees || 0
+  const fee = (payment.payLater?.fee?.amount || 0) + collectFees
   const due = payment.payLater?.dueDate
   const overdue = owed > 0.005 && due && new Date(due) < new Date()
   const stat = (label: string, value: any, color?: string) => (
@@ -65,7 +66,7 @@ export const PayLaterHistory = ({ paymentId, onChange }: { paymentId?: string | 
       </div>
       <div style={{ display: 'flex', gap: 30, flexWrap: 'wrap' }}>
         {stat('Sale total', currencyFormat(payment.total?.value, payment.total?.currency))}
-        {fee > 0 && stat(`Fee${payment.payLater?.fee?.type === 'PCT' ? ` (${payment.payLater.fee.value}%)` : ''}`, currencyFormat(fee, 'USD'))}
+        {fee > 0 && stat(`Fee${!collectFees && payment.payLater?.fee?.type === 'PCT' ? ` (${payment.payLater.fee.value}%)` : ''}`, currencyFormat(fee, 'USD'))}
         {stat('Paid', currencyFormat(payment.paidTotal || 0, 'USD'), theme.color.success)}
         {stat('Balance', owed > 0.005 ? currencyFormat(owed, 'USD') : 'Paid in full', owed > 0.005 ? theme.color.warning : theme.color.success)}
         {due && stat('Due', `${timeFormat(due, 'YYYY-MM-DD')}${overdue ? ' · overdue' : ''}`, overdue ? theme.color.error : undefined)}
@@ -81,7 +82,9 @@ export const PayLaterHistory = ({ paymentId, onChange }: { paymentId?: string | 
               paidAt: timeFormat(row.paidAt, 'YYYY-MM-DD HH:mm'),
               kind: row.kind === 'DEPOSIT' ? 'Deposit' : row.groupPayment ? 'Group payment' : 'Payment',
               method: row.paymentMethod === 'transfer' ? 'Transfer' : 'Cash',
-              amount: currencyFormat(row.amount, 'USD'),
+              amount: row.fee?.amount > 0
+                ? <span>{currencyFormat(row.amount, 'USD')} <span style={{ color: theme.color.warning, fontSize: 12 }}>(fee +{currencyFormat(row.fee.amount, 'USD')})</span></span>
+                : currencyFormat(row.amount, 'USD'),
               by: row.createdBy?.username || '--',
             }))}
           />

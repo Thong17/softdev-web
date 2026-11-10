@@ -274,10 +274,10 @@ export const InvoicePreview = ({ payment, customer, onRemove }) => {
                 {/* Pay Later: the sale total and what's been paid sit here, and
                     the big line at the bottom shows what this group settles */}
                 {payment?.isPayLater && <>
-                  {payment?.payLater?.fee?.amount > 0 && (
+                  {(payment?.payLater?.fee?.amount || 0) + (payment?.payLater?.collectFees || 0) > 0 && (
                     <div className='item'>
                       <span>Fee</span>
-                      <span>{currencyFormat(payment.payLater.fee.amount, 'USD')}</span>
+                      <span>{currencyFormat((payment.payLater.fee?.amount || 0) + (payment.payLater.collectFees || 0), 'USD')}</span>
                     </div>
                   )}
                   <div className='item'>

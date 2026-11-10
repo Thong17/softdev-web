@@ -239,7 +239,7 @@ export const InvoiceDocument = forwardRef(({ data, paperSize = 'A4' }: { data: I
             {detailLine(L.method, methodLabel[head.paymentMethod] || head.paymentMethod)}
             {payLater ? (
               <>
-                {payLater.payLater?.fee?.amount > 0 && detailLine(L.fee, currencyFormat(payLater.payLater.fee.amount, 'USD'))}
+                {(payLater.payLater?.fee?.amount || 0) + (payLater.payLater?.collectFees || 0) > 0 && detailLine(L.fee, currencyFormat((payLater.payLater?.fee?.amount || 0) + (payLater.payLater?.collectFees || 0), 'USD'))}
                 {detailLine(L.paidSoFar, currencyFormat(payLater.paidTotal || 0, 'USD'))}
                 {(payLater.balance?.USD || 0) > 0.005 && detailLine(L.balance, <b>{currencyFormat(payLater.balance.USD, 'USD')}</b>)}
                 {payLater.payLater?.dueDate && (payLater.balance?.USD || 0) > 0.005 && detailLine(L.dueDate, timeFormat(payLater.payLater.dueDate, 'YYYY-MM-DD'))}
