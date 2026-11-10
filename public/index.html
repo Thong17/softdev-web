@@ -30,6 +30,29 @@
         -webkit-tap-highlight-color: transparent;
         user-select: none;
       }
+      /* Squircle corners everywhere (browsers without corner-shape keep
+         normal rounded corners) */
+      *, *::before, *::after {
+        corner-shape: squircle;
+      }
+      /* ...except circles and pills, which stay round. Inline styles are
+         matched by their radius (theme.radius.circle = 50%, rounded = 20px);
+         sx/styled circles set cornerShape: 'round' themselves. */
+      [style*="border-radius: 50%"],
+      [style*="border-radius: 20px"],
+      .MuiIconButton-root:not([style*="border-radius"]),
+      .MuiTouchRipple-root, .MuiTouchRipple-root *,
+      .MuiAvatar-root,
+      .MuiRadio-root,
+      .MuiCheckbox-root,
+      .MuiSwitch-root *,
+      .MuiBadge-badge,
+      .MuiChip-root,
+      .MuiFab-root,
+      .MuiSlider-root *,
+      .MuiSkeleton-circular {
+        corner-shape: round;
+      }
       /* width */
       ::-webkit-scrollbar {
         width: 10px;

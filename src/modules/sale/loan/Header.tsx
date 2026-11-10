@@ -12,7 +12,7 @@ export const RequestNotification = ({ qty, width=24 }) => {
   return (
     <Box
       component='span'
-      sx={{ backgroundColor: theme.color.error, color: 'white', width: width, height: width, borderRadius: '50%', display: 'grid', placeItems: 'center', position: 'absolute', top: '-10px', right: '-10px' }}
+      sx={{ backgroundColor: theme.color.error, color: 'white', width: width, height: width, borderRadius: '50%', cornerShape: 'round', display: 'grid', placeItems: 'center', position: 'absolute', top: '-10px', right: '-10px' }}
     >
       {qty}
     </Box>

@@ -161,6 +161,7 @@ export const CustomProfile = styled(Button)(
     display: 'flex',
     padding: '5px 13px 5px 5px',
     borderRadius: styled.radius.rounded,
+    cornerShape: 'round',
     border: styled.border.tertiary,
     alignItems: 'center',
     textTransform: 'none',
@@ -171,6 +172,7 @@ export const CustomProfile = styled(Button)(
       height: 30,
       marginRight: 8,
       borderRadius: styled.radius.circle,
+      cornerShape: 'round',
       boxShadow: styled.shadow.secondary,
       objectFit: 'cover'
     },
@@ -636,6 +638,7 @@ export const StyledThermalBorder = styled('div')(
       display: 'block',
       margin: 1,
       borderRadius: '50%',
+      cornerShape: 'round',
     }
   })
 )

@@ -133,6 +133,7 @@ export const AttachmentDialog = ({ dialog, setDialog }: any) => {
                 padding: 1,
                 margin: '0 3px',
                 borderRadius: theme.radius.circle,
+                cornerShape: 'round',
                 '& span': {
                   display: 'inline-block',
                   width: 15,
@@ -140,6 +141,7 @@ export const AttachmentDialog = ({ dialog, setDialog }: any) => {
                   backgroundColor: theme.background.secondary,
                   boxShadow: theme.shadow.inset,
                   borderRadius: theme.radius.circle,
+                  cornerShape: 'round',
                   cursor: 'pointer',
                 },
               },

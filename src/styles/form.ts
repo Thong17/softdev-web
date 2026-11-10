@@ -505,6 +505,7 @@ export const CustomUpload = styled('div')(
         padding: 2,
         margin: '0 3px',
         borderRadius: styled.radius.circle,
+        cornerShape: 'round',
         '& span': {
           display: 'inline-block',
           width: 15,
@@ -512,6 +513,7 @@ export const CustomUpload = styled('div')(
           backgroundColor: styled.background.secondary,
           boxShadow: styled.shadow.inset,
           borderRadius: styled.radius.circle,
+          cornerShape: 'round',
           cursor: 'pointer',
         },
       },
@@ -592,6 +594,8 @@ export const CustomSelect = styled('div')(
         display: 'flex',
         alignItems: 'center',
         border: styled.border.quaternary,
+        // Same corners as text inputs (MUI's own is 4px)
+        borderRadius: styled.radius.primary,
         transition: '0.3s ease',
       },
       '& div:hover, & div:focus': {

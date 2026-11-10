@@ -154,11 +154,14 @@ export const themeMode = {
 }
 
 export const themeStyle = {
+  // Corners are squircles (public/index.html), which look squarer than round
+  // corners of the same size, so these are about 2x the old round values.
+  // Keep them off 20px and 50%: those mark pills and circles that stay round.
   radius: {
-    primary: '5px',
-    secondary: '7px',
-    ternary: '10px',
-    quaternary: '13px',
+    primary: '14px',
+    secondary: '18px',
+    ternary: '19px',
+    quaternary: '26px',
     circle: '50%',
     rounded: '20px',
   },

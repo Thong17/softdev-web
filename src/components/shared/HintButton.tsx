@@ -98,6 +98,7 @@ export const HintButton = ({ playlistId }) => {
         left: width < 1024 ? 17 : 'unset',
         bottom: width < 1024 ? 77 : 17,
         borderRadius: theme.radius.circle,
+        cornerShape: 'round',
         boxShadow: theme.shadow.secondary,
         zIndex: 1000,
         width: 54,

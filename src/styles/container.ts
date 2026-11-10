@@ -74,6 +74,15 @@ export const CustomGridContainer = styled('div')(
           cursor: 'pointer'
         },
         // Dark inset shadow in the top-right corner, behind the action buttons
+        // Edge drops the blur's mask inside a squircle overflow clip and blurs
+        // the whole picture, so pictures with the blur aren't clipped: the
+        // picture and its glow/blur layers take the box's corners themselves
+        '&.vignette': {
+          overflow: 'visible',
+          '& > img, & > .selected, &::before, &::after': {
+            borderRadius: 'inherit',
+          },
+        },
         '&.vignette::after': {
           content: '""',
           position: 'absolute',
@@ -135,6 +144,7 @@ export const CustomGridContainer = styled('div')(
           width: 13,
           height: 13,
           borderRadius: styled.radius.circle,
+          cornerShape: 'round',
           boxShadow: styled.shadow.secondary,
           '&.active': {
             backgroundColor: styled.color.success,
@@ -251,6 +261,7 @@ export const CustomListContainer = styled('div')(
       width: 17,
       height: 17,
       borderRadius: styled.radius.circle,
+      cornerShape: 'round',
       boxShadow: styled.shadow.inset,
       '&.active': {
         backgroundColor: styled.color.success,
@@ -542,6 +553,7 @@ export const CustomProductInfo = styled('div')(
         padding: 2,
         margin: '0 3px',
         borderRadius: styled.radius.circle,
+        cornerShape: 'round',
         '& span': {
           display: 'inline-block',
           width: 15,
@@ -549,6 +561,7 @@ export const CustomProductInfo = styled('div')(
           backgroundColor: styled.background.secondary,
           boxShadow: styled.shadow.inset,
           borderRadius: styled.radius.circle,
+          cornerShape: 'round',
           cursor: 'pointer',
         },
       },
@@ -797,7 +810,7 @@ export const CustomInvoiceForm = styled('div')(
           height: 'calc(100% - 60px)',
           width: '100%',
           backgroundColor: `${styled.background.primary}77`,
-          borderRadius: `${styled.radius.ternary} ${styled.radius.ternary} 11px 11px`,
+          borderRadius: `${styled.radius.ternary} ${styled.radius.ternary} 22px 22px`,
           '& .item': {
             boxSizing: 'border-box',
             width: '100%',
@@ -827,7 +840,7 @@ export const CustomInvoiceForm = styled('div')(
           height: 50,
           width: '100%',
           backgroundColor: `${styled.background.primary}77`,
-          borderRadius: `11px 11px ${styled.radius.ternary} ${styled.radius.ternary}`,
+          borderRadius: `22px 22px ${styled.radius.ternary} ${styled.radius.ternary}`,
           position: 'relative',
           '&::before': {
             content: `''`,
@@ -978,7 +991,7 @@ export const CustomGroupInvoiceForm = styled('div')(
           height: 'calc(100% - 60px)',
           width: '100%',
           backgroundColor: `${styled.background.primary}77`,
-          borderRadius: `${styled.radius.ternary} ${styled.radius.ternary} 11px 11px`,
+          borderRadius: `${styled.radius.ternary} ${styled.radius.ternary} 22px 22px`,
           '& .item': {
             boxSizing: 'border-box',
             width: '100%',
@@ -1005,7 +1018,7 @@ export const CustomGroupInvoiceForm = styled('div')(
           height: 50,
           width: '100%',
           backgroundColor: `${styled.background.primary}77`,
-          borderRadius: `11px 11px ${styled.radius.ternary} ${styled.radius.ternary}`,
+          borderRadius: `22px 22px ${styled.radius.ternary} ${styled.radius.ternary}`,
           position: 'relative',
           '&::before': {
             content: `''`,
