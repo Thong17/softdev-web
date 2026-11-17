@@ -142,7 +142,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
   } = useForm({
     resolver: yupResolver(drawerSchema),
   })
-  const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
+  const { guardClose, markSaved, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
   const { language } = useLanguage()
   const [cashObj, setCashObj] = useState(initCash)
   const [listCash, setListCash] = useState<any[]>(
@@ -188,6 +188,10 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
         notify(data?.data?.msg, 'success')
         setListCash(prev => prev.map((cash) => ({ ...cash, origin: true })))
         reload()
+        // Opened, so the dialog's job is done; saved first so closing isn't
+        // treated as leaving unsaved changes
+        markSaved()
+        handleCloseDialog()
       })
       .catch((err) => {
         notify(err?.response?.data?.msg, 'error')

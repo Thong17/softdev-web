@@ -158,13 +158,14 @@ const StoreBreadcrumbs: FC<IBreadcrumbs<page>> = ({ page, id }) => {
   if (id) {
     stage = [
       ...stage,
-      {
-        title: language['SETUP'],
-        path: `/organize/product/update/property/${id}`
-      },
+      // Product steps: info, then stock, then setup
       {
         title: language['STOCK'],
         path: `/organize/product/stock/${id}`
+      },
+      {
+        title: language['SETUP'],
+        path: `/organize/product/update/property/${id}`
       }
     ]
   }

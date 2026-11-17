@@ -214,12 +214,14 @@ const ProductForm = ({ defaultValues, id }: any) => {
       url: id ? `/organize/product/update/${id}` : `/organize/product/create`,
       body: data,
     })
-      .then((data) => {
-        // Before navigating to the setup page, so it isn't blocked
+      .then((response) => {
+        // Before navigating away, so it isn't blocked
         markSaved()
-        notify(data?.data?.msg, 'success')
+        notify(response?.data?.msg, 'success')
         dispatch(getListProduct({}))
-        !id && navigate(`/organize/product/create/property/${data?.data?.data?._id}`)
+        if (id) return
+        // Next step for a new product: stock (setup comes after it)
+        navigate(`/organize/product/stock/${response?.data?.data?._id}`)
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {

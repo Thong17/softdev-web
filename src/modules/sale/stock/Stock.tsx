@@ -35,6 +35,7 @@ import { BarcodeReader } from 'components/shared/barcode/BarcodeReader'
 import { Box } from '@mui/material'
 import { PriceHistoryPanel } from 'components/shared/dialog/PriceHistoryDialog'
 import { SelectTab } from 'components/shared/form/SelectTab'
+import Button from 'components/shared/Button'
 
 const Header = ({ stages, icon, styled, onClickAdd, onClickConvert, onClickHistory }) => {
   return (
@@ -142,6 +143,21 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
   const [historyTab, setHistoryTab] = useState('price')
   const [conversions, setConversions] = useState<any[]>([])
   const [priceHistory, setPriceHistory] = useState<any[]>([])
+
+  // Turns on stock tracking for this product, then reloads it
+  const [enablingStock, setEnablingStock] = useState(false)
+  const handleTrackStock = () => {
+    if (!id) return
+    setEnablingStock(true)
+    Axios({ method: 'PUT', url: `/organize/product/stock/${id}/enable` })
+      .then((result) => {
+        notify(result?.data?.msg, 'success')
+        dispatch(getProduct({ id }))
+        dispatch(getListProduct({}))
+      })
+      .catch((err) => notify(err?.response?.data?.msg, 'error'))
+      .finally(() => setEnablingStock(false))
+  }
 
   const stockPath = (productId) => section === 'organize'
     ? `/organize/product/stock/${productId}`
@@ -266,12 +282,13 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
       title: language['UPDATE'],
       path: `/organize/product/update/${id}`,
     },
+    // Product steps: info, then stock, then setup
+    {
+      title: language['STOCK'],
+    },
     {
       title: language['SETUP'],
       path: `/organize/product/update/property/${id}`,
-    },
-    {
-      title: language['STOCK'],
     },
   ] : [
     {
@@ -506,6 +523,40 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
           },
         }}
       >
+        {/* Stock only counts once the product tracks it (sales ignore it otherwise) */}
+        {section === 'organize' && status === 'SUCCESS' && product && !product.isStock && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              flexWrap: 'wrap',
+              margin: '10px 0',
+              padding: '10px 10px 10px 16px',
+              borderRadius: theme.radius.secondary,
+              border: `1px solid ${theme.color.warning}55`,
+              backgroundColor: `${theme.color.warning}0d`,
+              color: theme.text.secondary,
+            }}
+          >
+            <span style={{ flex: 1, minWidth: 220, fontSize: 14 }}>
+              This product doesn't track stock, so selling it won't count down any stock added here.
+            </span>
+            <Button
+              loading={enablingStock}
+              onClick={handleTrackStock}
+              style={{ backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
+            >
+              Track stock
+            </Button>
+            <Button
+              onClick={() => navigate(`/organize/product/update/property/${id}`)}
+              style={{ backgroundColor: `${theme.text.tertiary}22`, color: theme.text.secondary }}
+            >
+              Skip to setup
+            </Button>
+          </div>
+        )}
         <ProductInfo info={product} loading={status !== 'SUCCESS' ? true : false} />
         <StickyTable
           columns={stockColumnData}

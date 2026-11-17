@@ -85,7 +85,6 @@ export const CustomerContainer = ({
   const {
     data,
     count: countCustomer,
-    hasMore: hasMoreCustomer,
     status,
   } = useAppSelector(selectListCustomer)
   const { theme } = useTheme()
@@ -94,7 +93,6 @@ export const CustomerContainer = ({
   const { notify } = useNotify()
   const { lang, language } = useLanguage()
   const [loading, setLoading] = useState(true)
-  const [hasMore, setHasMore] = useState(true)
   const [fetching, setFetching] = useState(false)
   const [customers, setCustomers] = useState<any[]>([])
   const [selected, setSelected] = useState(false)
@@ -102,6 +100,10 @@ export const CustomerContainer = ({
   const [favorite, setFavorite] = useState(false)
   const [search, setSearch] = useState('')
   const [offset, setOffset] = useState(0)
+  // Bumped to fetch the first page again (after a customer is added or edited)
+  const [reloadKey, setReloadKey] = useState(0)
+  // The next page that arrives replaces the list instead of adding to it
+  const replaceNext = useRef(false)
   const [filterObj, setFilterObj] = useState<any>({
     filter: 'createdAt',
     asc: false,
@@ -179,7 +181,7 @@ export const CustomerContainer = ({
     query.append('sort', filterObj.asc ? 'asc' : 'desc')
     if (selected && promotionId) query.append('promotion', promotionId)
     dispatch(getListCustomer(query))
-  }, [dispatch, offset, search, favorite, promotionId, filterObj, selected])
+  }, [dispatch, offset, search, favorite, promotionId, filterObj, selected, reloadKey])
 
   useEffect(() => {
     dispatch(getListBrand())
@@ -189,14 +191,13 @@ export const CustomerContainer = ({
   useEffect(() => {
     if (status !== 'SUCCESS') return
     let unmounted = false
-    setHasMore(hasMoreCustomer || false)
     setCount(countCustomer || 0)
     setTimeout(() => {
       if (!unmounted) {
-        setCustomers((prevData) => [
-          ...prevData,
-          ...data.map((customer) => mappedCustomer(customer)),
-        ])
+        const page = data.map((customer) => mappedCustomer(customer))
+        const replace = replaceNext.current
+        replaceNext.current = false
+        setCustomers((prevData) => (replace ? page : [...prevData, ...page]))
         setLoading(false)
         setFetching(false)
       }
@@ -204,33 +205,21 @@ export const CustomerContainer = ({
     return () => {
       unmounted = true
     }
-  }, [status, data, lang, countCustomer, hasMoreCustomer])
+  }, [status, data, lang, countCustomer])
 
+  // A customer was added or edited: fetch the first page again with the current
+  // search and filters. The rows shown stay until the new page replaces them.
+  // (Skips the first run, when the list is loading anyway. It used to skip
+  // whenever the list was empty, so a search with no results never refreshed.)
+  const firstReloadRun = useRef(true)
   useEffect(() => {
-    if (customers.length < 1 && hasMore) return
-    const query = new URLSearchParams()
-    query.append('search', search)
-    query.append('limit', limit.toString())
-    query.append('offset', '0')
-    query.append('filter', filterObj.filter)
-    query.append('favorite', favorite ? 'on' : 'off')
-    query.append('sort', filterObj.asc ? 'asc' : 'desc')
-    if (selected && promotionId) query.append('promotion', promotionId)
-
-    Axios({
-      method: 'GET',
-      url: '/shared/customer/list',
-      params: query,
-    })
-      .then((data) => {
-        setCustomers(
-          data?.data?.data.map((customer) => mappedCustomer(customer))
-        )
-      })
-      .catch((err) => {
-        notify(err?.response?.data?.msg, 'error')
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (firstReloadRun.current) {
+      firstReloadRun.current = false
+      return
+    }
+    replaceNext.current = true
+    setOffset(0)
+    setReloadKey((key) => key + 1)
   }, [toggleReload])
 
   const handleEditCustomer = (id) => {

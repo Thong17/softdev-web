@@ -4,10 +4,9 @@ const Loading = () => {
   return (
     <div
       style={{
-        backgroundColor: 'inherit',
+        // Covers the button it sits in, over the button's hidden label
         position: 'absolute',
-        width: '100%',
-        height: '100%',
+        inset: 0,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -15,8 +14,8 @@ const Loading = () => {
     >
       <CircularProgress
         style={{
-          width: 21,
-          height: 21,
+          width: 18,
+          height: 18,
           color: 'inherit',
         }}
       />

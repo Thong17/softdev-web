@@ -125,12 +125,13 @@ export const ProductSetup = () => {
           ? '/organize/product/create'
           : `/organize/product/update/${id}`,
     },
-    {
-      title: language['SETUP'],
-    },
+    // Product steps: info, then stock, then setup
     {
       title: language['STOCK'],
       path: `/organize/product/stock/${id}`,
+    },
+    {
+      title: language['SETUP'],
     },
   ]
 

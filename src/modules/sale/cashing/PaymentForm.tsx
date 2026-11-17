@@ -292,6 +292,8 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   }
 
   const handleCheckout = () => {
+    // Already checking out, or already checked out
+    if (isLoading || payment?.status) return
     if (paymentMethod === 'later') return handleCheckoutLater()
     confirm({
       title: 'Are you sure you want to check out?',
@@ -884,6 +886,9 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                     <>
                       <CustomButton
                         isLoading={isLoading}
+                        // CustomButton ignores isLoading, so disable it here: a second
+                        // click while checking out would send the checkout twice
+                        disabled={isLoading}
                         onClick={handleCheckout}
                         styled={theme}
                         style={{

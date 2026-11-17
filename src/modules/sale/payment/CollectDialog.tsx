@@ -167,7 +167,8 @@ export const CollectDialog = ({ payment, onClose, onCollected }: { payment: any 
           <CustomButton styled={theme} onClick={onClose} disabled={saving} style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}>
             Cancel
           </CustomButton>
-          <CustomButton styled={theme} isLoading={saving} onClick={handleCollect} style={{ backgroundColor: `${theme.color.success}22`, color: theme.color.success }}>
+          {/* CustomButton ignores isLoading; disabled stops a second collect while saving */}
+          <CustomButton styled={theme} isLoading={saving} disabled={saving} onClick={handleCollect} style={{ backgroundColor: `${theme.color.success}22`, color: theme.color.success }}>
             Collect
           </CustomButton>
         </div>

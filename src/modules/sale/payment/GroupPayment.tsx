@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import Container from 'components/shared/Container'
 import { getListPayment, selectListPayment } from 'modules/report/payment/redux'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Header } from './Header'
 import { ExpandableTable } from 'components/shared/table/ExpandableTable'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -89,6 +89,15 @@ const GroupPayment = () => {
     // Unpaid (never checked out) or Pay Later (sold, still owing)
     const isPayLaterView = queryParams.get('payLater') === 'owing'
     const [collectPayment, setCollectPayment] = useState<any>(null)
+    // How many sales each tab holds: shown on the tabs, and used to open on a
+    // tab that has something when the page is opened without choosing one
+    const [tabCounts, setTabCounts] = useState<{ pending: number, later: number } | null>(null)
+    // A tab named in the link (or clicked) is kept; otherwise one is picked once
+    const [linkNamesTab] = useState(() => {
+        const params = new URLSearchParams(window.location.search)
+        return params.has('payLater') || params.has('state')
+    })
+    const tabChosen = useRef(linkNamesTab)
 
     const [paymentDialog, setPaymentDialog] = useState<any>({
         open: false,
@@ -253,10 +262,61 @@ const GroupPayment = () => {
     }
 
     const switchView = (view) => {
+        tabChosen.current = true
         setListPaymentSelected([])
         setExpandedRows([])
         setQueryParams(view === 'later' ? { payLater: 'owing' } : { state: 'PENDING' })
     }
+
+    // Each time the list loads (page open, checkout, collect...), refresh both
+    // tab counts. The first time, if no tab was chosen and Unpaid is empty
+    // while Pay Later has sales, open Pay Later.
+    useEffect(() => {
+        if (status !== 'SUCCESS') return
+        let cancelled = false
+        Promise.all([
+            Axios({ method: 'GET', url: '/sale/payment', params: new URLSearchParams({ state: 'PENDING', limit: '1' }) }),
+            Axios({ method: 'GET', url: '/sale/payment', params: new URLSearchParams({ payLater: 'owing', limit: '1' }) }),
+        ])
+            .then(([pending, later]) => {
+                if (cancelled) return
+                const counts = { pending: pending?.data?.length || 0, later: later?.data?.length || 0 }
+                setTabCounts(counts)
+                if (tabChosen.current) return
+                tabChosen.current = true
+                if (!isPayLaterView && counts.pending === 0 && counts.later > 0) switchView('later')
+            })
+            .catch(() => {})
+        return () => { cancelled = true }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [status, payments])
+
+    // A tab name with its count as a small badge (none when empty)
+    const tabLabel = (label: string, count: number | undefined, color: string) => (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            {label}
+            {!!count && (
+                <span
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minWidth: 20,
+                        height: 20,
+                        padding: '0 5px',
+                        boxSizing: 'border-box',
+                        borderRadius: 10,
+                        backgroundColor: `${color}22`,
+                        color,
+                        fontSize: 11,
+                        lineHeight: 1,
+                    }}
+                >
+                    {count}
+                </span>
+            )}
+        </span>
+    )
 
     const payLaterRows = isPayLaterView ? payments.map((payment: any) => {
         const due = payment.payLater?.dueDate
@@ -329,7 +389,10 @@ const GroupPayment = () => {
             <div style={{ padding: '10px 0' }}>
                 <SelectTab
                     selected={isPayLaterView ? 'later' : 'pending'}
-                    options={[{ label: 'Unpaid', value: 'pending' }, { label: language['PAY_LATER'] || 'Pay Later', value: 'later' }]}
+                    options={[
+                        { label: tabLabel('Unpaid', tabCounts?.pending, theme.color.info), value: 'pending' },
+                        { label: tabLabel(language['PAY_LATER'] || 'Pay Later', tabCounts?.later, theme.color.warning), value: 'later' },
+                    ]}
                     onChange={switchView}
                 />
             </div>

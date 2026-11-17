@@ -586,6 +586,9 @@ export const InvoiceForm = forwardRef(({
   }
 
   const handleClickCheckout = () => {
+    // Each click creates a payment and checks it out, so a second click (while
+    // saving, or after) would sell the same cart again
+    if (isLoading || checkoutId) return
     if (!customer?.id) {
       setCustomerDialog({ ...customerDialog, open: true })
       return notify('Please select customer', 'error')
@@ -595,7 +598,9 @@ export const InvoiceForm = forwardRef(({
       setIsLoading(false)
       if (err) return
       setReceiptDialog({ ...receiptDialog, payment: data })
-      if (data?.state === 'COMPLETED') {
+      // Checked out: a Pay Later sale with a balance is 'PAY_LATER', not
+      // 'COMPLETED', and must lock the cart too (it used to leave the button)
+      if (data?.status || data?.state === 'COMPLETED' || data?.state === 'PAY_LATER') {
         setPaymentId(data?._id)
         setCheckoutId(data?._id)
       }
@@ -1330,6 +1335,8 @@ export const InvoiceForm = forwardRef(({
                   </CustomButton>
                   : <CustomButton
                     isLoading={isLoading}
+                    // CustomButton ignores isLoading; disabled stops repeat clicks
+                    disabled={isLoading}
                     styled={theme}
                     fullWidth
                     onClick={handleClickCheckout}
@@ -1344,6 +1351,7 @@ export const InvoiceForm = forwardRef(({
                 </CustomButton>}
                 {!checkoutId && <CustomButton
                   isLoading={isLoading}
+                  disabled={isLoading}
                   styled={theme}
                   fullWidth
                   onClick={handleClickPayment}

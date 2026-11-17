@@ -11,6 +11,8 @@ export interface IUser {
   favorites?: string[]
   drawer?: IDrawer
   isDefault?: boolean
+  // Holds the Super Admin role: can back up and reset data
+  isSuperAdmin?: boolean
   expireAt?: string | null
 }
 

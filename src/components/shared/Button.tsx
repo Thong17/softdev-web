@@ -17,7 +17,10 @@ const ButtonRef: ForwardRefRenderFunction<HTMLButtonElement, IButton> = ({ child
   
   return (
     <CustomButton styled={theme} disabled={loading || disabled} {...prop} ref={ref}>
-      {loading ? <Loading /> : children}
+      {/* The label stays (hidden) while loading so the button keeps its size;
+          the spinner sits over it */}
+      <span style={{ display: 'inherit', alignItems: 'inherit', visibility: loading ? 'hidden' : undefined }}>{children}</span>
+      {loading && <Loading />}
     </CustomButton>
   )
 }

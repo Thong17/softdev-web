@@ -8,7 +8,8 @@ import { CheckboxField, SelectField, TextField } from 'components/shared/form'
 import { Section } from 'components/shared/Section'
 import useWeb from 'hooks/useWeb'
 import useAuth from 'hooks/useAuth'
-import { Button } from '@mui/material'
+import Button from 'components/shared/Button'
+import { DataSection } from './DataSection'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import { telegramConfigSchema } from './schema'
@@ -80,15 +81,6 @@ const Config = () => {
   const handleChangeCheckbox = (event) => {
     const { name, checked }: ICheckboxTarget = event.target
     setValue(name, checked)
-  }
-
-  const handleBackup = () => {
-    Axios({
-      method: 'POST',
-      url: '/utility/backup-db',
-    })
-      .then(res => notify(res?.data?.msg, 'success'))
-      .catch(err => notify(err?.response?.data?.msg, 'error'))
   }
 
   return (
@@ -178,19 +170,7 @@ const Config = () => {
               }}
             >
               <Button
-                onClick={() => handleBackup()}
-                variant='contained'
-                style={{
-                  marginLeft: 10,
-                  backgroundColor: `${theme.color.warning}22`,
-                  color: theme.color.warning,
-                }}
-              >
-                {language['BACKUP']} DB
-              </Button>
-              <Button
                 type='submit'
-                variant='contained'
                 style={{
                   marginLeft: 10,
                   backgroundColor: `${theme.color.info}22`,
@@ -202,6 +182,7 @@ const Config = () => {
             </div>
           </form>
         }
+        {user?.isSuperAdmin && <DataSection />}
       </Container>
     </Layout>
   )
