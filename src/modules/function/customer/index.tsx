@@ -35,7 +35,7 @@ const columnData: ITableColumn<ColumnHeader>[] = [
   { id: 'location', label: 'Location', minWidth: 70 },
   { id: 'lastPurchaseAt', label: 'Last Purchase', minWidth: 110 },
   { id: 'invoiceCount', label: 'Invoices', minWidth: 60 },
-  { id: 'recentSpent', label: 'Spent (12 months)', minWidth: 95 },
+  { id: 'recentSpent', label: 'Spent (12 months)', minWidth: 95, noWrap: true },
   { id: 'totalSpent', label: 'Total Spent', minWidth: 85 },
   { id: 'balance', label: 'Balance', minWidth: 80 },
   { id: 'action', label: 'Action', minWidth: 120, align: 'right' },

@@ -54,11 +54,11 @@ export const CustomCalendar = styled('div')(
     '& .fc-event-title-container': {
       boxShadow: styled.shadow.secondary,
       color: `#fff !important`,
-      borderRadius: 4,
+      borderRadius: 8,
       padding: '0 5px',
     },
     '& .fc-event-start': {
-      borderRadius: 4,
+      borderRadius: 8,
     },
     '& .fc-daygrid-day-frame': {
       borderBottom: `${styled.border.quaternary} !important`,

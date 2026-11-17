@@ -83,7 +83,8 @@ export const ExpandableTable = ({
   return (
     <CustomTableContainer color={backgroundColor} styled={theme} device={device} style={style}>
       {loading && <Loading />}
-      <div className='table-container'>
+      {/* The bottom space is room for the page controls; none without them */}
+      <div className='table-container' style={pagination ? undefined : { paddingBottom: 0 }}>
         <TableContainer className='table'>
           <Table stickyHeader>
             <TableHead>

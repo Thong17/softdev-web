@@ -27,8 +27,10 @@ export const payLaterAmounts = (total: number, deposit: number, value: IPayLater
 
 // Payment dialog › Pay Later: sell now, pay over time. Takes an optional
 // deposit (the cash form passed in), a due date, a one-time fee and a note.
-export const PayLaterForm = ({ customer, total, deposit, sellRate, value, onChange, depositForm }: {
+export const PayLaterForm = ({ customer, total, deposit, sellRate, value, onChange, depositForm, onChooseCustomer }: {
   customer?: any
+  // Opens a customer picker; without it the box only says to choose one in the cart
+  onChooseCustomer?: () => void
   total: number
   deposit: number
   sellRate: number
@@ -65,8 +67,17 @@ export const PayLaterForm = ({ customer, total, deposit, sellRate, value, onChan
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, minHeight: '100%' }}>
-      {/* Who owes the balance */}
+      {/* Who owes the balance; opens the customer picker when it can */}
       <div
+        role={onChooseCustomer ? 'button' : undefined}
+        tabIndex={onChooseCustomer ? 0 : undefined}
+        onClick={onChooseCustomer}
+        onKeyDown={(event) => {
+          if (onChooseCustomer && (event.key === 'Enter' || event.key === ' ')) {
+            event.preventDefault()
+            onChooseCustomer()
+          }
+        }}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -76,12 +87,20 @@ export const PayLaterForm = ({ customer, total, deposit, sellRate, value, onChan
           backgroundColor: customer?.id ? `${theme.color.info}14` : `${theme.color.error}14`,
           color: customer?.id ? theme.text.secondary : theme.color.error,
           fontSize: 14,
+          cursor: onChooseCustomer ? 'pointer' : 'default',
         }}
       >
         {customer?.id ? <PersonRoundedIcon style={{ fontSize: 20, color: theme.color.info }} /> : <WarningAmberRoundedIcon style={{ fontSize: 20 }} />}
-        {customer?.id
-          ? <span>{customer.fullName || customer.displayName} <span style={{ color: theme.text.tertiary }}>· {customer.displayName}</span></span>
-          : <span>Choose a customer in the cart first. Pay Later needs to know who owes the balance.</span>}
+        <span style={{ flex: 1, minWidth: 0 }}>
+          {customer?.id
+            ? <>{customer.fullName || customer.displayName} <span style={{ color: theme.text.tertiary }}>· {customer.displayName}</span></>
+            : onChooseCustomer
+              ? 'Choose a customer. Pay Later needs to know who owes the balance.'
+              : 'Choose a customer in the cart first. Pay Later needs to know who owes the balance.'}
+        </span>
+        {onChooseCustomer && (
+          <span style={{ color: theme.color.info, fontSize: 13, whiteSpace: 'nowrap' }}>{customer?.id ? 'Change' : 'Choose'}</span>
+        )}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: device === 'mobile' ? '1fr' : '1fr 1fr', gap: 12 }}>

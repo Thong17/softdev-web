@@ -283,6 +283,11 @@ export const InvoiceForm = forwardRef(({
     callClearPayment() {
       onClearPayment()
     },
+    // Opens the cart's customer picker (e.g. from the payment dialog), so the
+    // choice goes through the cart: saved on the payment, discount applied
+    callChooseCustomer() {
+      handleClickCustomer()
+    },
     // Shows a saved quotation for editing (quotation mode)
     loadQuotation(data) {
       applyCustomer(data.customer)

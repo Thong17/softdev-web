@@ -122,7 +122,7 @@ export const ProductFilterSidebar = ({
       style={{
         background: theme.background.secondary,
         boxShadow: theme.shadow.container,
-        borderRadius: 12,
+        borderRadius: theme.radius.ternary,
         padding: 20,
         height: 'fit-content',
       }}

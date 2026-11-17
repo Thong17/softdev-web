@@ -13,7 +13,8 @@ export const TextHighlight = ({ text, color, size }: any) => {
         display: 'flex',
         alignItems: 'center',
         width: 'fit-content',
-        borderRadius: 5,
+        // Big enough for the squircle to show, short of a pill at this height
+        borderRadius: 10,
         fontSize: size || 13
       }}
     >

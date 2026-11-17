@@ -145,7 +145,7 @@ export const SaleReportRowDetail = ({
             backgroundColor: theme.background.secondary,
             fontSize: 13,
             fontWeight: 600,
-            borderRadius: '5px',
+            borderRadius: theme.radius.primary,
           }}
         >
           <div>#</div>
@@ -166,7 +166,7 @@ export const SaleReportRowDetail = ({
               fontSize: 13,
               backgroundColor: item.isDeleted ? theme.color.error + '20' : 'transparent',
               color: item.isDeleted ? theme.color.error : theme.text.primary,
-              borderRadius: '5px',
+              borderRadius: theme.radius.primary,
             }}
           >
             <div>{index + 1}</div>

@@ -3,6 +3,7 @@ import { PayLaterForm, initPayLater, IPayLaterValue, payLaterAmounts } from './P
 import { FeatureGate } from 'hooks/useStoreFeatures'
 import { SoftInvoiceActions } from 'components/shared/invoice/SoftInvoiceActions'
 import { AlertContainer } from 'components/shared/container/AlertContainer'
+import { CustomerDialog } from 'components/shared/dialog/CustomerDialog'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { ExchangeRate } from 'components/shared/ExchangeRate'
 import { CashForm } from 'components/shared/form/CashForm'
@@ -38,7 +39,8 @@ import { PreviewLoan } from 'components/shared/invoice/PreviewLoan'
 import { directPrinting } from 'api/receipt.api'
 import { initQzTray, handleReceiptPrint, handleThermalPrint } from 'utils/printer'
 
-export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout }: any, ref) => {
+// onChooseCustomer: opens the cart's customer picker (Pay Later needs a customer)
+export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout, onChooseCustomer }: any, ref) => {
   const confirm = useAlert()
   const { theme } = useTheme()
   const { language } = useLanguage()
@@ -49,6 +51,19 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   const [totalRemain, setTotalRemain] = useState({ KHR: 0, USD: 0 })
   const [payment, setPayment] = useState<any>(null)
   const [queue, setQueue] = useState<any>(null)
+
+  // The sale's customer: the one the screen passed (cashing's cart), else the
+  // one saved on the payment (Sale › Payment and Report › Payment pass none)
+  const savedCustomer = dialog.payment?.customer
+  const customer = dialog.customer?.id
+    ? dialog.customer
+    : savedCustomer?._id
+      ? { id: savedCustomer._id, displayName: savedCustomer.displayName, fullName: savedCustomer.fullName, point: savedCustomer.point || 0 }
+      : null
+  // Screens without a cart get this dialog's own customer picker; the choice
+  // is sent with the checkout, which saves it on the payment
+  const [customerPicker, setCustomerPicker] = useState({ open: false })
+  const chooseCustomer = onChooseCustomer || (() => setCustomerPicker({ open: true }))
   const [paymentMethod, setPaymentMethod] = useState(null)
   const [totalPayment, setTotalPayment] = useState({
     value: 0,
@@ -253,7 +268,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
   // Pay Later: sold now; the deposit (if any) is received now and the rest,
   // plus any fee, is owed and collected later from Operation › Payment
   const handleCheckoutLater = () => {
-    if (!dialog.customer?.id) return notify('Choose a customer for Pay Later', 'error')
+    if (!customer?.id) return notify('Choose a customer for Pay Later', 'error')
     const sellRate = exchangeRate?.sellRate || 4000
     const { paid, fee, balance } = payLaterAmounts(totalPayment.value, totalReceive.total, payLater, sellRate)
     if (totalReceive.total > totalPayment.value + 0.01) return notify('The deposit is more than the total; use Cash or Transfer instead', 'error')
@@ -270,7 +285,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
           method: 'PUT',
           url: `/sale/payment/checkout-later/${dialog.payment?._id}`,
           body: {
-            customer: dialog.customer?.id,
+            customer: customer?.id,
             dueDate: payLater.dueDate || null,
             note: payLater.note,
             fee: feeNumber ? { value: feeNumber, type: payLater.feeType } : null,
@@ -306,7 +321,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
           receiveCashes,
           receiveTotal: totalReceive,
           remainTotal: totalRemain,
-          customer: dialog.customer?.id,
+          customer: customer?.id,
           paymentMethod,
         }
         Axios({
@@ -500,7 +515,8 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
         return (
           <div style={{ position: 'absolute', inset: 10, overflowY: 'auto' }}>
             <PayLaterForm
-              customer={dialog.customer}
+              customer={customer}
+              onChooseCustomer={chooseCustomer}
               total={totalPayment.value}
               deposit={totalReceive.total}
               sellRate={exchangeRate?.sellRate || 4000}
@@ -547,6 +563,14 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
       isOpen={dialog.open}
       handleClose={handleCloseDialog}
     >
+      {/* This dialog's own customer picker, for screens without a cart */}
+      {!onChooseCustomer && (
+        <CustomerDialog
+          dialog={customerPicker}
+          setDialog={setCustomerPicker}
+          onClickCustomer={(picked) => setDialog((prev) => ({ ...prev, customer: picked }))}
+        />
+      )}
       <div
         style={{
           height: '100vh',
@@ -927,7 +951,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
             </div>
           </Box>
           <div style={{ gridArea: 'preview' }}>
-            <InvoicePreview payment={payment} customer={dialog.customer} />
+            <InvoicePreview payment={payment} customer={customer} />
           </div>
         </div>
       </div>

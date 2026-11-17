@@ -9,9 +9,20 @@ export const CustomTableContainer = styled('div')(
     '& .table-container': {
       maxWidth: '100%',
       position: 'relative',
+      // Room for the page controls under the table (outside its scroll area)
+      paddingBottom: 50,
+      // The table scrolls inside its own area, sideways and up/down, so a wide
+      // table doesn't widen the page. The header is pinned inside this area
+      // (it can only stick to the box that scrolls), and the area fits the
+      // screen so the page controls below stay in view.
       '& .table': {
-        paddingBottom: 50,
-        overflowX: 'initial',
+        overflow: 'auto',
+        maxHeight: 'max(260px, calc(100vh - 250px))',
+        // Printed documents (e.g. loan invoices) show every row
+        '@media print': {
+          overflow: 'visible',
+          maxHeight: 'none',
+        },
       },
       '& thead tr': {
         boxShadow: styled.shadow.bottom,

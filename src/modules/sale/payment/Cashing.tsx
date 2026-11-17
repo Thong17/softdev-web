@@ -13,7 +13,9 @@ import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
 import { ProductForm } from '../cashing/ProductForm'
 import { DrawerForm } from '../cashing/DrawerForm'
-import { PaymentForm } from './PaymentForm'
+// The shared payment dialog (Pay Later, soft invoice, double-click guards...),
+// the same one Cashing and the payment list use
+import { PaymentForm } from '../cashing/PaymentForm'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
 import { InvoiceForm } from './InvoiceForm'
@@ -146,6 +148,8 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
         dialog={paymentDialog}
         setDialog={setPaymentDialog}
         onClear={handleClearPayment}
+        // Picked through the cart, so it's saved on the payment like any change there
+        onChooseCustomer={() => invoiceRef?.current?.callChooseCustomer()}
         onCheckout={() => setDisableProduct(true)}
       />
       <div

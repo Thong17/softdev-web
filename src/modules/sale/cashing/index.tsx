@@ -259,6 +259,8 @@ export const Cashing = () => {
         dialog={paymentDialog}
         setDialog={setPaymentDialog}
         onClear={handleClearPayment}
+        // Picked through the cart, so it's saved on the payment like any change there
+        onChooseCustomer={() => invoiceRef?.current?.callChooseCustomer()}
         onCheckout={(paid) => {
           setDisableProduct(true)
           if (paid) setCompleted({ invoice: paid.invoice, total: paid.total, kind: paid.paymentMethod === 'loan' ? 'loan' : paid.isPayLater && paid.balance?.USD > 0.01 ? 'later' : 'paid' })
