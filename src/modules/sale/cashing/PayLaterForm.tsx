@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import { UnitInput, feeUnits } from 'components/shared/form/UnitInput'
 import moment from 'moment'
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded'
@@ -94,22 +95,14 @@ export const PayLaterForm = ({ customer, total, deposit, sellRate, value, onChan
         </label>
         <label>
           <span style={label}>Fee (optional, once on the balance)</span>
-          <span style={{ display: 'flex', gap: 6 }}>
-            <input
-              type='number'
-              min='0'
-              step='any'
-              placeholder='0'
-              value={value.feeValue}
-              onChange={(event) => change({ feeValue: event.target.value })}
-              style={{ ...input, flex: 1, minWidth: 0, borderColor: feeError ? theme.color.error : undefined }}
-            />
-            <select value={value.feeType} onChange={(event) => change({ feeType: event.target.value as IPayLaterValue['feeType'] })} style={{ ...input, width: 64, backgroundColor: theme.background.primary }}>
-              <option value='PCT'>%</option>
-              <option value='USD'>$</option>
-              <option value='KHR'>៛</option>
-            </select>
-          </span>
+          <UnitInput
+            value={value.feeValue}
+            unit={value.feeType}
+            units={feeUnits}
+            error={feeError}
+            onChangeValue={(feeValue) => change({ feeValue })}
+            onChangeUnit={(feeType) => change({ feeType: feeType as IPayLaterValue['feeType'] })}
+          />
         </label>
       </div>
 

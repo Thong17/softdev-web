@@ -5,7 +5,7 @@ import { DialogTitle } from 'components/shared/DialogTitle'
 import { DetailField, FileField, LocaleField, SelectField, TextField } from 'components/shared/form'
 import { IImage } from 'components/shared/form/UploadField'
 import CropFreeIcon from '@mui/icons-material/CropFree'
-import { currencyOptions } from 'constants/variables'
+import { CurrencyField } from 'components/shared/form/CurrencyField'
 import Axios from 'constants/functions/Axios'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import {
@@ -278,28 +278,19 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
               onChange={(event) => setToProduct(event.target.value as string)}
             />
             {canChangePrice && toProduct && (
-              <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gridColumnGap: 20 }}>
-                <div>
-                  <TextField
-                    type='number'
-                    step='any'
-                    label='New Price'
-                    err={errors.newPrice}
-                    value={newPrice}
-                    onChange={(event) => setNewPrice(event.target.value)}
-                  />
-                  {!errors.newPrice && (
-                    <HelperText theme={theme}>
-                      Current price: {targetProduct ? currencyFormat(targetProduct.price, targetProduct.currency) : '--'} · leave blank to keep it
-                    </HelperText>
-                  )}
-                </div>
-                <SelectField
-                  label='Currency'
-                  value={newPriceCurrency}
-                  options={currencyOptions}
-                  onChange={(event) => setNewPriceCurrency(event.target.value as string)}
+              <div>
+                <CurrencyField
+                  label='New Price'
+                  err={errors.newPrice}
+                  value={newPrice}
+                  onChange={(event) => setNewPrice(event.target.value)}
+                  currency={{ value: newPriceCurrency, onChange: (event) => setNewPriceCurrency(event.target.value as string) }}
                 />
+                {!errors.newPrice && (
+                  <HelperText theme={theme}>
+                    Current price: {targetProduct ? currencyFormat(targetProduct.price, targetProduct.currency) : '--'} · leave blank to keep it
+                  </HelperText>
+                )}
               </div>
             )}
           </div>
@@ -313,8 +304,8 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
               gridTemplateAreas: `
                 'category category brand brand'
                 'product product product product'
-                'price price price currency'
-                'status code code code'
+                'price price status status'
+                'code code code code'
                 'profile profile profile profile'
                 'description description description description'
               `,
@@ -350,13 +341,12 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
               />
             </div>
             <div style={{ gridArea: 'price' }}>
-              <TextField
-                type='number'
-                step='any'
+              <CurrencyField
                 label='Price'
                 err={errors.price}
                 value={newProduct.price}
                 onChange={(event) => setNewProduct((prev) => ({ ...prev, price: event.target.value }))}
+                currency={{ value: newProduct.currency, onChange: (event) => setNewProduct((prev) => ({ ...prev, currency: event.target.value })) }}
               />
               {!errors.price && ratioValue > 0 && product?.price > 0 && (
                 <HelperText theme={theme}>
@@ -365,14 +355,6 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
                     : <>{productName(product)} price ÷ {ratioValue} = {Number((product.price / ratioValue).toFixed(4))}</>}
                 </HelperText>
               )}
-            </div>
-            <div style={{ gridArea: 'currency' }}>
-              <SelectField
-                label='Currency'
-                value={newProduct.currency}
-                options={currencyOptions}
-                onChange={(event) => setNewProduct((prev) => ({ ...prev, currency: event.target.value }))}
-              />
             </div>
             <div style={{ gridArea: 'status' }}>
               <SelectField

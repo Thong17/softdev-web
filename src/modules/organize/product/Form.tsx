@@ -20,6 +20,7 @@ import { getListCategory, selectListCategory } from '../category/redux'
 import { getListBrand, selectListBrand } from '../brand/redux'
 import useLanguage from 'hooks/useLanguage'
 import { currencyOptions } from 'constants/variables'
+import { CurrencyField } from 'components/shared/form/CurrencyField'
 import CropFreeIcon from '@mui/icons-material/CropFree'
 import { getListProduct } from './redux'
 import { useNavigate } from 'react-router-dom'
@@ -250,8 +251,8 @@ const ProductForm = ({ defaultValues, id }: any) => {
           gridTemplateAreas: `
                               'category category brand brand'
                               'product product product product'
-                              'price price price currency'
-                              'status code code code'
+                              'price price status status'
+                              'code code code code'
                               'profile profile profile profile'
                               'description description description description'
                               'isStock isStock isStock isStock'
@@ -307,21 +308,11 @@ const ProductForm = ({ defaultValues, id }: any) => {
           />
         </div>
         <div style={{ gridArea: 'price' }}>
-          <TextField
-            type='number'
-            step='any'
+          <CurrencyField
             label='Price'
-            err={errors?.price?.message}
+            err={errors?.price?.message || errors?.currency?.message}
             {...register('price')}
-          />
-        </div>
-        <div style={{ gridArea: 'currency' }}>
-          <SelectField
-            value={currency}
-            options={currencyOptions}
-            label='Currency'
-            err={errors?.currency?.message}
-            {...register('currency')}
+            currency={{ value: currency, ...register('currency') }}
           />
         </div>
         <div style={{ gridArea: 'status' }}>

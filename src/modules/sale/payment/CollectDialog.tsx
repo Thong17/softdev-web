@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { UnitInput, feeUnits } from 'components/shared/form/UnitInput'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { CashForm } from 'components/shared/form/CashForm'
@@ -100,7 +101,6 @@ export const CollectDialog = ({ payment, onClose, onCollected }: { payment: any 
 
   // Fees so far: at checkout plus any added when collecting
   const fee = (payment?.payLater?.fee?.amount || 0) + (payment?.payLater?.collectFees || 0)
-  const input = { height: 36, padding: '0 10px', boxSizing: 'border-box' as const, border: theme.border.quaternary, borderRadius: theme.radius.primary, background: 'transparent', color: theme.text.primary, fontFamily: 'inherit', fontSize: 14, outline: 'none' }
   const overdue = payment?.payLater?.dueDate && new Date(payment.payLater.dueDate) < new Date()
 
   return (
@@ -122,22 +122,14 @@ export const CollectDialog = ({ payment, onClose, onCollected }: { payment: any 
 
         <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           <span style={{ fontSize: 12, color: theme.text.tertiary }}>Fee now (optional, e.g. a late fee; added to what's owed)</span>
-          <span style={{ display: 'flex', gap: 6 }}>
-            <input
-              type='number'
-              min='0'
-              step='any'
-              placeholder='0'
-              value={feeValue}
-              onChange={(event) => changeFee(event.target.value, feeType)}
-              style={{ ...input, flex: 1, minWidth: 0, borderColor: feeError ? theme.color.error : undefined }}
-            />
-            <select value={feeType} onChange={(event) => changeFee(feeValue, event.target.value as 'PCT' | 'USD' | 'KHR')} style={{ ...input, width: 64, backgroundColor: theme.background.primary }}>
-              <option value='PCT'>%</option>
-              <option value='USD'>$</option>
-              <option value='KHR'>៛</option>
-            </select>
-          </span>
+          <UnitInput
+            value={feeValue}
+            unit={feeType}
+            units={feeUnits}
+            error={feeError}
+            onChangeValue={(value) => changeFee(value, feeType)}
+            onChangeUnit={(unit) => changeFee(feeValue, unit as 'PCT' | 'USD' | 'KHR')}
+          />
         </label>
 
         <SelectTab

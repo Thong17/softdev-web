@@ -8,12 +8,12 @@ import {
   DetailField,
   FileField,
   LocaleField,
-  SelectField,
   TextField,
 } from 'components/shared/form'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { currencyOptions } from 'constants/variables'
+import { CurrencyField } from 'components/shared/form/CurrencyField'
 import { useEffect, useState } from 'react'
 import { IImage } from 'components/shared/form/UploadField'
 import useWeb from 'hooks/useWeb'
@@ -187,7 +187,6 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
               ? `
                               'color color color'
                               'price price price'
-                              'currency currency currency'
                               'code code code'
                               'profile profile profile'
                               'description description description'
@@ -195,7 +194,7 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
                             `
               : `
                               'color color color'
-                              'price currency code'
+                              'price price code'
                               'profile profile profile'
                               'description description description'
                               'action action action'
@@ -212,21 +211,11 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
           />
         </div>
         <div style={{ gridArea: 'price' }}>
-          <TextField
-            type='number'
-            step='any'
+          <CurrencyField
             label='Price'
-            err={errors?.price?.message}
+            err={errors?.price?.message || errors?.currency?.message}
             {...register('price')}
-          />
-        </div>
-        <div style={{ gridArea: 'currency' }}>
-          <SelectField
-            value={currency}
-            options={currencyOptions}
-            label='Currency'
-            err={errors?.currency?.message}
-            {...register('currency')}
+            currency={{ value: currency, ...register('currency') }}
           />
         </div>
         <div style={{ gridArea: 'code' }}>

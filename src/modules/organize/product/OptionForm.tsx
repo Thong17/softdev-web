@@ -8,12 +8,11 @@ import {
   DetailField,
   FileField,
   LocaleField,
-  SelectField,
-  TextField,
 } from 'components/shared/form'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { currencyOptions } from 'constants/variables'
+import { CurrencyField } from 'components/shared/form/CurrencyField'
 import { useEffect, useState } from 'react'
 import { IImage } from 'components/shared/form/UploadField'
 import useWeb from 'hooks/useWeb'
@@ -148,7 +147,7 @@ export const OptionForm = ({
           gridColumnGap: 20,
           gridTemplateAreas: `
                             'option option option'
-                            'price price currency'
+                            'price price price'
                             'profile profile profile'
                             'description description description'
                             'action action action'
@@ -165,21 +164,11 @@ export const OptionForm = ({
           />
         </div>
         <div style={{ gridArea: 'price' }}>
-          <TextField
-            type='number'
-            step='any'
+          <CurrencyField
             label='Price'
-            err={errors?.price?.message}
+            err={errors?.price?.message || errors?.currency?.message}
             {...register('price')}
-          />
-        </div>
-        <div style={{ gridArea: 'currency' }}>
-          <SelectField
-            value={currency}
-            options={currencyOptions}
-            label='Currency'
-            err={errors?.currency?.message}
-            {...register('currency')}
+            currency={{ value: currency, ...register('currency') }}
           />
         </div>
         <div style={{ gridArea: 'profile' }}>

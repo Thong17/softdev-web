@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import {
-  SelectField,
   TextField,
 } from 'components/shared/form'
 import Button from 'components/shared/Button'
@@ -14,6 +13,7 @@ import { useAppDispatch } from 'app/hooks'
 import { getListPromotion } from './redux'
 import { LocaleDetail } from 'components/shared/form/LocaleField'
 import { currencyOptions } from 'constants/variables'
+import { CurrencyField } from 'components/shared/form/CurrencyField'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import useTheme from 'hooks/useTheme'
@@ -25,7 +25,7 @@ const typeOption = [
   ...currencyOptions,
   {
     value: 'PCT',
-    label: 'Percent',
+    label: '%',
   },
 ]
 
@@ -116,7 +116,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
           gridColumnGap: 20,
           height: 'fit-content',
           gridTemplateAreas: `
-                              'value value value type'
+                              'value value value value'
                               'startAt startAt expireAt expireAt'
                               'description description description description'
                               'action action action action'
@@ -124,22 +124,12 @@ const PromotionForm = ({ defaultValues, id }: any) => {
         }}
       >
         <div style={{ gridArea: 'value' }}>
-          <TextField
-            type='number'
-            step='any'
+          <CurrencyField
             label='Value'
-            err={errors?.value?.message}
+            err={errors?.value?.message || errors?.type?.message}
             {...register('value')}
             icon={ isFixed ? <CheckBoxRoundedIcon onClick={handleToggleCheck} fontSize='small' /> : <CheckBoxOutlineBlankRoundedIcon style={{ color: theme.text.quaternary }} onClick={handleToggleCheck} fontSize='small' />}
-          />
-        </div>
-        <div style={{ gridArea: 'type' }}>
-          <SelectField
-            value={type}
-            options={typeOption}
-            label='Type'
-            err={errors?.type?.message}
-            {...register('type')}
+            currency={{ value: type, options: typeOption, ...register('type') }}
           />
         </div>
         <div style={{ gridArea: 'startAt' }}>

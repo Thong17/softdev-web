@@ -7,12 +7,12 @@ import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import {
   DetailField,
   LocaleField,
-  SelectField,
   TextField,
 } from 'components/shared/form'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { currencyOptions } from 'constants/variables'
+import { CurrencyField } from 'components/shared/form/CurrencyField'
 import { useEffect, useState } from 'react'
 import useWeb from 'hooks/useWeb'
 import { updateCustomerOption, createCustomerOption } from './redux'
@@ -108,7 +108,6 @@ export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: 
               ? `
                               'customer customer customer'
                               'price price price'
-                              'currency currency currency'
                               'code code code'
                               'profile profile profile'
                               'description description description'
@@ -116,7 +115,7 @@ export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: 
                             `
               : `
                               'customer customer customer'
-                              'price currency code'
+                              'price price code'
                               'profile profile profile'
                               'description description description'
                               'action action action'
@@ -133,21 +132,11 @@ export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: 
           />
         </div>
         <div style={{ gridArea: 'price' }}>
-          <TextField
-            type='number'
-            step='any'
+          <CurrencyField
             label='Price'
-            err={errors?.price?.message}
+            err={errors?.price?.message || errors?.currency?.message}
             {...register('price')}
-          />
-        </div>
-        <div style={{ gridArea: 'currency' }}>
-          <SelectField
-            value={currency}
-            options={currencyOptions}
-            label='Currency'
-            err={errors?.currency?.message}
-            {...register('currency')}
+            currency={{ value: currency, ...register('currency') }}
           />
         </div>
         <div style={{ gridArea: 'code' }}>

@@ -11,6 +11,7 @@ import {
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { currencyOptions } from 'constants/variables'
+import { CurrencyField } from 'components/shared/form/CurrencyField'
 import { useEffect, useState } from 'react'
 import useWeb from 'hooks/useWeb'
 import { updateStock, createStock } from './redux'
@@ -182,27 +183,25 @@ export const Form = ({
         style={{
           fontFamily: theme.font.family,
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
+          gridTemplateColumns: '1fr 1fr 1fr 1fr',
           width: width < 1024 ? '80vw' : '60vw',
           padding: 20,
           gridColumnGap: 20,
           gridTemplateAreas: `
-                            'cost cost currency'
-                            ${canChangePrice ? "'newPrice newPrice newPriceCurrency'" : ''}
-                            'quantity code code'
-                            'expireAt expireAt alertAt'
-                            'option option option'
-                            'action action action'
+                            ${canChangePrice ? "'cost cost newPrice newPrice'" : "'cost cost cost cost'"}
+                            'quantity quantity code code'
+                            'expireAt expireAt alertAt alertAt'
+                            'option option option option'
+                            'action action action action'
                         `,
         }}
       >
         <div style={{ gridArea: 'cost' }}>
-          <TextField
-            type='number'
-            step='any'
+          <CurrencyField
             label='Cost'
-            err={errors?.cost?.message}
+            err={errors?.cost?.message || errors?.currency?.message}
             {...register('cost')}
+            currency={{ value: currency, ...register('currency') }}
           />
           {!errors?.cost && previousStock && (
             <HelperText theme={theme}>
@@ -210,38 +209,20 @@ export const Form = ({
             </HelperText>
           )}
         </div>
-        <div style={{ gridArea: 'currency' }}>
-          <SelectField
-            value={currency}
-            options={currencyOptions}
-            label='Currency'
-            err={errors?.currency?.message}
-            {...register('currency')}
-          />
-        </div>
         {canChangePrice && (
           <>
             <div style={{ gridArea: 'newPrice' }}>
-              <TextField
-                type='number'
-                step='any'
+              <CurrencyField
                 label='New Price'
                 err={belowCostMsg || errors?.newPrice?.message}
                 {...register('newPrice')}
+                currency={{ value: newPriceCurrencyValue || product?.currency || 'USD', ...register('newPriceCurrency') }}
               />
               {!errors?.newPrice && !belowCostMsg && (
                 <HelperText theme={theme}>
                   Current price: {product ? currencyFormat(product.price, product.currency) : '--'} · leave blank to keep it
                 </HelperText>
               )}
-            </div>
-            <div style={{ gridArea: 'newPriceCurrency' }}>
-              <SelectField
-                value={newPriceCurrencyValue || product?.currency || 'USD'}
-                options={currencyOptions}
-                label='Currency'
-                {...register('newPriceCurrency')}
-              />
             </div>
           </>
         )}

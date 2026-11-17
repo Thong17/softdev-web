@@ -2,7 +2,7 @@ import { CustomButton } from 'styles'
 import { Button } from '@mui/material'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { DialogTitle } from 'components/shared/DialogTitle'
-import { MiniSelectField, SelectField } from 'components/shared/form/SelectField'
+import { SelectField } from 'components/shared/form/SelectField'
 import { useEffect, useState } from 'react'
 import { positionOptions, sizeOptions, directionOptions, typeOptions } from './constant'
 import { DetailField, TextField } from 'components/shared/form'
@@ -10,6 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { structureSchema } from './schema'
 import { useForm } from 'react-hook-form'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
+import { CurrencyField } from 'components/shared/form/CurrencyField'
 import { currencyOptions } from 'components/shared/form/InvoiceForm'
 
 const durationOptions = [
@@ -154,7 +155,7 @@ export const StructureForm = ({
           padding: 20,
           gridColumnGap: 20,
           gridTemplateAreas: `
-                            'title title title price'
+                            'title title price price'
                             'length size type direction'
                             'align align justify justify'
                             'description description description description'
@@ -171,56 +172,12 @@ export const StructureForm = ({
           />
         </div>
         <div style={{ gridArea: 'price' }}>
-          <TextField
-            type='number'
-            step='any'
+          <CurrencyField
             label='Price'
-            err={errors?.price?.value?.message}
+            err={errors?.price?.value?.message || errors?.price?.currency?.message || errors?.price?.duration?.message}
             {...register('price.value')}
-            icon={
-              <div>
-                <MiniSelectField
-                  options={currencyOptions}
-                  err={errors?.price?.currency?.message}
-                  name='price.currency'
-                  onChange={handleChangeSelect}
-                  value={priceCurrency}
-                  sx={{
-                    position: 'absolute',
-                    top: -1,
-                    right: 0,
-                    height: 23,
-                    '& .MuiSelect-select': {
-                      position: 'absolute',
-                      top: -2,
-                    },
-                    '& .MuiSvgIcon-root': {
-                      right: 33,
-                    },
-                  }}
-                />
-                <MiniSelectField
-                  options={durationOptions}
-                  err={errors?.price?.duration?.message}
-                  name='price.duration'
-                  onChange={handleChangeSelect}
-                  value={priceDuration}
-                  sx={{
-                    position: 'absolute',
-                    top: -1,
-                    right: -38,
-                    height: 23,
-                    '& .MuiSelect-select': {
-                      position: 'absolute',
-                      top: -2,
-                    },
-                    '& .MuiSvgIcon-root': {
-                      right: 33,
-                    },
-                  }}
-                />
-              </div>
-            }
+            currency={{ name: 'price.currency', value: priceCurrency, options: currencyOptions, onChange: handleChangeSelect, width: 44 }}
+            extra={{ name: 'price.duration', value: priceDuration, options: durationOptions, onChange: handleChangeSelect, width: 44 }}
           />
         </div>
         <div style={{ gridArea: 'length' }}>
