@@ -13,7 +13,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useWeb from 'hooks/useWeb'
 import React, { useEffect, useState } from 'react'
-import { currencyFormat, generateId } from 'utils'
+import { currencyFormat, generateId, responsiveGrid } from 'utils'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
@@ -412,8 +412,7 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
           onSubmit={handleSubmit(submit)}
           style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gridTemplateAreas: `'buyRate sellRate'`,
+            ...responsiveGrid(device === 'mobile', '1fr 1fr', `'buyRate sellRate'`),
             gridColumnGap: 20,
             padding: '5px 20px',
             boxSizing: 'border-box',

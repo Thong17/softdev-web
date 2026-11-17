@@ -9,12 +9,14 @@ import { TextField } from 'components/shared/form'
 import { HintBox } from 'components/shared/HintBox'
 import Axios from 'constants/functions/Axios'
 import useTheme from 'hooks/useTheme'
+import useWeb from 'hooks/useWeb'
 import useLanguage from 'hooks/useLanguage'
 import useNotify from 'hooks/useNotify'
 import useStoreFeatures from 'hooks/useStoreFeatures'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { SoftInvoiceSetting, ISoftInvoiceSetting } from 'modules/config/SoftInvoiceSetting'
 import { storeStages } from './stages'
+import { responsiveGrid } from 'utils'
 
 const printerFields = {
   receiptPrinterName: '',
@@ -34,6 +36,7 @@ const numberFields = ['receiptPrinterCharPerLine', 'storePrinterCharPerLine', 't
 export const PrintingStore = () => {
   const { id } = useParams()
   const { theme } = useTheme()
+  const { device } = useWeb()
   const { language } = useLanguage()
   const { notify } = useNotify()
   const features = useStoreFeatures()
@@ -96,12 +99,11 @@ export const PrintingStore = () => {
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 200px',
                   gridColumnGap: 20,
-                  gridTemplateAreas: `
+                  ...responsiveGrid(device === 'mobile', '1fr 200px', `
                     'receiptPrinterName receiptPrinterCharPerLine'
                     'storePrinterName storePrinterCharPerLine'
-                  `,
+                  `),
                 }}
               >
                 {field('receiptPrinterName', 'Receipt Printer Name')}
@@ -113,9 +115,8 @@ export const PrintingStore = () => {
                 <div
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 160px 160px 160px',
                     gridColumnGap: 20,
-                    gridTemplateAreas: `'thermalPrinterName thermalPrinterWidth thermalPrinterHeight thermalPrinterGap'`,
+                    ...responsiveGrid(device === 'mobile', '1fr 160px 160px 160px', `'thermalPrinterName thermalPrinterWidth thermalPrinterHeight thermalPrinterGap'`),
                   }}
                 >
                   {field('thermalPrinterName', 'Label Printer Name')}

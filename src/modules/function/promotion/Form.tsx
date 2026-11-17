@@ -20,6 +20,7 @@ import useTheme from 'hooks/useTheme'
 import { ProductContainer } from 'components/shared/container/ProductContainer'
 import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
+import { responsiveGrid } from 'utils'
 
 const typeOption = [
   ...currencyOptions,
@@ -112,15 +113,14 @@ const PromotionForm = ({ defaultValues, id }: any) => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
           gridColumnGap: 20,
           height: 'fit-content',
-          gridTemplateAreas: `
+          ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr 1fr', `
                               'value value value value'
                               'startAt startAt expireAt expireAt'
                               'description description description description'
                               'action action action action'
-                              `,
+                              `),
         }}
       >
         <div style={{ gridArea: 'value' }}>

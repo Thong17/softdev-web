@@ -15,6 +15,7 @@ import useNotify from 'hooks/useNotify'
 import { IImage } from 'components/shared/form/UploadField'
 import { InvoiceContainer } from 'components/shared/container/InvoiceContainer'
 import useTheme from 'hooks/useTheme'
+import useWeb from 'hooks/useWeb'
 import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
 import { storeSchema } from 'modules/organize/store/schema'
 import PrintRoundedIcon from '@mui/icons-material/PrintRounded'
@@ -24,6 +25,7 @@ import { directPrinting } from 'api/receipt.api'
 import { fontOption } from 'modules/organize/store/Form'
 import { currencyFormat, timeFormat } from 'utils/index'
 import { CustomButton } from 'styles/index'
+import { responsiveGrid } from 'utils'
 
 
 const invoiceOption = [
@@ -47,6 +49,7 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
         formState: { errors },
     } = useForm({ resolver: yupResolver(storeSchema), defaultValues })
     const { theme } = useTheme()
+    const { device } = useWeb()
     const { loadify } = useNotify()
     const [iconPath, setIconPath] = useState<IImage>(defaultValues?.logo)
     const [preview, setPreview] = useState({
@@ -179,16 +182,15 @@ const ReceiptDialog = ({ dialog, setDialog, defaultValues }: any) => {
                             <div
                                 style={{
                                     display: 'grid',
-                                    gridTemplateColumns: '1fr 1fr 1fr',
                                     gridColumnGap: 20,
-                                    gridTemplateAreas: `
+                                    ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr', `
                                         'name name contact'
                                         'type logo logo'
                                         'font font tax'
                                         'address address address'
                                         'other other other'
                                         'action action action'
-                                        `,
+                                        `),
                                 }}
                             >
                                 <div style={{ gridArea: 'name' }}>

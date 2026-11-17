@@ -13,11 +13,12 @@ import { conditionOptions, writeOffTypeOptions } from './constants'
 import { currencySymbolOptions } from 'constants/variables'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
+import { responsiveGrid } from 'utils'
 
 export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReload }: any) => {
   const { language } = useLanguage()
   const { theme } = useTheme()
-  const { width } = useWeb()
+  const { width, device } = useWeb()
   const { notify } = useNotify()
   const {
     control,
@@ -97,11 +98,10 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
               <div key={key} style={{
                 fontFamily: theme.font.family,
                 display: 'grid',
-                gridTemplateColumns: '1fr 1fr 1fr',
                 width: width < 1024 ? '80vw' : '60vw',
                 padding: 20,
                 gridColumnGap: 20,
-                gridTemplateAreas: watch(`transactions.${key}.writeOffType`) === 'REPOSSESS' ? `
+                ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr', watch(`transactions.${key}.writeOffType`) === 'REPOSSESS' ? `
                                   'writeOffType remainingCost newPrice'
                                   'condition note note'
                                   'reason reason reason'
@@ -111,7 +111,7 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
                                   'note note note'
                                   'reason reason reason'
                                   'action action action'
-                              `,
+                              `),
                 borderRadius: theme.radius.ternary, 
                 backgroundColor: theme.background.secondary,
                 boxSizing: 'border-box'

@@ -10,7 +10,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { CircleIcon } from '../table/CustomIcon'
 import { MiniDetailField, MiniTextField } from './InputField'
 import Button from '../Button'
-import { currencyFormat } from 'utils'
+import { currencyFormat, responsiveGrid } from 'utils'
 import { IOptions, MiniSelectField } from './SelectField'
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
@@ -868,8 +868,7 @@ export const InvoiceForm = forwardRef(({
                         onSubmit={handleSubmit(submit)}
                         style={{
                           display: 'grid',
-                          gridTemplateColumns: '1fr 1fr 1fr',
-                          gridTemplateAreas: `'description description price''quantity discount discount''note note note''action action action'`,
+                          ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr', `'description description price''quantity discount discount''note note note''action action action'`),
                           gridColumnGap: 20,
                           padding: '10px 0',
                           borderTop: theme.border.dashed,

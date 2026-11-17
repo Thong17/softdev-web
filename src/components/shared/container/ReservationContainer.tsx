@@ -29,6 +29,7 @@ import useAuth from 'hooks/useAuth'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import useAlert from 'hooks/useAlert'
 import useLanguage from 'hooks/useLanguage'
+import { responsiveGrid } from 'utils'
 
 const initReservation: any = {
   price: { value: 0, currency: 'USD', duration: '1h' },
@@ -413,8 +414,7 @@ const ReservationForm = ({ onClose, onClickCustomer, customer, structures, onSav
       onSubmit={handleSubmit(submit)}
       style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr 1fr',
-        gridTemplateAreas: `'from from to to''customer customer customer price''note note note note''action action action action'`,
+        ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr 1fr', `'from from to to''customer customer customer price''note note note note''action action action action'`),
         gridColumnGap: 20,
         padding: 13,
         backgroundColor: `${theme.background.primary}cc`,

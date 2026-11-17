@@ -8,11 +8,10 @@ import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
-import Loading from '../Loading'
 import { CustomPagination, CustomTableContainer } from 'styles'
 import ToggleOnIcon from '@mui/icons-material/ToggleOn'
 import ToggleOffIcon from '@mui/icons-material/ToggleOff'
-import { IconButton } from '@mui/material'
+import { CircularProgress, IconButton } from '@mui/material'
 import useLanguage from 'hooks/useLanguage'
 
 export interface ITableColumn<Column> {
@@ -81,9 +80,15 @@ export const StickyTable = ({
     setQuery && setQuery({ limit })
   }
   
+  // While reloading, keep the header, rows and page controls in place and only dim the rows
+  const bodyStyle: React.CSSProperties = {
+    opacity: loading ? 0.4 : 1,
+    pointerEvents: loading ? 'none' : undefined,
+    transition: 'opacity 0.15s',
+  }
+
   return (
     <CustomTableContainer color={backgroundColor} styled={theme} device={device} style={style}>
-      {loading && <Loading />}
       <div className='table-container'>
         {/* The bottom space is room for the page controls; none without them */}
         <TableContainer className='table' style={pagination ? undefined : { paddingBottom: 0 }}>
@@ -105,8 +110,8 @@ export const StickyTable = ({
               </TableRow>
             </TableHead>
             {rows?.length > 0 && (
-              !loading && pagination ? (
-                <TableBody>
+              pagination ? (
+                <TableBody style={bodyStyle}>
                   {rows
                     .slice(0, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
@@ -167,7 +172,7 @@ export const StickyTable = ({
                     })}
                 </TableBody>
               ) : (
-                !loading && <TableBody>
+                <TableBody style={bodyStyle}>
                   {rows.map((row, index) => {
                     return (
                       <TableRow
@@ -225,10 +230,21 @@ export const StickyTable = ({
                 </TableBody>
               )
             )}
+            {/* Nothing to dim yet (first load or an empty result), so show a spinner under the header */}
+            {loading && !(rows?.length > 0) && (
+              <TableBody>
+                <TableRow>
+                  <TableCell colSpan={columns.length} align='center' style={{ borderBottom: 0, padding: 40 }}>
+                    <CircularProgress size={30} />
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            )}
           </Table>
         </TableContainer>
       </div>
-      {!loading && pagination && (
+      {/* Kept while reloading; hidden only on a first load, when there is no count yet */}
+      {pagination && !(loading && !(rows?.length > 0)) && (
         <CustomPagination styled={theme}>
           <TablePagination
             rowsPerPageOptions={[10, 25, 50, 100]}

@@ -16,6 +16,7 @@ import { useAppDispatch } from 'app/hooks'
 import { useEffect, useState } from 'react'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { IOptions, SelectField } from 'components/shared/form/SelectField'
+import { responsiveGrid } from 'utils'
 
 export const choiceOptions: IOptions[] = [
   {
@@ -59,7 +60,7 @@ export const PropertyForm = ({
 
   const dispatch = useAppDispatch()
   const { notify } = useNotify()
-  const { width } = useWeb()
+  const { width, device } = useWeb()
   const [choice, setChoice] = useState('SINGLE')
   const [isRequire, setIsRequire] = useState(false)
   const choiceValue = watch('choice')
@@ -136,16 +137,15 @@ export const PropertyForm = ({
         style={{
           fontFamily: theme.font.family,
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
           width: width < 1024 ? '80vw' : '60vw',
           padding: 20,
           gridColumnGap: 20,
-          gridTemplateAreas: `
+          ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr', `
                             'property property property'
                             'choice choice isRequire'
                             'description description description'
                             'action action action'
-                        `,
+                        `),
         }}
       >
         <div style={{ gridArea: 'property' }}>

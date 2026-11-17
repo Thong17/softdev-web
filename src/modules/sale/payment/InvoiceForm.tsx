@@ -11,7 +11,7 @@ import { CustomButton, CustomInvoiceForm } from 'styles'
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded'
 import useWeb from 'hooks/useWeb'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import { currencyFormat, timeFormat } from 'utils'
+import { currencyFormat, timeFormat, responsiveGrid } from 'utils'
 import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded'
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded'
 import { useForm } from 'react-hook-form'
@@ -720,8 +720,7 @@ export const InvoiceForm = forwardRef(
                           onSubmit={handleSubmit(submit)}
                           style={{
                             display: 'grid',
-                            gridTemplateColumns: '1fr 1fr 1fr',
-                            gridTemplateAreas: `'description description price''quantity discount discount''note note note''action action action'`,
+                            ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr', `'description description price''quantity discount discount''note note note''action action action'`),
                             gridColumnGap: 20,
                             padding: '10px 0',
                             borderTop: theme.border.dashed,

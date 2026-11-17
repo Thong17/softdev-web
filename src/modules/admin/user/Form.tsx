@@ -16,6 +16,7 @@ import Loading from 'components/shared/Loading'
 import useTheme from 'hooks/useTheme'
 import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
+import { responsiveGrid } from 'utils'
 
 export const RoleForm = ({ defaultValues, id }: any) => {
   const dispatch = useAppDispatch()
@@ -109,22 +110,13 @@ export const RoleForm = ({ defaultValues, id }: any) => {
             position: 'relative',
             gridArea: 'form',
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr',
             gridColumnGap: 20,
-            gridTemplateAreas:
-              device === 'mobile'
-                ? `
+            ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr', `
                   'username username role'
                   'password password password'
                   'email email expireAt'
                   'action action action'
-                `
-                : `
-                  'username username role'
-                  'password password password'
-                  'email email expireAt'
-                  'action action action'
-                `,
+                `),
           }}
         >
           

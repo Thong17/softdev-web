@@ -5,8 +5,9 @@ import { currencyOptions, discountOptions } from './InvoiceForm'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
+import useWeb from 'hooks/useWeb'
 import { Box } from '@mui/system'
-import { currencyFormat, generateId } from 'utils'
+import { currencyFormat, generateId, responsiveGrid } from 'utils'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import PaymentsRoundedIcon from '@mui/icons-material/PaymentsRounded'
 import { ValueLabel } from '../ValueLabel'
@@ -116,6 +117,7 @@ const CastPreset = ({ theme, onClick }) => {
 
 export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId, payment, onCheckoutLoan, onLoading, onPreview, formMode }: any) => {
   const { theme } = useTheme()
+  const { device } = useWeb()
   const { notify } = useNotify()
   const { language } = useLanguage()
   const [cashForm, setCashForm] = useState(initCash)
@@ -369,14 +371,13 @@ export const LoanForm = ({ onChange, loanButtonRef, previewButtonRef, paymentId,
           borderRadius: theme.radius.secondary,
           padding: 10,
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr 1fr',
           gridColumnGap: 20,
-          gridTemplateAreas: `
+          ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr 1fr', `
                             'customer attachment attachment attachment'
                             'duration duration interest interest'
                             'penalty penalty penalty penalty'
                             'action action action action'
-                            `,
+                            `),
         }}
       >
         <div style={{ gridArea: 'customer' }}>

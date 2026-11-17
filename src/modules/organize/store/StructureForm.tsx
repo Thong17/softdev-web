@@ -10,8 +10,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { structureSchema } from './schema'
 import { useForm } from 'react-hook-form'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
+import useWeb from 'hooks/useWeb'
 import { CurrencyField } from 'components/shared/form/CurrencyField'
 import { currencyOptions } from 'components/shared/form/InvoiceForm'
+import { responsiveGrid } from 'utils'
 
 const durationOptions = [
   {
@@ -57,6 +59,7 @@ export const StructureForm = ({
     formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(structureSchema), defaultValues })
   const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
+  const { device } = useWeb()
   const [size, setSize] = useState('small')
   const [align, setAlign] = useState('center')
   const [justify, setJustify] = useState('center')
@@ -151,16 +154,15 @@ export const StructureForm = ({
         style={{
           fontFamily: theme.font.family,
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr 1fr',
           padding: 20,
           gridColumnGap: 20,
-          gridTemplateAreas: `
+          ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr 1fr', `
                             'title title price price'
                             'length size type direction'
                             'align align justify justify'
                             'description description description description'
                             'action action action action'
-                          `,
+                          `),
         }}
       >
         <div style={{ gridArea: 'title' }}>

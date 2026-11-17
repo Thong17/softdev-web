@@ -27,6 +27,7 @@ import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { IImage } from 'components/shared/form/UploadField'
 import useTheme from 'hooks/useTheme'
+import { responsiveGrid } from 'utils'
 
 const statusOptions = [
   { label: 'Enabled', value: true },
@@ -246,9 +247,8 @@ const ProductForm = ({ defaultValues, id }: any) => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr 1fr',
           gridColumnGap: 20,
-          gridTemplateAreas: `
+          ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr 1fr', `
                               'category category brand brand'
                               'product product product product'
                               'price price status status'
@@ -257,7 +257,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
                               'description description description description'
                               'isStock isStock isStock isStock'
                               'action action action action'
-                              `,
+                              `),
         }}
       >
         <div style={{ gridArea: 'category' }}>

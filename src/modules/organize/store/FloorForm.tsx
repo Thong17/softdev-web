@@ -16,6 +16,8 @@ import useNotify from 'hooks/useNotify'
 import { useAppDispatch } from 'app/hooks'
 import { getListFloor } from './redux'
 import useAlert from 'hooks/useAlert'
+import useWeb from 'hooks/useWeb'
+import { responsiveGrid } from 'utils'
 
 export const FloorForm = ({
   dialog,
@@ -32,6 +34,7 @@ export const FloorForm = ({
   const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
   const dispatch = useAppDispatch()
   const { notify } = useNotify()
+  const { device } = useWeb()
   const confirm = useAlert()
   const [floorId, setFloorId] = useState<null | string>(null)
 
@@ -131,14 +134,13 @@ export const FloorForm = ({
           style={{
             fontFamily: theme.font.family,
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr 1fr',
             gridColumnGap: 20,
-            minWidth: 500,
-            gridTemplateAreas: `
+            minWidth: device === 'mobile' ? undefined : 500,
+            ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr 1fr', `
                             'floor floor floor order'
                             'description description description description'
                             'action action action action'
-                          `,
+                          `),
           }}
         >
           <div style={{ gridArea: 'floor' }}>

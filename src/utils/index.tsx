@@ -428,3 +428,13 @@ export const convertBufferToArrayBuffer = (buf) => {
   }
   return ab
 }
+
+// One area per row, in the order the areas first appear
+export const stackGridAreas = (areas: string) => Array.from(new Set(areas.replace(/['"]/g, ' ').split(/\s+/).filter((name) => name && name !== '.'))).map((name) => `'${name}'`).join(' ')
+
+// Grid columns and areas that fall back to one field per row when stacked,
+// so form fields never squeeze side by side on a phone
+export const responsiveGrid = (stacked: boolean, columns: string, areas: string) => ({
+  gridTemplateColumns: stacked ? '1fr' : columns,
+  gridTemplateAreas: stacked ? stackGridAreas(areas) : areas,
+})

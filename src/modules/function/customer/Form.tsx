@@ -184,12 +184,18 @@ export const CustomerProfileForm = ({ id, defaultValues }: { id?: string, defaul
       .finally(() => setLoading(false))
   }
 
-  const grid = (areas: string, columns = '1fr 1fr 1fr') => ({
-    display: 'grid',
-    gridTemplateColumns: narrow ? '1fr' : columns,
-    gridColumnGap: 20,
-    ...(narrow ? {} : { gridTemplateAreas: areas }),
-  })
+  // On small screens every area gets its own row, in the same order. The areas
+  // must stay defined: a gridArea name with no matching area sends all the
+  // fields into one shared cell outside the grid, where they pile up.
+  const grid = (areas: string, columns = '1fr 1fr 1fr') => {
+    const names = Array.from(new Set(areas.replace(/'/g, ' ').split(/\s+/).filter(Boolean)))
+    return {
+      display: 'grid',
+      gridTemplateColumns: narrow ? '1fr' : columns,
+      gridColumnGap: 20,
+      gridTemplateAreas: narrow ? names.map((name) => `'${name}'`).join(' ') : areas,
+    }
+  }
 
   return (
     <>

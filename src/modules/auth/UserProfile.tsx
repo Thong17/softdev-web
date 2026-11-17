@@ -14,6 +14,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { updateProfileSchema } from './schema'
 import { FileField, IImage } from 'components/shared/form/UploadField'
+import { responsiveGrid } from 'utils'
 
 const mappedProfile = (data) => {
   return {
@@ -115,26 +116,15 @@ export const UserProfile = () => {
             position: 'relative',
             gridArea: 'form',
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr',
             gridColumnGap: 20,
-            gridTemplateAreas:
-              device === 'mobile'
-                ? ` 
+            ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr', ` 
                     'photo photo photo'
                     'username username gender'
                     'birthday contact contact'
                     'email email email'
                     'address address address'
                     'action action action'
-                `
-                : ` 
-                    'photo photo photo'
-                    'username username gender'
-                    'birthday contact contact'
-                    'email email email'
-                    'address address address'
-                    'action action action'
-                `,
+                `),
           }}
         >
           <div style={{ gridArea: 'photo' }}>

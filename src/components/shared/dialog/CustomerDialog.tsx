@@ -40,6 +40,7 @@ export const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues
   const { notify } = useNotify()
   const { language } = useLanguage()
   const location = watch('location')
+  const { device } = useWeb()
   // const [profilePath, setProfilePath] = useState<IImage>(defaultValues?.picture)
 
   useEffect(() => {
@@ -92,8 +93,11 @@ export const CustomerForm = ({ onClose, onChange, onChangesChange, defaultValues
       {...trackChanges}
       style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
-        gridTemplateAreas: `'displayName fullName fullName''contact contact dateOfBirth''profile profile profile''address address address''location location location''action action action'`,
+        // One field per row on phones, where a third of the width is too narrow
+        gridTemplateColumns: device === 'mobile' ? '1fr' : '1fr 1fr 1fr',
+        gridTemplateAreas: device === 'mobile'
+          ? `'displayName' 'fullName' 'contact' 'dateOfBirth' 'profile' 'address' 'location' 'action'`
+          : `'displayName fullName fullName''contact contact dateOfBirth''profile profile profile''address address address''location location location''action action action'`,
         gridColumnGap: 20,
       }}
     >

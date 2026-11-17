@@ -1,7 +1,7 @@
 import Container from 'components/shared/Container'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { MenuItem, Tooltip } from '@mui/material'
+import { MenuItem, Switch, Tooltip } from '@mui/material'
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded'
 import LockRoundedIcon from '@mui/icons-material/LockRounded'
 import { TierBadge } from 'components/shared/TierBadge'
@@ -259,13 +259,19 @@ export const CustomerRM = () => {
             days
           </label>
           {/* Only customers with a Pay Later balance */}
-          <label style={{ ...filterBox, cursor: 'pointer' }}>
-            <input
-              type='checkbox'
+          <label style={{ ...filterBox, gap: 2, cursor: 'pointer' }}>
+            Owing
+            <Switch
+              size='small'
               checked={queryParams.get('owing') === 'true'}
               onChange={(event) => handleQuery({ owing: event.target.checked ? 'true' : '' })}
+              inputProps={{ 'aria-label': 'Owing only' }}
+              sx={{
+                '& .MuiSwitch-switchBase.Mui-checked': { color: theme.color.info },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: theme.color.info, opacity: 0.5 },
+                '& .MuiSwitch-track': { backgroundColor: theme.text.tertiary },
+              }}
             />
-            Owing
           </label>
           <div style={filterBox}>
             Tier

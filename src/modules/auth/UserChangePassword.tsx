@@ -12,6 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useNavigate, useParams } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { changePasswordSchema } from './schema'
+import { responsiveGrid } from 'utils'
 
 export const UserChangePassword = () => {
   const { id } = useParams()
@@ -49,20 +50,12 @@ export const UserChangePassword = () => {
             position: 'relative',
             gridArea: 'form',
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
             gridColumnGap: 20,
-            gridTemplateAreas:
-              device === 'mobile'
-                ? ` 
+            ...responsiveGrid(device === 'mobile', '1fr 1fr', ` 
                     'currentPassword currentPassword'
                     'newPassword confirmPassword'
                     'action action'
-                `
-                : ` 
-                    'currentPassword currentPassword'
-                    'newPassword confirmPassword'
-                    'action action'
-                `,
+                `),
           }}
         >
           <div style={{ gridArea: 'currentPassword' }}>

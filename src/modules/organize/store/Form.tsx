@@ -18,6 +18,7 @@ import useTheme from 'hooks/useTheme'
 import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
 import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
+import { responsiveGrid } from 'utils'
 
 export const fontOption = [
   { label: 'Monospace', value: "monospace" },
@@ -36,7 +37,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
   const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const { theme } = useTheme()
   const navigate = useNavigate()
-  const { width } = useWeb()
+  const { width, device } = useWeb()
   const { notify, loadify } = useNotify()
   const [loading, setLoading] = useState(false)
   const [iconPath, setIconPath] = useState<IImage>(defaultValues?.logo)
@@ -127,16 +128,15 @@ const StoreForm = ({ defaultValues, id }: any) => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr',
             gridColumnGap: 20,
-            gridTemplateAreas: `
+            ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr', `
                               'name name contact'
                               'type logo logo'
                               'font font tax'
                               'address address address'
                               'other other other'
                               'action action action'
-                              `,
+                              `),
           }}
         >
           <div style={{ gridArea: 'name' }}>

@@ -4,6 +4,7 @@ import moment from 'moment'
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded'
 import useTheme from 'hooks/useTheme'
+import useWeb from 'hooks/useWeb'
 import { currencyFormat } from 'utils'
 
 export interface IPayLaterValue {
@@ -36,6 +37,7 @@ export const PayLaterForm = ({ customer, total, deposit, sellRate, value, onChan
   depositForm: ReactNode
 }) => {
   const { theme } = useTheme()
+  const { device } = useWeb()
   const { paid, fee, balance } = payLaterAmounts(total, deposit, value, sellRate)
   const tooMuch = deposit > total + 0.01
   const feeError = (Number(value.feeValue) || 0) < 0 || (value.feeType === 'PCT' && Number(value.feeValue) > 100)
@@ -82,7 +84,7 @@ export const PayLaterForm = ({ customer, total, deposit, sellRate, value, onChan
           : <span>Choose a customer in the cart first. Pay Later needs to know who owes the balance.</span>}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: device === 'mobile' ? '1fr' : '1fr 1fr', gap: 12 }}>
         <label>
           <span style={label}>Due date</span>
           <input

@@ -18,6 +18,7 @@ import { IImage } from 'components/shared/form/UploadField'
 import useTheme from 'hooks/useTheme'
 import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
+import { responsiveGrid } from 'utils'
 
 const statusOption = [
   { label: 'Enabled', value: true },
@@ -117,14 +118,13 @@ const BrandForm = ({ defaultValues, id }: any) => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
           gridColumnGap: 20,
-          gridTemplateAreas: `
+          ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr', `
                               'brand brand brand'
                               'status icon icon'
                               'description description description'
                               'action action action'
-                              `,
+                              `),
         }}
       >
         <div style={{ gridArea: 'brand', marginTop: 20, marginBottom: 20 }}>

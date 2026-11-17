@@ -21,7 +21,7 @@ import useLanguage from 'hooks/useLanguage'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { getListProduct } from 'modules/organize/product/redux'
 import useAuth from 'hooks/useAuth'
-import { currencyFormat, timeFormat } from 'utils'
+import { currencyFormat, timeFormat, responsiveGrid } from 'utils'
 import { HelperText } from './HelperText'
 
 export const Form = ({
@@ -48,7 +48,7 @@ export const Form = ({
   const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
   const dispatch = useAppDispatch()
   const { notify } = useNotify()
-  const { width } = useWeb()
+  const { width, device } = useWeb()
   const [currency, setCurrency] = useState(defaultValues?.currency)
   const currencyValue = watch('currency')
   const { lang } = useLanguage()
@@ -183,17 +183,16 @@ export const Form = ({
         style={{
           fontFamily: theme.font.family,
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr 1fr',
           width: width < 1024 ? '80vw' : '60vw',
           padding: 20,
           gridColumnGap: 20,
-          gridTemplateAreas: `
+          ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr 1fr', `
                             ${canChangePrice ? "'cost cost newPrice newPrice'" : "'cost cost cost cost'"}
                             'quantity quantity code code'
                             'expireAt expireAt alertAt alertAt'
                             'option option option option'
                             'action action action action'
-                        `,
+                        `),
         }}
       >
         <div style={{ gridArea: 'cost' }}>

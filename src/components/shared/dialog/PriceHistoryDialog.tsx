@@ -59,6 +59,9 @@ export const PriceHistoryPanel = ({ customer, product, cartProducts = [] }: IPri
   // A fresh start each time the dialog opens for someone else
   useEffect(() => {
     if (!open) return
+    // Drop the previous person's rows so they don't show while the new ones load
+    setRows([])
+    setCount(0)
     setQuery({ page: 0, limit: 10, search: '' })
     setText('')
     setPicked(null)

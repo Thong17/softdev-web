@@ -22,7 +22,7 @@ import useNotify from 'hooks/useNotify'
 import useWeb from 'hooks/useWeb'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { useEffect, useMemo, useState } from 'react'
-import { currencyFormat } from 'utils'
+import { currencyFormat, responsiveGrid } from 'utils'
 
 const initNewProduct = { name: {}, price: '', currency: 'USD', code: '', brand: '', category: '', status: true, description: '' }
 
@@ -45,7 +45,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
   const [images, setImages] = useState<IImage[]>([])
   const [profile, setProfile] = useState<string | null>(null)
   const [imagesTouched, setImagesTouched] = useState(false)
-  const { width } = useWeb()
+  const { width, device } = useWeb()
   const [mode, setMode] = useState<'existing' | 'new'>('existing')
   const [toProduct, setToProduct] = useState('')
   const [newProduct, setNewProduct] = useState<any>(initNewProduct)
@@ -299,16 +299,15 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr 1fr',
               gridColumnGap: 20,
-              gridTemplateAreas: `
+              ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr 1fr', `
                 'category category brand brand'
                 'product product product product'
                 'price price status status'
                 'code code code code'
                 'profile profile profile profile'
                 'description description description description'
-              `,
+              `),
             }}
           >
             <div style={{ gridArea: 'category' }}>
