@@ -139,3 +139,4 @@ export const Admin = () => {
 
 export { Users, CreateUser, UpdateUser, DetailUser } from './user'
 export { Roles, CreateRole, UpdateRole, DetailRole } from './role'
+export { Migration } from './migration'

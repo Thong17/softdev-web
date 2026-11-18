@@ -14,6 +14,7 @@ import {
   CreateUser,
   UpdateUser,
   DetailUser,
+  Migration,
 } from 'modules/admin'
 import {
   CreatePromotion,
@@ -180,6 +181,15 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'role', action: 'detail' }}>
             <DetailRole />
+          </AuthGuard>
+        ),
+      },
+      {
+        // Import products from Excel, bulk-match images
+        path: 'migration',
+        element: (
+          <AuthGuard role={{ route: 'admin', action: 'migration' }}>
+            <Migration />
           </AuthGuard>
         ),
       },

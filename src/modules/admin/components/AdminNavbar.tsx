@@ -10,6 +10,7 @@ const AdminNavbar = () => {
     <>
         {user?.privilege?.admin?.role && <NavLink to='/admin/role'>{language['ROLE']}</NavLink>}
         {user?.privilege?.admin?.user && <NavLink to='/admin/user'>{language['USER']}</NavLink>}
+        {user?.privilege?.admin?.migration && <NavLink to='/admin/migration'>{language['MIGRATION']}</NavLink>}
     </>
   )
 }

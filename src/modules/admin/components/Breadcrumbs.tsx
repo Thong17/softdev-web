@@ -3,7 +3,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import { FC } from 'react'
 import useLanguage from 'hooks/useLanguage'
 
-declare type page = 'admin' | 'role' | 'roleCreate' | 'roleUpdate' | 'user' | 'userCreate' | 'userUpdate'
+declare type page = 'admin' | 'role' | 'roleCreate' | 'roleUpdate' | 'user' | 'userCreate' | 'userUpdate' | 'migration'
 
 interface IAdminBreadcrumbs {
   page: page
@@ -25,6 +25,15 @@ const AdminBreadcrumbs: FC<IAdminBreadcrumbs> = ({ page }) => {
       },
       {
         title: language['ROLE'],
+      },
+    ],
+    migration: [
+      {
+        title: language['ADMIN'],
+        path: '/admin',
+      },
+      {
+        title: language['MIGRATION'],
       },
     ],
     roleCreate: [
