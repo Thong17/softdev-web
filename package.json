@@ -69,7 +69,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "serve": "serve -s build",
-    "dockerBuild": "docker build -t thonggee/softdev-web:stationary .",
+    "dockerBuild": "docker build --platform linux/amd64 -t thonggee/softdev-web:stationary .",
     "dockerPush": "docker push thonggee/softdev-web:stationary"
   },
   "eslintConfig": {
