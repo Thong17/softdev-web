@@ -7,6 +7,8 @@ ARG ENV_FILE=.env.stationary
 
 COPY package.json .
 COPY package-lock.json .
+# legacy-peer-deps: the MUI v4/v5 peer conflict (see .npmrc)
+COPY .npmrc .
 
 RUN npm install
 

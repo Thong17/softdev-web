@@ -1,9 +1,10 @@
-import { AxiosRequestHeaders, Method } from "axios";
+import { Method, RawAxiosRequestHeaders } from "axios";
 
 export interface IAxiosProps {
   method: Method,
   url: string,
   body?: Object,
   params?: URLSearchParams,
-  headers?: AxiosRequestHeaders 
+  // A plain { name: value } object (axios 1's AxiosRequestHeaders is a class)
+  headers?: RawAxiosRequestHeaders
 }
