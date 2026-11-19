@@ -13,7 +13,9 @@ import { IconButton } from '@mui/material'
 import useTheme from 'hooks/useTheme'
 import { ProductForm } from '../cashing/ProductForm'
 import { DrawerForm } from '../cashing/DrawerForm'
-import { PaymentForm } from './PaymentForm'
+// The shared payment dialog (Pay Later, soft invoice, double-click guards...),
+// the same one Cashing and the payment pages use
+import { PaymentForm } from '../cashing/PaymentForm'
 import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
@@ -187,6 +189,11 @@ export const Cashing = ({ id = null, transactions = [], customer, reservationDat
         dialog={paymentDialog}
         setDialog={setPaymentDialog}
         onClear={handleClearPayment}
+        // As the reservation's own dialog did: reload reservations once checked
+        // out, and reopen with nothing entered after closing
+        onCheckout={handleClearPayment}
+        resetOnClose={true}
+        onChooseCustomer={() => invoiceRef?.current?.callChooseCustomer()}
       />
       <div
         style={{

@@ -291,6 +291,10 @@ export const InvoiceForm = forwardRef(
       callClearPayment() {
         onClearPayment()
       },
+      // Opens this cart's customer picker (e.g. from the payment dialog)
+      callChooseCustomer() {
+        handleClickCustomer()
+      },
     }))
 
     const onClearPayment = () => {

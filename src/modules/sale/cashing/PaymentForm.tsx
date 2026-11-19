@@ -40,7 +40,8 @@ import { directPrinting } from 'api/receipt.api'
 import { initQzTray, handleReceiptPrint, handleThermalPrint } from 'utils/printer'
 
 // onChooseCustomer: opens the cart's customer picker (Pay Later needs a customer)
-export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout, onChooseCustomer }: any, ref) => {
+// resetOnClose: closing forgets the money entered, so it reopens fresh (reservations)
+export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, onClear, onCheckout, onChooseCustomer, resetOnClose = false }: any, ref) => {
   const confirm = useAlert()
   const { theme } = useTheme()
   const { language } = useLanguage()
@@ -198,6 +199,14 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
       onClearPayment()
       onClear && onClear()
       setFormMode('pending')
+    } else if (resetOnClose) {
+      // The money entered so far (amounts, method, cash notes, Pay Later)
+      setTotalReceive({ KHR: 0, USD: 0, total: 0 })
+      setPaymentMethod(null)
+      setReceiveCashes([])
+      setPayLater(initPayLater)
+      setDepositMethod('cash')
+      setDepositTransfer('')
     }
     setDialog((prev) => ({ ...prev, open: false }))
   }
