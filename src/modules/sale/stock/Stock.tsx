@@ -107,7 +107,7 @@ const priceColumnData: ITableColumn<PriceColumn>[] = [
   { id: 'createdBy', label: 'BY' },
 ]
 
-const priceSources = { STOCK_CREATE: 'Adding stock', STOCK_UPDATE: 'Editing stock', CONVERSION: 'Converting stock' }
+const priceSources = { STOCK_CREATE: 'Adding stock', STOCK_UPDATE: 'Editing stock', CONVERSION: 'Converting stock', STOCK_IMPORT: 'Importing stock' }
 
 // Non-breaking spaces keep each history cell on one line
 const noWrap = (value) => String(value ?? '').replace(/ /g, ' ')

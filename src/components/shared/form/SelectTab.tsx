@@ -34,6 +34,7 @@ const StyledTabs = styled((props: StyledTabsProps) => (
 interface StyledTabProps {
   label: React.ReactNode
   value: any
+  disabled?: boolean
 }
 
 const StyledTab = styled((props: StyledTabProps) => (
@@ -46,6 +47,10 @@ const StyledTab = styled((props: StyledTabProps) => (
   minWidth: 50,
   '&.Mui-selected': {
     color: styled.text.primary,
+  },
+  '&.Mui-disabled': {
+    color: styled.text.tertiary,
+    opacity: 0.45,
   },
   '&.Mui-focusVisible': {
     backgroundColor: 'rgba(100, 95, 228, 0.32)',
@@ -78,6 +83,8 @@ export const SelectTab = ({ selected, options, onChange }: any) => {
           key={key}
           label={option.label}
           value={option.value}
+          // Optional per option; tabs without it work as before
+          disabled={!!option.disabled}
         />
       ))}
     </StyledTabs>
