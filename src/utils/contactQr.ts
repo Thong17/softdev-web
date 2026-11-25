@@ -28,6 +28,23 @@ export const parseTelegram = (text: string): string | null => {
   return null
 }
 
+// A customer's saved Telegram as a chat link (opens the app on phones, Telegram
+// Web/Desktop elsewhere), or null when it can't be read. Accepts @username,
+// username, t.me / telegram.me links, tg://resolve links and phone numbers
+// (Cambodian 0xx… numbers are dialled as +855).
+export const telegramUrl = (saved?: string | null): string | null => {
+  const value = (saved || '').trim()
+  if (!value) return null
+  const parsed = parseTelegram(value)
+  if (parsed) return `https://t.me/${parsed.replace(/^@/, '')}`
+  if (/^[a-z][\w]{3,31}$/i.test(value)) return `https://t.me/${value}`
+  const digits = value.replace(/[\s().-]/g, '')
+  if (/^\+\d{8,15}$/.test(digits)) return `https://t.me/${digits}`
+  if (/^0\d{7,10}$/.test(digits)) return `https://t.me/+855${digits.slice(1)}`
+  if (/^855\d{8,10}$/.test(digits)) return `https://t.me/+${digits}`
+  return null
+}
+
 // Cambodian numbers are saved the local way: +855 12 345 678 -> 012345678
 const normalizePhone = (value: string) => {
   const digits = value.replace(/[^\d+]/g, '')

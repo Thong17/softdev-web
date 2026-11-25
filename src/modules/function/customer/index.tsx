@@ -4,6 +4,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { MenuItem, Switch, Tooltip } from '@mui/material'
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded'
 import LockRoundedIcon from '@mui/icons-material/LockRounded'
+import TelegramIcon from '@mui/icons-material/Telegram'
+import { telegramUrl } from 'utils/contactQr'
 import { TierBadge } from 'components/shared/TierBadge'
 import { PriceHistoryDialog } from 'components/shared/dialog/PriceHistoryDialog'
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded'
@@ -159,17 +161,43 @@ export const CustomerRM = () => {
     const edit = () => navigate(`/function/customer/update/${customer._id}`)
     const remove = () => setDeleteDialog({ open: true, id: customer._id })
     const showHistory = () => setHistoryCustomer({ _id: customer._id, name: customer.fullName || customer.displayName })
+    // Chat link from the saved Telegram (null when it can't be read)
+    const telegram = telegramUrl(customer.telegram)
+    const openTelegram = () => telegram && window.open(telegram, '_blank', 'noopener,noreferrer')
     const action = device === 'mobile' ? (
       <MenuDialog label={<ViewButton />}>
+        {telegram && <MenuItem component='div' onClick={openTelegram}>Open Telegram</MenuItem>}
         <MenuItem component='div' onClick={showHistory}>Price history</MenuItem>
         {privilege?.update && <MenuItem component='div' onClick={edit}>{language['UPDATE'] || 'Edit'}</MenuItem>}
         {privilege?.delete && <MenuItem component='div' onClick={remove}>Delete</MenuItem>}
       </MenuDialog>
     ) : (
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+        {telegram && (
+          <Tooltip title={`Open Telegram chat (${customer.telegram})`}>
+            <IconButton
+              size='small'
+              component='a'
+              href={telegram}
+              target='_blank'
+              rel='noopener noreferrer'
+              aria-label='Open Telegram chat'
+              // Same shape as the Edit button (UpdateButton), in Telegram blue
+              style={{ backgroundColor: '#29A9EB22', borderRadius: theme.radius.primary, color: '#29A9EB', marginLeft: 5 }}
+            >
+              <TelegramIcon fontSize='small' />
+            </IconButton>
+          </Tooltip>
+        )}
         <Tooltip title='Price history'>
-          <IconButton size='small' onClick={showHistory} style={{ color: theme.text.secondary, marginRight: 5 }}>
-            <HistoryRoundedIcon style={{ fontSize: 20 }} />
+          <IconButton
+            size='small'
+            onClick={showHistory}
+            aria-label='Price history'
+            // Same shape as the Edit button (UpdateButton)
+            style={{ backgroundColor: `${theme.text.secondary}22`, borderRadius: theme.radius.primary, color: theme.text.secondary, marginLeft: 5 }}
+          >
+            <HistoryRoundedIcon fontSize='small' />
           </IconButton>
         </Tooltip>
         {privilege?.update && <UpdateButton style={{ margin: 0 }} onClick={edit} />}
