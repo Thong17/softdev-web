@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Box } from '@mui/material'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { StickyTable, ITableColumn } from 'components/shared/table/StickyTable'
 import Axios from 'constants/functions/Axios'
 import useTheme from 'hooks/useTheme'
-import useWeb from 'hooks/useWeb'
 import useAuth from 'hooks/useAuth'
 import useLanguage from 'hooks/useLanguage'
 import useNotify from 'hooks/useNotify'
@@ -28,7 +28,6 @@ const columnData: ITableColumn<ColumnHeader>[] = [
 // product.viewCost (the API enforces it too).
 export const StockCostDialog = ({ productId, onClose }: { productId: string | null, onClose: () => void }) => {
   const { theme } = useTheme()
-  const { width } = useWeb()
   const { user } = useAuth()
   const { lang } = useLanguage()
   const { notify } = useNotify()
@@ -94,16 +93,21 @@ export const StockCostDialog = ({ productId, onClose }: { productId: string | nu
   return (
     <AlertDialog isOpen={!!productId} handleClose={onClose}>
       <DialogTitle title={`Stock Cost${product ? ` · ${nameOf(product)}` : ''}`} onClose={onClose} />
-      <div style={{ width: width < 1024 ? '92vw' : '60vw', maxWidth: 1000, padding: '0 20px 20px 20px', boxSizing: 'border-box' }}>
-        <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap', padding: '5px 0 15px 0' }}>
+      {/* Fixed height like the other dialogs (80vh in all, title included): the
+          summary stays on top and the table scrolls below it, header pinned */}
+      <div style={{ width: 'min(1100px, 94vw)', height: 'calc(80vh - 70px)', padding: '0 20px 20px 20px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap', padding: '5px 0 15px 0', flexShrink: 0 }}>
           {summary('Selling price', product ? currencyFormat(product.price, product.currency) : '--')}
           {summary('Next out cost', next ? currencyFormat(next.cost, next.currency) : '--')}
           {summary('Next out margin', next ? marginOf(next) : '--')}
           {summary('In stock', stocks.reduce((total, stock) => total + stock.quantity, 0))}
         </div>
-        <StickyTable columns={columnData} rows={rows} loading={loading} pagination={false} />
-        {!loading && stocks.length === 0 && (
+        {!loading && stocks.length === 0 ? (
           <div style={{ color: theme.text.tertiary, textAlign: 'center', padding: 20 }}>No stock left</div>
+        ) : (
+          <Box sx={{ flex: 1, minHeight: 0, '& > div, & .table-container': { height: '100%', boxSizing: 'border-box' }, '& .table': { maxHeight: '100%' } }}>
+            <StickyTable columns={columnData} rows={rows} loading={loading} pagination={false} />
+          </Box>
         )}
       </div>
     </AlertDialog>

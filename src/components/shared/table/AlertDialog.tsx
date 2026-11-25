@@ -1,7 +1,9 @@
 import Dialog from '@mui/material/Dialog'
 import useTheme from 'hooks/useTheme';
 
-export const AlertDialog = ({ isOpen, handleClose, children, hasTransparent }: any) => {
+// `keepMounted` (optional): the content stays rendered while closed, so a big
+// form opens with a smooth fade instead of being built at the moment it opens
+export const AlertDialog = ({ isOpen, handleClose, children, hasTransparent, keepMounted }: any) => {
   const { theme } = useTheme()
 
   return (
@@ -15,6 +17,7 @@ export const AlertDialog = ({ isOpen, handleClose, children, hasTransparent }: a
           }
         }}
         open={isOpen}
+        keepMounted={!!keepMounted}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"

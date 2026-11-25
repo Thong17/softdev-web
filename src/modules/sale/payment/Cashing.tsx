@@ -111,7 +111,9 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
   }
 
   const [stockProducts, setStockProducts] = useState({})
-  
+  // A product changed from the cart (stock added, maybe a new price): its card updates
+  const [changedProduct, setChangedProduct] = useState<any>(null)
+
   const handleUpdateStock = (data) => {
     setStockProducts(data)
   }
@@ -142,6 +144,7 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
         dialog={productDialog}
         setDialog={setProductDialog}
         addTransaction={handleAddTransaction}
+        onProductChanged={setChangedProduct}
       />
       <DrawerForm dialog={drawerDialog} setDialog={setDrawerDialog} />
       <PaymentForm
@@ -171,6 +174,7 @@ export const Cashing = ({ id = null, transactions = [], customer, paymentData = 
             filterPromotion={true}
             toggleReload={reload}
             updateStocks={stockProducts}
+            updateProduct={changedProduct}
             isDisabled={disableProduct}
             actions={
               <>

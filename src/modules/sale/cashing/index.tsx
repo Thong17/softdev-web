@@ -235,7 +235,9 @@ export const Cashing = () => {
   }
 
   const [stockProducts, setStockProducts] = useState({})
-  
+  // A product changed from the cart (stock added, maybe a new price): its card updates
+  const [changedProduct, setChangedProduct] = useState<any>(null)
+
   const handleUpdateStock = (data) => {
     setStockProducts(data)
   }
@@ -252,6 +254,7 @@ export const Cashing = () => {
         dialog={productDialog}
         setDialog={setProductDialog}
         addTransaction={handleAddTransaction}
+        onProductChanged={setChangedProduct}
       />
       <DrawerForm dialog={drawerDialog} setDialog={setDrawerDialog} />
       <PaymentForm
@@ -285,6 +288,7 @@ export const Cashing = () => {
             filterPromotion={true}
             toggleReload={reload}
             updateStocks={stockProducts}
+            updateProduct={changedProduct}
             isDisabled={disableProduct}
             // Covers the product grid once the sale is checked out
             overlay={completed && <PaidOverlay sale={completed} onClear={handleClearPayment} />}

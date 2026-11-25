@@ -73,6 +73,9 @@ export const ProductContainer = ({
   activeId,
   toggleReload,
   updateStocks,
+  // Optional: fresh data of one product (e.g. after stock and a new price were
+  // added from the cart); its card is rebuilt in place, without reloading the list
+  updateProduct,
   isDisabled,
   // Shown over the product grid only (e.g. Cashing's "Invoice Paid" screen)
   overlay,
@@ -136,7 +139,15 @@ export const ProductContainer = ({
     if (!updateStocks) return
     const { productId, totalAllStock: stock } = updateStocks
     setProducts(prev => prev.map(data => data.id === productId ? { ...data, stock } : data))
-  }, [updateStocks])  
+  }, [updateStocks])
+
+  useEffect(() => {
+    if (!updateProduct?._id) return
+    const fresh = mappedProduct(updateProduct, lang, user?.drawer?.buyRate)
+    // Keeps the card's place and whether the current filters show it
+    setProducts(prev => prev.map(data => data.id === fresh.id ? { ...data, ...fresh, display: data.display } : data))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateProduct])
 
   useEffect(() => {
     setDisabled(isDisabled)

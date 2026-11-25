@@ -26,10 +26,13 @@ import Axios from 'constants/functions/Axios'
 import { NanoInput } from 'components/shared/form/InputField'
 import { calculateTransactionTotal } from 'components/shared/form/InvoiceForm'
 import useAuth from 'hooks/useAuth'
+import { Form as StockForm } from 'modules/sale/stock/Form'
 
 // `quotation` mode builds the item locally instead of calling the transaction
 // API, which would deduct stock
-export const ProductForm = ({ dialog, setDialog, addTransaction, mode = 'payment' }: any) => {
+// `onProductChanged` (optional): told the product's fresh data after stock was
+// added here (its price may have changed too), so the page can update its grid
+export const ProductForm = ({ dialog, setDialog, addTransaction, mode = 'payment', onProductChanged }: any) => {
   const isQuotation = mode === 'quotation'
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -78,6 +81,74 @@ export const ProductForm = ({ dialog, setDialog, addTransaction, mode = 'payment
 
   const exceedStockMsg = 'Order quantity has exceed our current stock'
 
+  // Not enough stock while selling: the toast offers "Add stock" to users
+  // allowed to add it (the same right /sale/stock/create checks), which opens
+  // the Add Stock dialog right here
+  const canAddStock = !isQuotation && !!user?.privilege?.product?.create
+  const [stockDialog, setStockDialog] = useState<any>({ open: false, productId: null, stockId: null })
+  const [stockDefaults, setStockDefaults] = useState<any>({ alertAt: 0 })
+  // The product the dialog adds stock to (the cart dialog may close meanwhile)
+  const [stockProduct, setStockProduct] = useState<any>(null)
+
+  // Loads the product into the (still closed) Add Stock form while the toast
+  // shows, so pressing "Add stock" only has to open it: doing both at once
+  // kept the browser busy for the whole fade, and the dialog just appeared
+  const prepareAddStock = (target, needed, available) => {
+    const latest = [...(target?.stocks || [])].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
+    setStockProduct(target)
+    setStockDefaults({ alertAt: 0, quantity: Math.max(1, Number(needed) - Number(available)), currency: latest?.currency || 'USD' })
+  }
+  const openAddStock = (target) => setStockDialog({ open: true, productId: target._id, stockId: null })
+
+  const handleShortage = (needed, available) => {
+    const target = product
+    // A product added on click (no options dialog) is released, so it can be
+    // clicked again; with options, the dialog stays open
+    if (!dialog.open) handleCloseDialog()
+    if (canAddStock) prepareAddStock(target, needed, available)
+    const content = canAddStock ? (
+      <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <span>Not enough stock: {available} left</span>
+        <button
+          type='button'
+          onClick={() => openAddStock(target)}
+          style={{ flexShrink: 0, padding: '4px 10px', border: '1px solid currentColor', borderRadius: 6, background: 'rgba(255,255,255,0.18)', color: 'inherit', font: 'inherit', fontWeight: 600, cursor: 'pointer' }}
+        >
+          Add stock
+        </button>
+      </span>
+    ) : `${exceedStockMsg} (${available} left)`
+    // Longer than usual with the button, so there's time to press it; clicking
+    // the toast (or the button) closes it
+    const options = canAddStock ? { type: 'warning', autoClose: 8000 } : { type: 'error' }
+    if (loadingId) update(loadingId, { render: content, isLoading: false, ...options })
+    else notify(content, options.type as any, canAddStock ? { autoClose: 8000 } : undefined)
+    setLoadingId('')
+  }
+
+  // Saved: the product is read again (new batch, maybe a new price) and the page
+  // told, so its grid card updates. A product added on click then goes through
+  // the cart flow again; with options, the open dialog takes the new stock and
+  // price, and Add can be pressed again.
+  const handleStockSaved = () => {
+    const productId = stockProduct?._id
+    if (!productId) return
+    const optionsOpen = dialog.open && product?._id === productId
+    Axios({ method: 'GET', url: `/shared/product/info/${productId}` })
+      .then((response) => {
+        const fresh = response?.data?.data
+        if (!fresh) return
+        onProductChanged?.(fresh)
+        if (optionsOpen) {
+          setProduct((prev) => (prev && prev._id === productId ? { ...prev, stocks: fresh.stocks, price: fresh.price, currency: fresh.currency } : prev))
+        }
+      })
+      .catch((err) => notify(err?.response?.data?.msg || 'Stock was added; reload to see it', 'error'))
+      .finally(() => {
+        if (!optionsOpen) setDialog({ ...dialog, productId })
+      })
+  }
+
   useEffect(() => {
     let total = 0
     let selectedOptions: any[] = []
@@ -119,8 +190,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction, mode = 'payment
         
       if (product.isStock && quantity > total) {
         if (isQuotation) notify(`${exceedStockMsg} (${total} left)`, 'warning')
-        else if (loadingId) return update(loadingId, { render: exceedStockMsg, type: 'error', isLoading: false })
-        else return notify(exceedStockMsg, 'error')
+        else return handleShortage(quantity, total)
       }
       const body = {
         product: product._id,
@@ -348,8 +418,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction, mode = 'payment
       
     if (product.isStock && quantity > totalStock) {
       if (isQuotation) notify(`${exceedStockMsg} (${totalStock} left)`, 'warning')
-      else if (loadingId) return update(loadingId, { render: exceedStockMsg, type: 'error', isLoading: false })
-      else return notify(exceedStockMsg, 'error')
+      else return handleShortage(quantity, totalStock)
     }
 
     const body = {
@@ -408,6 +477,23 @@ export const ProductForm = ({ dialog, setDialog, addTransaction, mode = 'payment
   }
 
   return (
+    <>
+    {/* Kept mounted (only `open` changes) so it fades in and out like other dialogs */}
+    {canAddStock && (
+      <StockForm
+        dialog={stockDialog}
+        setDialog={setStockDialog}
+        theme={theme}
+        defaultValues={stockDefaults}
+        colors={stockProduct?.colors || []}
+        properties={stockProduct?.properties || []}
+        options={stockProduct?.options || []}
+        product={stockProduct}
+        stocks={stockProduct?.stocks || []}
+        onSaved={handleStockSaved}
+        keepMounted
+      />
+    )}
     <AlertContainer
       justify='start'
       isOpen={dialog.open}
@@ -847,5 +933,6 @@ export const ProductForm = ({ dialog, setDialog, addTransaction, mode = 'payment
         </div>
       </div>
     </AlertContainer>
+    </>
   )
 }

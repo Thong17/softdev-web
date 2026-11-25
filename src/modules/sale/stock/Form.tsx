@@ -35,6 +35,8 @@ export const Form = ({
   product,
   stocks,
   onSaved,
+  // Optional: keep the form rendered while closed so it opens smoothly
+  keepMounted,
 }: any) => {
   const {
     reset,
@@ -176,6 +178,7 @@ export const Form = ({
     <AlertDialog
       isOpen={dialog.open}
       handleClose={handleCancelDialog}
+      keepMounted={keepMounted}
     >
       <DialogTitle title={language['STOCK_FORM']} onClose={handleCancelDialog} />
       <form
