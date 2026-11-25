@@ -535,7 +535,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <SelectTab
                     selected={depositMethod}
-                    options={[{ label: 'Cash', value: 'cash' }, { label: 'Transfer', value: 'transfer' }]}
+                    options={[{ label: language['CASH'], value: 'cash' }, { label: language['TRANSFER'], value: 'transfer' }]}
                     onChange={handleChangeDepositMethod}
                   />
                   {depositMethod === 'cash'
@@ -543,7 +543,7 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
                     ? <div style={{ height: 220 }}><CashForm onChange={handleChangeCashes} transactionCashes={[]} emptyText={null} /></div>
                     : (
                       <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                        <span style={{ fontSize: 12, color: theme.text.tertiary }}>Amount paid now (USD)</span>
+                        <span style={{ fontSize: 12, color: theme.text.tertiary }}>{language['AMOUNT_PAID_NOW_USD']}</span>
                         <input
                           type='number'
                           min='0'

@@ -12,6 +12,7 @@ import Axios from 'constants/functions/Axios'
 import useTheme from 'hooks/useTheme'
 import useNotify from 'hooks/useNotify'
 import { convertBufferToArrayBuffer, currencyFormat, downloadBuffer } from 'utils'
+import useLanguage from 'hooks/useLanguage'
 
 type Status = 'all' | 'active' | 'inactive'
 interface IOption { id: string, name: string }
@@ -28,6 +29,7 @@ const dayEnd = (day: string) => (day ? new Date(`${day}T23:59:59.999`).toISOStri
 // skipped on import.
 export const StockTemplateDialog = ({ open, onClose }: { open: boolean, onClose: () => void }) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { notify } = useNotify()
   const [picked, setPicked] = useState<string[]>([])
   const [searchText, setSearchText] = useState('')
@@ -162,50 +164,50 @@ export const StockTemplateDialog = ({ open, onClose }: { open: boolean, onClose:
 
   return (
     <AlertDialog isOpen={open} handleClose={handleClose}>
-      <DialogTitle title='Download stock template' onClose={handleClose} />
+      <DialogTitle title={language['DOWNLOAD_STOCK_TEMPLATE']} onClose={handleClose} />
       {/* Dialogs render outside the page, so the theme text colour is set here.
           The whole dialog is 80vh: this area is that minus the title bar. */}
       <div style={{ width: 'min(1100px, 94vw)', height: 'calc(80vh - 70px)', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', color: theme.text.primary }}>
         <div style={{ padding: '12px 20px 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 12 }}>
           <TextField
-            label='Search'
+            label={language['SEARCH']}
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
             icon={<SearchRoundedIcon style={{ fontSize: 18 }} />}
           />
           <SelectField
-            label='Brand'
+            label={language['BRAND']}
             search
             value={brand}
             onChange={(event) => setBrand(event.target.value as string)}
-            options={[{ value: 'all', label: 'All brands' }, ...options.brands.map((item) => ({ value: item.id, label: item.name }))]}
+            options={[{ value: 'all', label: language['ALL_BRANDS'] }, ...options.brands.map((item) => ({ value: item.id, label: item.name }))]}
           />
           <SelectField
-            label='Category'
+            label={language['CATEGORY']}
             search
             value={category}
             onChange={(event) => setCategory(event.target.value as string)}
-            options={[{ value: 'all', label: 'All categories' }, ...options.categories.map((item) => ({ value: item.id, label: item.name }))]}
+            options={[{ value: 'all', label: language['ALL_CATEGORIES'] }, ...options.categories.map((item) => ({ value: item.id, label: item.name }))]}
           />
           <SelectField
-            label='Status'
+            label={language['STATUS']}
             value={status}
             onChange={(event) => setStatus(event.target.value as Status)}
             options={[
-              { value: 'all', label: 'All Status' },
-              { value: 'active', label: 'Active' },
-              { value: 'inactive', label: 'Inactive' },
+              { value: 'all', label: language['ALL_STATUS'] },
+              { value: 'active', label: language['ACTIVE'] },
+              { value: 'inactive', label: language['INACTIVE'] },
             ]}
           />
-          <TextField type='date' label='Added from' value={from} onChange={(event) => setFrom(event.target.value)} err={datesWrong ? 'After "Added to"' : undefined} />
-          <TextField type='date' label='Added to' value={to} onChange={(event) => setTo(event.target.value)} />
+          <TextField type='date' label={language['ADDED_FROM']} value={from} onChange={(event) => setFrom(event.target.value)} err={datesWrong ? 'After "Added to"' : undefined} />
+          <TextField type='date' label={language['ADDED_TO']} value={to} onChange={(event) => setTo(event.target.value)} />
         </div>
 
         <div style={{ padding: '2px 20px 6px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', minHeight: 42 }}>
           <SelectTab
             selected={selectedOnly ? 'selected' : 'all'}
             options={[
-              { label: 'All products', value: 'all' },
+              { label: language['ALL_PRODUCTS'], value: 'all' },
               { label: `Selected (${picked.length})`, value: 'selected', disabled: !picked.length },
             ]}
             onChange={(value: string) => setSelectedOnly(value === 'selected')}
@@ -228,7 +230,7 @@ export const StockTemplateDialog = ({ open, onClose }: { open: boolean, onClose:
           />
           {filtersSet && (
             <Button onClick={clearFilters} style={{ padding: '4px 12px', fontSize: 13, backgroundColor: `${theme.text.tertiary}22`, color: theme.text.secondary }}>
-              Clear filters
+              {language['CLEAR_FILTERS']}
             </Button>
           )}
         </div>
@@ -236,7 +238,7 @@ export const StockTemplateDialog = ({ open, onClose }: { open: boolean, onClose:
         {/* The cards scroll inside this area instead of spilling over the footer */}
         <div ref={scroller} style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '4px 20px 10px', borderTop: theme.border.quaternary }}>
           {matchIds !== null && !products.length ? (
-            <div style={{ padding: 40, textAlign: 'center', color: theme.text.tertiary }}>No products match these filters</div>
+            <div style={{ padding: 40, textAlign: 'center', color: theme.text.tertiary }}>{language['NO_PRODUCTS_MATCH_FILTERS']}</div>
           ) : (
             <GridLayout>
               {products.map((product, index) => (
@@ -264,7 +266,7 @@ export const StockTemplateDialog = ({ open, onClose }: { open: boolean, onClose:
             onClick={() => download('empty')}
             style={{ backgroundColor: `${theme.text.tertiary}22`, color: theme.text.secondary }}
           >
-            Download empty
+            {language['DOWNLOAD_EMPTY']}
           </Button>
           <Button
             loading={downloading === 'products'}
@@ -272,7 +274,7 @@ export const StockTemplateDialog = ({ open, onClose }: { open: boolean, onClose:
             onClick={() => download('products')}
             style={{ backgroundColor: `${theme.color.success}${picked.length ? '22' : '11'}`, color: theme.color.success }}
           >
-            Download products
+            {language['DOWNLOAD_PRODUCTS']}
           </Button>
         </div>
       </div>

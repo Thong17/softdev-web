@@ -19,6 +19,7 @@ import useWeb from 'hooks/useWeb'
 import { updateOption, createOption } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import { DialogTitle } from 'components/shared/DialogTitle'
+import useLanguage from 'hooks/useLanguage'
 
 export const OptionForm = ({
   dialog,
@@ -26,6 +27,7 @@ export const OptionForm = ({
   defaultValues,
   theme,
 }: any) => {
+  const { language } = useLanguage()
   const {
     reset,
     watch,
@@ -135,7 +137,7 @@ export const OptionForm = ({
 
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCancelDialog}>
-      <DialogTitle title='Option Form' onClose={handleCancelDialog} />
+      <DialogTitle title={language['OPTION_FORM']} onClose={handleCancelDialog} />
       <form
         {...trackChanges}
         style={{
@@ -158,14 +160,14 @@ export const OptionForm = ({
           <LocaleField
             name='name'
             err={errors?.name}
-            describe='Option'
+            describe={language['OPTION']}
             defaultValue={getValues('name')}
             onChange={handleLocaleChange}
           />
         </div>
         <div style={{ gridArea: 'price' }}>
           <CurrencyField
-            label='Price'
+            label={language['PRICE']}
             err={errors?.price?.message || errors?.currency?.message}
             {...register('price')}
             currency={{ value: currency, ...register('currency') }}
@@ -176,7 +178,7 @@ export const OptionForm = ({
             height={130}
             images={imagePath && [imagePath]}
             name='profile'
-            label='Profile'
+            label={language['PROFILE']}
             accept='image/png, image/jpeg'
             err={errors?.profile?.message}
             selected={getValues('profile')}
@@ -187,7 +189,7 @@ export const OptionForm = ({
         <div style={{ gridArea: 'description' }}>
           <DetailField
             type='text'
-            label='Description'
+            label={language['DESCRIPTION']}
             style={{ height: 70 }}
             {...register('description')}
           />
@@ -203,7 +205,7 @@ export const OptionForm = ({
               color: theme.color.error,
             }}
           >
-            Cancel
+            {language['CANCEL']}
           </CustomButton>
           <CustomButton
             type='submit'
@@ -216,7 +218,7 @@ export const OptionForm = ({
             onClick={handleSubmit(submit)}
             autoFocus
           >
-            {dialog.optionId ? 'Update' : 'Create'}
+            {dialog.optionId ? language['UPDATE'] : language['CREATE']}
           </CustomButton>
         </div>
       </form>

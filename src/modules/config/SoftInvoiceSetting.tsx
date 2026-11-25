@@ -7,6 +7,7 @@ import Axios from 'constants/functions/Axios'
 import useTheme from 'hooks/useTheme'
 import useNotify from 'hooks/useNotify'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
+import useLanguage from 'hooks/useLanguage'
 
 export interface ISoftInvoiceSetting {
   enabled: boolean
@@ -26,6 +27,7 @@ const paperOptions = [
 // as PDF from Cashing, Report › Payment and Group payment
 export const SoftInvoiceSetting = ({ initial }: { initial?: Partial<ISoftInvoiceSetting> | null }) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { notify } = useNotify()
   const [value, setValue] = useState<ISoftInvoiceSetting>(defaultSoftInvoice)
   const [saved, setSaved] = useState<ISoftInvoiceSetting>(defaultSoftInvoice)
@@ -55,22 +57,21 @@ export const SoftInvoiceSetting = ({ initial }: { initial?: Partial<ISoftInvoice
 
   return (
     <div {...trackChanges}>
-      <Section describe='Soft Invoice' style={{ marginBottom: 40 }}>
+      <Section describe={language['SOFT_INVOICE']} style={{ marginBottom: 40 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
           <HintBox>
-            Print A4 or A5 invoices, or save them as PDF, from Cashing after checkout, Report › Payment and Group payment.
-            Labels print in Khmer and English.
+            {language['SOFT_INVOICE_HINT']}
           </HintBox>
           <CheckboxField
             name='softInvoice.enabled'
-            label='Support Soft Invoice'
+            label={language['SUPPORT_SOFT_INVOICE']}
             checked={value.enabled}
             onChange={(event) => change({ enabled: event.target.checked })}
           />
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gridColumnGap: 20, opacity: value.enabled ? 1 : 0.5 }}>
             <SelectField
               name='softInvoice.paperSize'
-              label='Default Paper Size'
+              label={language['DEFAULT_PAPER_SIZE']}
               value={value.paperSize}
               disabled={!value.enabled}
               options={paperOptions}
@@ -79,7 +80,7 @@ export const SoftInvoiceSetting = ({ initial }: { initial?: Partial<ISoftInvoice
             <div style={{ display: 'flex', alignItems: 'center', paddingBottom: 20 }}>
               <CheckboxField
                 name='softInvoice.showLogo'
-                label='Show store logo'
+                label={language['SHOW_STORE_LOGO']}
                 checked={value.showLogo}
                 disabled={!value.enabled}
                 onChange={(event) => change({ showLogo: event.target.checked })}
@@ -88,7 +89,7 @@ export const SoftInvoiceSetting = ({ initial }: { initial?: Partial<ISoftInvoice
           </div>
           <div style={{ opacity: value.enabled ? 1 : 0.5 }}>
             <DetailField
-              label='Footer (e.g. bank account, return policy)'
+              label={language['FOOTER_HINT']}
               value={value.footer}
               disabled={!value.enabled}
               maxLength={500}
@@ -103,7 +104,7 @@ export const SoftInvoiceSetting = ({ initial }: { initial?: Partial<ISoftInvoice
               onClick={handleSave}
               style={{ backgroundColor: `${theme.color.info}22`, color: theme.color.info, opacity: saving || !isDirty ? 0.6 : 1 }}
             >
-              Save
+              {language['SAVE']}
             </Button>
           </div>
         </div>

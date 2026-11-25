@@ -120,7 +120,7 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
                 <div style={{ gridArea: 'writeOffType' }}>
                   <SelectField
                     defaultValue={(fields[key] as any)?.writeOffType}
-                    label='Write Off Type'
+                    label={language['WRITE_OFF_TYPE']}
                     options={writeOffTypeOptions}
                     err={errors?.writeOffType?.message}
                     {...register(`transactions.${key}.writeOffType`)}
@@ -131,7 +131,7 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
                     <TextField
                       type='number'
                       step='any'
-                      label='Remaining Cost'
+                      label={language['REMAINING_COST']}
                       err={errors?.remainingCost?.message}
                       {...register(`transactions.${key}.remainingCost`)}
                       icon={
@@ -169,7 +169,7 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
                     <TextField
                       type='number'
                       step='any'
-                      label='New Price'
+                      label={language['NEW_PRICE']}
                       err={errors?.newPrice?.message}
                       {...register(`transactions.${key}.newPrice`)}
                       icon={
@@ -207,7 +207,7 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
                     <TextField
                       type='number'
                       step='any'
-                      label='Amount'
+                      label={language['AMOUNT']}
                       err={errors?.amount?.message}
                       {...register(`transactions.${key}.amount`)}
                       icon={
@@ -246,21 +246,21 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
                   <SelectField
                     defaultValue={(fields[key] as any)?.condition}
                     options={conditionOptions}
-                    label='Condition'
+                    label={language['CONDITION']}
                     err={errors?.condition?.message}
                     {...register(`transactions.${key}.condition`)}
                   />
                 </div>
                 <div style={{ gridArea: 'note' }}>
                   <TextField
-                    label='Note'
+                    label={language['NOTE']}
                     err={errors?.note?.message}
                     {...register(`transactions.${key}.note`)}
                   />
                 </div>
                 <div style={{ gridArea: 'reason' }}>
                   <TextField
-                    label='Reason'
+                    label={language['REASON']}
                     err={errors?.reason?.message}
                     {...register(`transactions.${key}.reason`)}
                   />
@@ -274,7 +274,7 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
             onClick={handleCancelDialog}
             style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}
           >
-            Cancel
+            {language['CANCEL']}
           </Button>
           <Button
             type='submit'
@@ -282,7 +282,7 @@ export const WriteOffDialog = ({ dialog, setDialog, defaultValues, data, onReloa
             onClick={handleSubmit(submit)}
             autoFocus
           >
-            { dialog.stockId ? 'Update' : 'Create' }
+            { dialog.stockId ? language['UPDATE'] : language['CREATE'] }
           </Button>
         </div>
       </form>

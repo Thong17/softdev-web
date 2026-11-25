@@ -94,7 +94,7 @@ export const ClearPaymentDialog = ({
               value={clearPaymentDate.fromDate}
               onChange={(e) => setClearPaymentDate({ ...clearPaymentDate, fromDate: e.target.value })}
               type='datetime-local'
-              label='Clear From'
+              label={language['CLEAR_FROM']}
             />
           </div>
           <div style={{ width: '50%' }}>
@@ -102,7 +102,7 @@ export const ClearPaymentDialog = ({
               value={clearPaymentDate.toDate}
               onChange={(e) => setClearPaymentDate({ ...clearPaymentDate, toDate: e.target.value })}
               type='datetime-local'
-              label='Clear Until'
+              label={language['CLEAR_UNTIL']}
             />
           </div>
         </div>

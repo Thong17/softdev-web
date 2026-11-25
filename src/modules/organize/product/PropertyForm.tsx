@@ -17,28 +17,7 @@ import { useEffect, useState } from 'react'
 import { DialogTitle } from 'components/shared/DialogTitle'
 import { IOptions, SelectField } from 'components/shared/form/SelectField'
 import { responsiveGrid } from 'utils'
-
-export const choiceOptions: IOptions[] = [
-  {
-    value: 'SINGLE',
-    label: 'Single',
-  },
-  {
-    value: 'MULTIPLE',
-    label: 'Multiple',
-  },
-]
-
-export const requireOptions: IOptions[] = [
-  {
-    value: false,
-    label: 'Optional',
-  },
-  {
-    value: true,
-    label: 'Require',
-  },
-]
+import useLanguage from 'hooks/useLanguage'
 
 export const PropertyForm = ({
   dialog,
@@ -46,6 +25,27 @@ export const PropertyForm = ({
   defaultValues,
   theme,
 }: any) => {
+  const { language } = useLanguage()
+  const choiceOptions: IOptions[] = [
+    {
+      value: 'SINGLE',
+      label: language['SINGLE'],
+    },
+    {
+      value: 'MULTIPLE',
+      label: language['MULTIPLE'],
+    },
+  ]
+  const requireOptions: IOptions[] = [
+    {
+      value: false,
+      label: language['OPTIONAL'],
+    },
+    {
+      value: true,
+      label: language['REQUIRE'],
+    },
+  ]
   const {
     watch,
     reset,
@@ -131,7 +131,7 @@ export const PropertyForm = ({
       isOpen={dialog.open}
       handleClose={handleCancelDialog}
     >
-      <DialogTitle title='Property Form' onClose={handleCancelDialog} />
+      <DialogTitle title={language['PROPERTY_FORM']} onClose={handleCancelDialog} />
       <form
         {...trackChanges}
         style={{
@@ -152,7 +152,7 @@ export const PropertyForm = ({
           <LocaleField
             name='name'
             err={errors?.name}
-            describe='Property'
+            describe={language['PROPERTY']}
             defaultValue={getValues('name')}
             onChange={handleLocaleChange}
           />
@@ -161,7 +161,7 @@ export const PropertyForm = ({
           <SelectField
             value={choice}
             options={choiceOptions}
-            label='Choice'
+            label={language['CHOICE']}
             err={errors?.choice?.message}
             {...register('choice')}
           />
@@ -170,7 +170,7 @@ export const PropertyForm = ({
           <SelectField
             value={isRequire}
             options={requireOptions}
-            label='Option'
+            label={language['OPTION']}
             err={errors?.isRequire?.message}
             {...register('isRequire')}
           />
@@ -178,7 +178,7 @@ export const PropertyForm = ({
         <div style={{ gridArea: 'description' }}>
           <DetailField
             type='text'
-            label='Description'
+            label={language['DESCRIPTION']}
             style={{ height: 70 }}
             {...register('description')}
           />
@@ -192,7 +192,7 @@ export const PropertyForm = ({
               color: theme.color.error 
             }}
           >
-            Cancel
+            {language['CANCEL']}
           </CustomButton>
           <CustomButton
             type='submit'
@@ -205,7 +205,7 @@ export const PropertyForm = ({
             onClick={handleSubmit(submit)}
             autoFocus
           >
-            { dialog.propertyId ? 'Update' : 'Create' }
+            { dialog.propertyId ? language['UPDATE'] : language['CREATE'] }
           </CustomButton>
         </div>
       </form>

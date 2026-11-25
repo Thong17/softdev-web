@@ -22,8 +22,10 @@ import { useAppDispatch } from 'app/hooks'
 import ColorLensRoundedIcon from '@mui/icons-material/ColorLensRounded'
 import { SketchPicker } from 'react-color'
 import { DialogTitle } from 'components/shared/DialogTitle'
+import useLanguage from 'hooks/useLanguage'
 
 export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
+  const { language } = useLanguage()
   const {
     reset,
     watch,
@@ -172,7 +174,7 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
 
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCancelDialog}>
-      <DialogTitle title='Color Form' onClose={handleCancelDialog} />
+      <DialogTitle title={language['COLOR_FORM']} onClose={handleCancelDialog} />
       <form
         {...trackChanges}
         style={{
@@ -205,14 +207,14 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
           <LocaleField
             name='name'
             err={errors?.name}
-            describe='Color'
+            describe={language['COLOR']}
             defaultValue={getValues('name')}
             onChange={handleLocaleChange}
           />
         </div>
         <div style={{ gridArea: 'price' }}>
           <CurrencyField
-            label='Price'
+            label={language['PRICE']}
             err={errors?.price?.message || errors?.currency?.message}
             {...register('price')}
             currency={{ value: currency, ...register('currency') }}
@@ -221,7 +223,7 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
         <div style={{ gridArea: 'code' }}>
           <TextField
             type='text'
-            label='Code'
+            label={language['CODE']}
             icon={
               <ColorLensRoundedIcon
                 style={{ color: color }}
@@ -253,7 +255,7 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
             height={130}
             images={imagesPath}
             name='profile'
-            label='Profile'
+            label={language['PROFILE']}
             accept='image/png, image/jpeg'
             multiple
             err={errors?.profile?.message}
@@ -266,7 +268,7 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
         <div style={{ gridArea: 'description' }}>
           <DetailField
             type='text'
-            label='Description'
+            label={language['DESCRIPTION']}
             style={{ height: 70 }}
             {...register('description')}
           />
@@ -282,7 +284,7 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
               color: theme.color.error,
             }}
           >
-            Cancel
+            {language['CANCEL']}
           </CustomButton>
           <CustomButton
             type='submit'
@@ -295,7 +297,7 @@ export const ColorForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
             onClick={handleSubmit(submit)}
             autoFocus
           >
-            {dialog.colorId ? 'Update' : 'Create'}
+            {dialog.colorId ? language['UPDATE'] : language['CREATE']}
           </CustomButton>
         </div>
       </form>

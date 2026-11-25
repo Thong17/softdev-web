@@ -18,6 +18,7 @@ import { getListFloor } from './redux'
 import useAlert from 'hooks/useAlert'
 import useWeb from 'hooks/useWeb'
 import { responsiveGrid } from 'utils'
+import useLanguage from 'hooks/useLanguage'
 
 export const FloorForm = ({
   dialog,
@@ -31,6 +32,7 @@ export const FloorForm = ({
     handleSubmit,
     formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(floorSchema) })
+  const { language } = useLanguage()
   const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
   const dispatch = useAppDispatch()
   const { notify } = useNotify()
@@ -93,7 +95,7 @@ export const FloorForm = ({
 
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCancelDialog}>
-      <DialogTitle title='Floor Form' onClose={handleCancelDialog} />
+      <DialogTitle title={language['FLOOR_FORM']} onClose={handleCancelDialog} />
       <div style={{ padding: 20, boxSizing: 'border-box' }}>
         <div
           style={{
@@ -146,7 +148,7 @@ export const FloorForm = ({
           <div style={{ gridArea: 'floor' }}>
             <TextField
               type='text'
-              label='Floor'
+              label={language['FLOOR']}
               err={errors?.floor?.message}
               {...register('floor')}
             />
@@ -155,7 +157,7 @@ export const FloorForm = ({
             <TextField
               type='number'
               step='any'
-              label='Order'
+              label={language['ORDER']}
               err={errors?.order?.message}
               {...register('order')}
             />
@@ -163,7 +165,7 @@ export const FloorForm = ({
           <div style={{ gridArea: 'description' }}>
             <DetailField
               type='text'
-              label='Description'
+              label={language['DESCRIPTION']}
               style={{ height: 70 }}
               {...register('description')}
             />
@@ -176,7 +178,7 @@ export const FloorForm = ({
             }}
           >
             {
-              floorId ? <Button onClick={handleCancelForm}>Cancel</Button> : <Button onClick={handleCancelDialog}>Close</Button>
+              floorId ? <Button onClick={handleCancelForm}>{language['CANCEL']}</Button> : <Button onClick={handleCancelDialog}>{language['CLOSE']}</Button>
             }
             <CustomButton
               type='submit'
@@ -189,7 +191,7 @@ export const FloorForm = ({
               styled={theme}
               autoFocus
             >
-              { floorId ? 'Update' : 'Create' }
+              { floorId ? language['UPDATE'] : language['CREATE'] }
             </CustomButton>
           </div>
         </form>

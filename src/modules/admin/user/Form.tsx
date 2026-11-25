@@ -123,7 +123,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'username' }}>
             <TextField
               type='text'
-              label='Username'
+              label={language['USERNAME']}
               err={errors.username?.message}
               {...register('username')}
             />
@@ -131,7 +131,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'role' }}>
             <SelectField
               value={role}
-              label='Role'
+              label={language['ROLE']}
               options={roleOption}
               err={errors.role?.message}
               loading={statusListRole === 'LOADING' ? true : false}
@@ -141,7 +141,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'password' }}>
             <TextField
               type='password'
-              label={id ? 'Update Password' : 'Password'}
+              label={id ? language['UPDATE_PASSWORD'] : language['PASSWORD']}
               err={errors.password?.message}
               {...register('password')}
             />
@@ -150,7 +150,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'email' }}>
             <TextField
               type='email'
-              label='Email'
+              label={language['EMAIL']}
               err={errors.email?.message}
               {...register('email')}
             />
@@ -158,7 +158,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'expireAt' }}>
             <TextField
               type='date'
-              label='Trial Expires'
+              label={language['TRIAL_EXPIRES']}
               err={errors.expireAt?.message}
               {...register('expireAt')}
             />
@@ -186,7 +186,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
         </div>
       </div>
       <div style={{ gridArea: 'privilege' }}>
-        {statusPreRole === 'SUCCESS' ? <PrivilegeField label={`${privilege.label} Privilege Preview`} preValue={preRole} value={privilege.data} isReadOnly={true} /> : <Loading />}
+        {statusPreRole === 'SUCCESS' ? <PrivilegeField label={`${privilege.label} ${language['PRIVILEGE_PREVIEW']}`} preValue={preRole} value={privilege.data} isReadOnly={true} /> : <Loading />}
       </div>
     </form>
   )

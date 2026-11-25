@@ -13,6 +13,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { changePasswordSchema } from './schema'
 import { responsiveGrid } from 'utils'
+import useLanguage from 'hooks/useLanguage'
 
 export const UserChangePassword = () => {
   const { id } = useParams()
@@ -20,6 +21,7 @@ export const UserChangePassword = () => {
   const navigate = useNavigate()
   const { device } = useWeb()
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const {
     register,
     handleSubmit,
@@ -61,7 +63,7 @@ export const UserChangePassword = () => {
           <div style={{ gridArea: 'currentPassword' }}>
             <TextField
               type='password'
-              label='Current Password'
+              label={language['CURRENT_PASSWORD']}
               err={errors.current_password?.message}
               {...register('current_password')}
             />
@@ -69,7 +71,7 @@ export const UserChangePassword = () => {
           <div style={{ gridArea: 'newPassword' }}>
             <TextField
               type='password'
-              label='New Password'
+              label={language['NEW_PASSWORD']}
               err={errors.new_password?.message}
               {...register('new_password')}
             />
@@ -77,7 +79,7 @@ export const UserChangePassword = () => {
           <div style={{ gridArea: 'confirmPassword' }}>
             <TextField
               type='password'
-              label='Confirm Password'
+              label={language['CONFIRM_PASSWORD']}
               err={errors.confirm_password?.message}
               {...register('confirm_password')}
             />
@@ -98,7 +100,7 @@ export const UserChangePassword = () => {
               }}
               onClick={() => navigate(-1)}
             >
-              Cancel
+              {language['CANCEL']}
             </Button>
             <Button
               type='submit'
@@ -109,7 +111,7 @@ export const UserChangePassword = () => {
                 color: theme.color.info,
               }}
             >
-              Update
+              {language['UPDATE']}
             </Button>
           </div>
         </form>

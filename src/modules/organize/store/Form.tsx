@@ -19,12 +19,14 @@ import PercentRoundedIcon from '@mui/icons-material/PercentRounded'
 import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { responsiveGrid } from 'utils'
+import useLanguage from 'hooks/useLanguage'
 
 export const fontOption = [
   { label: 'Monospace', value: "monospace" },
 ]
 
 const StoreForm = ({ defaultValues, id }: any) => {
+  const { language } = useLanguage()
   const {
     watch,
     register,
@@ -142,7 +144,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'name' }}>
             <TextField
               type='text'
-              label='Name'
+              label={language['NAME']}
               err={errors?.name?.message}
               {...register('name')}
             />
@@ -150,7 +152,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'contact' }}>
             <TextField
               type='text'
-              label='Contact'
+              label={language['CONTACT']}
               err={errors?.contact?.message}
               {...register('contact')}
             />
@@ -158,7 +160,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'type' }}>
             <TextField
               type='text'
-              label='Type'
+              label={language['TYPE']}
               err={errors?.type?.message}
               {...register('type')}
             />
@@ -168,7 +170,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
               images={iconPath && [iconPath]}
               selected={getValues('logo')?._id}
               name='logo'
-              label='Logo'
+              label={language['LOGO']}
               accept='image/png, image/jpeg'
               onChange={handleChangeFile}
             />
@@ -177,7 +179,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
             <SelectField
               value={font}
               options={fontOption}
-              label='Font'
+              label={language['FONT']}
               err={errors?.font?.message}
               {...register('font')}
             />
@@ -188,7 +190,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
               min={0}
               max={100}
               type='number'
-              label='Tax'
+              label={language['TAX']}
               err={errors?.tax?.message}
               {...register('tax')}
             />
@@ -196,7 +198,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'address' }}>
             <DetailField
               type='text'
-              label='Address'
+              label={language['ADDRESS']}
               style={{ height: 70 }}
               {...register('address')}
             />
@@ -204,7 +206,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'other' }}>
             <DetailField
               type='text'
-              label='Footer'
+              label={language['FOOTER']}
               style={{ height: 70 }}
               {...register('other')}
             />
@@ -225,7 +227,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
               }}
               onClick={() => navigate(-1)}
             >
-              Cancel
+              {language['CANCEL']}
             </Button>
             <Button
               loading={loading}
@@ -237,7 +239,7 @@ const StoreForm = ({ defaultValues, id }: any) => {
                 color: theme.color.info,
               }}
             >
-              {id ? 'Save' : 'Create'}
+              {id ? language['SAVE'] : language['CREATE']}
             </Button>
           </div>
         </div>

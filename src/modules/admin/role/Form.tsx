@@ -105,7 +105,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
             <LocaleField
               onChange={handleChangeRole}
               err={errors?.name}
-              describe='Role'
+              describe={language['ROLE']}
               name='name'
               defaultValue={getValues('name')}
             />
@@ -113,7 +113,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
           <div style={{ gridArea: 'description', marginTop: 20 }}>
             <DetailField
               type='text'
-              label='Description'
+              label={language['DESCRIPTION']}
               style={{ height: 70 }}
               {...register('description')}
             />

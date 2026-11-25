@@ -4,6 +4,7 @@ import Axios from 'constants/functions/Axios'
 import useTheme from 'hooks/useTheme'
 import { timeFormat } from 'utils'
 import { TierBadge, TierIcon } from 'components/shared/TierBadge'
+import useLanguage from 'hooks/useLanguage'
 
 const money = (value) => `$${Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
 
@@ -26,6 +27,7 @@ export const TierPanel = ({ customerId, locked, tierId, onChangeLocked, onChange
   onChangeTier: (tierId: string) => void
 }) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const [status, setStatus] = useState<any>(null)
   const [tiers, setTiers] = useState<any[]>([])
   const [showHistory, setShowHistory] = useState(false)
@@ -52,7 +54,7 @@ export const TierPanel = ({ customerId, locked, tierId, onChangeLocked, onChange
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 15 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-        <span style={{ color: theme.text.secondary, fontSize: 14 }}>Tier</span>
+        <span style={{ color: theme.text.secondary, fontSize: 14 }}>{language['TIER']}</span>
         <TierBadge tier={current} size={20} />
         {current && <span style={muted}>{current.discount || 0}% off</span>}
         {status && (
@@ -76,12 +78,12 @@ export const TierPanel = ({ customerId, locked, tierId, onChangeLocked, onChange
             if (event.target.checked && !tierId && current?._id) onChangeTier(current._id)
           }}
         />
-        Lock tier (don't change it automatically)
+        {language['LOCK_TIER_HINT']}
       </label>
       {locked && (
         <div style={{ maxWidth: 320 }}>
           <SelectField
-            label='Locked tier'
+            label={language['LOCKED_TIER']}
             value={tierId || ''}
             options={tiers.map((tier) => ({ label: `${tier.name} · ${tier.discount || 0}% off`, value: tier._id }))}
             onChange={(event) => onChangeTier(event.target.value as string)}

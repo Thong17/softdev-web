@@ -20,14 +20,15 @@ import useTheme from 'hooks/useTheme'
 import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { responsiveGrid } from 'utils'
-
-const statusOption = [
-  { label: 'Enabled', value: true },
-  { label: 'Disable', value: false },
-]
+import useLanguage from 'hooks/useLanguage'
 
 const AnnouncementForm = ({ defaultValues, id }: any) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
+  const statusOption = [
+    { label: language['ENABLED'], value: true },
+    { label: language['DISABLE'], value: false },
+  ]
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const normalizedDefaultValues = {
@@ -144,7 +145,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
           <LocaleField
             onChange={handleChangeTitle}
             err={errors?.title}
-            describe='Title'
+            describe={language['TITLE']}
             name='title'
             defaultValue={getValues('title')}
           />
@@ -153,7 +154,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
           <SelectField
             value={status}
             options={statusOption}
-            label='Status'
+            label={language['STATUS']}
             err={errors?.status?.message}
             {...register('status')}
           />
@@ -164,7 +165,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
             images={bannerPath && [bannerPath]}
             selected={bannerPath?._id}
             name='banner'
-            label='Banner'
+            label={language['BANNER']}
             accept='image/png, image/jpeg'
             onChange={handleChangeFile}
           />
@@ -175,7 +176,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
         <div style={{ gridArea: 'startAt' }}>
           <TextField
             type='datetime-local'
-            label='Display From'
+            label={language['DISPLAY_FROM']}
             err={errors?.startAt?.message}
             {...register('startAt')}
           />
@@ -183,7 +184,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
         <div style={{ gridArea: 'expireAt' }}>
           <TextField
             type='datetime-local'
-            label='Display To'
+            label={language['DISPLAY_TO']}
             err={errors?.expireAt?.message}
             {...register('expireAt')}
           />
@@ -192,7 +193,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
           <TextField
             type='number'
             step='any'
-            label='Order'
+            label={language['ORDER']}
             err={errors?.order?.message}
             {...register('order')}
           />
@@ -201,7 +202,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
           <LocaleDetail
             onChange={handleChangeDescription}
             err={errors?.description}
-            describe='Description'
+            describe={language['DESCRIPTION']}
             name='description'
             defaultValue={getValues('description')}
           />
@@ -215,7 +216,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
           }}
         >
           <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
-            Cancel
+            {language['CANCEL']}
           </Button>
           <Button
             loading={loading}
@@ -223,7 +224,7 @@ const AnnouncementForm = ({ defaultValues, id }: any) => {
             variant='contained'
             style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
           >
-            { id ? 'Save' : 'Create' }
+            { id ? language['SAVE'] : language['CREATE'] }
           </Button>
         </div>
       </div>

@@ -51,7 +51,7 @@ export const Form = ({
   const { width, device } = useWeb()
   const [currency, setCurrency] = useState(defaultValues?.currency)
   const currencyValue = watch('currency')
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const [optionObj, setOptionObj] = useState(defaultValues?.options || {})
   const [color, setColor] = useState(defaultValues?.color)
   const [isLoading, setIsLoading] = useState(false);
@@ -177,7 +177,7 @@ export const Form = ({
       isOpen={dialog.open}
       handleClose={handleCancelDialog}
     >
-      <DialogTitle title='Stock Form' onClose={handleCancelDialog} />
+      <DialogTitle title={language['STOCK_FORM']} onClose={handleCancelDialog} />
       <form
         {...trackChanges}
         style={{
@@ -197,7 +197,7 @@ export const Form = ({
       >
         <div style={{ gridArea: 'cost' }}>
           <CurrencyField
-            label='Cost'
+            label={language['COST']}
             err={errors?.cost?.message || errors?.currency?.message}
             {...register('cost')}
             currency={{ value: currency, ...register('currency') }}
@@ -212,7 +212,7 @@ export const Form = ({
           <>
             <div style={{ gridArea: 'newPrice' }}>
               <CurrencyField
-                label='New Price'
+                label={language['NEW_PRICE']}
                 err={belowCostMsg || errors?.newPrice?.message}
                 {...register('newPrice')}
                 currency={{ value: newPriceCurrencyValue || product?.currency || 'USD', ...register('newPriceCurrency') }}
@@ -229,7 +229,7 @@ export const Form = ({
           <TextField
             type='number'
             step='any'
-            label='Quantity'
+            label={language['QUANTITY']}
             err={errors?.quantity?.message}
             {...register('quantity')}
           />
@@ -237,7 +237,7 @@ export const Form = ({
         <div style={{ gridArea: 'code' }}>
           <TextField
             type='text'
-            label='Code'
+            label={language['CODE']}
             err={errors?.code?.message}
             {...register('code')}
           />
@@ -245,7 +245,7 @@ export const Form = ({
         <div style={{ gridArea: 'expireAt' }}>
           <TextField
             type='date'
-            label='Expire Date'
+            label={language['EXPIRE_DATE']}
             err={errors?.expireAt?.message}
             {...register('expireAt')}
           />
@@ -254,13 +254,13 @@ export const Form = ({
           <TextField
             type='number'
             step='any'
-            label='Alert At'
+            label={language['ALERT_AT']}
             err={errors?.alertAt?.message}
             {...register('alertAt')}
           />
         </div>
         <div style={{ gridArea: 'option' }}>
-          <Section describe='Option' style={{ marginTop: 20 }}>
+          <Section describe={language['OPTION']} style={{ marginTop: 20 }}>
             <div
               style={{
                 display: 'grid',
@@ -275,7 +275,7 @@ export const Form = ({
                 options={colors.map((color) => {
                   return { value: color?._id, label: color?.name?.[lang] || color?.name?.['English'] }
                 })}
-                label='Color'
+                label={language['COLOR']}
                 onChange={handleChangeColor}
               />              
               {properties?.map((property, index) => {
@@ -307,7 +307,7 @@ export const Form = ({
             onClick={handleCancelDialog}
             style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}
           >
-            Cancel
+            {language['CANCEL']}
           </Button>
           <Button
             isLoading={isLoading}
@@ -316,7 +316,7 @@ export const Form = ({
             onClick={handleSubmit(submit)}
             autoFocus
           >
-            { dialog.stockId ? 'Update' : 'Create' }
+            { dialog.stockId ? language['UPDATE'] : language['CREATE'] }
           </Button>
         </div>
       </form>

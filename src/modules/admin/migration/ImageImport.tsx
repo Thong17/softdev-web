@@ -16,6 +16,7 @@ import Axios from 'constants/functions/Axios'
 import useTheme from 'hooks/useTheme'
 import useNotify from 'hooks/useNotify'
 import useAlert from 'hooks/useAlert'
+import useLanguage from 'hooks/useLanguage'
 
 type Target = 'product' | 'brand' | 'category'
 type Status = 'will-set' | 'has-picture' | 'no-match' | 'ambiguous' | 'duplicate-file' | 'too-big' | 'set' | 'failed'
@@ -49,6 +50,7 @@ const columns: ITableColumn<Column>[] = [
 // the product / brand / category it belongs to. Only missing pictures are set.
 export const ImageImport = () => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { notify } = useNotify()
   const confirm = useAlert()
   const fileInput = useRef<HTMLInputElement>(null)
@@ -71,14 +73,14 @@ export const ImageImport = () => {
   const [progress, setProgress] = useState({ done: 0, total: 0 })
 
   const statusView: Record<Status, { text: string, color?: string }> = {
-    'will-set': { text: 'Will be set', color: theme.color.info },
-    'has-picture': { text: 'Already has a picture', color: theme.text.tertiary },
-    'no-match': { text: 'No match', color: theme.color.error },
-    'ambiguous': { text: 'Name used more than once', color: theme.color.warning },
-    'duplicate-file': { text: 'Same name as another file', color: theme.color.warning },
-    'too-big': { text: 'Larger than 5 MB', color: theme.color.error },
-    'set': { text: 'Set', color: theme.color.success },
-    'failed': { text: 'Upload failed', color: theme.color.error },
+    'will-set': { text: language['WILL_BE_SET'], color: theme.color.info },
+    'has-picture': { text: language['ALREADY_HAS_PICTURE'], color: theme.text.tertiary },
+    'no-match': { text: language['NO_MATCH'], color: theme.color.error },
+    'ambiguous': { text: language['NAME_USED_MORE_THAN_ONCE'], color: theme.color.warning },
+    'duplicate-file': { text: language['SAME_NAME_AS_ANOTHER_FILE'], color: theme.color.warning },
+    'too-big': { text: language['LARGER_THAN_5MB'], color: theme.color.error },
+    'set': { text: language['SET'], color: theme.color.success },
+    'failed': { text: language['UPLOAD_FAILED'], color: theme.color.error },
   }
 
   // Thumbnails are object URLs: freed when another set of files replaces them
@@ -204,7 +206,7 @@ export const ImageImport = () => {
             onClick={() => setPicking(index)}
             style={{ padding: '3px 10px', fontSize: 12, backgroundColor: `${theme.color.info}18`, color: theme.color.info }}
           >
-            {row.chosenId ? 'Change' : 'Choose product'}
+            {row.chosenId ? language['EDIT'] : language['CHOOSE_PRODUCT']}
           </Button>
         )}
       </span>
@@ -220,9 +222,9 @@ export const ImageImport = () => {
       <SelectTab
         selected={target}
         options={[
-          { label: 'Products', value: 'product' },
-          { label: 'Brands', value: 'brand' },
-          { label: 'Categories', value: 'category' },
+          { label: language['PRODUCTS'], value: 'product' },
+          { label: language['BRANDS'], value: 'brand' },
+          { label: language['CATEGORIES'], value: 'category' },
         ]}
         onChange={handleTarget}
       />
@@ -230,7 +232,7 @@ export const ImageImport = () => {
         <input ref={fileInput} type='file' accept='image/*' multiple onChange={handleFiles} style={{ display: 'none' }} />
         <Button loading={checking} disabled={uploading} onClick={() => fileInput.current?.click()} style={{ backgroundColor: `${theme.color.info}22`, color: theme.color.info }}>
           <AddPhotoAlternateRoundedIcon style={{ fontSize: 18, marginRight: 6 }} />
-          Choose images
+          {language['CHOOSE_IMAGES']}
         </Button>
         {target === 'product' && (
           <Button
@@ -240,7 +242,7 @@ export const ImageImport = () => {
             style={{ backgroundColor: `${theme.color.success}${onlineEnabled === false ? '11' : '22'}`, color: theme.color.success }}
           >
             <TravelExploreRoundedIcon style={{ fontSize: 18, marginRight: 6 }} />
-            Find online
+            {language['FIND_ONLINE']}
           </Button>
         )}
         {rows.length > 0 && (
@@ -253,7 +255,7 @@ export const ImageImport = () => {
               {uploading && <> · uploading {progress.done} / {progress.total}</>}
             </span>
             <Button disabled={uploading} onClick={clear} style={{ backgroundColor: `${theme.text.tertiary}22`, color: theme.text.secondary }}>
-              Clear
+              {language['CLEAR']}
             </Button>
             <Button
               loading={uploading}
@@ -282,7 +284,7 @@ export const ImageImport = () => {
 
       {/* Product list (search and filters) to pick the product an image is for */}
       <AlertDialog isOpen={picking !== null} handleClose={() => setPicking(null)}>
-        <DialogTitle title='Choose the product for this image' onClose={() => setPicking(null)} />
+        <DialogTitle title={language['CHOOSE_PRODUCT_FOR_IMAGE']} onClose={() => setPicking(null)} />
         {picking !== null && rows[picking] && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 20px 0 20px', color: theme.text.secondary, fontSize: 14 }}>
             <img src={rows[picking].url} alt='' style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: theme.radius.primary }} />

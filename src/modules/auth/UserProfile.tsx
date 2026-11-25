@@ -15,6 +15,7 @@ import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { updateProfileSchema } from './schema'
 import { FileField, IImage } from 'components/shared/form/UploadField'
 import { responsiveGrid } from 'utils'
+import useLanguage from 'hooks/useLanguage'
 
 const mappedProfile = (data) => {
   return {
@@ -28,17 +29,18 @@ const mappedProfile = (data) => {
   }
 }
 
-const listGender = [
-  { label: 'Male', value: 'male' },
-  { label: 'Female', value: 'female' },
-]
-
 export const UserProfile = () => {
   const { id } = useParams()
   const { notify } = useNotify()
   const navigate = useNavigate()
   const { device } = useWeb()
   const { theme } = useTheme()
+  const { language } = useLanguage()
+
+  const listGender = [
+    { label: language['MALE'], value: 'male' },
+    { label: language['FEMALE'], value: 'female' },
+  ]
   const {
     watch,
     reset,
@@ -132,7 +134,7 @@ export const UserProfile = () => {
               images={photoPath && [photoPath]}
               selected={getValues('photo')?._id}
               name='photo'
-              label='Photo'
+              label={language['PHOTO']}
               accept='image/png, image/jpeg'
               onChange={handleChangeFile}
               height={130}
@@ -141,7 +143,7 @@ export const UserProfile = () => {
           <div style={{ gridArea: 'username' }}>
             <TextField
               type='text'
-              label='Username'
+              label={language['USERNAME']}
               err={errors.username?.message}
               {...register('username')}
             />
@@ -149,7 +151,7 @@ export const UserProfile = () => {
           <div style={{ gridArea: 'gender' }}>
             <SelectField
               value={gender}
-              label='Gender'
+              label={language['GENDER']}
               options={listGender}
               err={errors.gender?.message}
               {...register('gender')}
@@ -158,7 +160,7 @@ export const UserProfile = () => {
           <div style={{ gridArea: 'email' }}>
             <TextField
               type='email'
-              label='Email'
+              label={language['EMAIL']}
               err={errors.email?.message}
               {...register('email')}
             />
@@ -166,7 +168,7 @@ export const UserProfile = () => {
           <div style={{ gridArea: 'birthday' }}>
             <TextField
               type='date'
-              label='Date Of Birth'
+              label={language['DATE_OF_BIRTH']}
               err={errors.birthday?.message}
               {...register('birthday')}
             />
@@ -174,7 +176,7 @@ export const UserProfile = () => {
           <div style={{ gridArea: 'contact' }}>
             <TextField
               type='text'
-              label='Contact'
+              label={language['CONTACT']}
               err={errors.contact?.message}
               {...register('contact')}
             />
@@ -182,7 +184,7 @@ export const UserProfile = () => {
           <div style={{ gridArea: 'address' }}>
             <TextField
               type='text'
-              label='Address'
+              label={language['ADDRESS']}
               err={errors.address?.message}
               {...register('address')}
             />
@@ -203,7 +205,7 @@ export const UserProfile = () => {
               }}
               onClick={() => navigate(-1)}
             >
-              Cancel
+              {language['CANCEL']}
             </Button>
             <Button
               type='submit'
@@ -214,7 +216,7 @@ export const UserProfile = () => {
                 color: theme.color.info,
               }}
             >
-              Update
+              {language['UPDATE']}
             </Button>
           </div>
         </form>

@@ -140,13 +140,13 @@ export const Login = () => {
           style={{ padding: '20px 30px 40px 30px', width: device === 'mobile' ? 300 : 500 }}
         >
           <TextField
-            label='Username'
+            label={language['USERNAME']}
             type='text'
             err={errors.username?.message}
             {...register('username')}
           />
           <TextField
-            label='Password'
+            label={language['PASSWORD']}
             type='password'
             err={errors.password?.message}
             {...register('password')}

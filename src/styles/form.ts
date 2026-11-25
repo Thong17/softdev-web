@@ -596,10 +596,16 @@ export const CustomSelect = styled('div')(
         border: styled.border.quaternary,
         // Same corners as text inputs (MUI's own is 4px)
         borderRadius: styled.radius.primary,
+        outline: 'none !important',
         transition: '0.3s ease',
       },
       '& div:hover, & div:focus': {
         border: styled.border.tertiary,
+        // MUI's own built-in :focus rule forces border-radius back to 4px and
+        // (class + pseudo-class) outranks our (class + 2 type selectors) by
+        // CSS specificity, so it wins the instant focus returns to the select
+        // (e.g. closing the menu via an outside click). Restate it here too.
+        borderRadius: styled.radius.primary,
       },
       '& fieldset': {
         border: 'none',

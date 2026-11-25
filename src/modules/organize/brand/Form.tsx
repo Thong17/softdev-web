@@ -19,14 +19,15 @@ import useTheme from 'hooks/useTheme'
 import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { responsiveGrid } from 'utils'
-
-const statusOption = [
-  { label: 'Enabled', value: true },
-  { label: 'Disable', value: false },
-]
+import useLanguage from 'hooks/useLanguage'
 
 const BrandForm = ({ defaultValues, id }: any) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
+  const statusOption = [
+    { label: language['ENABLED'], value: true },
+    { label: language['DISABLE'], value: false },
+  ]
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const {
@@ -131,7 +132,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
           <LocaleField
             onChange={handleChangeBrand}
             err={errors?.name}
-            describe='Brand'
+            describe={language['BRAND']}
             name='name'
             defaultValue={getValues('name')}
           />
@@ -140,7 +141,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
           <SelectField
             value={status}
             options={statusOption}
-            label='Status'
+            label={language['STATUS']}
             err={errors?.status?.message}
             {...register('status')}
           />
@@ -150,7 +151,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
             images={iconPath && [iconPath]}
             selected={getValues('icon')?._id}
             name='icon'
-            label='Icon'
+            label={language['ICON']}
             accept='image/png, image/jpeg'
             onChange={handleChangeFile}
           />
@@ -158,7 +159,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
         <div style={{ gridArea: 'description' }}>
           <DetailField
             type='text'
-            label='Description'
+            label={language['DESCRIPTION']}
             style={{ height: 70 }}
             {...register('description')}
           />
@@ -172,7 +173,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
           }}
         >
           <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
-            Cancel
+            {language['CANCEL']}
           </Button>
           <Button
             loading={loading}
@@ -180,7 +181,7 @@ const BrandForm = ({ defaultValues, id }: any) => {
             variant='contained'
             style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
           >
-            { id ? 'Save' : 'Create' }
+            { id ? language['SAVE'] : language['CREATE'] }
           </Button>
         </div>
       </div>

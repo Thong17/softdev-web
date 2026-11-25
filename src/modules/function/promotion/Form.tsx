@@ -21,6 +21,7 @@ import { ProductContainer } from 'components/shared/container/ProductContainer'
 import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { responsiveGrid } from 'utils'
+import useLanguage from 'hooks/useLanguage'
 
 const typeOption = [
   ...currencyOptions,
@@ -44,6 +45,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
   const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const { device } = useWeb()
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { notify } = useNotify()
   const [loading, setLoading] = useState(false)
   const [type, setType] = useState(defaultValues?.type || '')
@@ -125,7 +127,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
       >
         <div style={{ gridArea: 'value' }}>
           <CurrencyField
-            label='Value'
+            label={language['VALUE']}
             err={errors?.value?.message || errors?.type?.message}
             {...register('value')}
             icon={ isFixed ? <CheckBoxRoundedIcon onClick={handleToggleCheck} fontSize='small' /> : <CheckBoxOutlineBlankRoundedIcon style={{ color: theme.text.quaternary }} onClick={handleToggleCheck} fontSize='small' />}
@@ -135,7 +137,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
         <div style={{ gridArea: 'startAt' }}>
           <TextField
             type='datetime-local'
-            label='Start At'
+            label={language['START_AT']}
             err={errors?.startAt?.message}
             {...register('startAt')}
           />
@@ -143,7 +145,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
         <div style={{ gridArea: 'expireAt' }}>
           <TextField
             type='datetime-local'
-            label='Expire At'
+            label={language['EXPIRE_AT']}
             err={errors?.expireAt?.message}
             {...register('expireAt')}
           />
@@ -152,7 +154,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
           <LocaleDetail
             onChange={handleChangePromotion}
             err={errors?.description}
-            describe='Description'
+            describe={language['DESCRIPTION']}
             name='description'
             defaultValue={getValues('description')}
           />
@@ -166,7 +168,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
           }}
         >
           <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
-            Cancel
+            {language['CANCEL']}
           </Button>
           <Button
             loading={loading}
@@ -174,7 +176,7 @@ const PromotionForm = ({ defaultValues, id }: any) => {
             variant='contained'
             style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
           >
-            {id ? 'Save' : 'Create'}
+            {id ? language['SAVE'] : language['CREATE']}
           </Button>
         </div>
       </div>

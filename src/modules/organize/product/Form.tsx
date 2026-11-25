@@ -29,11 +29,6 @@ import { IImage } from 'components/shared/form/UploadField'
 import useTheme from 'hooks/useTheme'
 import { responsiveGrid } from 'utils'
 
-const statusOptions = [
-  { label: 'Enabled', value: true },
-  { label: 'Disable', value: false },
-]
-
 const ProductForm = ({ defaultValues, id }: any) => {
   const { data: listBrand, status: statusListBrand } = useAppSelector(selectListBrand)
   const { data: listCategory, status: statusListCategory } = useAppSelector(selectListCategory)
@@ -58,7 +53,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
   const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const navigate = useNavigate()
   const { device } = useWeb()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { loadify, notify } = useNotify()
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState(defaultValues?.status)
@@ -75,6 +70,11 @@ const ProductForm = ({ defaultValues, id }: any) => {
   const categoryId = watch('category')
   const isStockCheck = watch('isStock')
   const { theme } = useTheme()
+
+  const statusOptions = [
+    { label: language['ENABLED'], value: true },
+    { label: language['DISABLE'], value: false },
+  ]
 
   useEffect(() => {
     setIsStock(isStockCheck)
@@ -266,7 +266,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
           <SelectField
             search={true}
             value={category}
-            label='Category'
+            label={language['CATEGORY']}
             options={categoryOption}
             err={errors?.category?.message}
             loading={statusListCategory === 'LOADING' ? true : false}
@@ -285,7 +285,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
           <SelectField
             search={true}
             value={brand}
-            label='Brand'
+            label={language['BRAND']}
             options={brandOption}
             err={errors?.brand?.message}
             loading={statusListBrand === 'LOADING' ? true : false}
@@ -304,14 +304,14 @@ const ProductForm = ({ defaultValues, id }: any) => {
           <LocaleField
             onChange={handleChangeProduct}
             err={errors?.name}
-            describe='Product'
+            describe={language['PRODUCT']}
             name='name'
             defaultValue={getValues('name')}
           />
         </div>
         <div style={{ gridArea: 'price' }}>
           <CurrencyField
-            label='Price'
+            label={language['PRICE']}
             err={errors?.price?.message || errors?.currency?.message}
             {...register('price')}
             currency={{ value: currency, ...register('currency') }}
@@ -321,7 +321,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
           <SelectField
             value={status}
             options={statusOptions}
-            label='Status'
+            label={language['STATUS']}
             err={errors?.status?.message}
             {...register('status')}
           />
@@ -329,7 +329,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
         <div style={{ gridArea: 'code' }}>
           <TextField
             type='text'
-            label='Code'
+            label={language['CODE']}
             icon={<CropFreeIcon fontSize='small' />}
             err={errors?.code?.message}
             {...register('code')}
@@ -340,7 +340,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
             height={200}
             images={imagesPath}
             name='profile'
-            label='Images'
+            label={language['IMAGES']}
             accept='image/png, image/jpeg'
             multiple
             err={errors?.profile?.message}
@@ -353,14 +353,14 @@ const ProductForm = ({ defaultValues, id }: any) => {
         <div style={{ gridArea: 'description' }}>
           <DetailField
             type='text'
-            label='Description'
+            label={language['DESCRIPTION']}
             style={{ height: 70 }}
             {...register('description')}
           />
         </div>
         
         <div style={{ gridArea: 'isStock' }}>
-          <CheckboxField label='Is Stock' err={errors?.isStock?.message} name='isStock' checked={isStock} onChange={handleCheckIsStock} />
+          <CheckboxField label={language['IS_STOCK']} err={errors?.isStock?.message} name='isStock' checked={isStock} onChange={handleCheckIsStock} />
         </div>
         <div
           style={{
@@ -371,7 +371,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
           }}
         >
           <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
-            Cancel
+            {language['CANCEL']}
           </Button>
           <Button
             loading={loading}
@@ -379,7 +379,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
             variant='contained'
             style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
           >
-            { id ? 'Save' : 'Create' }
+            { id ? language['SAVE'] : language['CREATE'] }
           </Button>
         </div>
       </div>

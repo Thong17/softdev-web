@@ -26,12 +26,6 @@ import { currencyFormat, responsiveGrid } from 'utils'
 
 const initNewProduct = { name: {}, price: '', currency: 'USD', code: '', brand: '', category: '', status: true, description: '' }
 
-
-const statusOptions = [
-  { label: 'Enabled', value: true },
-  { label: 'Disable', value: false },
-]
-
 // Converts whole bundles of this product (e.g. reams) into another product's
 // stock (e.g. sheets), either an existing product or one created here
 export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConverted }: any) => {
@@ -40,7 +34,11 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
   const { data: listBrand } = useAppSelector(selectListBrand)
   const { data: listCategory } = useAppSelector(selectListCategory)
   const { user } = useAuth()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
+  const statusOptions = [
+    { label: language['ENABLED'], value: true },
+    { label: language['DISABLE'], value: false },
+  ]
   const { notify, loadify } = useNotify()
   const [images, setImages] = useState<IImage[]>([])
   const [profile, setProfile] = useState<string | null>(null)
@@ -243,7 +241,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
 
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCancel}>
-      <DialogTitle title='Convert Stock' onClose={handleCancel} />
+      <DialogTitle title={language['CONVERT_STOCK']} onClose={handleCancel} />
       <div
         {...trackChanges}
         style={{
@@ -258,11 +256,11 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
       >
         <div style={{ display: 'flex', gap: 10 }}>
           <Button style={toggleStyle(mode === 'existing')} onClick={() => setMode('existing')}>
-            Existing Product
+            {language['EXISTING_PRODUCT']}
           </Button>
           {canCreateProduct && (
             <Button style={toggleStyle(mode === 'new')} onClick={() => setMode('new')}>
-              New Product
+              {language['NEW_PRODUCT']}
             </Button>
           )}
         </div>
@@ -271,7 +269,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
           <div>
             <SelectField
               search={true}
-              label='Convert To'
+              label={language['CONVERT_TO']}
               value={toProduct}
               options={productOptions}
               err={errors.toProduct}
@@ -280,7 +278,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
             {canChangePrice && toProduct && (
               <div>
                 <CurrencyField
-                  label='New Price'
+                  label={language['NEW_PRICE']}
                   err={errors.newPrice}
                   value={newPrice}
                   onChange={(event) => setNewPrice(event.target.value)}
@@ -313,7 +311,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
             <div style={{ gridArea: 'category' }}>
               <SelectField
                 search={true}
-                label='Category'
+                label={language['CATEGORY']}
                 value={newProduct.category}
                 options={categoryOptions}
                 err={errors.category}
@@ -323,7 +321,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
             <div style={{ gridArea: 'brand' }}>
               <SelectField
                 search={true}
-                label='Brand'
+                label={language['BRAND']}
                 value={newProduct.brand}
                 options={brandOptions}
                 err={errors.brand}
@@ -332,7 +330,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
             </div>
             <div style={{ gridArea: 'product', marginTop: 20, marginBottom: 20 }}>
               <LocaleField
-                describe='Product'
+                describe={language['PRODUCT']}
                 name='name'
                 err={errors.name}
                 defaultValue={newProduct.name}
@@ -341,7 +339,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
             </div>
             <div style={{ gridArea: 'price' }}>
               <CurrencyField
-                label='Price'
+                label={language['PRICE']}
                 err={errors.price}
                 value={newProduct.price}
                 onChange={(event) => setNewProduct((prev) => ({ ...prev, price: event.target.value }))}
@@ -357,7 +355,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
             </div>
             <div style={{ gridArea: 'status' }}>
               <SelectField
-                label='Status'
+                label={language['STATUS']}
                 value={newProduct.status}
                 options={statusOptions}
                 onChange={(event) => setNewProduct((prev) => ({ ...prev, status: event.target.value }))}
@@ -366,7 +364,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
             <div style={{ gridArea: 'code' }}>
               <TextField
                 type='text'
-                label='Code'
+                label={language['CODE']}
                 icon={<CropFreeIcon fontSize='small' />}
                 value={newProduct.code}
                 onChange={(event) => setNewProduct((prev) => ({ ...prev, code: event.target.value }))}
@@ -377,7 +375,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
                 height={200}
                 images={images}
                 name='profile'
-                label='Images'
+                label={language['IMAGES']}
                 accept='image/png, image/jpeg'
                 multiple
                 selected={profile || undefined}
@@ -389,7 +387,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
             <div style={{ gridArea: 'description' }}>
               <DetailField
                 type='text'
-                label='Description'
+                label={language['DESCRIPTION']}
                 style={{ height: 70 }}
                 value={newProduct.description}
                 onChange={(event) => setNewProduct((prev) => ({ ...prev, description: event.target.value }))}
@@ -400,10 +398,10 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
 
         <div style={{ display: 'flex', gap: 10 }}>
           <Button style={toggleStyle(!isMerge)} onClick={() => setDirection('split')}>
-            Break Down (1 → many)
+            {language['BREAK_DOWN']}
           </Button>
           <Button style={toggleStyle(isMerge)} onClick={() => setDirection('merge')}>
-            Combine (many → 1)
+            {language['COMBINE']}
           </Button>
         </div>
 
@@ -433,7 +431,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
               type='number'
               step='1'
               min='1'
-              label={isMerge ? 'Number to Make' : 'Number to Convert'}
+              label={isMerge ? language['NUMBER_TO_MAKE'] : language['NUMBER_TO_CONVERT']}
               err={errors.quantity}
               value={quantity}
               onChange={(event) => setQuantity(event.target.value)}
@@ -461,7 +459,7 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
             <b>{consumedQuantity.toLocaleString()} {productName(product)}</b> → <b>{produced.toLocaleString()} {targetName || '...'}</b>
           </div>
           <div>
-            Unit cost: {preview.currency === 'KHR'
+            {language['UNIT_COST']}: {preview.currency === 'KHR'
               ? currencyFormat(preview.unitCost, 'KHR', 2)
               : `$${Number(preview.unitCost.toFixed(4))}`}
           </div>
@@ -473,14 +471,14 @@ export const ConvertForm = ({ dialog, setDialog, product, stocks, theme, onConve
             onClick={handleCancel}
             style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}
           >
-            Cancel
+            {language['CANCEL']}
           </Button>
           <Button
             isLoading={isLoading}
             onClick={handleConvert}
             style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
           >
-            Convert
+            {language['CONVERT']}
           </Button>
         </div>
       </div>

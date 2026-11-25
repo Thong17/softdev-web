@@ -22,7 +22,7 @@ export const Register = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(registerSchema) })
   const { register: registerUser } = useAuth()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { notify } = useNotify()
 
   const form = async (data) => {
@@ -47,19 +47,19 @@ export const Register = () => {
     <div style={{ padding: 50 }}>
       <form onSubmit={handleSubmit(form)}>
         <TextField
-          label='Username'
+          label={language['USERNAME']}
           type='text'
           err={errors.username?.message}
           {...register('username')}
         />
         <TextField
-          label='Email'
+          label={language['EMAIL']}
           type='email'
           err={errors.email?.message}
           {...register('email')}
         />
         <SelectField
-          label='Role'
+          label={language['ROLE']}
           defaultValue=''
           options={roleOption}
           err={errors.role?.message}
@@ -68,18 +68,18 @@ export const Register = () => {
         />
 
         <TextField
-          label='Password'
+          label={language['PASSWORD']}
           type='password'
           err={errors.password?.message}
           {...register('password')}
         />
         <TextField
-          label='Confirm Password'
+          label={language['CONFIRM_PASSWORD']}
           type='password'
           err={errors.confirm_password?.message}
           {...register('confirm_password')}
         />
-        <input type='submit' value='Register' />
+        <input type='submit' value={language['REGISTER']} />
       </form>
     </div>
   )

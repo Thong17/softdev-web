@@ -17,11 +17,7 @@ import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
 import useNotify from 'hooks/useNotify'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
-
-export const customerTypeOptions = [
-  { label: 'Individual', value: 'INDIVIDUAL' },
-  { label: 'Business', value: 'BUSINESS' },
-]
+import useLanguage from 'hooks/useLanguage'
 
 // Suggestions; any other value can be typed
 const defaultGroups = ['School', 'Office', 'Shop / Reseller', 'Government', 'Individual']
@@ -89,8 +85,13 @@ export const toCustomerForm = (customer) => {
 export const CustomerProfileForm = ({ id, defaultValues }: { id?: string, defaultValues: any }) => {
   const { theme } = useTheme()
   const { device } = useWeb()
+  const { language } = useLanguage()
   const { notify } = useNotify()
   const navigate = useNavigate()
+  const customerTypeOptions = [
+    { label: language['INDIVIDUAL'], value: 'INDIVIDUAL' },
+    { label: language['BUSINESS'], value: 'BUSINESS' },
+  ]
   const [loading, setLoading] = useState(false)
   const [scanOpen, setScanOpen] = useState(false)
   const [options, setOptions] = useState<{ groups: string[], sources: string[] }>({ groups: [], sources: [] })
@@ -199,64 +200,64 @@ export const CustomerProfileForm = ({ id, defaultValues }: { id?: string, defaul
 
   return (
     <>
-    <QrScanDialog open={scanOpen} title='Scan Contact or Telegram QR' onScan={handleScan} onClose={() => setScanOpen(false)} />
+    <QrScanDialog open={scanOpen} title={language['SCAN_CONTACT_OR_TELEGRAM_QR']} onScan={handleScan} onClose={() => setScanOpen(false)} />
     <form
       {...trackChanges}
       onSubmit={handleSubmit(submit)}
       style={{ display: 'flex', flexDirection: 'column', gap: 30, paddingTop: 20 }}
     >
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 10, marginBottom: -15 }}>
-        <span style={{ fontSize: 12, color: theme.text.tertiary }}>Contact card or Telegram QR</span>
+        <span style={{ fontSize: 12, color: theme.text.tertiary }}>{language['CONTACT_CARD_OR_TELEGRAM_QR']}</span>
         <Button
           style={{ backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
           onClick={() => setScanOpen(true)}
         >
           <QrCodeScannerRoundedIcon style={{ fontSize: 18, marginRight: 6 }} />
-          Scan&nbsp;QR
+          {language['SCAN_QR']}
         </Button>
       </div>
-      <Section describe='Customer'>
+      <Section describe={language['CUSTOMER']}>
         <div style={grid(`'type displayName fullName' ${isBusiness ? "'companyName contactPerson taxId'" : ''}`)}>
           <div style={{ gridArea: 'type' }}>
-            <SelectField label='Type' value={type || 'INDIVIDUAL'} options={customerTypeOptions} {...register('type')} />
+            <SelectField label={language['TYPE']} value={type || 'INDIVIDUAL'} options={customerTypeOptions} {...register('type')} />
           </div>
           <div style={{ gridArea: 'displayName' }}>
-            <TextField type='text' label='Phone Number' err={errors?.displayName?.message} {...register('displayName')} />
+            <TextField type='text' label={language['PHONE_NUMBER']} err={errors?.displayName?.message} {...register('displayName')} />
           </div>
           <div style={{ gridArea: 'fullName' }}>
-            <TextField type='text' label='Full Name' err={errors?.fullName?.message} {...register('fullName')} />
+            <TextField type='text' label={language['FULL_NAME']} err={errors?.fullName?.message} {...register('fullName')} />
           </div>
           {isBusiness && (
             <>
               <div style={{ gridArea: 'companyName' }}>
-                <TextField type='text' label='Company Name' err={errors?.companyName?.message} {...register('companyName')} />
+                <TextField type='text' label={language['COMPANY_NAME']} err={errors?.companyName?.message} {...register('companyName')} />
               </div>
               <div style={{ gridArea: 'contactPerson' }}>
-                <TextField type='text' label='Contact Person' err={errors?.contactPerson?.message} {...register('contactPerson')} />
+                <TextField type='text' label={language['CONTACT_PERSON']} err={errors?.contactPerson?.message} {...register('contactPerson')} />
               </div>
               <div style={{ gridArea: 'taxId' }}>
-                <TextField type='text' label='Tax ID (VAT / TIN)' err={errors?.taxId?.message} {...register('taxId')} />
+                <TextField type='text' label={language['TAX_ID']} err={errors?.taxId?.message} {...register('taxId')} />
               </div>
             </>
           )}
         </div>
       </Section>
 
-      <Section describe='Contact'>
+      <Section describe={language['CONTACT']}>
         <div style={grid(`'contact email telegram' 'dateOfBirth address address'`)}>
           <div style={{ gridArea: 'contact' }}>
-            <TextField type='text' label='Second Phone' err={errors?.contact?.message} {...register('contact')} />
+            <TextField type='text' label={language['SECOND_PHONE']} err={errors?.contact?.message} {...register('contact')} />
           </div>
           <div style={{ gridArea: 'email' }}>
-            <TextField type='email' label='Email' err={errors?.email?.message} {...register('email')} />
+            <TextField type='email' label={language['EMAIL']} err={errors?.email?.message} {...register('email')} />
           </div>
           <div style={{ gridArea: 'telegram' }}>
             <TextField
               type='text'
-              label='Telegram'
+              label={language['TELEGRAM']}
               err={errors?.telegram?.message}
               icon={(
-                <Tooltip title='Scan Telegram or contact QR'>
+                <Tooltip title={language['SCAN_CONTACT_OR_TELEGRAM_QR']}>
                   <QrCodeScannerRoundedIcon fontSize='small' onClick={() => setScanOpen(true)} />
                 </Tooltip>
               )}
@@ -264,14 +265,14 @@ export const CustomerProfileForm = ({ id, defaultValues }: { id?: string, defaul
             />
           </div>
           <div style={{ gridArea: 'dateOfBirth' }}>
-            <TextField type='date' label='Birthday' err={errors?.dateOfBirth?.message} {...register('dateOfBirth')} />
+            <TextField type='date' label={language['BIRTHDAY']} err={errors?.dateOfBirth?.message} {...register('dateOfBirth')} />
           </div>
           <div style={{ gridArea: 'address' }}>
-            <TextField type='text' label='Address' err={errors?.address?.message} {...register('address')} />
+            <TextField type='text' label={language['ADDRESS']} err={errors?.address?.message} {...register('address')} />
           </div>
         </div>
         <MapPicker
-          label='Location'
+          label={language['LOCATION']}
           value={location}
           height={260}
           // A picked pin is a change; the device location filled in for a new
@@ -284,7 +285,7 @@ export const CustomerProfileForm = ({ id, defaultValues }: { id?: string, defaul
         />
       </Section>
 
-      <Section describe='Business'>
+      <Section describe={language['BUSINESS']}>
         <TierPanel
           customerId={id}
           locked={!!tierLocked}
@@ -299,27 +300,27 @@ export const CustomerProfileForm = ({ id, defaultValues }: { id?: string, defaul
               step='any'
               min='0'
               max='100'
-              label='Own Discount (%)'
+              label={language['OWN_DISCOUNT']}
               hint=''
               err={errors?.discount?.message}
               {...register('discount')}
             />
-            {!errors?.discount && <div style={{ fontSize: 12, color: theme.text.quaternary, marginTop: -18, paddingLeft: 7 }}>Above 0 replaces the tier discount</div>}
+            {!errors?.discount && <div style={{ fontSize: 12, color: theme.text.quaternary, marginTop: -18, paddingLeft: 7 }}>{language['ABOVE_ZERO_REPLACES_TIER']}</div>}
           </div>
           <div style={{ gridArea: 'group' }}>
-            <TextField type='text' label='Group' list='customer-groups' err={errors?.group?.message} {...register('group')} />
+            <TextField type='text' label={language['GROUP']} list='customer-groups' err={errors?.group?.message} {...register('group')} />
             <datalist id='customer-groups'>
               {merge(options.groups, defaultGroups).map((item) => <option key={item} value={item} />)}
             </datalist>
           </div>
           <div style={{ gridArea: 'source' }}>
-            <TextField type='text' label='Source (how they found you)' list='customer-sources' err={errors?.source?.message} {...register('source')} />
+            <TextField type='text' label={language['SOURCE']} list='customer-sources' err={errors?.source?.message} {...register('source')} />
             <datalist id='customer-sources'>
               {merge(options.sources, defaultSources).map((item) => <option key={item} value={item} />)}
             </datalist>
           </div>
           <div style={{ gridArea: 'note' }}>
-            <DetailField label='Note' style={{ height: 80 }} {...register('note')} />
+            <DetailField label={language['NOTE']} style={{ height: 80 }} {...register('note')} />
           </div>
         </div>
       </Section>
@@ -330,7 +331,7 @@ export const CustomerProfileForm = ({ id, defaultValues }: { id?: string, defaul
           style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}
           onClick={() => navigate(-1)}
         >
-          Cancel
+          {language['CANCEL']}
         </Button>
         <Button
           loading={loading}
@@ -338,7 +339,7 @@ export const CustomerProfileForm = ({ id, defaultValues }: { id?: string, defaul
           variant='contained'
           style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
         >
-          {id ? 'Save' : 'Create'}
+          {id ? language['SAVE'] : language['CREATE']}
         </Button>
       </div>
     </form>

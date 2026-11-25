@@ -11,12 +11,14 @@ import useWeb from 'hooks/useWeb'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
 import { currencyFormat, timeFormat } from 'utils'
+import useLanguage from 'hooks/useLanguage'
 
 // Records money received towards a Pay Later sale (cash or transfer). Any
 // amount up to what's owed; extra cash is given back as change. An optional
 // fee (e.g. a late fee) is added to what's owed before the payment.
 export const CollectDialog = ({ payment, onClose, onCollected }: { payment: any | null, onClose: () => void, onCollected: () => void }) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { width } = useWeb()
   const { user } = useAuth()
   const { notify } = useNotify()
@@ -107,21 +109,21 @@ export const CollectDialog = ({ payment, onClose, onCollected }: { payment: any 
     <AlertDialog isOpen={!!payment} handleClose={() => !saving && onClose()}>
       {/* Fixed 80vh: the cash list takes the free space and scrolls */}
       <div style={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
-      <DialogTitle title={`Collect Payment${payment?.invoice ? ` · ${payment.invoice}` : ''}`} onClose={() => !saving && onClose()} />
+      <DialogTitle title={`${language['COLLECT_PAYMENT']}${payment?.invoice ? ` · ${payment.invoice}` : ''}`} onClose={() => !saving && onClose()} />
       <div style={{ width: width < 1024 ? '92vw' : 560, padding: '0 20px 20px 20px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: 14, flex: 1, minHeight: 0, overflowY: 'auto' }}>
         <div style={{ padding: '10px 14px', borderRadius: theme.radius.secondary, border: theme.border.quaternary }}>
-          {line('Customer', payment?.customer?.fullName || payment?.customer?.displayName || '--')}
-          {line('Sale total', currencyFormat(payment?.total?.value, payment?.total?.currency))}
-          {fee > 0 && line('Fee', currencyFormat(fee, 'USD'))}
-          {line('Paid so far', currencyFormat(payment?.paidTotal || 0, 'USD'))}
-          {payment?.payLater?.dueDate && line('Due date', timeFormat(payment.payLater.dueDate, 'YYYY-MM-DD'), false, overdue ? theme.color.error : undefined)}
+          {line(language['CUSTOMER'], payment?.customer?.fullName || payment?.customer?.displayName || '--')}
+          {line(language['SALE_TOTAL'], currencyFormat(payment?.total?.value, payment?.total?.currency))}
+          {fee > 0 && line(language['FEE'], currencyFormat(fee, 'USD'))}
+          {line(language['PAID_SO_FAR'], currencyFormat(payment?.paidTotal || 0, 'USD'))}
+          {payment?.payLater?.dueDate && line(language['DUE_DATE'], timeFormat(payment.payLater.dueDate, 'YYYY-MM-DD'), false, overdue ? theme.color.error : undefined)}
           <div style={{ borderTop: theme.border.quaternary, marginTop: 4, paddingTop: 4 }}>
-            {line('Owed', currencyFormat(owed, 'USD'), true)}
+            {line(language['OWED'], currencyFormat(owed, 'USD'), true)}
           </div>
         </div>
 
         <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          <span style={{ fontSize: 12, color: theme.text.tertiary }}>Fee now (optional, e.g. a late fee; added to what's owed)</span>
+          <span style={{ fontSize: 12, color: theme.text.tertiary }}>{language['FEE_NOW_HINT']}</span>
           <UnitInput
             value={feeValue}
             unit={feeType}
@@ -134,14 +136,14 @@ export const CollectDialog = ({ payment, onClose, onCollected }: { payment: any 
 
         <SelectTab
           selected={method}
-          options={[{ label: 'Cash', value: 'cash' }, { label: 'Transfer', value: 'transfer' }]}
+          options={[{ label: language['CASH'], value: 'cash' }, { label: language['TRANSFER'], value: 'transfer' }]}
           onChange={(value) => setMethod(value)}
         />
         {method === 'cash'
           ? <div style={{ flex: 1, minHeight: 160 }}><CashForm key={formKey} onChange={setCashes} emptyText={null} /></div>
           : (
             <label style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
-              <span style={{ fontSize: 12, color: theme.text.tertiary }}>Amount received (USD)</span>
+              <span style={{ fontSize: 12, color: theme.text.tertiary }}>{language['AMOUNT_RECEIVED_USD']}</span>
               <input
                 type='number'
                 min='0'
@@ -154,22 +156,22 @@ export const CollectDialog = ({ payment, onClose, onCollected }: { payment: any 
           )}
 
         <div style={{ padding: '10px 14px', borderRadius: theme.radius.secondary, backgroundColor: `${theme.color.info}0d` }}>
-          {feeNow > 0 && line(`Fee now${feeType === 'PCT' ? ` (${feeValue}%)` : ''}`, currencyFormat(feeNow, 'USD'), false, theme.color.warning)}
-          {feeNow > 0 && line('Owed with the fee', currencyFormat(due, 'USD'))}
-          {line('Received', currencyFormat(received, 'USD'))}
-          {line('Applied to the balance', currencyFormat(paid, 'USD'))}
-          {transferTooMuch && line("A transfer can't be more than what's owed", '', false, theme.color.error)}
-          {change > 0 && line('Change', <>{currencyFormat(change, 'USD')} ({currencyFormat(Math.round(change * sellRate), 'KHR')})</>, false, theme.color.warning)}
-          {line(left > 0.005 ? 'Still owed after this' : 'Paid in full', currencyFormat(left, 'USD'), true, left > 0.005 ? undefined : theme.color.success)}
+          {feeNow > 0 && line(`${language['FEE']} now${feeType === 'PCT' ? ` (${feeValue}%)` : ''}`, currencyFormat(feeNow, 'USD'), false, theme.color.warning)}
+          {feeNow > 0 && line(language['OWED_WITH_FEE'], currencyFormat(due, 'USD'))}
+          {line(language['RECEIVED'], currencyFormat(received, 'USD'))}
+          {line(language['APPLIED_TO_BALANCE'], currencyFormat(paid, 'USD'))}
+          {transferTooMuch && line(language['TRANSFER_TOO_MUCH'], '', false, theme.color.error)}
+          {change > 0 && line(language['CHANGE'], <>{currencyFormat(change, 'USD')} ({currencyFormat(Math.round(change * sellRate), 'KHR')})</>, false, theme.color.warning)}
+          {line(left > 0.005 ? language['STILL_OWED'] : language['PAID_IN_FULL'], currencyFormat(left, 'USD'), true, left > 0.005 ? undefined : theme.color.success)}
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'end', gap: 10 }}>
           <CustomButton styled={theme} onClick={onClose} disabled={saving} style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }}>
-            Cancel
+            {language['CANCEL']}
           </CustomButton>
           {/* CustomButton ignores isLoading; disabled stops a second collect while saving */}
           <CustomButton styled={theme} isLoading={saving} disabled={saving} onClick={handleCollect} style={{ backgroundColor: `${theme.color.success}22`, color: theme.color.success }}>
-            Collect
+            {language['COLLECT']}
           </CustomButton>
         </div>
       </div>

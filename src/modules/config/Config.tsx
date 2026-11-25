@@ -90,7 +90,7 @@ const Config = () => {
           <div style={{ width: '100%' }}>
             <SelectField
               name='select-theme'
-              label='Theme'
+              label={language['THEME']}
               value={mode}
               defaultValue=''
               onChange={(event) => changeTheme(event.target.value)}
@@ -102,7 +102,7 @@ const Config = () => {
           <div style={{ width: '100%' }}>
             <SelectField
               name='select-language'
-              label='Language'
+              label={language['LANGUAGE']}
               value={lang}
               defaultValue=''
               onChange={(event) => changeLanguage(event.target.value)}
@@ -114,7 +114,7 @@ const Config = () => {
         </div>
         {
           user?.isDefault && <form {...trackChanges} onSubmit={handleSubmit(submit)}>
-            <Section describe='Telegram Configuration'>
+            <Section describe={language['TELEGRAM_CONFIGURATION']}>
               <div
                 style={{
                   display: 'grid',
@@ -134,7 +134,7 @@ const Config = () => {
                 <div style={{ gridArea: 'apiKey' }}>
                   <TextField
                     type='text'
-                    label='API Key'
+                    label={language['API_KEY']}
                     err={errors.telegramAPIKey?.message}
                     {...register('telegramAPIKey')}
                   />
@@ -142,7 +142,7 @@ const Config = () => {
                 <div style={{ gridArea: 'chatId' }}>
                   <TextField
                     type='text'
-                    label='Chat ID'
+                    label={language['CHAT_ID']}
                     err={errors.telegramChatID?.message}
                     {...register('telegramChatID')}
                   />

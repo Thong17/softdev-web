@@ -14,6 +14,7 @@ import useWeb from 'hooks/useWeb'
 import { CurrencyField } from 'components/shared/form/CurrencyField'
 import { currencyOptions } from 'components/shared/form/InvoiceForm'
 import { responsiveGrid } from 'utils'
+import useLanguage from 'hooks/useLanguage'
 
 const durationOptions = [
   {
@@ -59,6 +60,7 @@ export const StructureForm = ({
     formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(structureSchema), defaultValues })
   const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
+  const { language } = useLanguage()
   const { device } = useWeb()
   const [size, setSize] = useState('small')
   const [align, setAlign] = useState('center')
@@ -148,7 +150,7 @@ export const StructureForm = ({
       isOpen={dialog.open}
       handleClose={handleCancelDialog}
     >
-      <DialogTitle title='Structure Form' onClose={handleCancelDialog} />
+      <DialogTitle title={language['STRUCTURE_FORM']} onClose={handleCancelDialog} />
       <form
         {...trackChanges}
         style={{
@@ -168,14 +170,14 @@ export const StructureForm = ({
         <div style={{ gridArea: 'title' }}>
           <TextField
             type='text'
-            label='Title'
+            label={language['TITLE']}
             err={errors?.title?.message}
             {...register('title')}
           />
         </div>
         <div style={{ gridArea: 'price' }}>
           <CurrencyField
-            label='Price'
+            label={language['PRICE']}
             err={errors?.price?.value?.message || errors?.price?.currency?.message || errors?.price?.duration?.message}
             {...register('price.value')}
             currency={{ name: 'price.currency', value: priceCurrency, options: currencyOptions, onChange: handleChangeSelect, width: 44 }}
@@ -186,7 +188,7 @@ export const StructureForm = ({
           <TextField
             type='number'
             step='any'
-            label='Length'
+            label={language['LENGTH']}
             err={errors?.length?.message}
             {...register('length')}
           />
@@ -195,7 +197,7 @@ export const StructureForm = ({
           <SelectField
             value={type}
             options={typeOptions}
-            label='Type'
+            label={language['TYPE']}
             err={errors?.type?.message}
             {...register('type')}
           />
@@ -204,7 +206,7 @@ export const StructureForm = ({
           <SelectField
             value={size}
             options={sizeOptions}
-            label='Size'
+            label={language['SIZE']}
             err={errors?.size?.message}
             {...register('size')}
           />
@@ -213,7 +215,7 @@ export const StructureForm = ({
           <SelectField
             value={direction}
             options={directionOptions}
-            label='Direction'
+            label={language['DIRECTION']}
             err={errors?.direction?.message}
             {...register('direction')}
           />
@@ -222,7 +224,7 @@ export const StructureForm = ({
           <SelectField
             value={align}
             options={positionOptions}
-            label='Align'
+            label={language['ALIGN']}
             err={errors?.align?.message}
             {...register('align')}
           />
@@ -231,7 +233,7 @@ export const StructureForm = ({
           <SelectField
             value={justify}
             options={positionOptions}
-            label='Justify'
+            label={language['JUSTIFY']}
             err={errors?.justify?.message}
             {...register('justify')}
           />
@@ -239,7 +241,7 @@ export const StructureForm = ({
         <div style={{ gridArea: 'description' }}>
           <DetailField
             type='text'
-            label='Description'
+            label={language['DESCRIPTION']}
             style={{ height: 70 }}
           />
         </div>
@@ -251,7 +253,7 @@ export const StructureForm = ({
               color: theme.color.error,
             }}
           >
-            Cancel
+            {language['CANCEL']}
           </Button>
           <CustomButton
             type='submit'
@@ -264,7 +266,7 @@ export const StructureForm = ({
             styled={theme}
             autoFocus
           >
-            Save
+            {language['SAVE']}
           </CustomButton>
         </div>
       </form>

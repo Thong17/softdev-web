@@ -18,8 +18,10 @@ import useWeb from 'hooks/useWeb'
 import { updateCustomerOption, createCustomerOption } from './redux'
 import { useAppDispatch } from 'app/hooks'
 import { DialogTitle } from 'components/shared/DialogTitle'
+import useLanguage from 'hooks/useLanguage'
 
 export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: any) => {
+  const { language } = useLanguage()
   const {
     reset,
     watch,
@@ -93,7 +95,7 @@ export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: 
 
   return (
     <AlertDialog isOpen={dialog.open} handleClose={handleCancelDialog}>
-      <DialogTitle title='Customer Option Form' onClose={handleCancelDialog} />
+      <DialogTitle title={language['CUSTOMER_OPTION_FORM']} onClose={handleCancelDialog} />
       <form
         {...trackChanges}
         style={{
@@ -126,14 +128,14 @@ export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: 
           <LocaleField
             name='name'
             err={errors?.name}
-            describe='Option'
+            describe={language['OPTION']}
             defaultValue={getValues('name')}
             onChange={handleLocaleChange}
           />
         </div>
         <div style={{ gridArea: 'price' }}>
           <CurrencyField
-            label='Price'
+            label={language['PRICE']}
             err={errors?.price?.message || errors?.currency?.message}
             {...register('price')}
             currency={{ value: currency, ...register('currency') }}
@@ -142,7 +144,7 @@ export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: 
         <div style={{ gridArea: 'code' }}>
           <TextField
             type='text'
-            label='Code'
+            label={language['CODE']}
             err={errors?.code?.message}
             {...register('code')}
           />
@@ -150,7 +152,7 @@ export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: 
         <div style={{ gridArea: 'description' }}>
           <DetailField
             type='text'
-            label='Description'
+            label={language['DESCRIPTION']}
             style={{ height: 70 }}
             {...register('description')}
           />
@@ -166,7 +168,7 @@ export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: 
               color: theme.color.error,
             }}
           >
-            Cancel
+            {language['CANCEL']}
           </CustomButton>
           <CustomButton
             type='submit'
@@ -179,7 +181,7 @@ export const CustomerOptionForm = ({ dialog, setDialog, defaultValues, theme }: 
             onClick={handleSubmit(submit)}
             autoFocus
           >
-            {dialog.customerId ? 'Update' : 'Create'}
+            {dialog.customerId ? language['UPDATE'] : language['CREATE']}
           </CustomButton>
         </div>
       </form>

@@ -13,6 +13,7 @@ import useNotify from 'hooks/useNotify'
 import { IImage } from 'components/shared/form/UploadField'
 import { useAppDispatch } from 'app/hooks'
 import { getListTransfer } from './redux'
+import useLanguage from 'hooks/useLanguage'
 
 export const TransferForm = ({
   dialog,
@@ -29,6 +30,7 @@ export const TransferForm = ({
     formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(transferSchema), defaultValues })
   const { guardClose, trackChanges } = useUnsavedChanges({ isDirty, enabled: !!dialog.open })
+  const { language } = useLanguage()
   const { notify } = useNotify()
   const [imagePath, setImagePath] = useState<IImage>(defaultValues?.image)
   const dispatch = useAppDispatch()
@@ -91,7 +93,7 @@ export const TransferForm = ({
       isOpen={dialog.open}
       handleClose={handleCancelDialog}
     >
-      <DialogTitle title='Transfer' onClose={handleCancelDialog} />
+      <DialogTitle title={language['TRANSFER']} onClose={handleCancelDialog} />
       <form
         {...trackChanges}
         style={{
@@ -110,7 +112,7 @@ export const TransferForm = ({
         <div style={{ gridArea: 'title' }}>
           <TextField
             type='text'
-            label='Title'
+            label={language['TITLE']}
             err={errors?.title?.message}
             {...register('title')}
           />
@@ -120,7 +122,7 @@ export const TransferForm = ({
             height={200}
             images={imagePath && [imagePath]}
             name='image'
-            label='Image'
+            label={language['IMAGE']}
             accept='image/png, image/jpeg'
             err={errors?.image?.message}
             selected={getValues('image')}
@@ -135,7 +137,7 @@ export const TransferForm = ({
               color: theme.color.error,
             }}
           >
-            Cancel
+            {language['CANCEL']}
           </Button>
           <CustomButton
             type='submit'
@@ -148,7 +150,7 @@ export const TransferForm = ({
             styled={theme}
             autoFocus
           >
-            {dialog.transferId ? 'Save' : 'Create'}
+            {dialog.transferId ? language['SAVE'] : language['CREATE']}
           </CustomButton>
         </div>
       </form>
