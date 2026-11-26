@@ -328,7 +328,7 @@ const GroupPayment = () => {
             total: currencyFormat(payment.total?.value, payment.total?.currency),
             paid: currencyFormat(payment.paidTotal || 0, 'USD'),
             balance: <b>{currencyFormat(payment.balance?.USD || 0, 'USD')}</b>,
-            dueDate: due ? <span style={{ color: overdue ? theme.color.error : undefined, whiteSpace: 'nowrap' }}>{timeFormat(due, 'YYYY-MM-DD')}{overdue ? ' · overdue' : ''}</span> : '--',
+            dueDate: due ? <span style={{ color: overdue ? theme.color.error : undefined, whiteSpace: 'nowrap' }}>{timeFormat(due, 'YYYY-MM-DD')}{overdue ? ` · ${language['OVERDUE'] || 'Overdue'}` : ''}</span> : '--',
             createdAt: timeFormat(payment.createdAt, 'YYYY-MM-DD HH:mm'),
             action: (
                 <div style={{ display: 'flex', gap: 5, justifyContent: 'end', alignItems: 'center' }}>
@@ -336,13 +336,13 @@ const GroupPayment = () => {
                         <MergeButton isOn={listPaymentSelected.includes(payment._id)} onClick={(event) => { event.stopPropagation(); handleMerge(payment._id) }} />
                     )}
                     {user?.privilege?.payment?.update && (
-                        <Tooltip title='Collect payment'>
+                        <Tooltip title={language['COLLECT_PAYMENT'] || 'Collect payment'}>
                             <IconButton size='small' onClick={() => setCollectPayment(payment)} style={{ backgroundColor: `${theme.color.success}22`, borderRadius: theme.radius.primary, color: theme.color.success }}>
                                 <PaymentsRoundedIcon style={{ fontSize: 18 }} />
                             </IconButton>
                         </Tooltip>
                     )}
-                    <Tooltip title='Detail'>
+                    <Tooltip title={language['DETAIL'] || 'Detail'}>
                         <IconButton size='small' onClick={() => navigate(`/sale/payment/${payment._id}`)} style={{ backgroundColor: `${theme.color.info}22`, borderRadius: theme.radius.primary, color: theme.color.info }}>
                             <VisibilityRoundedIcon style={{ fontSize: 18 }} />
                         </IconButton>
@@ -390,7 +390,7 @@ const GroupPayment = () => {
                 <SelectTab
                     selected={isPayLaterView ? 'later' : 'pending'}
                     options={[
-                        { label: tabLabel('Unpaid', tabCounts?.pending, theme.color.info), value: 'pending' },
+                        { label: tabLabel(language['UNPAID'] || 'Unpaid', tabCounts?.pending, theme.color.info), value: 'pending' },
                         { label: tabLabel(language['PAY_LATER'] || 'Pay Later', tabCounts?.later, theme.color.warning), value: 'later' },
                     ]}
                     onChange={switchView}
