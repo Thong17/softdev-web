@@ -16,6 +16,7 @@ import { updateProfileSchema } from './schema'
 import { FileField, IImage } from 'components/shared/form/UploadField'
 import { responsiveGrid } from 'utils'
 import useLanguage from 'hooks/useLanguage'
+import useAuth from 'hooks/useAuth'
 
 const mappedProfile = (data) => {
   return {
@@ -36,6 +37,7 @@ export const UserProfile = () => {
   const { device } = useWeb()
   const { theme } = useTheme()
   const { language } = useLanguage()
+  const { user: signedIn, reload } = useAuth()
 
   const listGender = [
     { label: language['MALE'], value: 'male' },
@@ -89,10 +91,16 @@ export const UserProfile = () => {
       .then((data) => {
         const filename: IImage = data.data.data as IImage
         const fileId = data.data.data._id
-        setValue('photo', fileId)
+        setValue('photo', fileId, { shouldDirty: true })
         setPhotoPath(filename)
       })
       .catch((err) => notify(err?.response?.data?.msg, 'error'))
+  }
+
+  // The picture's bin button: no photo once saved (null clears it on the profile)
+  const handleRemovePhoto = () => {
+    setValue('photo', null, { shouldDirty: true })
+    setPhotoPath(undefined)
   }
 
   const submit = async (data) => {
@@ -104,6 +112,8 @@ export const UserProfile = () => {
       .then((data) => {
         markSaved()
         notify(data?.data?.msg, 'success')
+        // Your own profile: the avatar and name in the top bar update now
+        if (signedIn?.id === id) reload()
       })
       .catch((err) => notify(err.response?.data?.[0]?.path, 'error'))
   }
@@ -137,6 +147,7 @@ export const UserProfile = () => {
               label={language['PHOTO']}
               accept='image/png, image/jpeg'
               onChange={handleChangeFile}
+              handleDelete={handleRemovePhoto}
               height={130}
             />
           </div>
