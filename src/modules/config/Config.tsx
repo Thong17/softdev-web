@@ -17,6 +17,7 @@ import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import { useEffect } from 'react'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
+import { FormControlLabel, Switch } from '@mui/material'
 
 declare type TelegramPrivilegeOptions = "telegramPrivilege.SENT_AFTER_PAYMENT" | "telegramPrivilege.SENT_AFTER_OPEN_DRAWER" | "telegramPrivilege.SENT_AFTER_CLOSE_DRAWER"
 interface ICheckboxTarget { name: TelegramPrivilegeOptions, checked: boolean }
@@ -29,6 +30,7 @@ const Config = () => {
   const { changeLanguage, language, lang } = useLanguage()
   const {
     reset,
+    watch,
     getValues,
     setValue,
     register,
@@ -42,10 +44,14 @@ const Config = () => {
         SENT_AFTER_PAYMENT: false,
         SENT_AFTER_OPEN_DRAWER: false,
         SENT_AFTER_CLOSE_DRAWER: false,
+        SENT_PAY_LATER_OVERDUE: false,
       },
+      payLaterOverdueTime: '08:00',
     }
   })
   const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
+  // Controlled (follows the loaded setting), unlike the checkboxes above
+  const payLaterOn = watch('telegramPrivilege.SENT_PAY_LATER_OVERDUE')
 
   useEffect(() => {
     Axios({
@@ -58,6 +64,7 @@ const Config = () => {
           telegramAPIKey: data.telegramAPIKey || '',
           telegramChatID: data.telegramChatID || '',
           telegramPrivilege: { ...data.telegramPrivilege },
+          payLaterOverdueTime: data.payLaterOverdueTime || '08:00',
         })
       })
       .catch(err => notify(err?.response?.data?.msg, 'error'))
@@ -159,7 +166,30 @@ const Config = () => {
                 <CheckboxField name='telegramPrivilege.SENT_AFTER_OPEN_DRAWER' defaultChecked={getValues('telegramPrivilege.SENT_AFTER_OPEN_DRAWER')} label={language['SENT_AFTER_OPEN_DRAWER']} onChange={handleChangeCheckbox} />
                 <CheckboxField name='telegramPrivilege.SENT_AFTER_CLOSE_DRAWER' defaultChecked={getValues('telegramPrivilege.SENT_AFTER_CLOSE_DRAWER')} label={language['SENT_AFTER_CLOSE_DRAWER']} onChange={handleChangeCheckbox} />
               </div>
-              
+              {/* Pay Later overdue: a daily Telegram summary (helpers/payLaterAlerts on the API) */}
+              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px 20px', marginTop: 10, paddingTop: 10, borderTop: theme.border.quaternary }}>
+                <FormControlLabel
+                  style={{ margin: 0, color: theme.text.secondary }}
+                  label={language['PAY_LATER_OVERDUE_SUMMARY']}
+                  control={
+                    <Switch
+                      checked={!!payLaterOn}
+                      onChange={(event) => setValue('telegramPrivilege.SENT_PAY_LATER_OVERDUE', event.target.checked, { shouldDirty: true })}
+                    />
+                  }
+                />
+                <div style={{ width: 160 }}>
+                  <TextField
+                    type='time'
+                    label={language['SEND_AT']}
+                    disabled={!payLaterOn}
+                    err={errors.payLaterOverdueTime?.message}
+                    {...register('payLaterOverdueTime')}
+                  />
+                </div>
+                <span style={{ flexBasis: '100%', fontSize: 12, color: theme.text.tertiary }}>{language['PAY_LATER_OVERDUE_HINT']}</span>
+              </div>
+
             </Section>
             <div
               style={{

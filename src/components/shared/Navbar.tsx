@@ -20,6 +20,7 @@ import { keyframes } from '@emotion/react'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
 import { Badge, IconButton, Menu, MenuItem, Stack, Avatar, Typography, Divider } from '@mui/material'
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
+import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded'
 import { calculateDay } from 'utils/index'
 import { CONSTANT } from 'constants/variables'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
@@ -68,6 +69,8 @@ const Navbar = ({ children }) => {
   const handleClickNotification = (data: any) => {
     setAnchorEl(null)
     if (data.type === 'stock') return navigate(`/sale/stock/item/${data.product?._id}`)
+    // Pay Later list, searched for this invoice
+    if (data.type === 'payLater') return navigate(`/sale/payment?payLater=owing&search=${encodeURIComponent(data.invoice || '')}`)
   }
 
   const closeNavbar = (event) => {
@@ -129,6 +132,9 @@ const Navbar = ({ children }) => {
       playBellSound()
       const changedItems = (notificationStates || []).filter((n: any) => changedIds.includes(n._id))
       changedItems.forEach((item: any) => {
+        if (item.type === 'payLater') {
+          return notify(`${language['PAY_LATER_OVERDUE']}: ${item.invoice} · ${item.customerName} · $${Number(item.balance || 0).toFixed(2)}`, 'warning', { position: 'top-left' })
+        }
         const name = item.name?.English
         const shouldExpire = item.expireAt && calculateDay(new Date(item.expireAt), Date.now())
         let description: string[] = []
@@ -221,6 +227,33 @@ const Navbar = ({ children }) => {
           >
             {notifications?.length > 0 ? (
               notifications.map((notify: any) => {
+                if (notify.type === 'payLater') {
+                  return (
+                    <MenuItem key={notify._id} style={{ padding: '8px 12px', minWidth: 320 }} onClick={() => handleClickNotification(notify)}>
+                      <Stack direction={'row'} gap={1} alignItems={'center'} sx={{ width: '100%' }}>
+                        <Avatar sx={{ width: 40, height: 40, bgcolor: `${theme.color.error}22`, color: theme.color.error }}>
+                          <ReceiptLongRoundedIcon style={{ fontSize: 22 }} />
+                        </Avatar>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <Typography style={{ fontSize: 13, fontWeight: 600, color: theme.text.secondary }} noWrap>
+                            {language['PAY_LATER_OVERDUE']} · {notify.invoice}
+                          </Typography>
+                          <Typography style={{ fontSize: 12, color: theme.text.tertiary }} noWrap>
+                            {notify.customerName}
+                          </Typography>
+                          <Typography style={{ fontSize: 11, color: theme.color.error }} noWrap>
+                            {language['DUE_DATE']} {notify.dueDate} · {notify.daysOverdue} {language['DAYS_LATE']}
+                          </Typography>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <Typography style={{ fontSize: 13, color: theme.color.error }}>
+                            ${Number(notify.balance || 0).toFixed(2)}
+                          </Typography>
+                        </div>
+                      </Stack>
+                    </MenuItem>
+                  )
+                }
                 const item = mapData(notify)
                 return <MenuItem key={item._id} style={{ padding: '8px 12px', minWidth: 320 }} onClick={() => handleClickNotification(item)}>
                   <Stack direction={'row'} gap={1} alignItems={'center'} sx={{ width: '100%' }}>

@@ -350,6 +350,11 @@ export const languages = {
     SENT_AFTER_PAYMENT: 'Sent after payment',
     SENT_AFTER_OPEN_DRAWER: 'Sent after open drawer',
     SENT_AFTER_CLOSE_DRAWER: 'Sent after close drawer',
+    PAY_LATER_OVERDUE: 'Pay Later overdue',
+    PAY_LATER_OVERDUE_SUMMARY: 'Pay Later overdue: daily summary',
+    PAY_LATER_OVERDUE_HINT: 'Lists every overdue Pay Later sale; nothing is sent on days with none.',
+    SEND_AT: 'Send at',
+    DAYS_LATE: 'days late',
     REQUEST_LOAN: 'Request\u00a0Loan',
     // Loan Detail
     TOTAL_LOAN: 'Total\u00a0Loan',
@@ -802,6 +807,11 @@ export const languages = {
     SENT_AFTER_PAYMENT: 'ផ្ញើបន្ទាប់ពីទូទាត់',
     SENT_AFTER_OPEN_DRAWER: 'ផ្ញើបន្ទាប់ពីបើកហិបប្រាក់',
     SENT_AFTER_CLOSE_DRAWER: 'ផ្ញើបន្ទាប់ពីបិទហិបប្រាក់',
+    PAY_LATER_OVERDUE: 'បង់ក្រោយហួសកំណត់',
+    PAY_LATER_OVERDUE_SUMMARY: 'បង់ក្រោយហួសកំណត់៖ សង្ខេបប្រចាំថ្ងៃ',
+    PAY_LATER_OVERDUE_HINT: 'រាយការលក់បង់ក្រោយដែលហួសកំណត់ទាំងអស់ គ្មានការផ្ញើនៅថ្ងៃដែលគ្មាន។',
+    SEND_AT: 'ផ្ញើនៅម៉ោង',
+    DAYS_LATE: 'ថ្ងៃយឺត',
     REQUEST_LOAN: 'ស្នើសុំកម្ចី',
 
     // Loan Detail
