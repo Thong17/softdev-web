@@ -17,6 +17,12 @@ import useTheme from 'hooks/useTheme'
 import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { responsiveGrid } from 'utils'
+import useAuth from 'hooks/useAuth'
+import { Box, Tooltip } from '@mui/material'
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded'
+import { generatePassword } from 'utils/password'
+import { secretInputProps } from 'utils/secretInput'
+import { CredentialsDialog, ICredentials } from './CredentialsDialog'
 
 export const RoleForm = ({ defaultValues, id }: any) => {
   const dispatch = useAppDispatch()
@@ -26,9 +32,23 @@ export const RoleForm = ({ defaultValues, id }: any) => {
     reset,
     watch,
     register,
+    setValue,
     handleSubmit,
     formState: { errors, isDirty },
   } = useForm({ resolver: yupResolver(id ? updateUserSchema : createUserSchema), defaultValues })
+  const { user } = useAuth()
+  // Editing: the password field is Reset Password, only for roles allowed to
+  // reset passwords (the API checks the same). Creating: always shown.
+  const canResetPassword = !!user?.privilege?.user?.resetPassword
+  const showPassword = !id || canResetPassword
+  const [passwordVisible, setPasswordVisible] = useState(false)
+  // After a create or a reset: the details to send to the person
+  const [credentials, setCredentials] = useState<ICredentials | null>(null)
+
+  const handleGeneratePassword = () => {
+    setValue('password', generatePassword(), { shouldValidate: true, shouldDirty: true })
+    setPasswordVisible(true)
+  }
   const { markSaved, trackChanges } = useUnsavedChanges({ isDirty })
   const { device } = useWeb()
   const { theme } = useTheme()
@@ -42,19 +62,29 @@ export const RoleForm = ({ defaultValues, id }: any) => {
   const roleId = watch('role')
 
   const submit = async (data) => {
+    const body = { ...data }
+    if (!showPassword) delete body.password
+    const newPassword = body.password || ''
     setLoading(true)
     Axios({
       method: id ? 'PUT' : 'POST',
       url: id ? `/admin/user/update/${id}` : `/admin/user/create`,
-      body: data,
+      body,
     })
-      .then((data) => {
+      .then((response) => {
         dispatch(getListUser({}))
         markSaved()
-        notify(data?.data?.msg, 'success')
+        notify(response?.data?.msg, 'success')
+        if (!id || newPassword) {
+          setCredentials({ kind: id ? 'reset' : 'created', username: body.username, password: newPassword, role: privilege.label })
+        }
         if (!id) {
           reset(defaultValues)
+        } else if (newPassword) {
+          // Saved: the field empties so a later save doesn't reset it again
+          setValue('password', '')
         }
+        setPasswordVisible(false)
       })
       .catch((err) => notify(err.response?.data?.[0]?.path || err.response?.data?.msg, 'error'))
       .finally(() => setLoading(false))
@@ -113,7 +143,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
             gridColumnGap: 20,
             ...responsiveGrid(device === 'mobile', '1fr 1fr 1fr', `
                   'username username role'
-                  'password password password'
+                  ${showPassword ? `'password password password'` : ''}
                   'email email expireAt'
                   'action action action'
                 `),
@@ -138,19 +168,47 @@ export const RoleForm = ({ defaultValues, id }: any) => {
               {...register('role')}
             />
           </div>
-          <div style={{ gridArea: 'password' }}>
-            <TextField
-              type='password'
-              label={id ? language['UPDATE_PASSWORD'] : language['PASSWORD']}
-              err={errors.password?.message}
-              {...register('password')}
-            />
-          </div>
-          
+          {showPassword && (
+            // The input keeps room on the right for the Generate button
+            <Box sx={{ gridArea: 'password', '& input': { paddingRight: '120px !important' } }}>
+              <TextField
+                {...secretInputProps(passwordVisible)}
+                label={id ? language['RESET_PASSWORD'] : language['PASSWORD']}
+                err={errors.password?.message}
+                icon={(
+                  <Tooltip title={language['GENERATE_PASSWORD']}>
+                    <button
+                      type='button'
+                      onClick={handleGeneratePassword}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        marginTop: -1,
+                        padding: '3px 9px 3px 7px',
+                        border: 'none',
+                        borderRadius: theme.radius.primary,
+                        backgroundColor: `${theme.color.info}22`,
+                        color: theme.color.info,
+                        font: 'inherit',
+                        fontSize: 13,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <AutorenewRoundedIcon style={{ fontSize: 16 }} />
+                      {language['GENERATE']}
+                    </button>
+                  </Tooltip>
+                )}
+                {...register('password')}
+              />
+            </Box>
+          )}
+
           <div style={{ gridArea: 'email' }}>
             <TextField
               type='email'
-              label={language['EMAIL']}
+              label={language['EMAIL_OPTIONAL']}
               err={errors.email?.message}
               {...register('email')}
             />
@@ -188,6 +246,7 @@ export const RoleForm = ({ defaultValues, id }: any) => {
       <div style={{ gridArea: 'privilege' }}>
         {statusPreRole === 'SUCCESS' ? <PrivilegeField label={`${privilege.label} ${language['PRIVILEGE_PREVIEW']}`} preValue={preRole} value={privilege.data} isReadOnly={true} /> : <Loading />}
       </div>
+      <CredentialsDialog credentials={credentials} onClose={() => setCredentials(null)} />
     </form>
   )
 }

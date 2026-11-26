@@ -120,5 +120,6 @@ export const createData = (
       )}
     </div>
   )
-  return { id, username, role, email, action }
+  // Email is optional
+  return { id, username, role, email: email || '--', action }
 }

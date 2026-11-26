@@ -14,6 +14,7 @@ import useWeb from 'hooks/useWeb'
 import Footer from 'components/shared/Footer'
 import { useState } from 'react'
 import useLanguage from 'hooks/useLanguage'
+import { secretInputProps } from 'utils/secretInput'
 
 export const Login = () => {
   const navigate = useNavigate()
@@ -147,7 +148,7 @@ export const Login = () => {
           />
           <TextField
             label={language['PASSWORD']}
-            type='password'
+            {...secretInputProps()}
             err={errors.password?.message}
             {...register('password')}
           />
