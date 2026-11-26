@@ -12,7 +12,8 @@ export const initState: ICategoryBody = {
   name: {},
   status: true,
   icon: null,
-  hasThermalPrinting: true,
+  // Label (thermal) printing is opt-in per category
+  hasThermalPrinting: false,
   description: ''
 }
 

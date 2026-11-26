@@ -22,7 +22,9 @@ import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { responsiveGrid } from 'utils'
 import useLanguage from 'hooks/useLanguage'
 
-const CategoryForm = ({ defaultValues, id }: any) => {
+// `onSaved` / `onCancel` (optional): used in a dialog (e.g. adding a category
+// from the product form) instead of going back a page
+const CategoryForm = ({ defaultValues, id, onSaved, onCancel }: any) => {
   // Store › Features: the label (thermal) option only matters with label printing
   const features = useStoreFeatures()
   const { theme } = useTheme()
@@ -102,6 +104,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
           reset(defaultValues)
           setIconPath(defaultValues?.icon)
         }
+        onSaved?.(data?.data?.data)
       })
       .catch((err) => {
         if (!err?.response?.data?.msg) {
@@ -116,7 +119,9 @@ const CategoryForm = ({ defaultValues, id }: any) => {
   return (
     <form
       {...trackChanges}
-      onSubmit={handleSubmit(submit)}
+      // In a dialog this form sits inside another form (React passes events
+      // up through the dialog): its submit must not submit that one too
+      onSubmit={(event) => { event.stopPropagation(); handleSubmit(submit)(event) }}
       style={{
         display: 'grid',
         gridTemplateColumns:
@@ -189,7 +194,7 @@ const CategoryForm = ({ defaultValues, id }: any) => {
             justifyContent: 'end',
           }}
         >
-          <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => navigate(-1)}>
+          <Button variant='contained' style={{ backgroundColor: `${theme.color.error}22`, color: theme.color.error }} onClick={() => (onCancel ? onCancel() : navigate(-1))}>
             {language['CANCEL']}
           </Button>
           <Button

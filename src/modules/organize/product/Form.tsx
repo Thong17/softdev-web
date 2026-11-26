@@ -28,6 +28,10 @@ import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { IImage } from 'components/shared/form/UploadField'
 import useTheme from 'hooks/useTheme'
 import { responsiveGrid } from 'utils'
+import useAuth from 'hooks/useAuth'
+import { Box, IconButton, Tooltip } from '@mui/material'
+import AddRoundedIcon from '@mui/icons-material/AddRounded'
+import { QuickAddDialog, QuickAddKind } from './QuickAddDialog'
 
 const ProductForm = ({ defaultValues, id }: any) => {
   const { data: listBrand, status: statusListBrand } = useAppSelector(selectListBrand)
@@ -70,6 +74,45 @@ const ProductForm = ({ defaultValues, id }: any) => {
   const categoryId = watch('category')
   const isStockCheck = watch('isStock')
   const { theme } = useTheme()
+  const { user } = useAuth()
+  // Add a brand / category from here, for roles that may create them
+  const [quickAdd, setQuickAdd] = useState<QuickAddKind | null>(null)
+  const canAdd = (kind: QuickAddKind) => !!user?.privilege?.[kind]?.create
+
+  // The new brand / category is selected (the list itself was reloaded by its form)
+  const handleQuickAdded = (kind: QuickAddKind, record: any) => {
+    setQuickAdd(null)
+    if (!record?._id) return
+    setValue(kind, record._id, { shouldDirty: true, shouldValidate: true })
+    try {
+      localStorage.setItem(kind === 'brand' ? 'lastSelectedBrand' : 'lastSelectedCategory', record._id)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  // The "+" inside the brand / category select, at its right end after the
+  // dropdown arrow. Placed over the select's box (its border is on an inner
+  // element, so an MUI adornment would sit outside it).
+  const addButton = (kind: QuickAddKind) => canAdd(kind) ? (
+    <Tooltip title={`${language['ADD']} ${kind === 'brand' ? language['BRAND'] : language['CATEGORY']}`}>
+      <IconButton
+        size='small'
+        aria-label={`${language['ADD']} ${kind}`}
+        // Keeps the press away from the select underneath (it opens its list on mouse down)
+        onMouseDown={(event) => { event.preventDefault(); event.stopPropagation() }}
+        onClick={(event) => { event.stopPropagation(); setQuickAdd(kind) }}
+        // Above the select's own layers (the app's select styles use z-index 10)
+        style={{ position: 'absolute', top: 36, right: 6, zIndex: 20, padding: 3, backgroundColor: `${theme.color.info}22`, borderRadius: theme.radius.primary, color: theme.color.info }}
+      >
+        <AddRoundedIcon style={{ fontSize: 18 }} />
+      </IconButton>
+    </Tooltip>
+  ) : null
+  // The arrow moves left to make room for the "+", and a long name stops before both
+  const withAddRoom = (kind: QuickAddKind) => (canAdd(kind)
+    ? { '& .MuiSelect-select': { paddingRight: '64px !important' }, '& .MuiSelect-icon': { right: '34px' } }
+    : {})
 
   const statusOptions = [
     { label: language['ENABLED'], value: true },
@@ -262,7 +305,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
                               `),
         }}
       >
-        <div style={{ gridArea: 'category' }}>
+        <Box sx={{ gridArea: 'category', position: 'relative', ...withAddRoom('category') }}>
           <SelectField
             search={true}
             value={category}
@@ -280,8 +323,10 @@ const ProductForm = ({ defaultValues, id }: any) => {
               register('category').onChange(e)
             }}
           />
-        </div>
-        <div style={{ gridArea: 'brand' }}>
+          {/* After the select, so it is drawn (and clicked) above it */}
+          {addButton('category')}
+        </Box>
+        <Box sx={{ gridArea: 'brand', position: 'relative', ...withAddRoom('brand') }}>
           <SelectField
             search={true}
             value={brand}
@@ -299,7 +344,8 @@ const ProductForm = ({ defaultValues, id }: any) => {
               register('brand').onChange(e)
             }}
           />
-        </div>
+          {addButton('brand')}
+        </Box>
         <div style={{ gridArea: 'product', marginTop: 20, marginBottom: 20 }}>
           <LocaleField
             onChange={handleChangeProduct}
@@ -384,6 +430,7 @@ const ProductForm = ({ defaultValues, id }: any) => {
         </div>
       </div>
       <div style={{ display: 'grid' }}></div>
+      <QuickAddDialog kind={quickAdd} onClose={() => setQuickAdd(null)} onAdded={handleQuickAdded} />
     </form>
   )
 }
