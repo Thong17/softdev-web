@@ -26,6 +26,7 @@ import { getListProduct } from './redux'
 import { useNavigate } from 'react-router-dom'
 import useUnsavedChanges from 'hooks/useUnsavedChanges'
 import { IImage } from 'components/shared/form/UploadField'
+import { CameraDialog } from 'components/shared/dialog/CameraDialog'
 import useTheme from 'hooks/useTheme'
 import { responsiveGrid } from 'utils'
 import useAuth from 'hooks/useAuth'
@@ -193,9 +194,17 @@ const ProductForm = ({ defaultValues, id }: any) => {
     setValue('name', product)
   }
 
-  const handleChangeImages = (event) => {
-    const images = event.target.files
-    
+  const handleChangeImages = (event) => uploadImages(event.target.files)
+
+  // A photo from the camera is added like a chosen file
+  const [cameraOpen, setCameraOpen] = useState(false)
+  const handleCapture = (file: File) => {
+    setCameraOpen(false)
+    uploadImages([file])
+  }
+
+  const uploadImages = (images: FileList | File[]) => {
+    if (!images?.length) return
     const formData = new FormData()
     for (let image = 0; image < images.length; image++) {
       formData.append('images', images[image])
@@ -394,7 +403,10 @@ const ProductForm = ({ defaultValues, id }: any) => {
             onChange={handleChangeImages}
             handleDelete={handleDeleteImage}
             handleChangeActive={handleChangeActive}
+            onTakePhoto={() => setCameraOpen(true)}
+            takePhotoLabel={language['TAKE_PHOTO']}
           />
+          <CameraDialog open={cameraOpen} onCapture={handleCapture} onClose={() => setCameraOpen(false)} />
         </div>
         <div style={{ gridArea: 'description' }}>
           <DetailField

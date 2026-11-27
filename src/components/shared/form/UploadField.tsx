@@ -10,6 +10,7 @@ import {
 import { CustomUpload } from 'styles'
 import Carousel from 'react-spring-3d-carousel'
 import PhotoCameraRoundedIcon from '@mui/icons-material/PhotoCameraRounded'
+import AddPhotoAlternateRoundedIcon from '@mui/icons-material/AddPhotoAlternateRounded'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { IconButton } from '@mui/material'
 
@@ -29,6 +30,9 @@ interface IUploadField extends InputHTMLAttributes<HTMLInputElement> {
   selected?: string
   handleDelete?: Function
   handleChangeActive?: Function
+  // Shows a "Take photo" button beside the label
+  onTakePhoto?: () => void
+  takePhotoLabel?: string
 }
 
 const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
@@ -42,6 +46,8 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
     selected,
     handleChangeActive,
     handleDelete,
+    onTakePhoto,
+    takePhotoLabel = 'Take photo',
     ...props
   },
   ref
@@ -109,7 +115,7 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
             showNavigation={false}
           />
           <label htmlFor={name}>
-            <PhotoCameraRoundedIcon />
+            <AddPhotoAlternateRoundedIcon />
           </label>
           {slides.length > 1 && (
             <div className='navigationButton'>
@@ -135,6 +141,12 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
       )}
       <input ref={ref} type='file' name={name} id={name} {...props} />
       <span className='label'>{label}</span>
+      {onTakePhoto && (
+        <button type='button' className='take-photo' onClick={onTakePhoto} title={takePhotoLabel}>
+          <PhotoCameraRoundedIcon />
+          <span>{takePhotoLabel}</span>
+        </button>
+      )}
       <div className='err'>{err}</div>
       <div className='hint'>{hint}</div>
     </CustomUpload>

@@ -57,7 +57,7 @@ export const ImageImport = () => {
   const [target, setTarget] = useState<Target>('product')
   const [rows, setRows] = useState<IImageRow[]>([])
   const [checking, setChecking] = useState(false)
-  // Find online (Pexels): available once the API has a key
+  // Find online: Pexels search once the API has a key; the camera always
   const [onlineOpen, setOnlineOpen] = useState(false)
   const [onlineEnabled, setOnlineEnabled] = useState<boolean | null>(null)
   useEffect(() => {
@@ -65,10 +65,7 @@ export const ImageImport = () => {
       .then((response) => setOnlineEnabled(!!response?.data?.data?.enabled))
       .catch(() => setOnlineEnabled(false))
   }, [])
-  const openOnline = () => {
-    if (!onlineEnabled) return notify('Photo search is not set up: add PEXELS_API_KEY to the API settings (free key at pexels.com/api) and restart the API', 'warning')
-    setOnlineOpen(true)
-  }
+  const openOnline = () => setOnlineOpen(true)
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState({ done: 0, total: 0 })
 
@@ -238,8 +235,8 @@ export const ImageImport = () => {
           <Button
             disabled={uploading || onlineEnabled === null}
             onClick={openOnline}
-            title={onlineEnabled === false ? 'Needs PEXELS_API_KEY in the API settings' : 'Search Pexels for product photos'}
-            style={{ backgroundColor: `${theme.color.success}${onlineEnabled === false ? '11' : '22'}`, color: theme.color.success }}
+            title={onlineEnabled === false ? 'Take product photos with the camera (photo search needs PEXELS_API_KEY in the API settings)' : 'Search Pexels for product photos, or take them with the camera'}
+            style={{ backgroundColor: `${theme.color.success}22`, color: theme.color.success }}
           >
             <TravelExploreRoundedIcon style={{ fontSize: 18, marginRight: 6 }} />
             {language['FIND_ONLINE']}
@@ -280,7 +277,7 @@ export const ImageImport = () => {
         </Box>
       )}
 
-      <OnlineImageDialog open={onlineOpen} onClose={() => setOnlineOpen(false)} />
+      <OnlineImageDialog open={onlineOpen} onClose={() => setOnlineOpen(false)} searchEnabled={!!onlineEnabled} />
 
       {/* Product list (search and filters) to pick the product an image is for */}
       <AlertDialog isOpen={picking !== null} handleClose={() => setPicking(null)}>
