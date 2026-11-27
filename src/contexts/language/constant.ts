@@ -491,13 +491,13 @@ export const languages = {
     RESERVATION: 'ការកក់',
     STOCK: 'ស្តុក',
     PROMOTION: 'ប្រម៉ូសិន',
-    BANNER: 'បដា',
+    BANNER: 'ប៉ាណូ',
     ORDER: 'លំដាប់',
     TOTAL_TRANSACTION: 'ប្រតិបត្តិការសរុប',
     TOTAL_RESERVATION: 'ការកក់សរុប',
     TOTAL_STOCK: 'ស្តុកសរុប',
     TOTAL_PROMOTION: 'ប្រម៉ូសិនសរុប',
-    TOTAL_BANNER: 'បដាសរុប',
+    TOTAL_BANNER: 'ប៉ាណូសរុប',
     CASHING: 'ការទូទាត់',
 
     // Function
@@ -811,7 +811,7 @@ export const languages = {
     LOAN: 'កម្ចី',
 
     // Config
-    THEME: 'ស្បែក',
+    THEME: 'ផ្ទៃក្រោយ',
     LANGUAGE: 'ភាសា',
     TELEGRAM_CONFIGURATION: 'ការកំណត់តេលេក្រាម',
     API_KEY: 'លេខសម្ងាត់ API',
