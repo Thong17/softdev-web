@@ -74,7 +74,9 @@ export const CustomSideNav = styled(Stack)(
         backdropFilter: 'blur(2px)',
       },
       '&:hover': {
-        backgroundColor: styled.active.secondary,
+        // The tint over the sidebar colour: the same look inside the sidebar,
+        // but solid when the label sticks out over the page (collapsed sidebar)
+        background: `linear-gradient(${styled.active.secondary}, ${styled.active.secondary}), ${styled.background.secondary}`,
         boxShadow: styled.shadow.container,
         backdropFilter: 'blur(2px)',
       }
@@ -123,6 +125,9 @@ export const SideNavContainer = styled('div')(
       alignSelf: 'center',
       marginLeft: 10,
       lineHeight: 0,
+      // Khmer can break between syllables; with lineHeight 0 the wrapped lines
+      // would be drawn on top of each other in the narrow hover label
+      whiteSpace: 'nowrap',
       transition: 'opacity 0.3s ease',
       transitionDelay: open ? '0.1s' : '0'
     },
