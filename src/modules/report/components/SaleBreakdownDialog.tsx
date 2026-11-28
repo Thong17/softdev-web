@@ -5,14 +5,15 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import { MiniSelectField } from 'components/shared/form'
 import { AlertDialog } from 'components/shared/table/AlertDialog'
 import { DialogTitle } from 'components/shared/DialogTitle'
-import { StickyTable, ITableColumn } from 'components/shared/table/StickyTable'
+import { ITableColumn } from 'components/shared/table/StickyTable'
+import { ExpandableTable } from 'components/shared/table/ExpandableTable'
 import { IThemeStyle } from 'contexts/theme/interface'
 import useTheme from 'hooks/useTheme'
 import useLanguage from 'hooks/useLanguage'
 import useNotify from 'hooks/useNotify'
 import useWeb from 'hooks/useWeb'
 import { currencyFormat, timeFormat } from 'utils'
-import { getReportSaleBreakdown, getReportSaleBreakdownRows } from '../redux'
+import { getReportSaleBreakdown, getReportSaleBreakdownItems, getReportSaleBreakdownRows } from '../redux'
 
 export type BreakdownType = 'income' | 'profit'
 type SourceKey = 'sales' | 'loan' | 'clearance' | 'payLater'
@@ -67,6 +68,95 @@ const INPUT_FORMAT = 'YYYY-MM-DDTHH:mm'
 
 const money = (value: number) => currencyFormat(value || 0, 'USD')
 
+interface IItem {
+  id: string
+  description?: string
+  quantity?: number
+  price?: { value: number, currency: string }
+  discount?: { value: number, type: string, isFixed?: boolean }
+  total?: { value: number, currency: string }
+  cost: number
+  isDeleted: boolean
+  isRowItem?: boolean
+}
+
+interface IItemsDetail {
+  source: SourceKey
+  invoice?: string
+  items: IItem[]
+  itemsCost: number
+  rowCost: number
+  installmentCount?: number | null
+}
+
+type DetailState = { loading: boolean, data?: IItemsDetail, error?: string }
+
+// The sale's items under an opened row. With profit, each item's cost and
+// how the row's cost comes from them.
+const ItemsDetail = ({ state, isProfit, theme, language }: { state?: DetailState, isProfit: boolean, theme: any, language: any }) => {
+  if (!state || state.loading) return <div style={{ padding: 10, fontSize: 13, color: theme.text.tertiary }}>{language['LOADING']}</div>
+  if (state.error || !state.data) return <div style={{ padding: 10, fontSize: 13, color: theme.color.error }}>{state.error}</div>
+  const { items, itemsCost, rowCost, installmentCount, source } = state.data
+  if (!items.length) return <div style={{ padding: 10, fontSize: 13, color: theme.text.tertiary }}>{language['NO_DATA']}</div>
+
+  const grid = `28px minmax(110px, 2fr) repeat(${isProfit ? 5 : 4}, minmax(56px, 1fr))`
+  const right = { textAlign: 'right' as const }
+  const hasRemoved = items.some((item) => item.isDeleted)
+  // money() gives an element, so these are built as JSX, not strings
+  const explanation = source === 'loan'
+    ? <>{language['ITEMS_COST']}: {money(itemsCost)} ÷ {installmentCount} = {money(rowCost)}</>
+    : source === 'clearance'
+      ? <>{language['COST_ITEM_PAID_OFF']}: {money(rowCost)}</>
+      : source === 'payLater'
+        ? <>{language['COST_SHARE_PAY_LATER']}: {money(rowCost)} ({language['ITEMS_COST']}: {money(itemsCost)})</>
+        : <>{language['ITEMS_COST']}: {money(rowCost)}</>
+
+  return (
+    <div style={{ display: 'grid', gap: 2, padding: '4px 10px 8px 0', fontSize: 13, overflowX: 'auto' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: grid, gap: 8, padding: '6px 10px', fontWeight: 600, color: theme.text.secondary, backgroundColor: theme.background.secondary, borderRadius: theme.radius.primary }}>
+        <div>#</div>
+        <div>{language['DESCRIPTION']}</div>
+        <div style={right}>{language['PRICE']}</div>
+        <div style={right}>{language['QUANTITY']}</div>
+        <div style={right}>{language['DISCOUNT']}</div>
+        <div style={right}>{language['TOTAL']}</div>
+        {isProfit && <div style={right}>{language['COST']}</div>}
+      </div>
+      {items.map((item, index) => (
+        <div
+          key={item.id}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: grid,
+            gap: 8,
+            padding: '6px 10px',
+            borderRadius: theme.radius.primary,
+            color: item.isDeleted ? theme.color.error : theme.text.primary,
+            backgroundColor: item.isDeleted ? `${theme.color.error}14` : item.isRowItem ? `${theme.color.info}1f` : 'transparent',
+          }}
+        >
+          <div>{index + 1}</div>
+          <div>
+            {item.description || '-'}
+            {item.isDeleted && <span style={{ marginLeft: 6, fontSize: 11 }}>({language['ITEM_REMOVED']})</span>}
+          </div>
+          <div style={right}>{item.price ? currencyFormat(item.price.value, item.price.currency) : '-'}</div>
+          <div style={right}>{item.quantity ?? '-'}</div>
+          <div style={right}>{item.discount?.value ? currencyFormat(item.discount.value, item.discount.type) : '-'}</div>
+          <div style={right}>{item.total ? currencyFormat(item.total.value, item.total.currency) : '-'}</div>
+          {isProfit && <div style={right}>{money(item.cost)}</div>}
+        </div>
+      ))}
+      {isProfit && (
+        <div style={{ padding: '6px 10px', color: theme.text.secondary, display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
+          <span style={{ color: theme.text.tertiary, fontSize: 12 }}>{hasRemoved ? language['REMOVED_LINES_NOTE'] : ''}</span>
+          <span style={{ fontWeight: 600 }}>{explanation}</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const DateTimeInput = styled('input')(
   ({ styled }: { styled: IThemeStyle }) => ({
     background: 'none',
@@ -120,6 +210,9 @@ export const SaleBreakdownDialog = ({ type, query, onClose }: { type: BreakdownT
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState<'desc' | 'asc'>('desc')
   const searchTimer = useRef<ReturnType<typeof setTimeout>>()
+  // Opened rows and their items, by `${source}:${id}`
+  const [expanded, setExpanded] = useState<string[]>([])
+  const [details, setDetails] = useState<Record<string, DetailState>>({})
   // Total of every row that matched, across all pages
   const [rowsTotal, setRowsTotal] = useState<{ income: number, cost: number, profit: number } | null>(null)
 
@@ -135,6 +228,8 @@ export const SaleBreakdownDialog = ({ type, query, onClose }: { type: BreakdownT
     setRangeError('')
     setPage(0)
     setSelected('all')
+    setExpanded([])
+    setDetails({})
     setSearchText('')
     setSearch('')
     setSort('desc')
@@ -191,6 +286,17 @@ export const SaleBreakdownDialog = ({ type, query, onClose }: { type: BreakdownT
     clearTimeout(searchTimer.current)
   }, [])
 
+  const toggleRow = (rowId: string) => {
+    if (expanded.includes(rowId)) return setExpanded((ids) => ids.filter((item) => item !== rowId))
+    setExpanded((ids) => [...ids, rowId])
+    if (details[rowId]?.data) return
+    const [source, id] = rowId.split(':')
+    setDetails((prev) => ({ ...prev, [rowId]: { loading: true } }))
+    getReportSaleBreakdownItems({ source, id })
+      .then((response) => setDetails((prev) => ({ ...prev, [rowId]: { loading: false, data: response?.data } })))
+      .catch((err) => setDetails((prev) => ({ ...prev, [rowId]: { loading: false, error: err?.response?.data?.msg || err?.message || 'Could not load the items' } })))
+  }
+
   const changeSearch = (value: string) => {
     setSearchText(value)
     clearTimeout(searchTimer.current)
@@ -233,24 +339,26 @@ export const SaleBreakdownDialog = ({ type, query, onClose }: { type: BreakdownT
 
   const colorOf = (value: number) => (value === 0 ? theme.text.secondary : value < 0 ? theme.color.error : theme.color.success)
   const box = { backgroundColor: theme.background.secondary, borderRadius: theme.radius.ternary, padding: 15 }
-  const cell = { padding: '8px 8px', textAlign: 'right' as const, whiteSpace: 'nowrap' as const }
+  const cell = { padding: '8px 5px', textAlign: 'right' as const, whiteSpace: 'nowrap' as const }
 
   const columns: ITableColumn<string>[] = [
-    { id: 'invoice', label: language['INVOICE'], minWidth: 90 },
-    ...(selected === 'all' ? [{ id: 'source', label: language['INCOME_SOURCE'], minWidth: 110 }] : []),
-    { id: 'date', label: language['DATE_TIME'], minWidth: 130, noWrap: true },
-    { id: 'income', label: language['INCOME'], minWidth: 80, align: 'right' },
+    { id: 'invoice', label: language['INVOICE'], minWidth: 80, noWrap: true },
+    ...(selected === 'all' ? [{ id: 'source', label: language['INCOME_SOURCE'], minWidth: 90, noWrap: true }] : []),
+    { id: 'date', label: language['DATE_TIME'], minWidth: 115, noWrap: true },
+    { id: 'income', label: language['INCOME'], minWidth: 65, align: 'right', noWrap: true },
     ...(isProfit ? [
-      { id: 'cost', label: language['COST'], minWidth: 100, align: 'right' as const, noWrap: true },
-      { id: 'profit', label: language['PROFIT'], minWidth: 80, align: 'right' as const },
+      { id: 'cost', label: language['COST'], minWidth: 85, align: 'right' as const, noWrap: true },
+      { id: 'profit', label: language['PROFIT'], minWidth: 65, align: 'right' as const, noWrap: true },
     ] : []),
   ]
 
   const tableRows = rows.map((row) => ({
-    id: row.id,
+    // One row can't be a sale and a payment at once, but ids are only
+    // unique within a source
+    id: `${row.source}:${row.id}`,
     invoice: row.invoice || '--',
-    source: <span style={{ fontSize: 13, color: theme.text.secondary }}>{language[sourceText[row.source]?.[0]]}</span>,
-    date: timeFormat(row.date, 'YYYY-MM-DD HH:mm'),
+    source: <span style={{ fontSize: 13, color: theme.text.secondary, whiteSpace: 'nowrap' }}>{language[sourceText[row.source]?.[0]]}</span>,
+    date: timeFormat(row.date, 'YYYY-MM-DD[\u00a0]HH:mm'),
     income: money(row.income),
     // A loan payment carries its share of the items' cost
     cost: row.installmentCount
@@ -369,7 +477,7 @@ export const SaleBreakdownDialog = ({ type, query, onClose }: { type: BreakdownT
                     style={{ cursor: 'pointer', backgroundColor: active ? `${theme.color.info}18` : undefined, opacity: item.count ? 1 : 0.55 }}
                   >
                     <td style={{ ...cell, textAlign: 'left', whiteSpace: 'normal' }}>
-                      <div style={{ color: active ? theme.color.info : theme.text.primary }}>{language[name]}</div>
+                      <div style={{ color: active ? theme.color.info : theme.text.primary, whiteSpace: 'nowrap' }}>{language[name]}</div>
                       {isProfit && <div style={{ fontSize: 11, color: theme.text.tertiary }}>{language[description]}</div>}
                     </td>
                     <td style={cell}>{item.count}</td>
@@ -447,13 +555,17 @@ export const SaleBreakdownDialog = ({ type, query, onClose }: { type: BreakdownT
         {!rowsLoading && !rows.length ? (
           <div style={{ ...box, textAlign: 'center', color: theme.text.quaternary, fontSize: 13 }}>{language['NOTHING_IN_PERIOD']}</div>
         ) : (
-          <StickyTable
+          <ExpandableTable
             // The page controls sit right under the rows, not at the
             // bottom of the dialog
             style={{ position: 'relative' }}
             columns={columns}
             rows={tableRows}
             loading={rowsLoading}
+            // A click opens the sale's items
+            handleClick={toggleRow}
+            expandedRowIds={expanded}
+            renderRowDetail={(row) => <ItemsDetail state={details[row.id]} isProfit={isProfit} theme={theme} language={language} />}
             count={count}
             skip={page}
             limit={limit}
@@ -487,7 +599,7 @@ export const SaleBreakdownDialog = ({ type, query, onClose }: { type: BreakdownT
           overflow: narrow ? 'auto' : 'hidden',
         }}
       >
-        <div style={{ width: narrow ? '100%' : 400, flex: 'none', overflowY: narrow ? 'visible' : 'auto' }}>
+        <div style={{ width: narrow ? '100%' : 350, flex: 'none', overflowY: narrow ? 'visible' : 'auto' }}>
           {calculation}
         </div>
         {listing}

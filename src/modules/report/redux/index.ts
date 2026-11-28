@@ -39,6 +39,16 @@ export const getReportSaleBreakdownRows = async (params: Record<string, string>)
   return response?.data
 }
 
+// The items behind one row of the breakdown, with their costs
+export const getReportSaleBreakdownItems = async (params: { source: string, id: string }) => {
+  const response = await Axios({
+    method: 'GET',
+    url: '/report/totalSale/breakdown/items',
+    params: new URLSearchParams(params),
+  })
+  return response?.data
+}
+
 export const getReportTopProduct = async ({ query }: { query?: URLSearchParams }) => {
   const response = await Axios({
     method: 'GET',

@@ -101,6 +101,8 @@ export const ExpandableTable = ({
                     style={{
                       minWidth: column.minWidth,
                       maxWidth: column.maxWidth,
+                      // As in StickyTable: a header that stays on one line
+                      whiteSpace: column.noWrap ? 'nowrap' : undefined,
                     }}
                     key={column.id}
                     align={column.align}
