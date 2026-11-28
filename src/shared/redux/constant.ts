@@ -19,6 +19,7 @@ export interface ShareState {
   preRole: IBody<Object>,
   adminDashboard: IBody<any>
   organizeDashboard: IBody<any>
+  functionDashboard: IBody<any>
   operationDashboard: IBody<any>
   alertNotification: IBody<any>
   listProduct: IBody<any>
@@ -72,6 +73,10 @@ export const initialState: ShareState = {
     status: 'INIT',
   },
   organizeDashboard: {
+    data: {},
+    status: 'INIT',
+  },
+  functionDashboard: {
     data: {},
     status: 'INIT',
   },

@@ -171,6 +171,17 @@ export const getOrganizeDashboard = createAsyncThunk(
   }
 )
 
+export const getFunctionDashboard = createAsyncThunk(
+  'dashboard/function',
+  async () => {
+    const response = await Axios({
+      method: 'GET',
+      url: '/dashboard/function'
+    })
+    return response?.data
+  }
+)
+
 export const getOperationDashboard = createAsyncThunk(
   'dashboard/operation',
   async () => {
@@ -379,6 +390,18 @@ export const sharedSlice = createSlice({
         state.organizeDashboard.data = action.payload.data
       })
 
+      // Get Function Dashboard from API
+      .addCase(getFunctionDashboard.pending, (state) => {
+        state.functionDashboard.status = 'LOADING'
+      })
+      .addCase(getFunctionDashboard.rejected, (state) => {
+        state.functionDashboard.status = 'FAILED'
+      })
+      .addCase(getFunctionDashboard.fulfilled, (state, action) => {
+        state.functionDashboard.status = 'SUCCESS'
+        state.functionDashboard.data = action.payload.data
+      })
+
       // Get Operation Dashboard from API
       .addCase(getOperationDashboard.pending, (state) => {
         state.operationDashboard.status = 'LOADING'
@@ -423,6 +446,7 @@ export const selectPrivilege = (state: RootState) => state.shared.privilege
 export const selectPreRole = (state: RootState) => state.shared.preRole
 export const selectAdminDashboard = (state: RootState) => state.shared.adminDashboard
 export const selectOrganizeDashboard = (state: RootState) => state.shared.organizeDashboard
+export const selectFunctionDashboard = (state: RootState) => state.shared.functionDashboard
 export const selectOperationDashboard = (state: RootState) => state.shared.operationDashboard
 export const selectAlertNotification = (state: RootState) => state.shared.alertNotification
 

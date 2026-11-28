@@ -54,6 +54,17 @@ export const languages = {
     INVOICE: 'Invoice',
     // Function
     TOTAL_QUEUE: 'Total\u00a0Queue',
+    TOTAL_CUSTOMER: 'Total\u00a0Customer',
+    ACTIVE_PROMOTION: 'Active\u00a0Promotion',
+    SHOWING_BANNER: 'Banner\u00a0Showing',
+    PAY_LATER_OWED: 'Pay\u00a0Later\u00a0Owed',
+    CUSTOMER_TYPE: 'Customer\u00a0Type',
+    SCHEDULED: 'Scheduled',
+    NO_TIER: 'No tier',
+    NOT_DUE: 'Not due yet',
+    NO_DATA: 'No data yet',
+    DUE_CUSTOMER: 'Customers Owing',
+    SHOW_DUE_CUSTOMERS: 'Show the customers who owe',
     // Organize
     CATEGORY: 'Category',
     BRAND: 'Brand',
@@ -498,10 +509,21 @@ export const languages = {
     TOTAL_STOCK: 'ស្តុកសរុប',
     TOTAL_PROMOTION: 'ប្រម៉ូសិនសរុប',
     TOTAL_BANNER: 'ប៉ាណូសរុប',
-    CASHING: 'ការទូទាត់',
+    CASHING: 'គិតលុយ',
 
     // Function
     TOTAL_QUEUE: 'ជួររង់ចាំសរុប',
+    TOTAL_CUSTOMER: 'អតិថិជនសរុប',
+    ACTIVE_PROMOTION: 'ប្រម៉ូសិនកំពុងដំណើរការ',
+    SHOWING_BANNER: 'ប៉ាណូកំពុងបង្ហាញ',
+    PAY_LATER_OWED: 'ប្រាក់ជំពាក់ (បង់ពេលក្រោយ)',
+    CUSTOMER_TYPE: 'ប្រភេទអតិថិជន',
+    SCHEDULED: 'បានកំណត់ពេល',
+    NO_TIER: 'គ្មានថ្នាក់',
+    NOT_DUE: 'មិនទាន់ដល់កំណត់',
+    NO_DATA: 'មិនទាន់មានទិន្នន័យ',
+    DUE_CUSTOMER: 'អតិថិជនជំពាក់',
+    SHOW_DUE_CUSTOMERS: 'បង្ហាញអតិថិជនដែលជំពាក់',
 
     // Organize
     CATEGORY: 'ប្រភេទ',
