@@ -25,6 +25,7 @@ import useAuth from 'hooks/useAuth'
 import { getListPayment, selectListPayment } from './payment/redux'
 import { columnData, createData } from './payment/constant'
 import Axios from 'constants/functions/Axios'
+import { BreakdownType, SaleBreakdownDialog } from './components/SaleBreakdownDialog'
 
 const Header = ({ language, theme, actions }: any) => {
   return (
@@ -197,6 +198,8 @@ export const SaleReport = () => {
   const [listSale, setListSale] = useState([])
   const [totalIncome, setTotalIncome] = useState(0)
   const [totalProfit, setTotalProfit] = useState(0)
+  // Income or Profit card whose calculation is shown
+  const [breakdown, setBreakdown] = useState<BreakdownType | null>(null)
   const [queryParams, setQueryParams] = useSearchParams()
   const [loading, setLoading] = useState(true)
   const [fromDate, setFromDate] = useState('')
@@ -398,6 +401,11 @@ export const SaleReport = () => {
         actions={<ExportButton type='sale' range={() => reportRange(fromDate, toDate)} />}
       />
     }>
+      <SaleBreakdownDialog
+        type={breakdown}
+        query={new URLSearchParams({ _totalIncome: selectedTotalIncome, _totalProfit: selectedTotalProfit })}
+        onClose={() => setBreakdown(null)}
+      />
       <div
         style={{
           display: 'grid',
@@ -423,6 +431,8 @@ export const SaleReport = () => {
         >
           <DetailSection
             title={language['INCOME']}
+            onClick={() => setBreakdown('income')}
+            hint={language['CLICK_TO_SEE_CALCULATION']}
             header={
               <div style={{ position: 'absolute', right: 0 }}>
                 <ListFilter
@@ -465,6 +475,8 @@ export const SaleReport = () => {
           />
           <DetailSection
             title={language['PROFIT']}
+            onClick={() => setBreakdown('profit')}
+            hint={language['CLICK_TO_SEE_CALCULATION']}
             header={
               <div style={{ position: 'absolute', right: 0 }}>
                 <ListFilter

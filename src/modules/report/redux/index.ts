@@ -18,6 +18,27 @@ export const getReportSale = async ({ query }: { query?: URLSearchParams }) => {
   return response?.data
 }
 
+// How the Income or Profit card is worked out: each source's totals for the
+// card's period, or for fromDate / toDate (ISO date-times) once picked
+export const getReportSaleBreakdown = async (params: Record<string, string>) => {
+  const response = await Axios({
+    method: 'GET',
+    url: '/report/totalSale/breakdown',
+    params: new URLSearchParams(params),
+  })
+  return response?.data
+}
+
+// One page of a source's sales or payments, newest first
+export const getReportSaleBreakdownRows = async (params: Record<string, string>) => {
+  const response = await Axios({
+    method: 'GET',
+    url: '/report/totalSale/breakdown/rows',
+    params: new URLSearchParams(params),
+  })
+  return response?.data
+}
+
 export const getReportTopProduct = async ({ query }: { query?: URLSearchParams }) => {
   const response = await Axios({
     method: 'GET',
