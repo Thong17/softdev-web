@@ -232,8 +232,8 @@ export const CustomerDialog = ({ dialog, setDialog, onClickCustomer, cartProduct
   const handleCancelDialog = () => {
     if (!(showForm && formHasChanges)) return handleCloseDialog()
     confirm({
-      title: 'Discard unsaved changes?',
-      description: 'You have changes that have not been saved. They will be lost if you continue.',
+      title: language['CONFIRM_DISCARD_CHANGES'],
+      description: language['DESC_DISCARD_CHANGES'],
       variant: 'warning',
     })
       .then(() => {

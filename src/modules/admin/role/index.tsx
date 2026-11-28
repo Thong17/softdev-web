@@ -28,7 +28,7 @@ export const Roles = () => {
   const navigate = useNavigate()
   const confirm = useAlert()
   const { loadify } = useNotify()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { theme } = useTheme()
   const { device } = useWeb()
   const { user } = useAuth()
@@ -106,8 +106,8 @@ export const Roles = () => {
 
   const handleCloseImport = () => {
     confirm({
-      title: 'Discard Import',
-      description: 'Do you want to discard all the change?',
+      title: language['CONFIRM_DISCARD_IMPORT'],
+      description: language['DESC_DISCARD_IMPORT'],
       variant: 'error'
     }).then(() => setImportDialog({ ...importDialog, open: false }))
       .catch(() => setImportDialog({ ...importDialog }))

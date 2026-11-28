@@ -12,6 +12,7 @@ import {
   UpdateButton,
 } from 'components/shared/table/ActionButton'
 import useTheme from 'hooks/useTheme'
+import useLanguage from 'hooks/useLanguage'
 import { useEffect, useState } from 'react'
 import { CustomStructureLayout } from 'styles/container'
 import StoreBreadcrumbs from '../components/Breadcrumbs'
@@ -83,6 +84,7 @@ export const LayoutForm = () => {
   const { data: storeLayout, status: statusLayout } = useAppSelector(selectLayoutStore)
   const { data: listFloor, status } = useAppSelector(selectListFloor)
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const [column, setColumn] = useState<any>([])
   const [row, setRow] = useState<any>([])
   const [template, setTemplate] = useState('')
@@ -200,8 +202,8 @@ export const LayoutForm = () => {
 
   const handleResetLayout = () => {
     confirm({
-      title: 'Are you sure you want to reset?',
-      description: 'Reset will remove all the structures and layout.',
+      title: language['CONFIRM_RESET_LAYOUT'],
+      description: language['DESC_RESET_LAYOUT'],
       variant: 'error'
     }).then(() => {
       setColumn([1])
@@ -357,8 +359,8 @@ export const LayoutForm = () => {
 
   const handleSaveLayout = () => {
     confirm({
-      title: 'Are you sure you want to save this layout?',
-      description: 'Save this layout will override existing.',
+      title: language['CONFIRM_SAVE_LAYOUT'],
+      description: language['DESC_SAVE_LAYOUT'],
       variant: 'info'
     }).then(() => {
       Axios({
@@ -413,13 +415,13 @@ export const LayoutForm = () => {
             >
               <div style={{ display: 'flex' }}>
                 <MergeButton
-                  title='Combine'
+                  title={language['COMBINE']}
                   disabled={merges.length < 2}
                   onClick={handleConfirmMergeStructure}
                 />
-                <ResetButton title='Reset' onClick={handleResetLayout} />
-                <UploadButton title='Save' onClick={handleSaveLayout} disabled={isDirty} />
-                <FloorButton title='Floor' onClick={() => setFloorDialog({ ...floorDialog, open: true })} />
+                <ResetButton title={language['RESET']} onClick={handleResetLayout} />
+                <UploadButton title={language['SAVE']} onClick={handleSaveLayout} disabled={isDirty} />
+                <FloorButton title={language['FLOOR']} onClick={() => setFloorDialog({ ...floorDialog, open: true })} />
                 <MiniSelectField style={{ marginLeft: 10 }} options={floorOption} value={floor} onChange={handleChangeFloor} search={true} />
               </div>
               <div style={{ display: 'flex' }}>

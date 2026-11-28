@@ -66,9 +66,8 @@ export const Stocks = () => {
     if (status !== 'SUCCESS') return
     const handleEnableStock = (id) => {
       confirm({
-        title: 'Are you sure you want to enable stock?',
-        description:
-          'This product stock is currently not enabled. By confirm this you will enable stock for this product.',
+        title: language['CONFIRM_ENABLE_STOCK'],
+        description: language['DESC_ENABLE_STOCK'],
         variant: 'info',
       })
         .then(() => {
@@ -220,9 +219,8 @@ export const Stocks = () => {
     if (scannedProduct.isStock) navigate(`/sale/stock/item/${scannedProduct._id}`)
     else {
       confirm({
-        title: 'Are you sure you want to enable stock?',
-        description:
-          'This product stock is currently not enabled. By confirm this you will enable stock for this product.',
+        title: language['CONFIRM_ENABLE_STOCK'],
+        description: language['DESC_ENABLE_STOCK'],
         variant: 'info',
       })
         .then(() => {

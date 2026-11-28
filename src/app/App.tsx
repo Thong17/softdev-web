@@ -27,7 +27,7 @@ const App = () => {
   }, [dispatch])
 
   return (
-    <Compose components={[NotifyProvider, AlertProvider, AuthProvider, LanguageProvider, ThemesProvider, ConfigProvider, WebProvider]}>
+    <Compose components={[NotifyProvider, AuthProvider, LanguageProvider, AlertProvider, ThemesProvider, ConfigProvider, WebProvider]}>
       {routers}
     </Compose>
   )

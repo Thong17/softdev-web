@@ -77,7 +77,7 @@ export const PrintingStore = () => {
         setSaved(value)
         markSaved()
       })
-      .catch((err) => notify(err?.response?.data?.msg || 'Could not save', 'error'))
+      .catch((err) => notify(err?.response?.data?.msg || language['COULD_NOT_SAVE'], 'error'))
       .finally(() => setSaving(false))
   }
 
@@ -91,11 +91,9 @@ export const PrintingStore = () => {
     <Container header={<Breadcrumb stages={storeStages(language, id, 'printing')} title={<StorefrontRoundedIcon />} />}>
       <div style={{ paddingTop: 20 }}>
         <div {...trackChanges}>
-          <Section describe='Printers' style={{ marginBottom: 40 }}>
+          <Section describe={language['PRINTERS']} style={{ marginBottom: 40 }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 15 }}>
-              <HintBox>
-                Printer names as they appear on the cashier's computer (QZ Tray). Characters per line is 48 for most 80 mm printers and 32 for 58 mm.
-              </HintBox>
+              <HintBox>{language['PRINTERS_HINT']}</HintBox>
               <div
                 style={{
                   display: 'grid',
@@ -106,10 +104,10 @@ export const PrintingStore = () => {
                   `),
                 }}
               >
-                {field('receiptPrinterName', 'Receipt Printer Name')}
-                {field('receiptPrinterCharPerLine', 'Characters Per Line', 'number')}
-                {field('storePrinterName', 'Store Copy Printer Name')}
-                {field('storePrinterCharPerLine', 'Characters Per Line', 'number')}
+                {field('receiptPrinterName', language['RECEIPT_PRINTER_NAME'])}
+                {field('receiptPrinterCharPerLine', language['CHARS_PER_LINE'], 'number')}
+                {field('storePrinterName', language['STORE_PRINTER_NAME'])}
+                {field('storePrinterCharPerLine', language['CHARS_PER_LINE'], 'number')}
               </div>
               {features.labelPrinting ? (
                 <div
@@ -119,13 +117,13 @@ export const PrintingStore = () => {
                     ...responsiveGrid(device === 'mobile', '1fr 160px 160px 160px', `'thermalPrinterName thermalPrinterWidth thermalPrinterHeight thermalPrinterGap'`),
                   }}
                 >
-                  {field('thermalPrinterName', 'Label Printer Name')}
-                  {field('thermalPrinterWidth', 'Paper Width (mm)', 'number')}
-                  {field('thermalPrinterHeight', 'Paper Height (mm)', 'number')}
-                  {field('thermalPrinterGap', 'Paper Gap (mm)', 'number')}
+                  {field('thermalPrinterName', language['LABEL_PRINTER_NAME'])}
+                  {field('thermalPrinterWidth', language['PAPER_WIDTH_MM'], 'number')}
+                  {field('thermalPrinterHeight', language['PAPER_HEIGHT_MM'], 'number')}
+                  {field('thermalPrinterGap', language['PAPER_GAP_MM'], 'number')}
                 </div>
               ) : (
-                <span style={{ color: theme.text.tertiary, fontSize: 13 }}>Label printing is turned off in Features, so its printer is hidden.</span>
+                <span style={{ color: theme.text.tertiary, fontSize: 13 }}>{language['LABEL_PRINTING_OFF_HINT']}</span>
               )}
               <div style={{ display: 'flex', justifyContent: 'end' }}>
                 <Button

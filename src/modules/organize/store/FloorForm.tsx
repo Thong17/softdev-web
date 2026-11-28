@@ -69,8 +69,8 @@ export const FloorForm = ({
 
   const handleDelete = (id) => {
     confirm({
-      title: 'Are you sure you want to delete this floor?',
-      description: 'Delete floor will remove all the layout in that floor.',
+      title: language['CONFIRM_DELETE_FLOOR'],
+      description: language['DESC_DELETE_FLOOR'],
       variant: 'error'
     }).then(() => {
       Axios({

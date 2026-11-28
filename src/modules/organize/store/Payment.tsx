@@ -85,8 +85,8 @@ export const PaymentStore = () => {
 
   const handleDeleteTransfer = () => {
     confirm({
-      title: 'Are you sure you want to delete this transfer?',
-      description: 'Delete transfer will remove it from the database',
+      title: language['CONFIRM_DELETE_TRANSFER'],
+      description: language['DESC_DELETE_TRANSFER'],
       variant: 'error',
     })
       .then(() => {

@@ -8,6 +8,7 @@ import { DeleteDialog } from 'components/shared/table/DeleteDialog'
 import { DeleteButton, DetailButton, UpdateButton, ViewButton } from 'components/shared/table/ActionButton'
 import PointOfSaleRoundedIcon from '@mui/icons-material/PointOfSaleRounded'
 import useAlert from 'hooks/useAlert'
+import useLanguage from 'hooks/useLanguage'
 import { MenuDialog } from 'components/shared/MenuDialog'
 import { CustomButton } from 'styles'
 import Axios from 'constants/functions/Axios'
@@ -50,11 +51,12 @@ export const QuotationList = () => {
   // Sending to cashing creates cart items, so it also needs the cashing privilege
   const canSendToCash = !!privilege?.detail && !!user?.privilege?.transaction?.create
   const confirm = useAlert()
+  const { language } = useLanguage()
 
   const handleToCash = (quotation) => {
     confirm({
-      title: 'Send to cashing?',
-      description: 'The items will be added to the cashing cart at the quoted prices and taken from stock. The quotation locks once the sale is paid.',
+      title: language['CONFIRM_SEND_TO_CASHING'],
+      description: language['DESC_SEND_TO_CASHING'],
       variant: 'info',
     })
       .then(() => {

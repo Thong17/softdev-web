@@ -373,8 +373,8 @@ export const InvoiceForm = forwardRef(
 
     const handleRemoveTransaction = (event, id) => {
       confirm({
-        title: 'Remove Transaction',
-        description: 'Are you sure you want to remove this transaction?',
+        title: language['CONFIRM_REMOVE_TRANSACTION'],
+        description: language['DESC_REMOVE_TRANSACTION'],
         variant: 'error',
       })
         .then(() => {

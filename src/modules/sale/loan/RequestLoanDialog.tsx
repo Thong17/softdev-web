@@ -52,8 +52,8 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
   useEffect(() => {
     const handleReject = (id) => {
       confirm({
-        title: 'Reject',
-        description: 'Reject loan will remove loan from the list.',
+        title: language['REJECT'],
+        description: language['DESC_REJECT_LOAN'],
         variant: 'error',
       })
         .then(() => {
@@ -72,8 +72,8 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
     }
     const handleApprove = (id) => {
       confirm({
-        title: 'Approve',
-        description: 'Are you sure you want to approve this loan?',
+        title: language['APPROVE'],
+        description: language['DESC_APPROVE_LOAN'],
         variant: 'info',
       })
         .then(() => {
@@ -115,8 +115,8 @@ export const RequestLoanDialog = ({ dialog, setDialog }: any) => {
 
   const handleApproveAll = () => {
     confirm({
-      title: 'Approve',
-      description: 'Are you sure you want to approve all these loans?',
+      title: language['APPROVE'],
+      description: language['DESC_APPROVE_LOANS'],
       variant: 'info',
     })
       .then(() => {

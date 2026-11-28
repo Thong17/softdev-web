@@ -155,8 +155,8 @@ export const ProductSetup = () => {
 
   const handleDeleteProperty = (id) => {
     confirm({
-      title: 'Delete Property',
-      description: 'Are you sure?',
+      title: language['CONFIRM_DELETE_PROPERTY'],
+      description: language['ARE_YOU_SURE'],
       variant: 'error',
     })
       .then(() => {
@@ -202,8 +202,8 @@ export const ProductSetup = () => {
 
   const handleDeleteOption = (id) => {
     confirm({
-      title: 'Delete Option',
-      description: 'Are you sure?',
+      title: language['CONFIRM_DELETE_OPTION'],
+      description: language['ARE_YOU_SURE'],
       variant: 'error',
     })
       .then(() => {
@@ -248,8 +248,8 @@ export const ProductSetup = () => {
 
   const handleDeleteColor = (id) => {
     confirm({
-      title: 'Delete Color',
-      description: 'Are you sure?',
+      title: language['CONFIRM_DELETE_COLOR'],
+      description: language['ARE_YOU_SURE'],
       variant: 'error',
     })
       .then(() => {
@@ -294,8 +294,8 @@ export const ProductSetup = () => {
 
   const handleDeleteCustomerOption = (id) => {
     confirm({
-      title: 'Delete Customer Option',
-      description: 'Are you sure?',
+      title: language['CONFIRM_DELETE_CUSTOMER_OPTION'],
+      description: language['ARE_YOU_SURE'],
       variant: 'error',
     })
       .then(() => {

@@ -5,6 +5,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import useLanguage from 'hooks/useLanguage'
 
 export interface IAlertProps {
   title?: string
@@ -16,6 +17,8 @@ export const AlertContext = createContext<(options: IAlertProps) => Promise<void
 
 const AlertProvider = ({ children }) => {
   const [dialog, setDialog] = useState<IAlertProps & { open: boolean }>({ open: false })
+  // Inside LanguageProvider (see App.tsx), so the buttons follow the language
+  const { language } = useLanguage()
 
   const awaitingPromiseRef = useRef<{
     resolve: () => void
@@ -60,14 +63,14 @@ const AlertProvider = ({ children }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={closeDialog}>Cancel</Button>
+          <Button onClick={closeDialog}>{language['CANCEL']}</Button>
           <Button
             onClick={confirmDialog}
             variant='contained'
             color={dialog?.variant || 'info'}
             autoFocus
           >
-            Confirm
+            {language['CONFIRM']}
           </Button>
         </DialogActions>
       </Dialog>

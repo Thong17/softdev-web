@@ -35,7 +35,7 @@ export const Categories = () => {
   const features = useStoreFeatures()
   const dispatch = useAppDispatch()
   const { data: categories, count, status } = useAppSelector(selectListCategory)
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -117,8 +117,8 @@ export const Categories = () => {
 
   const handleCloseImport = () => {
     confirm({
-      title: 'Discard Import',
-      description: 'Do you want to discard all the change?',
+      title: language['CONFIRM_DISCARD_IMPORT'],
+      description: language['DESC_DISCARD_IMPORT'],
       variant: 'error',
     })
       .then(() => setImportDialog({ ...importDialog, open: false }))
@@ -174,9 +174,8 @@ export const Categories = () => {
 
   const handleToggleStatus = (id, columnKey) => {
     confirm({
-      title: 'Are you sure you want to toggle the status?',
-      description:
-        'Toggle the status will update category status to opposite current status.',
+      title: language['CONFIRM_TOGGLE_STATUS'],
+      description: language['DESC_TOGGLE_CATEGORY'],
       variant: 'error',
     })
       .then(() => {

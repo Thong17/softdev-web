@@ -32,7 +32,7 @@ import { languages } from 'contexts/language/constant'
 export const Brands = () => {
   const dispatch = useAppDispatch()
   const { data: brands, count, status } = useAppSelector(selectListBrand)
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -116,8 +116,8 @@ export const Brands = () => {
 
   const handleCloseImport = () => {
     confirm({
-      title: 'Discard Import',
-      description: 'Do you want to discard all the change?',
+      title: language['CONFIRM_DISCARD_IMPORT'],
+      description: language['DESC_DISCARD_IMPORT'],
       variant: 'error',
     })
       .then(() => setImportDialog({ ...importDialog, open: false }))
@@ -172,9 +172,8 @@ export const Brands = () => {
 
   const handleToggleStatus = (id) => {
     confirm({
-      title: 'Are you sure you want to toggle the status?',
-      description:
-        'Toggle the status will update brand status to opposite current status.',
+      title: language['CONFIRM_TOGGLE_STATUS'],
+      description: language['DESC_TOGGLE_BRAND'],
       variant: 'error',
     })
       .then(() => {

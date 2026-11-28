@@ -284,8 +284,11 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
     const feeNumber = Number(payLater.feeValue) || 0
     if (feeNumber < 0 || (payLater.feeType === 'PCT' && feeNumber > 100)) return notify('The fee must be 0 or more, and a % fee at most 100', 'error')
     confirm({
-      title: 'Save as Pay Later?',
-      description: `Paid now ${paid.toFixed(2)} USD${fee > 0 ? `, fee ${fee.toFixed(2)} USD` : ''}. The customer will owe ${balance.toFixed(2)} USD.`,
+      title: language['CONFIRM_PAY_LATER'],
+      description: (language['DESC_PAY_LATER'] as string)
+        .replace('{paid}', paid.toFixed(2))
+        .replace('{fee}', fee > 0 ? (language['DESC_PAY_LATER_FEE'] as string).replace('{fee}', fee.toFixed(2)) : '')
+        .replace('{balance}', balance.toFixed(2)),
       variant: 'info',
     })
       .then(() => {
@@ -320,8 +323,8 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
     if (isLoading || payment?.status) return
     if (paymentMethod === 'later') return handleCheckoutLater()
     confirm({
-      title: 'Are you sure you want to check out?',
-      description: 'Checkout the payment will update the status to complete.',
+      title: language['CONFIRM_CHECKOUT'],
+      description: language['DESC_CHECKOUT'],
       variant: 'info',
     })
       .then(() => {
@@ -353,8 +356,8 @@ export const PaymentForm = forwardRef(({ dialog, source='payment', setDialog, on
 
   const handleClearPayment = () => {
     confirm({
-      title: 'Are you sure you want to clear the payment?',
-      description: 'The payment will be clear.',
+      title: language['CONFIRM_CLEAR_PAYMENT'],
+      description: language['DESC_CLEAR_PAYMENT'],
       variant: 'error',
     })
       .then(() => {

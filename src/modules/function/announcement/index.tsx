@@ -24,7 +24,7 @@ import useAlert from 'hooks/useAlert'
 export const Announcements = () => {
   const dispatch = useAppDispatch()
   const { data: announcements, count, status } = useAppSelector(selectListAnnouncement)
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -80,9 +80,8 @@ export const Announcements = () => {
 
   const handleToggleStatus = (id) => {
     confirm({
-      title: 'Are you sure you want to toggle the status?',
-      description:
-        'Toggle the status will update announcement status to opposite current status.',
+      title: language['CONFIRM_TOGGLE_STATUS'],
+      description: language['DESC_TOGGLE_BANNER'],
       variant: 'error',
     })
       .then(() => {

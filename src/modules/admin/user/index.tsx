@@ -26,7 +26,7 @@ export const Users = () => {
   const dispatch = useAppDispatch()
   const { data: users, count, status } = useAppSelector(selectListUser)
   const navigate = useNavigate()
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { user } = useAuth()
   const { device } = useWeb()
   const { theme } = useTheme()
@@ -105,8 +105,8 @@ export const Users = () => {
 
   const handleCloseImport = () => {
     confirm({
-      title: 'Discard Import',
-      description: 'Do you want to discard all the change?',
+      title: language['CONFIRM_DISCARD_IMPORT'],
+      description: language['DESC_DISCARD_IMPORT'],
       variant: 'error'
     }).then(() => setImportDialog({ ...importDialog, open: false }))
       .catch(() => setImportDialog({ ...importDialog }))

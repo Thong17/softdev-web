@@ -6,8 +6,8 @@ export const storeStages = (language: any, id: string | undefined, current: Stor
   const pages: { key: StorePage, title: string, path: string }[] = [
     { key: 'info', title: language['INFO'], path: `/organize/store/update/${id}` },
     { key: 'payment', title: language['PAYMENT'], path: `/organize/store/${id}/payment` },
-    { key: 'printing', title: 'Printing', path: `/organize/store/${id}/printing` },
-    { key: 'features', title: 'Features', path: `/organize/store/${id}/features` },
+    { key: 'printing', title: language['PRINTING'], path: `/organize/store/${id}/printing` },
+    { key: 'features', title: language['FEATURES'], path: `/organize/store/${id}/features` },
   ]
   return [
     { title: language['ORGANIZE'], path: '/organize' },

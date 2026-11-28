@@ -37,7 +37,7 @@ export const ProductForm = ({ dialog, setDialog, addTransaction, mode = 'payment
   const { user } = useAuth()
   const { theme } = useTheme()
   const { device } = useWeb()
-  const { notify, loading, update } = useNotify()
+  const { notify, loading, update, dismiss } = useNotify()
   const { lang, language } = useLanguage()
   const dispatch = useAppDispatch()
   const { data, status } = useAppSelector(selectInfoProduct)
@@ -313,7 +313,12 @@ export const ProductForm = ({ dialog, setDialog, addTransaction, mode = 'payment
     setProductProperties(selectedProperty)
     if (data.colors?.length > 0 || data.options?.length > 0 || data.customers?.length > 0) {
       setDialog({ ...dialog, open: true })
-      update(loadingId, { render: 'Loaded transaction', type: 'success', isLoading: false, autoClose: 1000 })
+      // The open dialog shows the product is loaded, so the loading toast is
+      // closed outright: updated to "Loaded" with autoClose, it could stay on
+      // screen over the dialog's footer. Its id is released, so the dialog's
+      // own messages (option required…) are new toasts that close by themselves.
+      if (loadingId) dismiss(loadingId)
+      setLoadingId('')
     }
     // eslint-disable-next-line
   }, [data])

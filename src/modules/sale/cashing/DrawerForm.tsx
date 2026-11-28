@@ -255,9 +255,8 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
 
   const handleRemoveCash = (id) => {
     confirm({
-      title: 'Are you sure you want to remove this cash?',
-      description:
-        'The selected cash will be remove from the list. Click the confirm button to proceed.',
+      title: language['CONFIRM_REMOVE_CASH'],
+      description: language['DESC_REMOVE_CASH'],
       variant: 'error',
     })
       .then(() => setListCash((prev) => prev.filter((cash) => cash.id !== id)))
@@ -295,9 +294,8 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
   const handleSavePresetCash = (event) => {
     const id = event.target.id
     confirm({
-      title: 'Are you sure you want to save to this preset?',
-      description:
-        'This will override your existing selected preset. Click on confirm to proceed',
+      title: language['CONFIRM_SAVE_PRESET'],
+      description: language['DESC_SAVE_PRESET'],
       variant: 'info',
     })
       .then(() => {
@@ -321,9 +319,8 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
 
   const handleDeletePreset = (id) => {
     confirm({
-      title: 'Are you sure you want to delete this preset?',
-      description:
-        'This will delete the selected preset. Click on confirm to proceed',
+      title: language['CONFIRM_DELETE_PRESET'],
+      description: language['DESC_DELETE_PRESET'],
       variant: 'error',
     })
       .then(() => {
@@ -344,8 +341,8 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
 
   const handleSaveDrawer = () => {
     confirm({
-      title: 'Are you sure you want to save this drawer?',
-      description: 'This will save the drawer. Click on confirm to proceed',
+      title: language['CONFIRM_SAVE_DRAWER'],
+      description: language['DESC_SAVE_DRAWER'],
       variant: 'info',
     })
       .then(() => {
@@ -369,8 +366,8 @@ export const DrawerForm = ({ dialog, setDialog }: any) => {
 
   const handleStopDrawer = () => {
     confirm({
-      title: 'Are you sure you want to close this drawer?',
-      description: 'This will close the drawer. Click on confirm to proceed',
+      title: language['CONFIRM_CLOSE_DRAWER'],
+      description: language['DESC_CLOSE_DRAWER'],
       variant: 'error',
     })
       .then(() => {

@@ -121,8 +121,8 @@ export const ReservationContainer = ({ selectedStructures, onSave }) => {
 
   const handleDeleteReservation = (id) => {
     confirm({
-      title: 'Are you sure you want to delete this reservation?',
-      description: 'Delete reservation will delete it from the list.',
+      title: language['CONFIRM_DELETE_RESERVATION'],
+      description: language['DESC_DELETE_RESERVATION'],
       variant: 'error'
     }).then(() => {
       Axios({

@@ -176,8 +176,8 @@ export const Quotation = () => {
     const data = invoiceRef.current?.getQuotationData()
     if (!data?.transactions?.length) return notify('No transaction added', 'error')
     confirm({
-      title: 'Send to cashing?',
-      description: 'The items will be added to the cashing cart at the quoted prices and taken from stock. The quotation locks once the sale is paid.',
+      title: language['CONFIRM_SEND_TO_CASHING'],
+      description: language['DESC_SEND_TO_CASHING'],
       variant: 'info',
     })
       .then(async () => {

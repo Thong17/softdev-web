@@ -376,8 +376,8 @@ export const InvoiceForm = forwardRef(
 
     const handleRemoveTransaction = (event, id) => {
       confirm({
-        title: 'Remove Transaction',
-        description: 'Are you sure you want to remove this transaction?',
+        title: language['CONFIRM_REMOVE_TRANSACTION'],
+        description: language['DESC_REMOVE_TRANSACTION'],
         variant: 'error',
       })
         .then(() => {
@@ -503,8 +503,8 @@ export const InvoiceForm = forwardRef(
 
     const handleCheckOut = () => {
       confirm({
-        title: 'Are you sure you want to check out this reservation?',
-        description: 'Check out will update the reservation status.',
+        title: language['CONFIRM_CHECKOUT_RESERVATION'],
+        description: language['DESC_CHECKOUT_RESERVATION'],
         variant: 'error',
       })
         .then(() => {

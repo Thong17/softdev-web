@@ -18,6 +18,7 @@ export const Header = ({ handleSearch, handleFilter }) => {
   const { theme } = useTheme()
   const { notify } = useNotify()
   const confirm = useAlert()
+  const { language } = useLanguage()
   const dispatch = useAppDispatch()
   
   const [sortObj, setSortObj] = useState({
@@ -48,8 +49,8 @@ export const Header = ({ handleSearch, handleFilter }) => {
 
   const handleReverseAll = () => {
     confirm({
-      title: 'Are you sure you want to reverse all transaction?',
-      description: 'Reverse all transaction will update all stock product.',
+      title: language['CONFIRM_REVERSE_ALL'],
+      description: language['DESC_REVERSE_ALL'],
       variant: 'error'
     })
       .then(() => {

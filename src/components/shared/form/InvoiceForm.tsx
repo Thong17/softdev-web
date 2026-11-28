@@ -385,8 +385,8 @@ export const InvoiceForm = forwardRef(({
 
   const handleClearPayment = () => {
     confirm({
-      title: 'Are you sure you want to clear the invoice?',
-      description: 'Clear the invoice will erase all the transaction.',
+      title: language['CONFIRM_CLEAR_INVOICE'],
+      description: language['DESC_CLEAR_INVOICE'],
       variant: 'error'
     }).then(() => {
       onClear()
@@ -486,8 +486,8 @@ export const InvoiceForm = forwardRef(({
 
   const handleRemoveTransaction = (event, id) => {
     confirm({
-      title: 'Remove Transaction',
-      description: 'Are you sure you want to remove this transaction?',
+      title: language['CONFIRM_REMOVE_TRANSACTION'],
+      description: language['DESC_REMOVE_TRANSACTION'],
       variant: 'error',
     })
       .then(() => {

@@ -10,6 +10,7 @@ import useAuth from 'hooks/useAuth'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useAlert from 'hooks/useAlert'
+import useLanguage from 'hooks/useLanguage'
 import { useNavigate } from 'react-router-dom'
 import { RequestLoanDialog } from './RequestLoanDialog'
 import { columnData, mappedItem } from './constant'
@@ -17,6 +18,7 @@ import { columnData, mappedItem } from './constant'
 export const Loan = () => {
   const navigate = useNavigate()
   const confirm = useAlert()
+  const { language } = useLanguage()
   const { notify } = useNotify()
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -32,8 +34,8 @@ export const Loan = () => {
   useEffect(() => {
     const handleCancel = (id) => {
       confirm({
-        title: 'Are you sure you want to cancel this loan?',
-        description: 'By cancel this loan you will remove it from the list.',
+        title: language['CONFIRM_CANCEL_LOAN'],
+        description: language['DESC_CANCEL_LOAN'],
         variant: 'error'
       })
        .then(() => {

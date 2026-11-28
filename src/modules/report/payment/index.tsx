@@ -14,11 +14,13 @@ import useTheme from 'hooks/useTheme'
 import { PaymentForm } from 'modules/sale/cashing/PaymentForm'
 import useAuth from 'hooks/useAuth'
 import useAlert from 'hooks/useAlert'
+import useLanguage from 'hooks/useLanguage'
 
 export const Payments = () => {
     const dispatch = useAppDispatch()
     const { data: payments, count, status } = useAppSelector(selectListPayment)
     const confirm = useAlert()
+    const { language } = useLanguage()
     const { notify } = useNotify()
     const { theme } = useTheme()
     const [rowData, setRowData] = useState<Data[]>([])
@@ -83,8 +85,8 @@ export const Payments = () => {
 
         const handleClear = (id) => {
             confirm({
-                title: 'Are you sure you want to clear this payment?',
-                description: 'Clearing the payment will remove it completely from system.',
+                title: language['CONFIRM_CLEAR_THIS_PAYMENT'],
+                description: language['DESC_CLEAR_THIS_PAYMENT'],
                 variant: 'error',
             })
                 .then(() => {

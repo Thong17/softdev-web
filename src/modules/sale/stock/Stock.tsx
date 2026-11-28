@@ -339,8 +339,8 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
   
     const handleDeleteStock = (id) => {
       confirm({
-        title: 'Delete Stock',
-        description: 'Do you want to delete the stock?',
+        title: language['CONFIRM_DELETE_STOCK'],
+        description: language['DESC_DELETE_STOCK'],
         variant: 'error'
       }).then(() => {
         const response = Axios({
@@ -396,7 +396,7 @@ export const Stock = ({ section = 'sale' }: { section?: 'sale' | 'organize' }) =
       )
     })
     setStockRowData(rowData)
-  }, [stocks, product, device, lang, user, theme, notify, loadify, confirm, dispatch, stockDialog])
+  }, [stocks, product, device, lang, language, user, theme, notify, loadify, confirm, dispatch, stockDialog])
 
   const handleAddStock = () => {
     setStockValue(initStock)

@@ -83,7 +83,7 @@ export const Products = () => {
   const { data: listCode } = useAppSelector(selectListCodeProduct)
   const [hasMore, setHasMore] = useState(true)
   const [count, setCount] = useState(0)
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -125,8 +125,8 @@ export const Products = () => {
 
   const handleCloseImport = () => {
     confirm({
-      title: 'Discard Import',
-      description: 'Do you want to discard all the change?',
+      title: language['CONFIRM_DISCARD_IMPORT'],
+      description: language['DESC_DISCARD_IMPORT'],
       variant: 'error',
     })
       .then(() => setImportDialog({ ...importDialog, open: false }))
@@ -181,9 +181,8 @@ export const Products = () => {
 
   const handleEnableStock = (id) => {
     confirm({
-      title: 'Are you sure you want to enable stock?',
-      description:
-        'This product stock is currently not enabled. By confirm this you will enable stock for this product.',
+      title: language['CONFIRM_ENABLE_STOCK'],
+      description: language['DESC_ENABLE_STOCK'],
       variant: 'info',
     })
       .then(() => {

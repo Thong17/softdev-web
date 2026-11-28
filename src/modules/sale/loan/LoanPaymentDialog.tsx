@@ -45,8 +45,8 @@ export const LoanPaymentDialog = ({ dialog, setDialog }: any) => {
       notify('Not enough cash', 'error')
     } else {
       confirm({
-        title: 'Are you sure you want to check out?',
-        description: 'Checkout the payment will update the status to complete.',
+        title: language['CONFIRM_CHECKOUT'],
+        description: language['DESC_CHECKOUT'],
         variant: 'info',
       })
         .then(() => {

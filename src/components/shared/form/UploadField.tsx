@@ -1,5 +1,6 @@
 import useTheme from 'hooks/useTheme'
 import useWeb from 'hooks/useWeb'
+import useLanguage from 'hooks/useLanguage'
 import {
   forwardRef,
   ForwardRefRenderFunction,
@@ -53,6 +54,7 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
   ref
 ) => {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { device } = useWeb()
   const [toSlide, setToSlide] = useState(0)
   const [active, setActive] = useState(selected)
@@ -136,7 +138,7 @@ const Input: ForwardRefRenderFunction<HTMLInputElement, IUploadField> = (
           className={`input ${err && 'input-error'}`}
           style={{ height: height ? height : 35 }}
         >
-          <span>Drag & Drop</span>
+          <span>{language['DRAG_DROP']}</span>
         </label>
       )}
       <input ref={ref} type='file' name={name} id={name} {...props} />

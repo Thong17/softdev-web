@@ -19,11 +19,12 @@ import { storeStages } from './stages'
 
 const allOn: IStoreFeatures = { labelPrinting: true, tables: true, reservation: true, queue: true }
 
+// Title and detail are language keys
 const featureList: { key: StoreFeature, title: string, detail: string, icon: ReactNode }[] = [
-  { key: 'labelPrinting', title: 'Label printing', detail: 'Print Label buttons at checkout, the label print icon on items, the category "Thermal printing" option and the label printer setting.', icon: <LocalPrintshopRoundedIcon /> },
-  { key: 'tables', title: 'Tables & layout', detail: 'Table picker in the cashing cart, and floors, rooms and tables on the Store page.', icon: <TableBarRoundedIcon /> },
-  { key: 'reservation', title: 'Reservation', detail: 'Operation › Reservation. It books tables, so it turns off with Tables.', icon: <EventSeatRoundedIcon /> },
-  { key: 'queue', title: 'Queue', detail: '"Add to queue" after checkout and Function › Queue.', icon: <ConfirmationNumberRoundedIcon /> },
+  { key: 'labelPrinting', title: 'LABEL_PRINTING', detail: 'FEATURE_LABEL_PRINTING_DETAIL', icon: <LocalPrintshopRoundedIcon /> },
+  { key: 'tables', title: 'TABLES_LAYOUT', detail: 'FEATURE_TABLES_DETAIL', icon: <TableBarRoundedIcon /> },
+  { key: 'reservation', title: 'RESERVATION', detail: 'FEATURE_RESERVATION_DETAIL', icon: <EventSeatRoundedIcon /> },
+  { key: 'queue', title: 'QUEUE', detail: 'FEATURE_QUEUE_DETAIL', icon: <ConfirmationNumberRoundedIcon /> },
 ]
 
 // Store › Features: switch off parts of the app the store doesn't use. Off
@@ -68,16 +69,14 @@ export const FeatureStore = () => {
         // Menus and screens update straight away
         refreshStoreFeatures()
       })
-      .catch((err) => notify(err?.response?.data?.msg || 'Could not save', 'error'))
+      .catch((err) => notify(err?.response?.data?.msg || language['COULD_NOT_SAVE'], 'error'))
       .finally(() => setSaving(false))
   }
 
   return (
     <Container header={<Breadcrumb stages={storeStages(language, id, 'features')} title={<StorefrontRoundedIcon />} />}>
       <div {...trackChanges} style={{ display: 'flex', flexDirection: 'column', gap: 15, paddingTop: 20, paddingBottom: 20 }}>
-        <HintBox>
-          Turn off what this store doesn't use, e.g. a stationery shop has no tables or reservations. Turning a feature off only hides it for everyone; its data is kept and comes back when you turn it on again.
-        </HintBox>
+        <HintBox>{language['FEATURES_HINT']}</HintBox>
         {featureList.map((feature) => {
           const on = value[feature.key]
           return (
@@ -96,13 +95,13 @@ export const FeatureStore = () => {
             >
               <span style={{ display: 'flex', color: on ? theme.color.info : theme.text.tertiary }}>{feature.icon}</span>
               <span style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ display: 'block', color: theme.text.primary, fontSize: 15 }}>{feature.title}</span>
-                <span style={{ display: 'block', color: theme.text.tertiary, fontSize: 13 }}>{feature.detail}</span>
+                <span style={{ display: 'block', color: theme.text.primary, fontSize: 15 }}>{language[feature.title]}</span>
+                <span style={{ display: 'block', color: theme.text.tertiary, fontSize: 13 }}>{language[feature.detail]}</span>
               </span>
               <Switch
                 checked={on}
                 onChange={() => toggle(feature.key)}
-                inputProps={{ 'aria-label': feature.title }}
+                inputProps={{ 'aria-label': language[feature.title] }}
                 sx={{
                   '& .MuiSwitch-switchBase.Mui-checked': { color: theme.color.info },
                   '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: theme.color.info, opacity: 0.5 },

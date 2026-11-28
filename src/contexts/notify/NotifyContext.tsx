@@ -21,7 +21,8 @@ export const NotifyContext = createContext({
   notify: (message, type?: TypeOptions, options?: any) => {},
   loadify: (promise) => { Promise.resolve() },
   loading: (message?: string) => '' as any,
-  update: (id: string, options: any) => {}
+  update: (id: string, options: any) => {},
+  dismiss: (id?: string) => {}
 })
 
 const NotifyProvider = ({ children }) => {
@@ -53,8 +54,10 @@ const NotifyProvider = ({ children }) => {
 
   const update = (id: string, options: any) => toast.update(id, {...initState, ...options, theme: 'light'})
 
+  const dismiss = (id?: string) => toast.dismiss(id)
+
   return (
-    <NotifyContext.Provider value={{ ...initState, notify, loadify, loading, update }}>
+    <NotifyContext.Provider value={{ ...initState, notify, loadify, loading, update, dismiss }}>
       {children}
       <ToastContainer className="toast-container" limit={5} newestOnTop />
     </NotifyContext.Provider>

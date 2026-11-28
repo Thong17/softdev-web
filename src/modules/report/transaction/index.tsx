@@ -23,7 +23,7 @@ import useAlert from 'hooks/useAlert'
 export const Transactions = () => {
   const dispatch = useAppDispatch()
   const { data: transactions, count, status } = useAppSelector(selectListTransaction)
-  const { lang } = useLanguage()
+  const { lang, language } = useLanguage()
   const { device } = useWeb()
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -72,8 +72,8 @@ export const Transactions = () => {
   useEffect(() => {
     const handleReverseTransaction = (id) => {
       confirm({
-        title: 'Are you sure you want to reverse this transaction',
-        description: 'Reverse the transaction will reset stock.',
+        title: language['CONFIRM_REVERSE_TRANSACTION'],
+        description: language['DESC_REVERSE_TRANSACTION'],
         variant: 'error'
       })
         .then(() => {
@@ -108,7 +108,7 @@ export const Transactions = () => {
     })
 
     setRowData(listTransactions)
-  }, [transactions, lang, user, device, theme, navigate, confirm, dispatch, notify])
+  }, [transactions, lang, language, user, device, theme, navigate, confirm, dispatch, notify])
 
   return (
     <Container

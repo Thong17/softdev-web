@@ -14,6 +14,7 @@ import ClearRoundedIcon from '@mui/icons-material/ClearRounded'
 import Axios from 'constants/functions/Axios'
 import useNotify from 'hooks/useNotify'
 import useAlert from 'hooks/useAlert'
+import useLanguage from 'hooks/useLanguage'
 import { Detail } from './Detail'
 
 const columnData: ITableColumn<any>[] = [
@@ -67,6 +68,7 @@ const mappedItem = (data, privilege, theme, onCancel, onCall) => {
 
 export const Queue = () => {
   const confirm = useAlert()
+  const { language } = useLanguage()
   const { notify } = useNotify()
   const { user } = useAuth()
   const { theme } = useTheme()
@@ -85,8 +87,8 @@ export const Queue = () => {
   useEffect(() => {
     const handleCancel = (id) => {
       confirm({
-        title: 'Are you sure you want to cancel this queue?',
-        description: 'By cancel this queue you will remove it from the list.',
+        title: language['CONFIRM_CANCEL_QUEUE'],
+        description: language['DESC_CANCEL_QUEUE'],
         variant: 'error'
       })
        .then(() => {

@@ -220,8 +220,8 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
 
   const handleCheckout = () => {
     confirm({
-      title: 'Are you sure you want to check out?',
-      description: 'Checkout the payment will update the status to complete.',
+      title: language['CONFIRM_CHECKOUT'],
+      description: language['DESC_CHECKOUT'],
       variant: 'info',
     })
       .then(() => {
@@ -257,8 +257,8 @@ export const GroupPaymentDialog = forwardRef(({ dialog, source='payment', setDia
 
   const handleClearPayment = () => {
     confirm({
-      title: 'Are you sure you want to clear the payment?',
-      description: 'The payment will be clear.',
+      title: language['CONFIRM_CLEAR_PAYMENT'],
+      description: language['DESC_CLEAR_PAYMENT'],
       variant: 'error',
     })
       .then(() => {
