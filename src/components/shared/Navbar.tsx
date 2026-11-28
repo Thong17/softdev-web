@@ -25,6 +25,7 @@ import { CONSTANT } from 'constants/variables'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
 import { selectAlertNotification, updateAlertNotification } from 'shared/redux'
 import { playBellSound } from 'utils/notify'
+import { ConnectionStatus } from './ConnectionStatus'
 
 export const MenuBar = ({ toggleSidebar, theme }) => {
   return (
@@ -258,6 +259,7 @@ const Navbar = ({ children }) => {
               <Typography style={{ fontSize: 13, textAlign: 'center', width: '100%', color: theme.text.secondary }}>Close</Typography>
             </MenuItem>
           </Menu>
+          <ConnectionStatus />
           <Profile id={user.id} username={user.username} picture={user.photo} />
         </Stack>
       ) : (

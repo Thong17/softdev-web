@@ -24,8 +24,10 @@ import useWeb from 'hooks/useWeb'
 import useAuth from 'hooks/useAuth'
 import useNotify from 'hooks/useNotify'
 import useLanguage from 'hooks/useLanguage'
+import useOffline from 'hooks/useOffline'
 import { currencyFormat, debounce, timeFormat } from 'utils'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { PendingCustomers, SyncNowButton } from './PendingCustomers'
 
 declare type ColumnHeader = 'customer' | 'phone' | 'tier' | 'group' | 'location' | 'lastPurchaseAt' | 'invoiceCount' | 'recentSpent' | 'totalSpent' | 'balance' | 'action'
 
@@ -52,6 +54,7 @@ export const CustomerRM = () => {
   const { language } = useLanguage()
   const { notify, loadify } = useNotify()
   const [queryParams, setQueryParams] = useSearchParams()
+  const { online, lastSyncedAt } = useOffline()
   const [customers, setCustomers] = useState<any[]>([])
   const [count, setCount] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -74,14 +77,19 @@ export const CustomerRM = () => {
         setCount(response?.data?.length || 0)
         if (response?.data?.months) setMonths(response.data.months)
       })
-      .catch((err) => notify(err?.response?.data?.msg, 'error'))
+      // Offline the navbar cloud already shows it; customers added offline
+      // are listed above
+      .catch((err) => err?.response && notify(err.response.data?.msg, 'error'))
       .finally(() => setLoading(false))
   }
 
+  // Also loads again when the connection comes back and after offline
+  // customers sync, so they show up in the list
   useEffect(() => {
-    fetchCustomers()
+    if (online) fetchCustomers()
+    else setLoading(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queryParams])
+  }, [queryParams, online, lastSyncedAt])
 
   useEffect(() => {
     Axios({ method: 'GET', url: '/organize/customer/options' })
@@ -325,10 +333,11 @@ export const CustomerRM = () => {
           <CustomButton
             styled={theme}
             onClick={() => navigate('/function/customer/tier')}
-            style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info }}
+            style={{ marginLeft: 10, backgroundColor: `${theme.color.info}22`, color: theme.color.info, whiteSpace: 'nowrap' }}
           >
-            Tiers
+            {language['TIERS']}
           </CustomButton>
+          <SyncNowButton style={{ marginLeft: 10 }} />
           {privilege?.create && (
             <CustomButton
               styled={theme}
@@ -348,6 +357,7 @@ export const CustomerRM = () => {
         handleConfirm={handleConfirmDelete}
         handleClose={() => setDeleteDialog({ open: false, id: null })}
       />
+      <PendingCustomers />
       <StickyTable
         columns={columnData.map((column) => (column.id === 'recentSpent' ? { ...column, label: `Spent (${months} month${months === 1 ? '' : 's'})` } : column))}
         rows={rows}

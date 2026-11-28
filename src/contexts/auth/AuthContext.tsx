@@ -4,7 +4,7 @@ import Axios from 'constants/functions/Axios'
 import { EnumAuth } from './authReducer'
 import { ILogin, IAuthInit, IRegister } from './interface'
 import { useNavigate } from 'react-router'
-import { getProfile, setSession } from './shared'
+import { cacheUser, getProfile, setSession } from './shared'
 import Loading from 'components/shared/Loading'
 
 const initState: IAuthInit = {
@@ -40,6 +40,7 @@ const AuthProvider = ({ children }) => {
 
       dispatch({ type: EnumAuth.LOGIN, payload: response.data })
       setSession(response.data.accessToken)
+      cacheUser(response.data.user)
       return response.data
 
     } catch (err: any) {      

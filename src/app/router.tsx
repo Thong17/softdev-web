@@ -27,6 +27,7 @@ import {
   CustomerRM,
   CreateCustomer,
   UpdateCustomer,
+  OfflineCustomer,
   CustomerTiers,
 } from 'modules/function'
 import {
@@ -267,6 +268,15 @@ const routes: RouteObject[] = [
         element: (
           <AuthGuard role={{ route: 'customer', action: 'create' }}>
             <CreateCustomer />
+          </AuthGuard>
+        ),
+      },
+      {
+        // A customer added offline, before it syncs
+        path: 'customer/offline/:clientId',
+        element: (
+          <AuthGuard role={{ route: 'customer', action: 'create' }}>
+            <OfflineCustomer />
           </AuthGuard>
         ),
       },

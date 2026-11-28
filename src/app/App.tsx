@@ -8,6 +8,7 @@ import LanguageProvider from 'contexts/language/LanguageContext'
 import ConfigProvider from 'contexts/config/ConfigContext'
 import WebProvider from 'contexts/web/WebContext'
 import AlertProvider from 'contexts/alert/AlertContext'
+import OfflineProvider from 'contexts/offline/OfflineContext'
 import { useAppDispatch } from './hooks'
 import { useEffect } from 'react'
 import { getAlertNotification } from 'shared/redux'
@@ -27,7 +28,7 @@ const App = () => {
   }, [dispatch])
 
   return (
-    <Compose components={[NotifyProvider, AuthProvider, LanguageProvider, AlertProvider, ThemesProvider, ConfigProvider, WebProvider]}>
+    <Compose components={[NotifyProvider, AuthProvider, OfflineProvider, LanguageProvider, AlertProvider, ThemesProvider, ConfigProvider, WebProvider]}>
       {routers}
     </Compose>
   )
